@@ -4,9 +4,9 @@
 
 **Nome do projeto:** TrustVote - Sistema Distribuído de Votação Online  
 **Curso:** Licenciatura em Engenharia Informática  
-**Ano letivo:** 2026/2027 
-**Semestre:** 5to Semestre
-**Unidades Curriculares:** Projeto de Desenvolvimento de Software; Engenharia de Software; Segurança Informática; Sistemas Distribuídos; Inteligência Artificial 
+**Ano letivo:** 2026/2027  
+**Semestre:** 5.º Semestre  
+**Unidades Curriculares:** Projeto de Desenvolvimento de Software; Engenharia de Software; Segurança Informática; Sistemas Distribuídos; Inteligência Artificial  
 **Docentes:** Miguel Boavida; Rui Ramos; Sérgio Nunes; Pedro Rosa; Samuel Gomes
 
 ### Elementos do grupo
