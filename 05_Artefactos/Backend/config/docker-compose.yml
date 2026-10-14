@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:latest #é como se fosse uma receita craida previamente, que já tem tudo pronto para rodar o postgres num ambiente linux zerado
+    ports:
+      - "5432:5432"
+    environment:
+        - POSTGRESQL_USERNAME=postgres
+        - POSTGRESQL_PASSWORD=1234
+        - POSTGRESQL_DATABASE=postgres
+    volumes: #sistema de mentem os dados do banco de dados mesmo que o container seja destruido ou desligado, para que não se perca os dados do banco de dados
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - postgres_redis_data:/data
+
+
+volumes:
+  postgres_data:
+  postgres_redis_data:
+
+    #formas de dar run no docker:
+    #docker compose -f ".\05_Artefactos\Backend\config\docker-compose.yml" up -d
+  #docker ps
+  #docker logs -f <nome do container> (para ver os logs do container)
+
