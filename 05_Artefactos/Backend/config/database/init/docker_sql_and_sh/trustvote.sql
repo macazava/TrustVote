@@ -1,3 +1,5 @@
+SET ROLE trustvote;
+
 CREATE TABLE utilizador (
     ut_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ut_nome VARCHAR(255) NOT NULL,
