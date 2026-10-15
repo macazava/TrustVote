@@ -1,0 +1,53 @@
+name: trustvote
+
+
+services:
+  db:
+    image: postgres:16
+    container_name: trustvote1
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
+      TRUSTVOTE_DB_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no arquivo .env}
+      TRUSTVOTE_REPLICADA_DB_PASSWORD: ${TRUSTVOTE_REPLICADA_DB_PASSWORD:?Defina TRUSTVOTE_REPLICADA_DB_PASSWORD no arquivo .env}
+
+    ports:
+      - "5432:5432"
+    volumes: #sistema de mentem os dados do banco de dados mesmo que o container seja destruido ou desligado, para que não se perca os dados do banco de dados
+      - trustvote-db-data:/var/lib/postgresql/data
+      - ./trustvote.sql:/docker-entrypoint-initdb.d/01-trustvote.sql:ro
+
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  redis:
+    image: redis:latest
+    container_name: trustvote-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - postgres_redis_data:/data
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+
+
+
+
+
+volumes:
+  trustvote-db-data:
+  postgres_redis_data:
