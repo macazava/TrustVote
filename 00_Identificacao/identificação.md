@@ -1,4 +1,4 @@
-# Identificação dos Alunos
+# Identificação dos Alunos.
 
 Fábio Alexandre Rómulo Teixeira - 20241821 – LEIF – D02 - 26/27 - 20241821@iade.pt 
 
