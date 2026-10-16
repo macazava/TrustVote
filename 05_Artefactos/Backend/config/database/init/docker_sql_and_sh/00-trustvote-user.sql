@@ -13,6 +13,4 @@ SELECT format('ALTER ROLE trustvote WITH LOGIN PASSWORD %L', :'trustvote_passwor
 \gexec
 \o
 
-ALTER DATABASE trustvote OWNER TO trustvote;
-GRANT CONNECT ON DATABASE trustvote TO trustvote;
-GRANT USAGE, CREATE ON SCHEMA public TO trustvote;
+

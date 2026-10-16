@@ -14,7 +14,7 @@ services:
 
     ports:
       - "5432:5432"
-    volumes: #sistema de mentem os dados do banco de dados mesmo que o container seja destruido ou desligado, para que não se perca os dados do banco de dados
+    volumes:
       - trustvote-db-data:/var/lib/postgresql/data
       - ./00-trustvote-user.sql:/docker-entrypoint-initdb.d/00-trustvote-user.sql:ro
       - ./trustvote.sql:/docker-entrypoint-initdb.d/01-trustvote.sql:ro
