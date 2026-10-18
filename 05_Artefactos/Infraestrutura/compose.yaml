@@ -1,0 +1,187 @@
+# TrustVote — infraestrutura Docker local
+# Arquitetura: nginx (LB) -> servidor1 + servidor2 -> db-primary (+ db-replica) / redis
+# Credenciais: ficheiro .env (ver .env.example). Documentação: README.md
+
+name: trustvote
+
+x-restart: &restart
+  restart: unless-stopped
+
+# ---------------------------------------------------------------------------
+# Servidores de aplicação
+# Enquanto o backend não existe, cada instância corre um PLACEHOLDER (nginx)
+# que só responde /health e identifica a instância. Ver README > Integração.
+# ---------------------------------------------------------------------------
+x-app: &app
+  <<: *restart
+  image: nginx:1.28-alpine
+  environment: &app-env
+    APP_PORT: "8080"
+    DATABASE_HOST: ${DB_WRITE_HOST:-db-primary}
+    DATABASE_READ_HOST: ${DB_READ_HOST:-db-replica}
+    DATABASE_PORT: "5432"
+    DATABASE_NAME: trustvote
+    DATABASE_USER: trustvote
+    DATABASE_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no .env}
+    REDIS_HOST: redis
+    REDIS_PORT: "6379"
+    REDIS_PASSWORD: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no .env}
+  volumes:
+    - ./docker/app-placeholder/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+  healthcheck:
+    test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8080/health >/dev/null || exit 1" ]
+    interval: 5s
+    timeout: 3s
+    retries: 3
+    start_period: 10s
+  depends_on:
+    db-primary:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  networks:
+    - trustvote-network
+
+# ---------------------------------------------------------------------------
+# PostgreSQL — o mesmo entrypoint serve primário e réplica (PG_NODE_ROLE).
+# ---------------------------------------------------------------------------
+x-postgres: &postgres
+  <<: *restart
+  image: postgres:16
+  entrypoint: [ "sh", "/opt/trustvote/pg-entrypoint.sh" ]
+  command:
+    - postgres
+    - -c
+    - wal_level=replica
+    - -c
+    - max_wal_senders=10
+    - -c
+    - max_replication_slots=10
+    - -c
+    - max_slot_wal_keep_size=1GB
+    - -c
+    - hot_standby=on
+    - -c
+    - wal_log_hints=on
+  environment: &pg-env
+    POSTGRES_USER: postgres
+    POSTGRES_DB: trustvote
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+    TRUSTVOTE_DB_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no .env}
+    REPLICATION_USER: replicator
+    REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Defina REPLICATION_PASSWORD no .env}
+  healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"" ]
+    interval: 5s
+    timeout: 5s
+    retries: 20
+    start_period: 20s
+  networks:
+    - trustvote-network
+
+# Os dois nós montam os mesmos scripts: qualquer um pode vir a ser primário.
+# Esquema da BD: mantido pela equipa no Backend (fonte única, não duplicado aqui).
+# Os scripts de initdb só correm quando o volume de dados está vazio.
+
+services:
+  nginx:
+    <<: *restart
+    image: nginx:1.28-alpine
+    container_name: trustvote-nginx
+    ports:
+      # Único ponto de entrada publicado. Por defeito só acessível neste PC.
+      - "${NGINX_BIND_ADDRESS:-127.0.0.1}:${NGINX_HTTP_PORT:-8080}:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # Só espera que as instâncias tenham arrancado: o nginx tem de continuar a
+    # funcionar mesmo que uma delas esteja em baixo (deteção passiva no upstream).
+    depends_on:
+      servidor1:
+        condition: service_started
+      servidor2:
+        condition: service_started
+    networks:
+      - trustvote-network
+
+  servidor1:
+    <<: *app
+    container_name: trustvote-servidor1
+    environment:
+      <<: *app-env
+      APP_INSTANCE: servidor1
+
+  servidor2:
+    <<: *app
+    container_name: trustvote-servidor2
+    environment:
+      <<: *app-env
+      APP_INSTANCE: servidor2
+
+  db-primary:
+    <<: *postgres
+    container_name: trustvote-db-primary
+    environment:
+      <<: *pg-env
+      PG_NODE_ROLE: ${DB_PRIMARY_NODE_ROLE:-primary}
+      PG_UPSTREAM_HOST: ${DB_PRIMARY_UPSTREAM:-db-replica}
+      PG_SLOT_NAME: db_primary_slot
+    volumes:
+      - pg-primary-data:/var/lib/postgresql/data
+      - ./docker/postgres/pg-entrypoint.sh:/opt/trustvote/pg-entrypoint.sh:ro
+      - ./docker/postgres/initdb/00-replication.sh:/docker-entrypoint-initdb.d/00-replication.sh:ro
+      - ../Backend/config/database/init/docker_sql_and_sh/00-trustvote-user.sql:/docker-entrypoint-initdb.d/10-trustvote-user.sql:ro
+      - ../Backend/config/database/init/docker_sql_and_sh/trustvote.sql:/docker-entrypoint-initdb.d/20-trustvote.sql:ro
+
+  db-replica:
+    <<: *postgres
+    container_name: trustvote-db-replica
+    environment:
+      <<: *pg-env
+      PG_NODE_ROLE: ${DB_REPLICA_NODE_ROLE:-replica}
+      PG_UPSTREAM_HOST: ${DB_REPLICA_UPSTREAM:-db-primary}
+      PG_SLOT_NAME: db_replica_slot
+    volumes:
+      - pg-replica-data:/var/lib/postgresql/data
+      - ./docker/postgres/pg-entrypoint.sh:/opt/trustvote/pg-entrypoint.sh:ro
+      - ./docker/postgres/initdb/00-replication.sh:/docker-entrypoint-initdb.d/00-replication.sh:ro
+      - ../Backend/config/database/init/docker_sql_and_sh/00-trustvote-user.sql:/docker-entrypoint-initdb.d/10-trustvote-user.sql:ro
+      - ../Backend/config/database/init/docker_sql_and_sh/trustvote.sql:/docker-entrypoint-initdb.d/20-trustvote.sql:ro
+    depends_on:
+      db-primary:
+        condition: service_healthy
+
+  redis:
+    <<: *restart
+    image: redis:7.4-alpine
+    container_name: trustvote-redis
+    environment:
+      # redis-cli lê a password desta variável (usado no healthcheck)
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no .env}
+    command: [ "sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDISCLI_AUTH\"" ]
+    volumes:
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep -q PONG" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - trustvote-network
+
+networks:
+  trustvote-network:
+    name: trustvote-network
+    driver: bridge
+
+volumes:
+  pg-primary-data:
+  pg-replica-data:
+  redis-data:
