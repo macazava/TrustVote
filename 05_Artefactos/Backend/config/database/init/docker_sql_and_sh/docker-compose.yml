@@ -11,21 +11,20 @@ services:
       POSTGRES_DB: trustvote
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
       TRUSTVOTE_DB_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no arquivo .env}
-
     ports:
       - "5432:5432"
     volumes:
       - trustvote-db-data:/var/lib/postgresql/data
       - ./00-trustvote-user.sql:/docker-entrypoint-initdb.d/00-trustvote-user.sql:ro
       - ./trustvote.sql:/docker-entrypoint-initdb.d/01-trustvote.sql:ro
-
-
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"" ]
       interval: 5s
       timeout: 5s
       retries: 20
       start_period: 10s
+
+
 
   redis:
     image: redis:latest
@@ -44,7 +43,13 @@ services:
       start_period: 10s
 
 
-
+secrets:
+  jwt_private_key:
+    file: ./jwtRS256.key
+  jwt_public_key:
+    file: ./jwtRS256.key.pub
+  totp_secret:
+    file: ./totp_secret.txt
 
 
 
