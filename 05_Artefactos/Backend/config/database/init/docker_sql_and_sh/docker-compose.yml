@@ -49,5 +49,5 @@ services:
 
 
 volumes:
-  trustvote-db-data:
+  trustvote1-db-data:
   postgres_redis_data:
