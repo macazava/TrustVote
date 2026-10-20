@@ -12,5 +12,5 @@ WHERE NOT EXISTS (
 SELECT format('ALTER ROLE trustvote WITH LOGIN PASSWORD %L', :'trustvote_password');
 \gexec
 \o
-
+\
 
