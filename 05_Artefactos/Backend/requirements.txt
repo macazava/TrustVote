@@ -10,7 +10,6 @@ pydantic==2.14.1
 SQLAlchemy==2.1.5
 psycopg2-binary==2.9.13
 python-dotenv==1.2.4
-
 # Segurança: JWT com suporte a RS256, hashes Argon2 e códigos TOTP
 PyJWT[crypto]==2.7.0
 pwdlib[argon2]==0.3.1
