@@ -1,0 +1,13 @@
+# OPCIONAL — publica as bases de dados só neste PC (127.0.0.1) para as ver num cliente
+# PostgreSQL (IntelliJ Database, DBeaver, pgAdmin). Não usar em demonstrações/produção.
+#
+#   docker compose -f compose.yaml -f compose.debug.yaml up -d
+#
+# Portas 15432/15433 para não chocar com um PostgreSQL instalado no Windows (5432).
+services:
+  db-primary:
+    ports:
+      - "127.0.0.1:${DB_PRIMARY_DEBUG_PORT:-15432}:5432"
+  db-replica:
+    ports:
+      - "127.0.0.1:${DB_REPLICA_DEBUG_PORT:-15433}:5432"
