@@ -1,4 +1,6 @@
-# Backend do TrustVote
+git switch main
+git pull
+git switch -c feat/nome-da-tarefa# Backend do TrustVote
 
 Este backend é a API do TrustVote, construída com FastAPI. Atualmente, a aplicação tem um endpoint inicial de verificação (`GET /`) e alguns módulos em desenvolvimento para autenticação e TOTP. As funcionalidades de eleições, votação, resultados e a integração completa com a base de dados ainda não estão implementadas.
 
@@ -107,9 +109,6 @@ docker compose -f config\database\init\docker_sql_and_sh\docker-compose.yml up -
 
 Para as parar:
 
-```powershell
-docker compose -f config\database\init\docker_sql_and_sh\docker-compose.yml down
-```
 
 Não uses `docker compose down -v` se quiseres preservar os dados do volume PostgreSQL.
 

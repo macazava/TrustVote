@@ -1,6 +1,7 @@
 # API: framework e servidor ASGI
 fastapi==0.153.0
 uvicorn==0.54.0
+alembic==1.12.0
 
 # Redis: cliente Python; o servidor Redis é configurado separadamente, por exemplo no Docker Compose
 redis==8.1.0
