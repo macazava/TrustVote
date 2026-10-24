@@ -8,14 +8,23 @@ x-restart: &restart
   restart: unless-stopped
 
 # ---------------------------------------------------------------------------
-# Servidores de aplicação
-# Enquanto o backend não existe, cada instância corre um PLACEHOLDER (nginx)
-# que só responde /health e identifica a instância. Ver README > Integração.
+# Servidores de aplicação: o backend FastAPI (05_Artefactos/Backend), 2 instâncias
+# iguais. Partilham as mesmas chaves JWT/TOTP (pasta secrets/), por isso um token
+# emitido por uma instância é aceite pela outra.
+# Gerar os segredos antes do 1.º arranque: ver README > Segredos do backend.
 # ---------------------------------------------------------------------------
 x-app: &app
   <<: *restart
-  image: nginx:1.28-alpine
+  build: ../Backend
+  image: trustvote-backend:dev
+  secrets:
+    - jwt_private_key
+    - jwt_public_key
+    - totp_encryption_key
   environment: &app-env
+    JWT_PRIVATE_KEY_FILE: /run/secrets/jwt_private_key
+    JWT_PUBLIC_KEY_FILE: /run/secrets/jwt_public_key
+    TOTP_ENCRYPTION_KEY_FILE: /run/secrets/totp_encryption_key
     APP_PORT: "8080"
     DATABASE_HOST: ${DB_WRITE_HOST:-db-primary}
     DATABASE_READ_HOST: ${DB_READ_HOST:-db-replica}
@@ -26,14 +35,13 @@ x-app: &app
     REDIS_HOST: redis
     REDIS_PORT: "6379"
     REDIS_PASSWORD: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no .env}
-  volumes:
-    - ./docker/app-placeholder/default.conf.template:/etc/nginx/templates/default.conf.template:ro
   healthcheck:
-    test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1:8080/health >/dev/null || exit 1" ]
+    # a imagem python:slim não tem wget/curl; /health devolve 503 se a instância não chega à BD
+    test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)" ]
     interval: 5s
     timeout: 3s
     retries: 3
-    start_period: 10s
+    start_period: 15s
   depends_on:
     db-primary:
       condition: service_healthy
@@ -175,6 +183,16 @@ services:
       start_period: 5s
     networks:
       - trustvote-network
+
+# Segredos do backend (ficheiros locais, fora do git). Gerados por:
+#   python -m app.scripts.gerar_segredos ../Infraestrutura/secrets   (a partir de 05_Artefactos/Backend)
+secrets:
+  jwt_private_key:
+    file: ./secrets/jwt_private.pem
+  jwt_public_key:
+    file: ./secrets/jwt_public.pem
+  totp_encryption_key:
+    file: ./secrets/totp_key.txt
 
 networks:
   trustvote-network:
