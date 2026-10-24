@@ -3,9 +3,9 @@
 Infraestrutura para executar o TrustVote **num único PC Windows** com Docker Desktop:
 balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e Redis.
 
-> **Estado atual:** o frontend e o backend ainda não estão integrados. As duas instâncias
-> (`servidor1`, `servidor2`) correm um **placeholder** sem lógica de negócio que só serve
-> para validar o encaminhamento. Ver [Integração com o backend](#integração-com-o-backend-e-o-frontend).
+> **Estado atual:** as duas instâncias (`servidor1`, `servidor2`) correm o **backend FastAPI**
+> (`05_Artefactos/Backend`), com autenticação e gestão eleitoral. Votação, resultados e o
+> frontend ainda não estão integrados.
 
 ---
 
@@ -37,8 +37,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 | Contentor | Serviço | Imagem | Função |
 |---|---|---|---|
 | `trustvote-nginx` | `nginx` | `nginx:1.28-alpine` | Reverse proxy e balanceador de carga (round-robin); único ponto de entrada |
-| `trustvote-servidor1` | `servidor1` | placeholder `nginx:1.28-alpine` → backend | Instância 1 da aplicação |
-| `trustvote-servidor2` | `servidor2` | placeholder `nginx:1.28-alpine` → backend | Instância 2, independente da 1 |
+| `trustvote-servidor1` | `servidor1` | `trustvote-backend:dev` (build de `../Backend`) | Instância 1 da API |
+| `trustvote-servidor2` | `servidor2` | `trustvote-backend:dev` (mesma imagem) | Instância 2, independente da 1 |
 | `trustvote-db-primary` | `db-primary` | `postgres:16` | PostgreSQL primário (aceita escritas) |
 | `trustvote-db-replica` | `db-replica` | `postgres:16` | Réplica *hot standby* (só leitura), candidata a promoção |
 | `trustvote-redis` | `redis` | `redis:7.4-alpine` | Cache / filas / coordenação. **Não** é fonte de verdade dos dados |
@@ -68,7 +68,6 @@ PC, o mesmo disco e o mesmo motor Docker.
 ├── README.md
 └── docker/
     ├── nginx/default.conf                  # upstream, deteção de falhas, logs
-    ├── app-placeholder/default.conf.template  # placeholder das instâncias (remover na integração)
     ├── postgres/pg-entrypoint.sh           # entrypoint comum: primário ou réplica (pg_basebackup)
     ├── postgres/initdb/00-replication.sh   # cria utilizador de replicação + pg_hba
     └── redis/redis.conf                    # persistência AOF, limites, comandos perigosos desativados
@@ -108,6 +107,21 @@ copy .env.example .env
 | `DB_WRITE_HOST`, `DB_READ_HOST`, `DB_*_NODE_ROLE`, `DB_*_UPSTREAM` | só para o failover manual (secção 7) |
 
 O `docker compose` recusa arrancar se faltar alguma password.
+
+### Segredos do backend (1.ª vez)
+
+As duas instâncias partilham as chaves JWT (RS256) e a chave que cifra os segredos TOTP.
+Ficam em `secrets/` (ignorada pelo git) e são montadas como Docker secrets:
+
+```powershell
+cd 05_Artefactos\Backend
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m app.scripts.gerar_segredos ..\Infraestrutura\secrets
+```
+
+Depois do 1.º arranque, criar o administrador:
+`docker compose exec servidor1 python -m app.scripts.criar_admin admin@trustvote.pt "Administrador"`
 
 ## 5. Comandos
 
@@ -269,8 +283,8 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 
 ## 9. Integração com o backend e o frontend
 
-### Backend (servidor1 / servidor2)
-Contrato que o backend tem de cumprir:
+### Backend (servidor1 / servidor2) — integrado
+O backend é construído a partir de `../Backend` (`build:` na âncora `x-app`) e cumpre o contrato:
 1. Escutar na porta **8080**.
 2. Expor **`GET /health`** → `200` quando a instância está pronta (usado pelo healthcheck).
 3. Ler a configuração destas variáveis (já definidas no `compose.yaml`):
@@ -281,15 +295,7 @@ Contrato que o backend tem de cumprir:
 5. Escritas sempre em `DATABASE_HOST`. `DATABASE_READ_HOST` (réplica) só para leituras que
    tolerem um pequeno atraso.
 
-Alterações no `compose.yaml`, na âncora `x-app`:
-```yaml
-x-app: &app
-  <<: *restart
-  build: ../Backend            # em vez de: image: nginx:1.28-alpine
-  # remover o bloco "volumes:" do placeholder
-  # ajustar o "healthcheck.test" se a imagem não tiver wget (ex.: curl)
-```
-Depois remover `docker/app-placeholder/`.
+Depois de alterar o código: `docker compose up -d --build servidor1 servidor2`.
 
 ### Frontend
 - Se for estático: servido pelo nginx (montar o `build/` em `/usr/share/nginx/html` e
@@ -316,8 +322,19 @@ Executados neste PC. "Placeholder" = testado com o servidor de substituição, *
 | 9b | Promoção + reconstrução | ✅ réplica promovida aceita escritas; antigo primário **recusado** pela proteção; reconstruído como réplica do novo primário, replicação `streaming` e novas escritas replicadas |
 | 10 | Portas expostas | ✅ só `127.0.0.1:8080` publicado (BD só com `compose.debug.yaml`, em 127.0.0.1) |
 
-### Pendentes (dependem do backend dos colegas)
-- Balanceamento e failover **com a aplicação real** (sessões, pedidos longos, `POST` de votos).
+### Com o backend real (24/10/2026)
+
+| Teste | Resultado |
+|---|---|
+| Healthcheck das 2 instâncias (inclui ligação à BD) | ✅ `healthy`; `/health` alterna servidor1/servidor2 |
+| Token emitido por uma instância usado na outra | ✅ 6/6 pedidos `200`, repartidos pelas duas instâncias |
+| Fluxo pelo nginx: registo, login, criar eleição, candidatos, ronda, habilitar, agendar, iniciar | ✅; eleitor recebe `403` ao criar eleição; candidato após agendar → `409` |
+| Auditoria e réplica | ✅ ações registadas em `auditoria`; dados visíveis na réplica |
+| servidor1 parado | ✅ 10/10 pedidos autenticados respondidos (2 reencaminhados após a tentativa falhada) |
+| servidor1 de volta | ✅ 5/5 sem reiniciar o nginx |
+
+### Pendentes
+- Failover com `POST` de votos (módulo de votação ainda não existe).
 - Comportamento das aplicações durante a promoção da BD (reconexão ao novo `DATABASE_HOST`).
 - Uso real do Redis (filas/cache) e leituras na réplica.
 - Integração do frontend.
