@@ -1,137 +1,330 @@
 # Backend do TrustVote
 
-Este backend é a API do TrustVote, construída com FastAPI. Atualmente, a aplicação tem um endpoint inicial de verificação (`GET /`) e alguns módulos em desenvolvimento para autenticação e TOTP. As funcionalidades de eleições, votação, resultados e a integração completa com a base de dados ainda não estão implementadas.
+API REST do TrustVote, construída com **FastAPI**, **SQLAlchemy** e **PostgreSQL**.
+Serve o frontend e as instâncias de aplicação definidas na infraestrutura Docker
+([`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml)).
 
-## Estrutura atual
+> Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
+> [README da raiz](../README.md). Este documento detalha apenas o backend.
+
+- **Porta por omissão:** `8001`
+- **Ponto de entrada:** [`main.py`](main.py)
+- **Documentação interativa:** <http://localhost:8001/docs>
+
+---
+
+## 1. Estado atual
+
+### Implementado
+
+| Área | Descrição |
+|---|---|
+| Autenticação | Registo de utilizadores e login real com **JWT (HS256)** e passwords em **Argon2** |
+| Autorização | Dependências `utilizador_atual` (401) e `exigir_administrador` (403) |
+| Gestão de eleições | CRUD de `eleicao`, `candidato`, `ronda`, `ronda_candidato` e `habilitacao` |
+| Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos |
+| Erros | Exceções de negócio traduzidas automaticamente em `404` / `409` / `400` |
+| Healthcheck | `GET /health` — usado pelo healthcheck do Compose e pelo balanceador |
+
+### Ainda não implementado
+
+- **Voto** (`participacao`, `voto`) e **apuramento de resultados** (`resultado`) — RF06/RF07/RF09/RF10.
+- **Auditoria** (`auditoria`) — RF11.
+- **TOTP** (`app/security/totp.py` está vazio) e as rotas `reset-password`/`verify-password` (stubs).
+- **Worker** de tarefas assíncronas (a pasta ainda não existe).
+- Leitura a partir da réplica (`DATABASE_READ_HOST`) e uso do Redis.
+
+> As pastas em `app/` existem, mas a sua presença não significa que todas as
+> funcionalidades estejam prontas. O que está confirmado está na tabela acima.
+
+---
+
+## 2. Arquitetura em camadas
+
+Cada domínio atravessa quatro camadas, sempre pela mesma ordem:
+
+```
+ pedido HTTP
+     │
+     ▼
+ routers/       ← só HTTP: valida a entrada e devolve a resposta
+     │
+     ▼
+ services/      ← regras de negócio; levanta as exceções de app/erros.py
+     │
+     ▼
+ repositories/  ← acesso à base de dados (consultas, commit, refresh)
+     │
+     ▼
+ models/        ← tabelas SQLAlchemy (mapeamento para o esquema SQL)
+```
+
+| Camada | Pasta | Responsabilidade |
+|---|---|---|
+| Schemas | [`app/schemas/`](app/schemas) | Validação de entrada/saída com Pydantic v2 |
+| Routers | [`app/routers/`](app/routers) | Rotas, códigos de estado, dependências de segurança |
+| Services | [`app/services/`](app/services) | Regras de negócio e validações (ex.: eleição existe?) |
+| Repositories | [`app/repositories/`](app/repositories) | Consultas SQLAlchemy (`select`, `add`, `commit`) |
+| Models | [`app/models/`](app/models) | Tabelas, colunas e chaves |
+
+Componentes transversais:
+
+- [`app/database.py`](app/database.py) — ligação ao PostgreSQL e sessão por pedido.
+- [`app/erros.py`](app/erros.py) — exceções de negócio e a sua tradução para HTTP.
+- [`app/security/`](app/security) — tokens JWT e dependências de autorização.
+
+---
+
+## 3. Estrutura de ficheiros
 
 ```text
 Backend/
 ├── app/
-│   ├── models/          # modelos Python em desenvolvimento
-│   ├── repositories/    # acesso a dados em desenvolvimento
-│   ├── routers/         # rotas em desenvolvimento
-│   ├── schemas/         # validação dos dados da API
-│   ├── security/        # componentes de segurança, incluindo TOTP
-│   ├── services/        # regras de negócio em desenvolvimento
-│   ├── testes/          # testes em desenvolvimento
-│   └── worker/          # reservado para tarefas assíncronas
+│   ├── models/          # tabelas SQLAlchemy (ut_*, ele_*, cand_*, ron_*, rc_*, hab_*)
+│   ├── schemas/         # validação Pydantic (entrada e resposta)
+│   ├── repositories/    # acesso à base de dados
+│   ├── services/        # regras de negócio
+│   ├── routers/         # rotas HTTP, agrupadas por prefixo
+│   ├── security/        # tokens.py (JWT), dependencias.py, totp.py (por implementar)
+│   ├── testes/          # espaço para testes (teste_top.py ainda vazio)
+│   ├── database.py      # engine, sessão e Base declarativa
+│   └── erros.py         # erros de negócio -> respostas HTTP
 ├── config/
-│   └── database/
-│       └── init/
-│           └── docker_sql_and_sh/  # scripts SQL do esquema (initdb do PostgreSQL)
+│   └── database/init/docker_sql_and_sh/
+│       ├── 00-trustvote-user.sql   # cria o utilizador trustvote e torna-o dono da BD
+│       └── trustvote.sql           # tabelas, executadas como trustvote (SET ROLE)
+├── .env                 # configuração local (ver aviso na secção 5)
 ├── Dockerfile
-├── main.py
+├── main.py              # cria a app FastAPI e regista routers e tratadores
 └── requirements.txt
 ```
 
-O `main.py` na raiz cria a aplicação FastAPI. O `Dockerfile` instala as dependências e executa essa aplicação na porta `8001`. As pastas em `app/` estão a ser construídas; a sua presença não significa que todas essas funcionalidades já estejam disponíveis.
+---
 
-## Pré-requisitos
+## 4. Pré-requisitos
 
-- Python 3.12 ou compatível com as versões declaradas em `requirements.txt`, para execução local.
-- Docker Desktop iniciado, para execução em container.
+- **Python 3.12 ou superior** (o `Dockerfile` fixa 3.12).
+- **Docker Desktop** iniciado, para a base de dados e o Redis.
+- A infraestrutura de [`../Infraestrutura/`](../Infraestrutura) configurada (secção 6).
 
-## Executar localmente no Windows
+---
 
-Abre o PowerShell na pasta `Backend`:
+## 5. Configuração (`.env`)
 
-```powershell
-cd "C:\Users\<utilizador>\PycharmProjects\TrustVote\05_Artefactos\Backend"
+O `app/database.py` lê a configuração de um ficheiro `.env` na pasta `Backend`:
+
+| Variável | Por omissão | Uso |
+|---|---|---|
+| `DATABASE_HOST` | `localhost` | Anfitrião do PostgreSQL |
+| `DATABASE_PORT` | `5432` | Porta do PostgreSQL (a infraestrutura publica a `15432` em modo debug) |
+| `DATABASE_NAME` | `trustvote` | Nome da base de dados |
+| `DATABASE_USER` | `trustvote` | Utilizador da aplicação |
+| `DATABASE_PASSWORD` | *(vazio)* | Password de `trustvote` (igual a `TRUSTVOTE_DB_PASSWORD` da infraestrutura) |
+| `JWT_SECRET` | valor de desenvolvimento | Chave de assinatura dos tokens — **definir em qualquer ambiente a sério** |
+| `JWT_MINUTOS_VALIDADE` | `60` | Validade dos tokens, em minutos |
+
+Exemplo de `.env` para desenvolvimento local:
+
+```dotenv
+DATABASE_HOST=127.0.0.1
+DATABASE_PORT=15432
+DATABASE_NAME=trustvote
+DATABASE_USER=trustvote
+DATABASE_PASSWORD=<a mesma de TRUSTVOTE_DB_PASSWORD>
+JWT_SECRET=<uma string longa e aleatória>
 ```
 
-Cria e ativa um ambiente virtual, instala as dependências e inicia a API:
+> **Aviso de segurança:** o `Backend/.env` está atualmente versionado no git, o que
+> expõe a password da base de dados no histórico. Devia ser retirado do controlo de
+> versões (com um `.gitignore` e um `.env.example` com valores fictícios). Sem
+> `JWT_SECRET` definido, é usado um segredo de desenvolvimento conhecido, que
+> permite forjar tokens — **não usar assim em produção.**
+
+---
+
+## 6. Base de dados
+
+O esquema **não é criado pelo Python**: as tabelas vêm dos scripts SQL canónicos
+em [`config/database/init/docker_sql_and_sh/`](config/database/init/docker_sql_and_sh),
+que o PostgreSQL monta no volume de inicialização. A criação automática de tabelas
+(`Base.metadata.create_all`) foi removida de propósito — o SQL é a fonte única do esquema.
+
+- `00-trustvote-user.sql` — cria o utilizador `trustvote` e torna-o dono da base de dados.
+- `trustvote.sql` — as 10 tabelas, executadas como `trustvote` (`SET ROLE`).
+
+| Tabela | Mapeada no Python? |
+|---|---|
+| `utilizador` | sim |
+| `eleicao` | sim |
+| `ronda` | sim |
+| `candidato` | sim |
+| `ronda_candidato` | sim |
+| `habilitacao` | sim |
+| `participacao` | não (voto por implementar) |
+| `voto` | não (voto por implementar) |
+| `resultado` | não (apuramento por implementar) |
+| `auditoria` | não (RF11 por implementar) |
+
+**Importante:** o PostgreSQL só executa estes scripts **na primeira inicialização**,
+quando o volume de dados está vazio. Se alterares o esquema depois de já existirem
+dados, aplica a alteração por migração (`ALTER TABLE ...`) em vez de apagar o volume.
+
+---
+
+## 7. Executar localmente (Windows)
+
+O ambiente virtual do projeto vive na **raiz de `05_Artefactos`**, na pasta `.venv`.
+A API é executada a partir da pasta `Backend`.
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+cd "C:\Users\<utilizador>\...\05_Artefactos\Backend"
+..\.venv\Scripts\python.exe -m pip install -r requirements.txt
+..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
+```
+
+Se preferires ativar o ambiente virtual:
+
+```powershell
+..\.venv\Scripts\Activate.ps1
 python -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
-Se o PowerShell bloquear a ativação do ambiente virtual, podes executar o servidor sem ativá-lo:
+Se ainda não existir ambiente virtual, cria-o na raiz de `05_Artefactos`:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
+cd "C:\Users\<utilizador>\...\05_Artefactos"
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r Backend\requirements.txt
 ```
 
-Mantém o terminal aberto enquanto usas a API. Abre:
+Mantém o terminal aberto enquanto usas a API:
 
 - API: <http://localhost:8001/>
 - Documentação interativa: <http://localhost:8001/docs>
 
 `0.0.0.0` é o endereço de escuta do servidor; no navegador usa `localhost`.
+Usa `--reload` durante o desenvolvimento — sem ele, o servidor continua a servir
+o código antigo que tem em memória depois de editares um ficheiro.
 
-## Executar com Docker
+---
 
-Na pasta `Backend`, constrói a imagem:
+## 8. Endpoints
 
-```powershell
-docker build -t trustvote-backend .
+### Públicos
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/` | Estado da API |
+| `GET` | `/health` | Estado da instância (`{"status":"ok","instance":...}`) — healthcheck da infraestrutura |
+| `GET` | `/docs`, `/openapi.json` | Documentação interativa e esquema OpenAPI |
+| `GET` | `/auth/` | Mensagem de boas-vindas |
+| `POST` | `/auth/register` | Cria uma conta → `201` · `409` se o nome/email já existem · `422` se os dados são inválidos |
+| `POST` | `/auth/login` | Devolve um token de acesso → `200` · `401` se as credenciais estão erradas |
+| `POST` | `/auth/logout` | *Stub* |
+| `POST` | `/auth/reset-password` | *Stub* |
+| `POST` | `/auth/verify-password` | *Stub* |
+| `GET` | `/pedidos/lista` | *Stub* |
+
+`POST /auth/register`:
+
+```json
+{ "nome_utilizador": "ana_silva", "email": "ana@exemplo.pt", "password": "Password123" }
 ```
 
-Inicia o container:
+`POST /auth/login` → `{"access_token": "<jwt>", "token_type": "bearer"}`
+
+Nas rotas protegidas envia-se `Authorization: Bearer <jwt>`.
+
+### Só para administradores
+
+Estas rotas exigem token de um utilizador com `ut_perfil = 'administrador'`:
+sem token → `401`; com perfil `eleitor` → `403`.
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/eleicoes` | Cria uma eleição (nasce em `rascunho`) |
+| `GET` | `/eleicoes` | Lista as eleições |
+| `GET` | `/eleicoes/{eleicao_id}` | Obtém uma eleição |
+| `POST` | `/candidatos` | Cria um candidato numa eleição |
+| `GET` | `/candidatos?eleicao_id=` | Lista candidatos (filtro opcional) |
+| `GET` | `/candidatos/{candidato_id}` | Obtém um candidato |
+| `POST` | `/rondas` | Cria uma ronda (1.ª ou 2.ª volta) |
+| `GET` | `/rondas?eleicao_id=` | Lista rondas (filtro opcional) |
+| `GET` | `/rondas/{ronda_id}` | Obtém uma ronda |
+| `POST` | `/rondas-candidatos` | Põe um candidato a concorrer numa ronda |
+| `GET` | `/rondas-candidatos?ronda_id=` | Lista inscrições (filtro opcional) |
+| `POST` | `/habilitacoes` | Habilita um utilizador a votar numa eleição |
+| `GET` | `/habilitacoes?eleicao_id=` | Lista habilitações (filtro opcional) |
+
+### Códigos de erro
+
+| Código | Quando |
+|---|---|
+| `400` | Violação de uma regra de negócio (ex.: `data_fim` não é posterior a `data_inicio`) |
+| `401` | Falta o token, ou é inválido/expirado |
+| `403` | Autenticado, mas sem permissão (perfil não é administrador) |
+| `404` | O recurso indicado não existe |
+| `409` | Registo duplicado (ex.: volta repetida, candidato já inscrito) |
+| `422` | Dados inválidos à entrada (validação do Pydantic) |
+
+---
+
+## 9. Segurança
+
+- Passwords guardadas em **Argon2** (`pwdlib[argon2]`); nunca são devolvidas pela API.
+- Tokens **JWT HS256** com as claims `sub`, `nome_utilizador`, `perfil` e `exp`.
+- A verificação de credenciais devolve sempre a **mesma mensagem**, para não revelar
+  se um nome de utilizador existe.
+- O token é validado em cada pedido; um utilizador inativo perde o acesso (`401`).
+
+---
+
+## 10. Executar com Docker
 
 ```powershell
+cd "C:\...\05_Artefactos\Backend"
+docker build -t trustvote-backend .
 docker run --rm --name trustvote-api -p 8001:8001 trustvote-backend
 ```
 
-Abre <http://localhost:8001/> ou <http://localhost:8001/docs>. O comando mantém o container ligado no terminal; `Ctrl+C` termina-o.
+Se a porta `8001` já estiver ocupada, publica noutra, por exemplo `-p 8002:8001`,
+e abre <http://localhost:8002/>.
 
-Se a porta `8001` já estiver ocupada no computador, podes mapear outra porta do computador para a porta `8001` do container. Por exemplo:
+> A imagem inclui a pasta `app/` (importada pelo `main.py`) e a porta é
+> configurável por `APP_PORT` (por omissão `8001`), para poder entrar no Compose
+> da infraestrutura sem alterações ao código.
 
-```powershell
-docker run --rm --name trustvote-api -p 8002:8001 trustvote-backend
-```
+Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
+[`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml) — ver o
+[README da Infraestrutura](../Infraestrutura/README.md).
 
-Nesse caso, abre <http://localhost:8002/>.
+---
 
-## PostgreSQL e Redis
+## 11. Resolução de problemas
 
-O Compose que define a infraestrutura encontra-se em:
+- **`ModuleNotFoundError: No module named 'app'`:** estás a executar a partir da pasta
+  errada. Corre o Uvicorn a partir de `Backend` (`python -m uvicorn main:app ...`).
+- **`can't open file ...\Backend\main.py`:** usa `python -m uvicorn main:app ...`,
+  não `python app\main.py` nem `python main.py`.
+- **`ERR_CONNECTION_REFUSED`:** confirma que o Uvicorn (ou o container) continua em
+  execução e abre a porta publicada, `localhost:8001`.
+- **Porta em uso:** escolhe outra porta local (ex.: `8002`); com Docker usa `-p 8002:8001`.
+- **Mudanças não aparecem:** o servidor não está com `--reload`; para-o e arranca de novo.
+- **Erros de ligação à base de dados:** confirma que os contentores estão `healthy`
+  (`docker compose ps`) e que o `.env` aponta ao host e porta corretos.
+- **Não consigo fazer login:** o login exige `ut_ativo = TRUE` e `ut_perfil` válido.
+  Para testar operações de administrador, promove a conta
+  (`UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='...'`).
 
-```text
-..\Infraestrutura\compose.yaml
-```
+---
 
-Esse Compose sobe PostgreSQL (primário e réplica), Redis, o nginx e duas instâncias de aplicação. A configuração, o failover e a resolução de problemas estão descritos em `..\Infraestrutura\README.md`. O `docker-compose.yml` que existia nesta pasta foi substituído por esse Compose; não usar os dois em simultâneo (têm o mesmo nome de projeto, `trustvote`).
+## 12. Próximos passos
 
-Os scripts SQL do esquema continuam a ser mantidos nesta pasta e são montados no container do PostgreSQL:
+1. Fluxo de **voto** (`participacao` + `voto`) com transação atómica e anonimato.
+2. **Auditoria** (RF11) e **apuramento de resultados** (RF09/RF10).
+3. Ligar o backend ao Compose da infraestrutura (ver o [README da Infraestrutura](../Infraestrutura/README.md), secção 9).
+4. Retirar o `.env` do git e acrescentar `.gitignore` + `.env.example`.
+5. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
 
-```text
-config/database/init/docker_sql_and_sh/00-trustvote-user.sql  # cria o utilizador trustvote e torna-o dono da BD
-config/database/init/docker_sql_and_sh/trustvote.sql          # tabelas, executadas como trustvote (SET ROLE)
-```
-
-O PostgreSQL só os executa na primeira inicialização do volume de dados; para os voltar a executar é preciso apagar o volume (o que apaga os dados).
-
-O Compose exige um ficheiro `.env` na pasta `Infraestrutura`, com `POSTGRES_PASSWORD`, `TRUSTVOTE_DB_PASSWORD`, `REPLICATION_PASSWORD` e `REDIS_PASSWORD`. O ficheiro `.env.example` contém valores de exemplo: copia-o para `.env` e substitui-os por valores locais próprios. Não partilhes nem commits o `.env` real.
-
-Para iniciar, a partir da pasta `Infraestrutura`:
-
-```powershell
-cd ..\Infraestrutura
-Copy-Item .env.example .env
-# editar .env e substituir todos os valores "mudar_*"
-docker compose up -d
-```
-
-Para parar:
-
-```powershell
-docker compose down
-```
-
-Não uses `docker compose down -v` se quiseres preservar os dados do volume PostgreSQL.
-
-## Resolução de problemas
-
-- **`can't open file ...\Backend\main.py` ao executar um caminho antigo:** a partir da raiz de `Backend`, inicia com `python -m uvicorn main:app ...`; não uses `python app\main.py`.
-- **`ERR_CONNECTION_REFUSED`:** confirma que o comando Uvicorn ou o container continua em execução e abre a porta publicada, `localhost:8001`.
-- **Porta em uso:** escolhe outra porta local, por exemplo `8002`; com Docker usa `-p 8002:8001`.
-- **Docker não liga ao daemon:** inicia o Docker Desktop e confirma com `docker info`.
-- **Dependências não instaladas:** ativa o ambiente virtual e executa `python -m pip install -r requirements.txt`.
-
-## Estado e próximos componentes
-
-Autenticação TOTP, JWT RS256, ligação à base de dados, votação, apuramento, worker, replicação PostgreSQL, load balancer e previsão por IA são objetivos de desenvolvimento e não são todos fornecidos pela API inicial. Antes de usar o sistema para uma votação real, é necessário implementar e testar essas funcionalidades, definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.
+Antes de usar o sistema numa votação real, é necessário completar estas funcionalidades,
+definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.

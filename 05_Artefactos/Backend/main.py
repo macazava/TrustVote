@@ -1,3 +1,5 @@
+import os
+
 import uvicorn
 from fastapi import FastAPI
 
@@ -27,6 +29,12 @@ app.include_router(habilitacao_routers)
 @app.get("/")
 def oi_trustvote() -> dict:
     return {"message": "TrustVote API está a correr!"}
+
+
+@app.get("/health")
+def health() -> dict:
+    """Healthcheck da infraestrutura: devolve 200 quando a instância está pronta."""
+    return {"status": "ok", "instance": os.getenv("APP_INSTANCE", "local")}
 
 
 if __name__ == "__main__":

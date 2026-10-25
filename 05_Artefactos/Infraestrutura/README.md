@@ -3,9 +3,18 @@
 Infraestrutura para executar o TrustVote **num único PC Windows** com Docker Desktop:
 balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e Redis.
 
-> **Estado atual:** o frontend e o backend ainda não estão integrados. As duas instâncias
-> (`servidor1`, `servidor2`) correm um **placeholder** sem lógica de negócio que só serve
-> para validar o encaminhamento. Ver [Integração com o backend](#integração-com-o-backend-e-o-frontend).
+> Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
+> [README da raiz](../README.md). Este documento detalha apenas a infraestrutura.
+
+> **Estado atual:** o frontend e o backend ainda **não** estão integrados neste Compose.
+> As duas instâncias (`servidor1`, `servidor2`) correm um **placeholder** (um nginx) sem
+> lógica de negócio, que só responde a `/health` e identifica a instância — serve para
+> validar o encaminhamento e o balanceamento.
+>
+> A API já existe em [`../Backend`](../Backend/README.md), já expõe `GET /health` e a sua
+> imagem já é construível. Falta: (1) apontar a âncora `x-app` do `compose.yaml` para a
+> imagem do backend e (2) alinhar as variáveis de ambiente. Ver
+> [Integração com o backend](#9-integração-com-o-backend-e-o-frontend).
 
 ---
 
@@ -270,7 +279,20 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 ## 9. Integração com o backend e o frontend
 
 ### Backend (servidor1 / servidor2)
-Contrato que o backend tem de cumprir:
+
+**Ponto de situação.** O backend em [`../Backend`](../Backend/README.md) já tem
+autenticação (registo + login com JWT) e a gestão de eleições, mas ainda não cumpre
+todos os pontos do contrato abaixo:
+
+| Ponto do contrato | Estado |
+|---|---|
+| Porta **8080** | ✗ — a API escuta na **8001** por omissão; aceita `APP_PORT`, que o Compose pode definir a 8080 |
+| `GET /health` | ✓ — já existe no backend |
+| Variáveis de ambiente | ✗ — usa `DATABASE_*` a partir do `.env`, não do Compose |
+| Imagem construível | ✓ — o `Dockerfile` já copia a pasta `app/` |
+| Stateless (JWT) | ✓ — os tokens são JWT, não há sessão em memória |
+
+Contrato que o backend tem de cumprir para entrar no Compose:
 1. Escutar na porta **8080**.
 2. Expor **`GET /health`** → `200` quando a instância está pronta (usado pelo healthcheck).
 3. Ler a configuração destas variáveis (já definidas no `compose.yaml`):
