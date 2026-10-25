@@ -18,7 +18,7 @@ Backend/
 ├── config/
 │   └── database/
 │       └── init/
-│           └── docker_sql_and_sh/  # Compose e scripts SQL atuais
+│           └── docker_sql_and_sh/  # scripts SQL do esquema (initdb do PostgreSQL)
 ├── Dockerfile
 ├── main.py
 └── requirements.txt
@@ -88,27 +88,38 @@ Nesse caso, abre <http://localhost:8002/>.
 
 ## PostgreSQL e Redis
 
-O Compose existente encontra-se em:
+O Compose que define a infraestrutura encontra-se em:
 
 ```text
-config/database/init/docker_sql_and_sh/docker-compose.yml
+..\Infraestrutura\compose.yaml
 ```
 
-Esse Compose inicia PostgreSQL e Redis; não inicia a API. Os scripts SQL montados no container são executados pelo PostgreSQL na primeira inicialização do volume. A API atual ainda não usa esses serviços no endpoint inicial.
+Esse Compose sobe PostgreSQL (primário e réplica), Redis, o nginx e duas instâncias de aplicação. A configuração, o failover e a resolução de problemas estão descritos em `..\Infraestrutura\README.md`. O `docker-compose.yml` que existia nesta pasta foi substituído por esse Compose; não usar os dois em simultâneo (têm o mesmo nome de projeto, `trustvote`).
 
-O Compose exige um ficheiro `.env` nessa mesma pasta, com `POSTGRES_PASSWORD` e `TRUSTVOTE_DB_PASSWORD`. O ficheiro `.env.example` contém valores de exemplo: copia-o para `.env` e substitui-os por valores locais próprios. Não partilhes nem commits o `.env` real. O Compose também declara ficheiros de secrets JWT e TOTP; se o Docker Compose exigir esses ficheiros ao validar a configuração, cria-os localmente conforme a configuração, sem os adicionar ao Git.
+Os scripts SQL do esquema continuam a ser mantidos nesta pasta e são montados no container do PostgreSQL:
 
-Para iniciar apenas as dependências, a partir da pasta `Backend`:
-
-```powershell
-Copy-Item config\database\init\docker_sql_and_sh\.env.example config\database\init\docker_sql_and_sh\.env
-docker compose -f config\database\init\docker_sql_and_sh\docker-compose.yml up -d
+```text
+config/database/init/docker_sql_and_sh/00-trustvote-user.sql  # cria o utilizador trustvote e torna-o dono da BD
+config/database/init/docker_sql_and_sh/trustvote.sql          # tabelas, executadas como trustvote (SET ROLE)
 ```
 
-Para as parar:
+O PostgreSQL só os executa na primeira inicialização do volume de dados; para os voltar a executar é preciso apagar o volume (o que apaga os dados).
+
+O Compose exige um ficheiro `.env` na pasta `Infraestrutura`, com `POSTGRES_PASSWORD`, `TRUSTVOTE_DB_PASSWORD`, `REPLICATION_PASSWORD` e `REDIS_PASSWORD`. O ficheiro `.env.example` contém valores de exemplo: copia-o para `.env` e substitui-os por valores locais próprios. Não partilhes nem commits o `.env` real.
+
+Para iniciar, a partir da pasta `Infraestrutura`:
 
 ```powershell
-docker compose -f config\database\init\docker_sql_and_sh\docker-compose.yml down
+cd ..\Infraestrutura
+Copy-Item .env.example .env
+# editar .env e substituir todos os valores "mudar_*"
+docker compose up -d
+```
+
+Para parar:
+
+```powershell
+docker compose down
 ```
 
 Não uses `docker compose down -v` se quiseres preservar os dados do volume PostgreSQL.

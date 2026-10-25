@@ -1,5 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from app.database import obter_sessao
+from app.schemas.autenticacao import UtilizadorCriar, UtilizadorResposta
+from app.services import autenticacao as servico_autenticacao
+
 auth_routers = APIRouter(prefix="/auth", tags=["auth"])
 async def home():
     """Endpoint para a página inicial."""
@@ -13,10 +19,17 @@ async def home():
 async def login():
     """Endpoint para o login."""
     return {"message": "Login realizado com sucesso"}    
-@auth_routers.post("/register")
-async def register():
-    """Endpoint para o registro."""
-    return {"message": "Registro realizado com sucesso"}    
+@auth_routers.post(
+    "/register",
+    response_model=UtilizadorResposta,
+    status_code=status.HTTP_201_CREATED,
+)
+async def register(dados: UtilizadorCriar, sessao: Session = Depends(obter_sessao)):
+    """Endpoint para o registo de um novo utilizador."""
+    try:
+        return servico_autenticacao.registar_utilizador(sessao, dados)
+    except servico_autenticacao.DadosJaExistemError as erro:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(erro))
 
 @auth_routers.post("/logout")
 async def logout():
