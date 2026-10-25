@@ -1,34 +1,27 @@
-"""Acesso à tabela de utilizadores."""
-
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models.utilizador import Utilizador
+from app.models import Utilizador
 
 
-def obter_por_id(sessao: Session, utilizador_id: int) -> Utilizador | None:
-    return sessao.get(Utilizador, utilizador_id)
+def por_email(db: Session, email: str) -> Utilizador | None:
+    # emails comparados sem distinguir maiúsculas/minúsculas
+    return db.scalar(select(Utilizador).where(func.lower(Utilizador.email) == email.lower()))
 
 
-def obter_por_nome_utilizador(sessao: Session, nome_utilizador: str) -> Utilizador | None:
-    return sessao.scalar(
-        select(Utilizador).where(Utilizador.nome_utilizador == nome_utilizador)
-    )
+def por_id(db: Session, utilizador_id: int, *, bloquear: bool = False) -> Utilizador | None:
+    stmt = select(Utilizador).where(Utilizador.id == utilizador_id)
+    if bloquear:
+        stmt = stmt.with_for_update()
+    return db.scalar(stmt)
 
 
-def obter_por_email(sessao: Session, email: str) -> Utilizador | None:
-    return sessao.scalar(select(Utilizador).where(Utilizador.email == email))
+def listar(db: Session, perfil: str | None = None) -> list[Utilizador]:
+    stmt = select(Utilizador).order_by(Utilizador.id)
+    if perfil:
+        stmt = stmt.where(Utilizador.perfil == perfil)
+    return list(db.scalars(stmt))
 
 
-def criar(
-    sessao: Session, nome_utilizador: str, email: str, password_hash: str
-) -> Utilizador:
-    utilizador = Utilizador(
-        nome_utilizador=nome_utilizador,
-        email=email,
-        password_hash=password_hash,
-    )
-    sessao.add(utilizador)
-    sessao.commit()
-    sessao.refresh(utilizador)
-    return utilizador
+def por_ids(db: Session, ids: list[int]) -> list[Utilizador]:
+    return list(db.scalars(select(Utilizador).where(Utilizador.id.in_(ids))))

@@ -2,12 +2,17 @@ SET ROLE trustvote;
 
 CREATE TABLE utilizador (
     ut_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    ut_nome VARCHAR(255) NOT NULL UNIQUE,
+    ut_nome VARCHAR(255) NOT NULL,
     ut_email VARCHAR(255) NOT NULL UNIQUE,
     ut_password_hash VARCHAR(255) NOT NULL,
     ut_perfil VARCHAR(20) NOT NULL DEFAULT 'eleitor',
     ut_ativo BOOLEAN DEFAULT TRUE,
     ut_datareg TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    -- TOTP (2FA): segredo cifrado com AES-GCM pelo backend (nunca em claro)
+    ut_totp_segredo TEXT,
+    ut_totp_ativo BOOLEAN NOT NULL DEFAULT FALSE,
+    -- último passo de 30s aceite: impede reutilizar o mesmo código (replay)
+    ut_totp_ultimo_passo BIGINT,
     CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador'))
 );
 

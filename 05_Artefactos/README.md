@@ -22,7 +22,7 @@ código pela primeira vez deve começar por aqui.
 
 | Pasta | O que é | Documentação detalhada |
 |---|---|---|
-| [`Backend/`](Backend/README.md) | API REST: autenticação (JWT), eleições, candidatos, rondas, habilitações | [Backend/README.md](Backend/README.md) |
+| [`Backend/`](Backend/README.md) | API REST: autenticação (Argon2, JWT RS256, TOTP), utilizadores, eleições, rondas, candidatos, habilitações | [Backend/README.md](Backend/README.md) |
 | [`Infraestrutura/`](Infraestrutura/README.md) | `compose.yaml` com nginx (balanceador), 2 instâncias, PostgreSQL primário + réplica e Redis | [Infraestrutura/README.md](Infraestrutura/README.md) |
 
 Cada pasta tem o seu próprio README, com todos os detalhes. Este documento só
@@ -43,12 +43,8 @@ dá o essencial para arrancar.
 ```
 
 - **`Infraestrutura/`** sobe toda esta stack com Docker, num único PC.
-- **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
-  **`8001`**, ligada ao PostgreSQL da infraestrutura.
-
-> **Importante:** as duas pastas ainda **não estão ligadas**. As instâncias
-> `servidor1`/`servidor2` do Compose correm um *placeholder* (um nginx), não a API.
-> O que falta está descrito em [Integração](#7-o-que-ainda-falta).
+- **`Backend/`** é a aplicação. O Compose constrói a imagem a partir desta pasta e corre-a
+  nas duas instâncias (`servidor1`, `servidor2`), na porta **`8080`**, atrás do nginx.
 
 ---
 
@@ -56,73 +52,53 @@ dá o essencial para arrancar.
 
 - **Docker Desktop** iniciado (Windows 10/11 com WSL 2).
 - **Python 3.12 ou superior**.
-- Portas livres: `8080` (nginx), `8001` (API em desenvolvimento) e `15432`/`15433`
-  (base de dados, apenas em modo debug).
+- Portas livres: `8080` (nginx) e `15432`/`15433` (base de dados, apenas em modo debug).
 
 ---
 
 ## 4. Começar do zero (passo a passo)
 
-### Passo 1 — Subir a infraestrutura
+### Passo 1 — Preparar o Python e gerar os segredos do backend
+
+As duas instâncias partilham as chaves JWT (RS256) e a chave que cifra os segredos TOTP.
+Ficam em `Infraestrutura/secrets/` (fora do git). Só é preciso fazer isto **uma vez**:
+
+```powershell
+cd "C:\...\05_Artefactos\Backend"
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m app.scripts.gerar_segredos ..\Infraestrutura\secrets
+```
+
+### Passo 2 — Subir tudo (infraestrutura + API)
 
 ```powershell
 cd "C:\...\05_Artefactos\Infraestrutura"
 copy .env.example .env
 # Abre o .env e substitui TODOS os valores "mudar_*" por passwords próprias.
-docker compose -f compose.yaml -f compose.debug.yaml up -d --wait
+docker compose -f compose.yaml -f compose.debug.yaml up -d --build --wait
 docker compose ps
 ```
 
-O `--wait` só devolve quando todos os contentores estão `healthy`.
+O `--wait` só devolve quando todos os contentores estão `healthy` (o healthcheck da API
+inclui a ligação à base de dados). O `compose.debug.yaml` publica a base de dados em
+`127.0.0.1:15432`, para a veres no pgAdmin e para os testes do backend.
 
-Usamos também o `compose.debug.yaml` porque ele **publica a base de dados em
-`127.0.0.1:15432`** — sem isso, o backend a correr fora do Docker não lhe chega.
+### Passo 3 — Criar o primeiro administrador
 
-### Passo 2 — Configurar o backend
-
-O ficheiro `Backend/.env` aponta para a base de dados publicada no passo anterior:
-
-```dotenv
-DATABASE_HOST=127.0.0.1
-DATABASE_PORT=15432
-DATABASE_NAME=trustvote
-DATABASE_USER=trustvote
-DATABASE_PASSWORD=<o mesmo valor de TRUSTVOTE_DB_PASSWORD do .env da Infraestrutura>
-JWT_SECRET=<uma string longa e aleatória>
-```
-
-### Passo 3 — Instalar dependências e arrancar a API
-
-O ambiente virtual vive na raiz de `05_Artefactos`, em `.venv`.
+O registo público só cria eleitores. O administrador cria-se com um script:
 
 ```powershell
-cd "C:\...\05_Artefactos\Backend"
-..\.venv\Scripts\python.exe -m pip install -r requirements.txt
-..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
+docker compose exec servidor1 python -m app.scripts.criar_admin admin@trustvote.pt "Administrador"
 ```
-
-Se ainda não existir o ambiente virtual:
-
-```powershell
-cd "C:\...\05_Artefactos"
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r Backend\requirements.txt
-```
-
-Usa sempre `--reload` durante o desenvolvimento: sem ele, o servidor continua a
-servir o código antigo que tem em memória depois de editares um ficheiro.
 
 ### Passo 4 — Confirmar que funciona
 
-- API: <http://localhost:8001/> · healthcheck: <http://localhost:8001/health>
-- Documentação interativa (Swagger): <http://localhost:8001/docs>
-- Página através do nginx: <http://localhost:8080/> (placeholder, por agora)
+- Documentação interativa (Swagger): <http://127.0.0.1:8080/docs> — botão **Authorize** para colar o token
+- Healthcheck: <http://127.0.0.1:8080/health> (alterna entre `servidor1` e `servidor2`)
+- Testes automáticos: `cd Backend` e `.\.venv\Scripts\python.exe -m pytest` (34 testes)
 
-Para testar as rotas de administração, cria uma conta e promove-a:
-
-```powershell
-docker exec trustvote-db-primary psql -U trustvote -d trustvote -c "UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='<o teu nome>';"
-```
+Depois de alterar código do backend: `docker compose up -d --build servidor1 servidor2`.
 
 ### Passo 5 — Parar
 
@@ -161,8 +137,9 @@ routers/  →  services/  →  repositories/  →  models/
 ```
 
 - `app/schemas/` — validação de entrada/saída (Pydantic).
-- `app/security/` — tokens JWT e dependências de autorização.
-- `app/erros.py` — erros de negócio traduzidos em `400`/`404`/`409`.
+- `app/security/` — passwords (Argon2), tokens JWT RS256, TOTP e dependências de autorização.
+- `app/services/erros.py` — erros de negócio traduzidos em `401`/`403`/`404`/`409`/`422`.
+- `app/testes/` — testes pytest contra o PostgreSQL real (schema isolado `tv_testes`).
 - `config/database/init/` — scripts SQL canónicos do esquema (a BD é a fonte da verdade).
 
 Detalhes em [Backend/README.md](Backend/README.md).
@@ -173,16 +150,18 @@ Detalhes em [Backend/README.md](Backend/README.md).
 
 Estado atual, em resumo:
 
-**Backend** — feito: registo, login com JWT, e a gestão de eleições/candidatos/rondas/
-habilitações. Falta: **voto** e **apuramento de resultados**, **auditoria**, TOTP,
-worker assíncrono e uso do Redis/réplica.
+**Backend** — feito: registo e login (Argon2, JWT RS256, TOTP), utilizadores e
+permissões, gestão de eleições/rondas (com 2.ª volta)/candidatos/habilitações com regras
+de estado, e registo na auditoria; 34 testes. Falta: **voto** e **apuramento de
+resultados**, reset de password, encadeamento de hashes na auditoria, worker e uso do Redis.
 
-**Infraestrutura** — feito: stack completa a funcionar (balanceamento, replicação,
-failover manual). Falta **ligar o backend ao Compose**: apontar a âncora `x-app` à
-imagem do backend e alinhar as variáveis de ambiente.
+**Infraestrutura** — feito: stack completa a funcionar com o backend real nas duas
+instâncias (balanceamento, replicação, failover manual testados).
 
-Listas completas em [Backend > Próximos passos](Backend/README.md) e
-[Infraestrutura > Integração](Infraestrutura/README.md).
+**Frontend** — em branches próprias (`taha`, `Camila`); ainda não chama a API.
+
+Listas completas em [Backend/README.md](Backend/README.md) e
+[Infraestrutura/README.md](Infraestrutura/README.md).
 
 ---
 
@@ -190,10 +169,10 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 
 | Sintoma | Causa provável / solução |
 |---|---|
-| `ModuleNotFoundError: No module named 'app'` | Estás a correr o Uvicorn fora da pasta `Backend`. Corre `python -m uvicorn main:app ...` a partir de `Backend`. |
-| `ERR_CONNECTION_REFUSED` em `localhost:8001` | O Uvicorn não está a correr, ou a porta é outra. Ver Passo 3. |
-| O backend não liga à base de dados | Falta o `compose.debug.yaml` (a BD não está publicada em `15432`) ou as credenciais do `Backend/.env` não coincidem com o `.env` da Infraestrutura. |
-| Alterações ao código não aparecem | O servidor não está com `--reload`; para-o e arranca de novo. |
+| `secret ... not found` / `jwt_private.pem` em falta | Falta gerar os segredos. Ver Passo 1. |
+| `servidor1`/`servidor2` ficam `unhealthy` | A API não chega à BD ou falta configuração; ver `docker compose logs servidor1`. |
+| Alterações ao código não aparecem | A imagem não foi reconstruída: `docker compose up -d --build servidor1 servidor2`. |
+| Testes: "PostgreSQL de testes indisponível" | Arranca a infraestrutura com o `compose.debug.yaml` (BD em `15432`). |
 | `docker compose up` recusa arrancar | Falta uma password no `.env` da Infraestrutura. Copia o `.env.example` e preenche os `mudar_*`. |
 | `port is already allocated` | A porta está ocupada (ex.: outro PostgreSQL na `5432`). Fecha o processo ou muda a porta no `.env`. |
 | Tabelas novas não aparecem na BD | Os scripts SQL só correm com o volume vazio. Ver [Infraestrutura > Scripts de inicialização](Infraestrutura/README.md). |
@@ -205,8 +184,8 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 
 - **Língua:** código, comentários e documentação em português (Portugal).
 - **Segredos:** nunca guardar passwords reais em ficheiros versionados. O
-  `Infraestrutura/.env` está no `.gitignore`; o `Backend/.env` **ainda não** — deve
-  ser retirado do git e substituído por um `.env.example`.
+  `Infraestrutura/.env`, a pasta `Infraestrutura/secrets/` e qualquer `.env` do backend
+  estão no `.gitignore`. A configuração do backend vem do `compose.yaml`.
 - **Esquema da BD:** altera-se nos scripts SQL em
   `Backend/config/database/init/docker_sql_and_sh/`, nunca com `create_all` do SQLAlchemy.
 - **Finais de linha:** os ficheiros que correm em Linux (`.sh`, `.conf`, `.yaml`) usam

@@ -1,59 +1,45 @@
-"""Dependências do FastAPI para saber quem está a fazer o pedido.
-
-Uso nos routers:
-
-    @router.get("", dependencies=[Depends(exigir_administrador)])
-
-e, quando é preciso o utilizador em concreto:
-
-    def endpoint(administrador: Utilizador = Depends(exigir_administrador)): ...
-"""
+"""Regras de acesso usadas pelos routers (FastAPI Depends)."""
+from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
-from app.database import obter_sessao
-from app.models.utilizador import Utilizador
-from app.repositories import utilizador as repositorio_utilizador
-from app.security.tokens import TokenInvalidoError, ler_token
+from app.database import get_db
+from app.models import Utilizador
+from app.security.tokens import TokenInvalido, validar_token
 
-# auto_error=False para devolvermos a nossa própria mensagem em vez da do FastAPI.
-esquema_bearer = HTTPBearer(auto_error=False)
+_bearer = HTTPBearer(auto_error=False)
 
-SEM_AUTENTICACAO = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Autenticação necessária ou token inválido.",
-    headers={"WWW-Authenticate": "Bearer"},
-)
+DbSession = Annotated[Session, Depends(get_db)]
 
 
-def utilizador_atual(
-    credenciais: HTTPAuthorizationCredentials | None = Depends(esquema_bearer),
-    sessao: Session = Depends(obter_sessao),
-) -> Utilizador:
-    """Devolve o utilizador dono do token Bearer do pedido."""
-    if credenciais is None:
-        raise SEM_AUTENTICACAO
-
+def utilizador_atual(db: DbSession,
+                     cred: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)]) -> Utilizador:
+    erro = HTTPException(status.HTTP_401_UNAUTHORIZED, "Não autenticado",
+                         headers={"WWW-Authenticate": "Bearer"})
+    if cred is None:
+        raise erro
     try:
-        conteudo = ler_token(credenciais.credentials)
-    except TokenInvalidoError as erro:
-        raise SEM_AUTENTICACAO from erro
-
-    utilizador = repositorio_utilizador.obter_por_id(sessao, int(conteudo["sub"]))
+        payload = validar_token(cred.credentials)
+        utilizador_id = int(payload["sub"])
+    except (TokenInvalido, ValueError):
+        raise erro
+    # O perfil e o estado ativo vêm sempre da BD (não do token): uma conta desativada ou
+    # despromovida perde o acesso logo, sem esperar que o token expire.
+    utilizador = db.get(Utilizador, utilizador_id)
     if utilizador is None or not utilizador.ativo:
-        raise SEM_AUTENTICACAO
+        raise erro
     return utilizador
 
 
-def exigir_administrador(
-    utilizador: Utilizador = Depends(utilizador_atual),
-) -> Utilizador:
-    """Só deixa passar quem tem ut_perfil = 'administrador'."""
-    if utilizador.perfil != "administrador":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Esta operação é só para administradores.",
-        )
+UtilizadorAtual = Annotated[Utilizador, Depends(utilizador_atual)]
+
+
+def apenas_admin(utilizador: UtilizadorAtual) -> Utilizador:
+    if not utilizador.is_admin:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Apenas administradores")
     return utilizador
+
+
+Admin = Annotated[Utilizador, Depends(apenas_admin)]

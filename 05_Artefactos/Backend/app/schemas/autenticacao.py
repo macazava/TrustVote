@@ -1,44 +1,63 @@
-"""Esquemas de validação dos pedidos de autenticação."""
-
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
-
-# Validação simples, sem dependências extra (o projeto não usa email-validator).
-EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
-NOME_UTILIZADOR_PATTERN = r"^[A-Za-z0-9_.-]+$"
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
-class UtilizadorCriar(BaseModel):
-    """Dados recebidos em POST /auth/register."""
-
-    nome_utilizador: str = Field(
-        min_length=3, max_length=50, pattern=NOME_UTILIZADOR_PATTERN
-    )
-    email: str = Field(min_length=5, max_length=255, pattern=EMAIL_PATTERN)
+class RegistoIn(BaseModel):
+    nome: str = Field(min_length=2, max_length=255)
+    email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=128)
 
+    @field_validator("nome")
+    @classmethod
+    def _nome(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 2:
+            raise ValueError("nome demasiado curto")
+        return v
 
-class UtilizadorResposta(BaseModel):
-    """Dados devolvidos pela API; nunca inclui a password nem o seu hash."""
+    @field_validator("password")
+    @classmethod
+    def _password(cls, v: str) -> str:
+        if not (any(c.isalpha() for c in v) and any(c.isdigit() for c in v)):
+            raise ValueError("a password tem de ter letras e números")
+        return v
 
+
+class LoginIn(BaseModel):
+    email: EmailStr
+    password: str = Field(max_length=128)
+    codigo_totp: str | None = Field(default=None, max_length=6)
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+
+
+class UtilizadorOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    nome_utilizador: str
+    nome: str
     email: str
-    criado_em: datetime
+    perfil: str
+    ativo: bool
+    totp_ativo: bool
+    data_registo: datetime
 
 
-class LoginPedido(BaseModel):
-    """Dados recebidos em POST /auth/login."""
-
-    nome_utilizador: str = Field(min_length=3, max_length=50)
-    password: str = Field(min_length=8, max_length=128)
+class TotpConfigOut(BaseModel):
+    segredo: str
+    uri: str
 
 
-class TokenResposta(BaseModel):
-    """Token de acesso devolvido pelo login."""
+class TotpCodigoIn(BaseModel):
+    codigo: str = Field(min_length=6, max_length=6)
 
-    access_token: str
-    token_type: str = "bearer"
+
+class UtilizadorAtualizarIn(BaseModel):
+    perfil: Literal["eleitor", "administrador"] | None = None
+    ativo: bool | None = None

@@ -1,0 +1,11 @@
+# Ambiente Python local
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Segredos locais (chaves JWT, chave TOTP, .env)
+secrets/
+*.pem
+*.key
+.env

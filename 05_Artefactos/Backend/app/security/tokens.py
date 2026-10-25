@@ -1,41 +1,45 @@
-"""Tokens de acesso: criação e leitura (JWT assinado com HS256).
+"""Tokens de acesso JWT assinados com RS256.
 
-O segredo vem da variável de ambiente JWT_SECRET. Sem ela usa-se um valor de
-desenvolvimento: chega para testar, mas quem o conheça consegue forjar tokens,
-por isso define JWT_SECRET antes de usar isto a sério.
+A chave privada só é usada para assinar e a pública para validar. As duas instâncias
+(servidor1/servidor2) usam o MESMO par de chaves, por isso um token emitido por uma é
+aceite pela outra (o nginx pode enviar pedidos seguidos para instâncias diferentes).
 """
-
-import os
+import uuid
 from datetime import datetime, timedelta, timezone
 
 import jwt
 
-from app.models.utilizador import Utilizador
+from app.config import get_settings
 
-ALGORITMO = "HS256"
-SEGREDO = os.getenv("JWT_SECRET", "dev-trustvote-segredo-nao-usar-em-producao")
-MINUTOS_VALIDADE = int(os.getenv("JWT_MINUTOS_VALIDADE", "60"))
+ALGORITMO = "RS256"
 
 
-class TokenInvalidoError(Exception):
-    """O token falta, expirou ou tem uma assinatura inválida."""
+class TokenInvalido(Exception):
+    pass
 
 
-def criar_token(utilizador: Utilizador) -> str:
-    """Devolve um token que identifica o utilizador durante MINUTOS_VALIDADE."""
+def criar_token(utilizador_id: int, perfil: str) -> tuple[str, int]:
+    """Devolve (token, segundos até expirar)."""
+    s = get_settings()
     agora = datetime.now(timezone.utc)
-    conteudo = {
-        "sub": str(utilizador.id),
-        "nome_utilizador": utilizador.nome_utilizador,
-        "perfil": utilizador.perfil,
-        "exp": agora + timedelta(minutes=MINUTOS_VALIDADE),
+    expira = agora + timedelta(minutes=s.jwt_minutos)
+    payload = {
+        "sub": str(utilizador_id),
+        "perfil": perfil,
+        "iss": s.jwt_issuer,
+        "iat": agora,
+        "nbf": agora,
+        "exp": expira,
+        "jti": uuid.uuid4().hex,
     }
-    return jwt.encode(conteudo, SEGREDO, algorithm=ALGORITMO)
+    return jwt.encode(payload, s.jwt_private_key, algorithm=ALGORITMO), s.jwt_minutos * 60
 
 
-def ler_token(token: str) -> dict:
-    """Valida o token e devolve o seu conteúdo."""
+def validar_token(token: str) -> dict:
+    s = get_settings()
     try:
-        return jwt.decode(token, SEGREDO, algorithms=[ALGORITMO])
-    except jwt.PyJWTError as erro:
-        raise TokenInvalidoError("Token inválido ou expirado.") from erro
+        # algorithms fixo: impede ataques de troca de algoritmo (ex.: "none" ou HS256 com a chave pública)
+        return jwt.decode(token, s.jwt_public_key, algorithms=[ALGORITMO], issuer=s.jwt_issuer,
+                          options={"require": ["sub", "exp", "iat", "iss"]})
+    except jwt.PyJWTError as e:
+        raise TokenInvalido(str(e)) from e

@@ -1,29 +1,34 @@
 import os
+from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
-from app.erros import registar_tratadores
-from app.routers.auth_routers import auth_routers
-from app.routers.candidato_routers import candidato_routers
-from app.routers.eleicao_routers import eleicao_routers
-from app.routers.habilitacao_routers import habilitacao_routers
-from app.routers.order_routers import order_router
-from app.routers.ronda_candidato_routers import ronda_candidato_routers
-from app.routers.ronda_routers import ronda_routers
+from app.config import get_settings
+from app.database import get_engine
+from app.routers import autenticacao, eleicoes
+from app.services.erros import ErroNegocio
 
-app = FastAPI()
 
-# Converte os erros de negócio definidos em app/erros.py em respostas HTTP.
-registar_tratadores(app)
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    get_settings()  # falha logo no arranque se faltar configuração (chaves JWT/TOTP)
+    yield
 
-app.include_router(auth_routers)
-app.include_router(order_router)
-app.include_router(eleicao_routers)
-app.include_router(candidato_routers)
-app.include_router(ronda_routers)
-app.include_router(ronda_candidato_routers)
-app.include_router(habilitacao_routers)
+
+app = FastAPI(title="TrustVote API", lifespan=lifespan)
+
+app.include_router(autenticacao.router)
+app.include_router(autenticacao.router_utilizadores)
+app.include_router(eleicoes.router)
+
+
+@app.exception_handler(ErroNegocio)
+def erro_negocio(_: Request, erro: ErroNegocio) -> JSONResponse:
+    headers = {"WWW-Authenticate": "Bearer"} if erro.status_code == 401 else None
+    return JSONResponse({"detail": erro.mensagem}, status_code=erro.status_code, headers=headers)
 
 
 @app.get("/")
@@ -32,10 +37,16 @@ def oi_trustvote() -> dict:
 
 
 @app.get("/health")
-def health() -> dict:
-    """Healthcheck da infraestrutura: devolve 200 quando a instância está pronta."""
-    return {"status": "ok", "instance": os.getenv("APP_INSTANCE", "local")}
+def health() -> JSONResponse:
+    """Usado pelo healthcheck do Docker e pelo nginx: 200 se a instância chega à BD, senão 503."""
+    instancia = get_settings().app_instance
+    try:
+        with get_engine().connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception:
+        return JSONResponse({"status": "erro", "instance": instancia, "database": "indisponivel"}, status_code=503)
+    return JSONResponse({"status": "ok", "instance": instancia, "database": "ok"})
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("APP_PORT", "8080")))
