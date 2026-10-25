@@ -28,3 +28,17 @@ class UtilizadorResposta(BaseModel):
     nome_utilizador: str
     email: str
     criado_em: datetime
+
+
+class LoginPedido(BaseModel):
+    """Dados recebidos em POST /auth/login."""
+
+    nome_utilizador: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=8, max_length=128)
+
+
+class TokenResposta(BaseModel):
+    """Token de acesso devolvido pelo login."""
+
+    access_token: str
+    token_type: str = "bearer"

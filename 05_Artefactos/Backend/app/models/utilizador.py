@@ -8,7 +8,7 @@ para as colunas `ut_*` é feito aqui.
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, String, func
+from sqlalchemy import BigInteger, Boolean, DateTime, String, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -21,6 +21,12 @@ class Utilizador(Base):
     nome_utilizador: Mapped[str] = mapped_column("ut_nome", String(255), unique=True)
     email: Mapped[str] = mapped_column("ut_email", String(255), unique=True)
     password_hash: Mapped[str] = mapped_column("ut_password_hash", String(255))
+    # `perfil` e `ativo` têm valor por omissão na BD: ao criar, o SQLAlchemy
+    # omite-os do INSERT e é o servidor que aplica 'eleitor' / TRUE.
+    perfil: Mapped[str] = mapped_column("ut_perfil", String(20), server_default="eleitor")
+    ativo: Mapped[bool] = mapped_column(
+        "ut_ativo", Boolean, server_default=text("TRUE")
+    )
     criado_em: Mapped[datetime] = mapped_column(
         "ut_datareg", DateTime(timezone=True), server_default=func.now()
     )

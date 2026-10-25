@@ -6,6 +6,10 @@ from sqlalchemy.orm import Session
 from app.models.utilizador import Utilizador
 
 
+def obter_por_id(sessao: Session, utilizador_id: int) -> Utilizador | None:
+    return sessao.get(Utilizador, utilizador_id)
+
+
 def obter_por_nome_utilizador(sessao: Session, nome_utilizador: str) -> Utilizador | None:
     return sessao.scalar(
         select(Utilizador).where(Utilizador.nome_utilizador == nome_utilizador)
