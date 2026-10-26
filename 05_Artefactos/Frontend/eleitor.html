@@ -1,0 +1,577 @@
+
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Área do eleitor | TrustVote</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/main.js"></script>
+</head>
+
+<body data-page="voter">
+
+    <!-- Cabeçalho -->
+    <header class="dashboard-header">
+
+        <a class="brand" href="index.html">
+            <span class="brand-mark">✓</span>
+            <span>
+                <b>TRUSTVOTE</b>
+                <small>ÁREA DO ELEITOR</small>
+            </span>
+        </a>
+
+        <div>
+            <span class="demo-pill">DEMONSTRAÇÃO</span>
+            <a class="text-link" href="index.html">Sair para o portal ↗</a>
+        </div>
+
+    </header>
+
+    <div class="dashboard-wrap">
+
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+
+            <p>ÁREA PESSOAL</p>
+
+            <button class="side-link active" type="button" data-view="overview">
+                ▦ <span>Visão geral</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="elections">
+                ▣ <span>Eleições</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="poll">
+                ▥ <span>Sondagens</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="results">
+                ▤ <span>Resultados</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="receipts">
+                ▧ <span>Recibos</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="help">
+                ? <span>Ajuda</span>
+            </button>
+
+            <button class="side-link" type="button" data-view="settings">
+                ⚙ <span>Definições</span>
+            </button>
+
+            <div class="sidebar-note">
+                A sua identidade e o seu voto devem ser protegidos por
+                controlos técnicos e organizacionais.
+            </div>
+
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="dashboard-content">
+
+            <!-- VISÃO GERAL -->
+            <section class="view-panel active" data-panel="overview">
+
+                <p class="eyebrow">PAINEL DO ELEITOR</p>
+
+                <h1>Bem-vindo à sua área.</h1>
+
+                <p class="muted">
+                    Consulte a eleição, as sondagens, os resultados
+                    e os seus recibos.
+                </p>
+
+                <article class="election-status-card">
+
+                    <div class="status-row">
+                        <span class="status-pill">
+                            <i></i> ELEIÇÃO DEMONSTRATIVA
+                        </span>
+
+                        <span>Presidenciais · 2025</span>
+                    </div>
+
+                    <div class="election-summary">
+
+                        <span class="large-icon">▣</span>
+
+                        <div>
+                            <h2>Presidência da República</h2>
+
+                            <p>
+                                Interface de demonstração. A votação
+                                não é transmitida nem registada num
+                                sistema eleitoral real.
+                            </p>
+                        </div>
+
+                        <button
+                            class="button button-primary"
+                            type="button"
+                            data-view-go="elections"
+                        >
+                            Ver eleição →
+                        </button>
+
+                    </div>
+
+                    <div class="progress-steps">
+                        <span class="step-done">
+                            ✓ <b>Identidade</b>
+                            <small>Interface</small>
+                        </span>
+
+                        <i></i>
+
+                        <span>
+                            2 <b>Votação</b>
+                            <small>Por iniciar</small>
+                        </span>
+
+                        <i></i>
+
+                        <span>
+                            3 <b>Recibo</b>
+                            <small>Após votação</small>
+                        </span>
+                    </div>
+
+                </article>
+
+                <div class="dash-grid">
+
+                    <article class="dash-card">
+                        <p class="eyebrow">ELEIÇÕES</p>
+
+                        <h3>Consultar eleição</h3>
+
+                        <p>
+                            Consulte as opções disponíveis e experimente
+                            o percurso de votação demonstrativo.
+                        </p>
+
+                        <button
+                            class="button button-outline"
+                            type="button"
+                            data-view-go="elections"
+                        >
+                            Consultar eleição →
+                        </button>
+                    </article>
+
+                    <article class="dash-card">
+                        <p class="eyebrow">RECIBOS</p>
+
+                        <h3>Os seus comprovativos</h3>
+
+                        <p>
+                            Consulte a área destinada aos comprovativos
+                            do processo de votação.
+                        </p>
+
+                        <button
+                            class="button button-outline"
+                            type="button"
+                            data-view-go="receipts"
+                        >
+                            Consultar recibos →
+                        </button>
+                    </article>
+
+                    <article class="dash-card">
+                        <p class="eyebrow">RESULTADOS</p>
+
+                        <h3>Resultados eleitorais</h3>
+
+                        <p>
+                            Aceda à área de consulta dos resultados
+                            disponibilizados para a eleição.
+                        </p>
+
+                        <button
+                            class="button button-outline"
+                            type="button"
+                            data-view-go="results"
+                        >
+                            Ver resultados →
+                        </button>
+                    </article>
+
+                    <article class="dash-card">
+                        <p class="eyebrow">APOIO</p>
+
+                        <h3>Precisa de ajuda?</h3>
+
+                        <p>
+                            Consulte a área de apoio e prepare uma
+                            mensagem para a equipa do projeto.
+                        </p>
+
+                        <button
+                            class="button button-outline"
+                            type="button"
+                            data-view-go="help"
+                        >
+                            Pedir ajuda →
+                        </button>
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ELEIÇÕES -->
+            <section class="view-panel" data-panel="elections">
+
+                <p class="eyebrow">ELEIÇÕES DISPONÍVEIS</p>
+
+                <h1>Eleições</h1>
+
+                <p class="muted">
+                    Consulte as opções da eleição demonstrativa.
+                </p>
+
+                <article class="dash-card">
+
+                    <span class="status-pill">DEMONSTRAÇÃO</span>
+
+                    <h2>Eleição para a Presidência da República</h2>
+
+                    <p>
+                        As opções abaixo servem para testar a interface.
+                        Não correspondem a um boletim oficial.
+                    </p>
+
+                    <div class="candidate-list">
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="candidate"
+                                value="Candidatura A"
+                            >
+
+                            <span>
+                                <b>Candidatura A</b>
+                                <small>Opção de demonstração</small>
+                            </span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="candidate"
+                                value="Candidatura B"
+                            >
+
+                            <span>
+                                <b>Candidatura B</b>
+                                <small>Opção de demonstração</small>
+                            </span>
+                        </label>
+
+                        <label>
+                            <input
+                                type="radio"
+                                name="candidate"
+                                value="Voto em branco"
+                            >
+
+                            <span>
+                                <b>Voto em branco</b>
+                                <small>Opção de demonstração</small>
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <p class="form-message" id="vote-message" role="status"></p>
+
+                    <button
+                        class="button button-primary"
+                        type="button"
+                        data-action="demo-vote"
+                    >
+                        Rever escolha →
+                    </button>
+
+                </article>
+
+            </section>
+
+
+            <!-- SONDAGENS -->
+            <section class="view-panel" data-panel="poll">
+
+                <p class="eyebrow">PARTICIPAÇÃO</p>
+
+                <h1>Sondagens</h1>
+
+                <article class="dash-card">
+
+                    <span class="status-pill">DEMONSTRAÇÃO</span>
+
+                    <h2>Opinião sobre prioridades eleitorais</h2>
+
+                    <p>
+                        Escolha o tema que considera prioritário nesta
+                        sondagem demonstrativa.
+                    </p>
+
+                    <form id="poll-form">
+
+                        <label class="radio-line">
+                            <input
+                                type="radio"
+                                name="poll"
+                                required
+                                value="Saúde"
+                            >
+                            Saúde
+                        </label>
+
+                        <label class="radio-line">
+                            <input
+                                type="radio"
+                                name="poll"
+                                value="Educação"
+                            >
+                            Educação
+                        </label>
+
+                        <label class="radio-line">
+                            <input
+                                type="radio"
+                                name="poll"
+                                value="Economia"
+                            >
+                            Economia
+                        </label>
+
+                        <button class="button button-primary" type="submit">
+                            Registar resposta local →
+                        </button>
+
+                        <p class="form-message" role="status"></p>
+
+                    </form>
+
+                    <p class="muted">
+                        A resposta é validada apenas nesta interface.
+                        Não é enviada para um servidor nem representa
+                        uma sondagem oficial.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- RESULTADOS -->
+            <section class="view-panel" data-panel="results">
+
+                <p class="eyebrow">INFORMAÇÃO ELEITORAL</p>
+
+                <h1>Resultados</h1>
+
+                <article class="dash-card">
+
+                    <span class="status-pill">INFORMAÇÃO</span>
+
+                    <h2>Resultados eleitorais</h2>
+
+                    <p>
+                        Esta área destina-se à consulta dos resultados
+                        da eleição após a sua disponibilização.
+                    </p>
+
+                    <div class="empty-state">
+
+                        <span class="large-icon">▤</span>
+
+                        <h3>Resultados ainda não disponíveis</h3>
+
+                        <p>
+                            Esta versão demonstrativa não está ligada
+                            a uma fonte de resultados eleitorais.
+                            Os resultados serão apresentados aqui quando
+                            existir integração com o backend.
+                        </p>
+
+                    </div>
+
+                </article>
+
+                <article class="dash-card">
+
+                    <h2>Resultados das sondagens</h2>
+
+                    <p>
+                        As respostas da sondagem demonstrativa não são
+                        agregadas nem guardadas num servidor. Por isso,
+                        ainda não existem resultados consolidados para
+                        consultar.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- RECIBOS -->
+            <section class="view-panel" data-panel="receipts">
+
+                <p class="eyebrow">COMPROVATIVOS</p>
+
+                <h1>Recibos e verificações</h1>
+
+                <article class="dash-card empty-state">
+
+                    <span class="large-icon">▤</span>
+
+                    <h2>Ainda não existem recibos</h2>
+
+                    <p>
+                        Os recibos reais exigem uma votação e uma
+                        integração com o backend. Esta versão não
+                        emite comprovativos oficiais.
+                    </p>
+
+                    <button
+                        class="button button-outline"
+                        type="button"
+                        data-view-go="elections"
+                    >
+                        Ver eleição →
+                    </button>
+
+                </article>
+
+            </section>
+
+
+            <!-- AJUDA -->
+            <section class="view-panel" data-panel="help">
+
+                <p class="eyebrow">APOIO AO ELEITOR</p>
+
+                <h1>Como podemos ajudar?</h1>
+
+                <p class="muted">
+                    Utilize o formulário para preparar uma mensagem
+                    com a sua dúvida ou dificuldade.
+                </p>
+
+                <article class="dash-card">
+
+                    <h2>Contactar a equipa</h2>
+
+                    <p>
+                        Descreva a questão para que possa ser analisada
+                        pela equipa responsável pelo projeto.
+                    </p>
+
+                    <form id="support-form">
+
+                        <label class="field-label" for="support-email">
+                            E-mail
+
+                            <input
+                                id="support-email"
+                                name="email"
+                                type="email"
+                                autocomplete="email"
+                                placeholder="nome@exemplo.pt"
+                                required
+                            >
+                        </label>
+
+                        <label class="field-label" for="support-subject">
+                            Assunto
+
+                            <select id="support-subject" name="subject" required>
+                                <option value="">Selecione um assunto</option>
+                                <option value="Acesso à conta">Acesso à conta</option>
+                                <option value="Eleição">Eleição</option>
+                                <option value="Recibos">Recibos</option>
+                                <option value="Sondagens e resultados">Sondagens e resultados</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </label>
+
+                        <label class="field-label" for="support-message">
+                            Mensagem
+
+                            <textarea
+                                id="support-message"
+                                name="message"
+                                rows="5"
+                                placeholder="Descreva a sua dúvida..."
+                                required
+                            ></textarea>
+                        </label>
+
+                        <button class="button button-primary" type="submit">
+                            Preparar mensagem →
+                        </button>
+
+                        <p class="form-message" role="status">
+                            Formulário demonstrativo. As mensagens não são enviadas.
+                        </p>
+
+                    </form>
+
+                </article>
+
+            </section>
+
+
+            <!-- DEFINIÇÕES -->
+            <section class="view-panel" data-panel="settings">
+
+                <p class="eyebrow">CONTA</p>
+
+                <h1>Definições</h1>
+
+                <article class="dash-card">
+
+                    <h2>Preferências de acessibilidade</h2>
+
+                    <label class="radio-line">
+                        <input type="checkbox" id="large-text">
+                        Texto maior
+                    </label>
+
+                    <label class="radio-line">
+                        <input type="checkbox" id="contrast">
+                        Contraste elevado
+                    </label>
+
+                    <p class="muted">
+                        Estas preferências são aplicadas localmente
+                        neste navegador. Não alteram os dados da conta.
+                    </p>
+
+                    <a class="button button-outline" href="privacidade.html">
+                        Privacidade →
+                    </a>
+
+                </article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
