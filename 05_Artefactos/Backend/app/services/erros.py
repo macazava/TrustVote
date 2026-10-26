@@ -28,3 +28,11 @@ class Proibido(ErroNegocio):
 
 class DadosInvalidos(ErroNegocio):
     status_code = 422
+
+
+class MuitasTentativas(ErroNegocio):
+    status_code = 429
+
+
+class ServicoIndisponivel(ErroNegocio):
+    status_code = 503

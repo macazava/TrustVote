@@ -4,6 +4,12 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
+def validar_password(v: str) -> str:
+    if not (any(c.isalpha() for c in v) and any(c.isdigit() for c in v)):
+        raise ValueError("a password tem de ter letras e números")
+    return v
+
+
 class RegistoIn(BaseModel):
     nome: str = Field(min_length=2, max_length=255)
     email: EmailStr = Field(max_length=255)
@@ -20,9 +26,7 @@ class RegistoIn(BaseModel):
     @field_validator("password")
     @classmethod
     def _password(cls, v: str) -> str:
-        if not (any(c.isalpha() for c in v) and any(c.isdigit() for c in v)):
-            raise ValueError("a password tem de ter letras e números")
-        return v
+        return validar_password(v)
 
 
 class LoginIn(BaseModel):
@@ -56,6 +60,34 @@ class TotpConfigOut(BaseModel):
 
 class TotpCodigoIn(BaseModel):
     codigo: str = Field(min_length=6, max_length=6)
+
+
+class PasswordAlterarIn(BaseModel):
+    password_atual: str = Field(max_length=128)
+    nova_password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("nova_password")
+    @classmethod
+    def _nova(cls, v: str) -> str:
+        return validar_password(v)
+
+
+class PasswordRedefinirIn(BaseModel):
+    """Recuperação: indicar UM dos códigos (o do admin ou o da app autenticadora)."""
+    email: EmailStr
+    nova_password: str = Field(min_length=8, max_length=128)
+    codigo_reset: str | None = Field(default=None, max_length=20)
+    codigo_totp: str | None = Field(default=None, max_length=6)
+
+    @field_validator("nova_password")
+    @classmethod
+    def _nova(cls, v: str) -> str:
+        return validar_password(v)
+
+
+class CodigoResetOut(BaseModel):
+    codigo: str
+    expira_em_minutos: int
 
 
 class UtilizadorAtualizarIn(BaseModel):

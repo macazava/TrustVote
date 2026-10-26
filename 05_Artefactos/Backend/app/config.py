@@ -26,6 +26,13 @@ class Settings:
     totp_encryption_key: str
     totp_issuer: str
     app_instance: str
+    redis_host: str
+    redis_port: int
+    redis_password: str | None
+    redis_prefixo: str
+    login_max_tentativas: int
+    login_janela_segundos: int
+    reset_codigo_minutos: int
 
 
 @lru_cache
@@ -58,4 +65,11 @@ def get_settings() -> Settings:
         totp_encryption_key=totp_key,
         totp_issuer=os.getenv("TOTP_ISSUER", "TrustVote"),
         app_instance=os.getenv("APP_INSTANCE", "local"),
+        redis_host=os.getenv("REDIS_HOST", "127.0.0.1"),
+        redis_port=int(os.getenv("REDIS_PORT", "6379")),
+        redis_password=os.getenv("REDIS_PASSWORD") or None,
+        redis_prefixo=os.getenv("REDIS_PREFIXO", "tv:"),
+        login_max_tentativas=int(os.getenv("LOGIN_MAX_TENTATIVAS", "5")),
+        login_janela_segundos=int(os.getenv("LOGIN_JANELA_SEGUNDOS", "900")),
+        reset_codigo_minutos=int(os.getenv("RESET_CODIGO_MINUTOS", "30")),
     )
