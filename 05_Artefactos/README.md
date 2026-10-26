@@ -38,7 +38,7 @@ dá o essencial para arrancar.
       ▼
    nginx :8080 ──► servidor1 ─┐
    (balanceador) ► servidor2 ─┤
-                              ├──► db-primary ◄──(streaming)── db-replica
+                    worker ───┼──► db-primary ◄──(streaming)── db-replica
                               └──► redis
 ```
 
@@ -96,7 +96,7 @@ docker compose exec servidor1 python -m app.scripts.criar_admin admin@trustvote.
 
 - Documentação interativa (Swagger): <http://127.0.0.1:8080/docs> — botão **Authorize** para colar o token
 - Healthcheck: <http://127.0.0.1:8080/health> (alterna entre `servidor1` e `servidor2`)
-- Testes automáticos: `cd Backend` e `.\.venv\Scripts\python.exe -m pytest` (34 testes)
+- Testes automáticos: `cd Backend` e `.\.venv\Scripts\python.exe -m pytest` (56 testes)
 
 Depois de alterar código do backend: `docker compose up -d --build servidor1 servidor2`.
 
@@ -139,7 +139,8 @@ routers/  →  services/  →  repositories/  →  models/
 - `app/schemas/` — validação de entrada/saída (Pydantic).
 - `app/security/` — passwords (Argon2), tokens JWT RS256, TOTP e dependências de autorização.
 - `app/services/erros.py` — erros de negócio traduzidos em `401`/`403`/`404`/`409`/`422`.
-- `app/testes/` — testes pytest contra o PostgreSQL real (schema isolado `tv_testes`).
+- `app/worker/` — processo de fundo (serviço `worker`): encerra as rondas e faz o apuramento.
+- `app/testes/` — testes pytest contra o PostgreSQL e o Redis reais (schema isolado `tv_testes`).
 - `config/database/init/` — scripts SQL canónicos do esquema (a BD é a fonte da verdade).
 
 Detalhes em [Backend/README.md](Backend/README.md).
@@ -150,13 +151,15 @@ Detalhes em [Backend/README.md](Backend/README.md).
 
 Estado atual, em resumo:
 
-**Backend** — feito: registo e login (Argon2, JWT RS256, TOTP), utilizadores e
-permissões, gestão de eleições/rondas (com 2.ª volta)/candidatos/habilitações com regras
-de estado, e registo na auditoria; 34 testes. Falta: **voto** e **apuramento de
-resultados**, reset de password, encadeamento de hashes na auditoria, worker e uso do Redis.
+**Backend** — feito: registo e login (Argon2, JWT RS256, TOTP), logout, bloqueio após
+tentativas falhadas, alteração e reposição de password, utilizadores e permissões, gestão
+de eleições/rondas (com 2.ª volta)/candidatos/habilitações com regras de estado,
+**votação** anónima com recibo, **apuramento e resultados** com verificação da integridade
+dos votos, **worker** que encerra e apura automaticamente, e **auditoria** com cadeia de
+hashes; 56 testes. Falta: a componente de **IA** (previsão de resultados).
 
 **Infraestrutura** — feito: stack completa a funcionar com o backend real nas duas
-instâncias (balanceamento, replicação, failover manual testados).
+instâncias e o worker (balanceamento, replicação, failover manual testados).
 
 **Frontend** — em branches próprias (`taha`, `Camila`); ainda não chama a API.
 
