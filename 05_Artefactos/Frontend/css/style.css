@@ -329,3 +329,275 @@ th{background:#f2f0e9;color:var(--muted);font-size:9px}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{animation-duration:.01ms!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
+
+/* ===== Página de partidos ===== */
+
+.page-intro {
+    padding: 72px 0 48px;
+    background: var(--ivory);
+}
+
+.page-intro .container,
+.parties-section .container {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.page-intro h1 {
+    margin: 12px 0 16px;
+    color: var(--ink);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+}
+
+.page-intro p {
+    max-width: 650px;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.parties-section {
+    padding: 56px 0 72px;
+    background: var(--paper);
+}
+
+.party-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.party-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    padding: 28px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.party-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(37, 40, 36, 0.08);
+}
+
+.party-symbol {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.party-green {
+    background: #1F5A45;
+}
+
+.party-blue {
+    background: #315A8A;
+}
+
+.party-orange {
+    background: #B87832;
+}
+
+.party-purple {
+    background: #754A82;
+}
+
+.party-content {
+    min-width: 0;
+}
+
+.party-content .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.party-content h2 {
+    margin: 8px 0 18px;
+    color: var(--ink);
+    font-size: 1.25rem;
+    line-height: 1.35;
+}
+
+.party-candidate {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0 0 16px;
+    color: var(--ink);
+}
+
+.party-candidate strong {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.party-slogan {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.parties-note {
+    margin: 32px 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Rodapé da página */
+
+.site-footer .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.site-footer .footer-bottom p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+/* Responsividade */
+
+@media (max-width: 760px) {
+    .page-intro {
+        padding: 48px 0 32px;
+    }
+
+    .parties-section {
+        padding: 36px 0 48px;
+    }
+
+    .party-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .party-card {
+        gap: 16px;
+        padding: 22px;
+    }
+
+    .party-symbol {
+        width: 64px;
+        height: 64px;
+        font-size: 1.05rem;
+    }
+
+    .site-footer .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 420px) {
+    .party-card {
+        flex-direction: column;
+    }
+}
+
+/* Alinhamento do cabeçalho na página de partidos */
+
+.site-header .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.site-header .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.site-header .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.site-header .header-actions .button {
+    white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+    .site-header .header-inner {
+        flex-wrap: wrap;
+    }
+
+    .site-header .header-actions {
+        margin-left: 0;
+    }
+}
+
+/* Cabeçalho consistente na página de partidos */
+
+.site-header .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.site-header .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.site-header .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.site-header .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.site-header .header-actions .button {
+    white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+    .site-header .header-inner {
+        flex-wrap: wrap;
+    }
+
+    .site-header .main-nav {
+        gap: 16px;
+    }
+
+    .site-header .header-actions {
+        margin-left: 0;
+    }
+}
