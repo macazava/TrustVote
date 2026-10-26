@@ -131,6 +131,24 @@ services:
       <<: *app-env
       APP_INSTANCE: servidor2
 
+  # Processo de fundo (mesma imagem do backend): encerra as rondas no fim do período e
+  # faz o apuramento. Não recebe pedidos HTTP; se parar, a votação continua a funcionar.
+  worker:
+    <<: *app
+    container_name: trustvote-worker
+    command: [ "python", "-m", "app.worker" ]
+    environment:
+      <<: *app-env
+      APP_INSTANCE: worker
+      WORKER_INTERVALO: "10"
+    healthcheck:
+      # vivo se escreveu o batimento há menos de 60 s
+      test: [ "CMD", "python", "-c", "import os,sys,time; sys.exit(0 if time.time()-os.path.getmtime('/tmp/worker-vivo') < 60 else 1)" ]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+
   db-primary:
     <<: *postgres
     container_name: trustvote-db-primary

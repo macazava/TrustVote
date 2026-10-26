@@ -11,3 +11,7 @@ services:
   db-replica:
     ports:
       - "127.0.0.1:${DB_REPLICA_DEBUG_PORT:-15433}:5432"
+  # Redis em 16379 (usado pelos testes do backend)
+  redis:
+    ports:
+      - "127.0.0.1:${REDIS_DEBUG_PORT:-16379}:6379"
