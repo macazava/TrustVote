@@ -9,7 +9,8 @@ def por_id(db: Session, eleicao_id: int, *, bloquear: bool = False) -> Eleicao |
     mudar o estado da mesma eleição ao mesmo tempo (a segunda espera pela primeira)."""
     stmt = select(Eleicao).where(Eleicao.id == eleicao_id)
     if bloquear:
-        stmt = stmt.with_for_update()
+        # populate_existing: relê da BD mesmo que o objeto já esteja carregado na sessão
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     return db.scalar(stmt)
 
 

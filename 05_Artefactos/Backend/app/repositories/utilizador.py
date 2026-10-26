@@ -12,7 +12,8 @@ def por_email(db: Session, email: str) -> Utilizador | None:
 def por_id(db: Session, utilizador_id: int, *, bloquear: bool = False) -> Utilizador | None:
     stmt = select(Utilizador).where(Utilizador.id == utilizador_id)
     if bloquear:
-        stmt = stmt.with_for_update()
+        # populate_existing: relê da BD mesmo que o objeto já esteja carregado na sessão
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     return db.scalar(stmt)
 
 
