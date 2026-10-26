@@ -4,16 +4,16 @@
    ===================================== */
 
 :root {
-    --navy: #1b365d;
-    --blue: #284d83;
+    --navy: #174d3b;
+    --blue: #23845d;
     --cream: #f5f0e6;
     --white: #fffdf9;
-    --gold: #c19a3b;
+    --gold: #23845d;
     --text: #292d33;
     --border: #d7cfc1;
 }
 
-/* Retirar margens automáticas do navegador */
+/* Retirar margens automaíticas do navegador */
 
 * {
     box-sizing: border-box;
@@ -67,7 +67,7 @@ p {
 }
 
 /* =====================================
-   3. CABEÇALHO PRINCIPAL
+   3. CABE├çALHO PRINCIPAL
    ===================================== */
 
 /* main header */
@@ -135,7 +135,7 @@ p {
 }
 
 /* =====================================
-   4. SECÇÃO PRINCIPAL — DUAS COLUNAS
+   4. SEC├ç├âO PRINCIPAL ÔÇö DUAS COLUNAS
    ===================================== */
 
 .hero {
@@ -168,7 +168,7 @@ p {
 }
 
 /* =====================================
-   5. BOTÕES
+   5. BOT├òES
    ===================================== */
 
 .hero-actions {
@@ -203,7 +203,7 @@ p {
 }
 
 /* =====================================
-   6. INDICADORES DE SEGURANÇA
+   6. INDICADORES DE SEGURAN├çA
    ===================================== */
 
 .trust-indicators {
@@ -216,7 +216,7 @@ p {
 }
 
 /* =====================================
-   7. PRÓXIMO ATO ELEITORAL
+   7. PR├ôXIMO ATO ELEITORAL
    ===================================== */
 
 .next-election {
@@ -255,7 +255,7 @@ p {
 }
 
 /* =====================================
-   8. PAINEL "VOTAR É SIMPLES"
+   8. PAINEL "VOTAR ├ë SIMPLES"
    ===================================== */
 
 .voting-guide {
@@ -299,7 +299,7 @@ p {
     font-size: 13px;
 }
 
-/* Lista dos três passos */
+/* Lista dos tr├¬s passos */
 
 .guide-steps {
     margin: 0;
@@ -370,7 +370,7 @@ p {
 }
 
 /* =====================================
-   9. ECRÃS MAIS PEQUENOS
+   9. ECR├âS MAIS PEQUENOS
    ===================================== */
 
 @media (max-width: 1050px) {
@@ -539,7 +539,7 @@ p {
     }
 }
 
-/* Informação sobre as eleições em Portugal */
+/* Informa├º├úo sobre as elei├º├Áes em Portugal */
 
 .election-info {
     padding: 74px 5.4%;
@@ -629,7 +629,7 @@ p {
     line-height: 1.5;
 }
 
-/* Adaptação a ecrãs pequenos */
+/* Adapta├º├úo a ecr├ús pequenos */
 
 @media (max-width: 760px) {
     .election-info {
@@ -654,7 +654,7 @@ p {
         font-size: 20px;
     }
 }
-/* Cabeçalho fixo: barra azul + barra branca */
+/* Cabe├ºalho fixo: barra azul + barra branca */
 
 header {
     position: fixed;
@@ -665,13 +665,13 @@ header {
     width: 100%;
 }
 
-/* Compensa o espaço ocupado pelo cabeçalho */
+/* Compensa o espa├ºo ocupado pelo cabe├ºalho */
 body {
     padding-top: 140px;
 }
 
 
-/* ===== SECÇÃO DE CONFIANÇA E SEGURANÇA ===== */
+/* ===== SEC├ç├âO DE CONFIAN├çA E SEGURAN├çA ===== */
 
 .trust-section {
     padding: 58px 3% 64px;
@@ -929,7 +929,7 @@ body {
     color: #57d69a;
 }
 
-/* Adaptação a ecrãs pequenos */
+/* Adapta├º├úo a ecr├ús pequenos */
 
 @media (max-width: 760px) {
     .trust-section {
@@ -978,7 +978,7 @@ body {
     }
 }
 
-/* ===== ÁREAS DA PLATAFORMA ===== */
+/* ===== ├üREAS DA PLATAFORMA ===== */
 
 .platform-section {
     padding: 54px 2.8% 64px;
@@ -1096,7 +1096,7 @@ body {
     font-weight: 400;
 }
 
-/* Adaptação a tablets e telemóveis */
+/* Adapta├º├úo a tablets e telem├│veis */
 
 @media (max-width: 760px) {
     .platform-section {
@@ -1341,7 +1341,7 @@ body {
     font-size: 11px;
 }
 
-/* Adaptação para dispositivos mais pequenos */
+/* Adapta├º├úo para dispositivos mais pequenos */
 
 @media (max-width: 760px) {
     .final-cta {
