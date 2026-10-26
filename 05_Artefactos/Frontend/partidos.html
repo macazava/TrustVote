@@ -1,195 +1,120 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-PT">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Conheça os partidos e candidatos da eleição presidencial de demonstração do TrustVote.">
 
-    <title>Partidos candidatos | TrustVote</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Partidos e candidaturas | TrustVote</title>
 
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/main.js" defer></script>
+    <script defer src="js/main.js"></script>
 </head>
 
 <body>
 
-    <!-- Cabeçalho principal -->
+    <!-- Cabeçalho TrustVote -->
     <header class="site-header">
-        <div class="container header-inner">
 
-            <!-- Logótipo -->
-            <a href="index.html" class="brand" aria-label="TrustVote - Página inicial">
-                <span class="brand-mark">T</span>
-                <span>TrustVote</span>
-            </a>
+        <a class="brand" href="index.html">
+            <span class="brand-mark">✓</span>
+            <span>
+                <b>TRUSTVOTE</b>
+                <small>ELEIÇÃO PRESIDENCIAL</small>
+            </span>
+        </a>
 
-            <!-- Menu para dispositivos móveis -->
-            <button
-                class="menu-toggle"
-                type="button"
-                aria-label="Abrir menu"
-                aria-expanded="false"
-            >
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+        <button
+            class="menu-toggle"
+            type="button"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+        >☰</button>
 
-            <!-- Navegação -->
-            <nav class="main-nav" aria-label="Navegação principal">
-                <a href="index.html">Início</a>
-                <a href="partidos.html" aria-current="page">Partidos</a>
-                <a href="legislacao.html">Legislação</a>
-                <a href="apoio.html">Apoio</a>
-            </nav>
+        <nav class="main-nav" aria-label="Navegação principal">
+            <a href="index.html">Início</a>
+            <a href="calendario.html">Eleições</a>
+            <a href="partidos.html" aria-current="page">Partidos</a>
+            <a href="legislacao.html">Legislação</a>
+        </nav>
 
-            <!-- Ação principal -->
-            <div class="header-actions">
-                <a href="login.html" class="button button-primary">
-                    Iniciar sessão
-                </a>
-            </div>
-
+        <div class="header-actions">
+            <a
+                class="button button-primary"
+                href="login.html?area=eleitor"
+            >Área do eleitor <span>→</span></a>
         </div>
+
     </header>
 
-    <main>
+    <main class="container content-page">
 
-        <!-- Introdução da página -->
-        <section class="page-intro">
-            <div class="container">
+        <p class="eyebrow">ELEIÇÕES</p>
 
-                <span class="eyebrow">ELEIÇÕES PRESIDENCIAIS</span>
+        <h1>Partidos e candidaturas</h1>
 
-                <h1>Partidos candidatos</h1>
+        <p class="lead">
+            Área preparada para consultar informação de candidaturas.
+            Os exemplos abaixo não representam candidaturas oficiais.
+        </p>
+
+        <!-- Cartões originais A, B e C -->
+        <div class="candidate-grid">
+
+            <article>
+                <span class="candidate-badge">A</span>
+
+                <h2>Candidatura A</h2>
 
                 <p>
-                    Conheça os partidos e os respetivos candidatos
-                    que participam na eleição presidencial de demonstração
-                    do TrustVote.
+                    Cartão ilustrativo para informação da candidatura,
+                    programa e ligações oficiais.
                 </p>
 
-            </div>
-        </section>
+                <span class="status-pill">EXEMPLO</span>
+            </article>
 
-        <!-- Lista de partidos -->
-        <section class="parties-section">
-            <div class="container">
+            <article>
+                <span class="candidate-badge">B</span>
 
-                <div class="party-grid">
+                <h2>Candidatura B</h2>
 
-                    <!-- Partido Nova Frente -->
-                    <article class="party-card">
-                        <div class="party-symbol party-green">
-                            PNF
-                        </div>
-
-                        <div class="party-content">
-                            <span class="eyebrow">PNF</span>
-
-                            <h2>Partido Nova Frente</h2>
-
-                            <p class="party-candidate">
-                                <strong>Candidato presidencial</strong>
-                                André Martins
-                            </p>
-
-                            <p class="party-slogan">
-                                "Uma nova visão para o futuro."
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Partido Progresso Cívico -->
-                    <article class="party-card">
-                        <div class="party-symbol party-blue">
-                            PPC
-                        </div>
-
-                        <div class="party-content">
-                            <span class="eyebrow">PPC</span>
-
-                            <h2>Partido Progresso Cívico</h2>
-
-                            <p class="party-candidate">
-                                <strong>Candidata presidencial</strong>
-                                Mariana Costa
-                            </p>
-
-                            <p class="party-slogan">
-                                "Progresso com responsabilidade."
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Partido Verde e Ação -->
-                    <article class="party-card">
-                        <div class="party-symbol party-orange">
-                            PVA
-                        </div>
-
-                        <div class="party-content">
-                            <span class="eyebrow">PVA</span>
-
-                            <h2>Partido Verde e Ação</h2>
-
-                            <p class="party-candidate">
-                                <strong>Candidato presidencial</strong>
-                                Tiago Ferreira
-                            </p>
-
-                            <p class="party-slogan">
-                                "Um futuro mais sustentável."
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Partido Justiça Social -->
-                    <article class="party-card">
-                        <div class="party-symbol party-purple">
-                            PJS
-                        </div>
-
-                        <div class="party-content">
-                            <span class="eyebrow">PJS</span>
-
-                            <h2>Partido Justiça Social</h2>
-
-                            <p class="party-candidate">
-                                <strong>Candidata presidencial</strong>
-                                Sofia Almeida
-                            </p>
-
-                            <p class="party-slogan">
-                                "Igualdade de oportunidades para todos."
-                            </p>
-                        </div>
-                    </article>
-
-                </div>
-
-                <p class="parties-note">
-                    Os partidos e candidatos apresentados são fictícios
-                    e destinam-se exclusivamente à demonstração académica.
+                <p>
+                    Cartão ilustrativo para informação da candidatura,
+                    programa e ligações oficiais.
                 </p>
 
-            </div>
-        </section>
+                <span class="status-pill">EXEMPLO</span>
+            </article>
+
+            <article>
+                <span class="candidate-badge">C</span>
+
+                <h2>Candidatura C</h2>
+
+                <p>
+                    Cartão ilustrativo para informação da candidatura,
+                    programa e ligações oficiais.
+                </p>
+
+                <span class="status-pill">EXEMPLO</span>
+            </article>
+
+        </div>
+
+        <p class="notice">
+            Os nomes e dados reais devem ser adicionados a partir
+            de fontes oficiais verificadas.
+        </p>
 
     </main>
 
-    <!-- Rodapé -->
+    <!-- Rodapé original -->
     <footer class="site-footer">
-        <div class="container footer-bottom">
-
-            <a href="index.html" class="brand" aria-label="TrustVote - Página inicial">
-                <span class="brand-mark">T</span>
-                <span>TrustVote</span>
-            </a>
-
-            <p>Projeto académico de votação online.</p>
-
+        <div class="footer-bottom container">
+            <span>Projeto académico demonstrativo · 2025</span>
+            <a href="index.html">Voltar ao início</a>
         </div>
     </footer>
 
