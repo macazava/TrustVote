@@ -31,6 +31,9 @@ def criar_token(utilizador_id: int, perfil: str) -> tuple[str, int]:
         "nbf": agora,
         "exp": expira,
         "jti": uuid.uuid4().hex,
+        # em milissegundos: permite revogar "todos os tokens emitidos até agora" sem apanhar
+        # um token novo emitido no mesmo segundo
+        "emitido_ms": int(agora.timestamp() * 1000),
     }
     return jwt.encode(payload, s.jwt_private_key, algorithm=ALGORITMO), s.jwt_minutos * 60
 

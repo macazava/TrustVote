@@ -24,15 +24,18 @@ SCHEMA = "tv_testes"
 TABELAS = "auditoria, resultado, voto, participacao, habilitacao, ronda_candidato, candidato, ronda, eleicao, utilizador"
 
 
+def _env_infra(nome: str) -> str:
+    if ENV_INFRA.exists():
+        for linha in ENV_INFRA.read_text(encoding="utf-8", errors="ignore").splitlines():
+            if linha.startswith(f"{nome}="):
+                return linha.split("=", 1)[1].strip()
+    return ""
+
+
 def _url_testes() -> URL | str:
     if os.getenv("TEST_DATABASE_URL"):
         return os.environ["TEST_DATABASE_URL"]
-    password = ""
-    if ENV_INFRA.exists():
-        for linha in ENV_INFRA.read_text(encoding="utf-8", errors="ignore").splitlines():
-            if linha.startswith("TRUSTVOTE_DB_PASSWORD="):
-                password = linha.split("=", 1)[1].strip()
-    return URL.create("postgresql+psycopg2", username="trustvote", password=password,
+    return URL.create("postgresql+psycopg2", username="trustvote", password=_env_infra("TRUSTVOTE_DB_PASSWORD"),
                       host="127.0.0.1", port=15432, database="trustvote")
 
 
@@ -53,6 +56,11 @@ os.environ.update({
     "TOTP_ENCRYPTION_KEY": base64.b64encode(os.urandom(32)).decode(),
     "DATABASE_SCHEMA": SCHEMA,
     "APP_INSTANCE": "testes",
+    # Redis da infraestrutura (compose.debug.yaml publica-o em 16379), com prefixo próprio
+    "REDIS_HOST": os.getenv("TEST_REDIS_HOST", "127.0.0.1"),
+    "REDIS_PORT": os.getenv("TEST_REDIS_PORT", "16379"),
+    "REDIS_PASSWORD": os.getenv("TEST_REDIS_PASSWORD", _env_infra("REDIS_PASSWORD")),
+    "REDIS_PREFIXO": "tv_testes:",
 })
 _url = _url_testes()
 os.environ["DATABASE_URL"] = _url if isinstance(_url, str) else _url.render_as_string(hide_password=False)
@@ -67,6 +75,12 @@ def esquema_testes():
     except Exception as e:  # noqa: BLE001
         pytest.exit(f"PostgreSQL de testes indisponível ({e.__class__.__name__}). Arranque a infraestrutura com "
                     "compose.debug.yaml ou defina TEST_DATABASE_URL.", returncode=2)
+    from app.redis_client import get_redis
+    try:
+        get_redis().ping()
+    except Exception as e:  # noqa: BLE001
+        pytest.exit(f"Redis de testes indisponível ({e.__class__.__name__}). Arranque a infraestrutura com "
+                    "compose.debug.yaml (Redis em 127.0.0.1:16379).", returncode=2)
     sql = "\n".join(l for l in SQL_ESQUEMA.read_text(encoding="utf-8").splitlines()
                     if not l.strip().upper().startswith("SET ROLE"))
     with engine.begin() as c:
@@ -83,8 +97,13 @@ def esquema_testes():
 @pytest.fixture(autouse=True)
 def limpar_tabelas(esquema_testes):
     from app.database import get_engine
+    from app.redis_client import get_redis
     with get_engine().begin() as c:
         c.execute(text(f"TRUNCATE {TABELAS} RESTART IDENTITY CASCADE"))
+    r = get_redis()
+    chaves = list(r.scan_iter("tv_testes:*"))
+    if chaves:
+        r.delete(*chaves)
     yield
 
 

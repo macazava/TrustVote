@@ -5,11 +5,13 @@ from sqlalchemy.orm import Session
 from app.models import Utilizador
 from app.models.utilizador import PERFIL_ADMIN, PERFIL_ELEITOR
 from app.repositories import utilizador as repo
-from app.security import passwords, tokens, totp
+from app.security import estado_partilhado, passwords, tokens, totp
 from app.services import auditoria
-from app.services.erros import Conflito, DadosInvalidos, NaoAutorizado, NaoEncontrado, Proibido
+from app.services.erros import (Conflito, DadosInvalidos, MuitasTentativas, NaoAutorizado, NaoEncontrado,
+                                Proibido)
 
 MSG_LOGIN_INVALIDO = "Email ou password inválidos"
+MSG_BLOQUEADO = "Demasiadas tentativas falhadas. Tente novamente mais tarde."
 
 
 def registar(db: Session, nome: str, email: str, password: str, *, perfil: str = PERFIL_ELEITOR,
@@ -33,10 +35,18 @@ def registar(db: Session, nome: str, email: str, password: str, *, perfil: str =
 
 
 def login(db: Session, email: str, password: str, codigo_totp: str | None, *, ip: str | None = None) -> tuple[str, int]:
+    # Limite partilhado (Redis) pelas duas instâncias: após N falhas o email fica bloqueado
+    # durante a janela configurada, mesmo com a password certa.
+    if estado_partilhado.login_bloqueado(email):
+        auditoria.registar(db, "auth.login_bloqueado", detalhes={"email": email.lower()}, ip=ip)
+        db.commit()
+        raise MuitasTentativas(MSG_BLOQUEADO)
+
     utilizador = repo.por_email(db, email)
     password_ok = passwords.verificar(password, utilizador.password_hash if utilizador else None)
 
     if not utilizador or not password_ok or not utilizador.ativo:
+        estado_partilhado.registar_falha_login(email)
         auditoria.registar(db, "auth.login_falhado", utilizador_id=utilizador.id if utilizador else None,
                            detalhes={"motivo": "credenciais" if not password_ok else "conta_inativa"}, ip=ip)
         db.commit()
@@ -53,6 +63,7 @@ def login(db: Session, email: str, password: str, codigo_totp: str | None, *, ip
                                       utilizador.totp_ultimo_passo)
         if passo is None:
             db.rollback()
+            estado_partilhado.registar_falha_login(email)
             auditoria.registar(db, "auth.login_falhado", utilizador_id=utilizador.id,
                                detalhes={"motivo": "totp"}, ip=ip)
             db.commit()
@@ -60,9 +71,79 @@ def login(db: Session, email: str, password: str, codigo_totp: str | None, *, ip
         utilizador.totp_ultimo_passo = passo
 
     token = tokens.criar_token(utilizador.id, utilizador.perfil)
+    estado_partilhado.limpar_falhas_login(email)
     auditoria.registar(db, "auth.login", utilizador_id=utilizador.id, ip=ip)
     db.commit()
     return token
+
+
+def logout(db: Session, utilizador: Utilizador, token: dict, *, ip: str | None = None) -> None:
+    estado_partilhado.revogar_token(token["jti"], int(token["exp"]))
+    auditoria.registar(db, "auth.logout", utilizador_id=utilizador.id, ip=ip)
+    db.commit()
+
+
+def _definir_password(db: Session, utilizador: Utilizador, nova: str, acao: str, *,
+                      ator_id: int | None, ip: str | None) -> None:
+    utilizador.password_hash = passwords.gerar_hash(nova)
+    estado_partilhado.revogar_todos(utilizador.id)   # termina as sessões abertas noutros dispositivos
+    estado_partilhado.limpar_falhas_login(utilizador.email)
+    auditoria.registar(db, acao, utilizador_id=ator_id, entidade="utilizador", entidade_id=utilizador.id, ip=ip)
+    db.commit()
+
+
+def alterar_password(db: Session, utilizador: Utilizador, atual: str, nova: str, *, ip: str | None = None) -> None:
+    if not passwords.verificar(atual, utilizador.password_hash):
+        raise NaoAutorizado("Password atual errada")
+    if atual == nova:
+        raise DadosInvalidos("A nova password tem de ser diferente da atual")
+    _definir_password(db, utilizador, nova, "auth.password_alterada", ator_id=utilizador.id, ip=ip)
+
+
+def gerar_codigo_reset(db: Session, admin: Utilizador, utilizador_id: int) -> str:
+    """Um admin gera um código de uso único e entrega-o ao utilizador por um canal seguro
+    (o projeto não tem servidor de email). O código expira ao fim de RESET_CODIGO_MINUTOS."""
+    alvo = repo.por_id(db, utilizador_id)
+    if alvo is None:
+        raise NaoEncontrado("Utilizador não encontrado")
+    if not alvo.ativo:
+        raise Conflito("A conta está desativada")
+    codigo = estado_partilhado.criar_codigo_reset(alvo.id)
+    auditoria.registar(db, "auth.codigo_reset_gerado", utilizador_id=admin.id, entidade="utilizador",
+                       entidade_id=alvo.id)
+    db.commit()
+    return codigo
+
+
+def redefinir_password(db: Session, email: str, nova: str, *, codigo_reset: str | None,
+                       codigo_totp: str | None, ip: str | None = None) -> None:
+    """Recuperação sem estar autenticado: com o código dado por um admin, ou com o código da
+    app autenticadora (se o utilizador tiver TOTP ativo). Erros com mensagem genérica."""
+    if estado_partilhado.login_bloqueado(email):
+        raise MuitasTentativas(MSG_BLOQUEADO)
+    invalido = NaoAutorizado("Dados de recuperação inválidos")
+    utilizador = repo.por_email(db, email)
+    if utilizador is None or not utilizador.ativo or not (codigo_reset or codigo_totp):
+        estado_partilhado.registar_falha_login(email)
+        raise invalido
+    if codigo_reset:
+        ok = estado_partilhado.consumir_codigo_reset(utilizador.id, codigo_reset)
+    else:
+        utilizador = repo.por_id(db, utilizador.id, bloquear=True)
+        passo = None
+        if utilizador.totp_ativo:
+            passo = totp.verificar_codigo(totp.decifrar(utilizador.totp_segredo), codigo_totp,
+                                          utilizador.totp_ultimo_passo)
+        ok = passo is not None
+        if ok:
+            utilizador.totp_ultimo_passo = passo
+    if not ok:
+        db.rollback()
+        estado_partilhado.registar_falha_login(email)
+        auditoria.registar(db, "auth.reset_falhado", utilizador_id=utilizador.id, ip=ip)
+        db.commit()
+        raise invalido
+    _definir_password(db, utilizador, nova, "auth.password_reposta", ator_id=utilizador.id, ip=ip)
 
 
 def configurar_totp(db: Session, utilizador: Utilizador) -> tuple[str, str]:

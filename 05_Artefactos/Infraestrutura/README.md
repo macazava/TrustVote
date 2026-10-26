@@ -41,7 +41,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 | `trustvote-servidor2` | `servidor2` | `trustvote-backend:dev` (mesma imagem) | Instância 2, independente da 1 |
 | `trustvote-db-primary` | `db-primary` | `postgres:16` | PostgreSQL primário (aceita escritas) |
 | `trustvote-db-replica` | `db-replica` | `postgres:16` | Réplica *hot standby* (só leitura), candidata a promoção |
-| `trustvote-redis` | `redis` | `redis:7.4-alpine` | Cache / filas / coordenação. **Não** é fonte de verdade dos dados |
+| `trustvote-redis` | `redis` | `redis:7.4-alpine` | Estado partilhado pelas instâncias: bloqueio de login, logout, códigos de reposição. **Não** é fonte de verdade dos dados |
+| `trustvote-worker` | `worker` | `trustvote-backend:dev` (mesma imagem) | Processo de fundo: encerra as rondas no fim do período e faz o apuramento |
 
 ### Três níveis distintos de redundância
 
@@ -271,7 +272,8 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 | nginx | 80 | `127.0.0.1:8080` (configurável no `.env`) |
 | servidor1 / servidor2 | 8080 | não |
 | db-primary / db-replica | 5432 | não (só com `compose.debug.yaml`: `127.0.0.1:15432/15433`) |
-| redis | 6379 | não |
+| redis | 6379 | não (só com `compose.debug.yaml`: `127.0.0.1:16379`, usado pelos testes) |
+| worker | — | não (não recebe pedidos) |
 
 - PostgreSQL e Redis só são acessíveis dentro da `trustvote-network`.
 - Credenciais apenas no `.env` (ignorado pelo git); o `compose.yaml` só tem referências `${...}`.
@@ -333,8 +335,19 @@ Executados neste PC. "Placeholder" = testado com o servidor de substituição, *
 | servidor1 parado | ✅ 10/10 pedidos autenticados respondidos (2 reencaminhados após a tentativa falhada) |
 | servidor1 de volta | ✅ 5/5 sem reiniciar o nginx |
 
+### Votação, worker e Redis (26/10/2026)
+
+| Teste | Resultado |
+|---|---|
+| 7 contentores (com o `worker`) | ✅ todos `healthy` |
+| 5 votos pelo nginx | ✅ aceites e repartidos pelas duas instâncias (3 + 2) |
+| Voto repetido / voto depois do fim do período | ✅ `409` "Já votou nesta ronda" / `409` "Fora do período" |
+| Worker real | ✅ encerrou a ronda no fim do período e apurou-a sozinho (5 válidos, 0 inválidos, consistente) |
+| Resultados | ✅ só visíveis depois de apurados; vencedor com 60% na 1.ª volta |
+| Recibo do voto e cadeia de auditoria | ✅ voto íntegro; cadeia íntegra (1 registo antigo, anterior ao encadeamento) |
+| Testes automáticos do backend | ✅ 56 passam (PostgreSQL e Redis reais) |
+
 ### Pendentes
-- Failover com `POST` de votos (módulo de votação ainda não existe).
 - Comportamento das aplicações durante a promoção da BD (reconexão ao novo `DATABASE_HOST`).
-- Uso real do Redis (filas/cache) e leituras na réplica.
+- Leituras na réplica (`DATABASE_READ_HOST` está definido, mas a API lê tudo do primário).
 - Integração do frontend.

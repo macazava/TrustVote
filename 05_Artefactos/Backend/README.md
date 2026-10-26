@@ -4,11 +4,15 @@ API do TrustVote em **FastAPI** (Python 3.12), com PostgreSQL via SQLAlchemy 2.
 
 | Módulo | Estado |
 |---|---|
-| Autenticação: registo, login, Argon2, JWT RS256, TOTP (2FA) | ✅ implementado e testado |
+| Autenticação: registo, login, Argon2, JWT RS256, TOTP (2FA), logout | ✅ implementado e testado |
+| Passwords: alterar, repor com código do admin ou com TOTP; bloqueio após tentativas falhadas | ✅ implementado e testado |
 | Utilizadores e permissões (eleitor / administrador) | ✅ implementado e testado |
 | Gestão eleitoral: eleições, rondas (1.ª e 2.ª volta), candidatos, habilitações | ✅ implementado e testado |
-| Auditoria das operações acima (tabela `auditoria`) | ✅ registo; sem encadeamento de hashes |
-| Votação, apuramento/resultados, worker, IA | ⏳ por fazer (outros elementos do grupo) |
+| **Votação** (RF06–RF08): voto anónimo, um por ronda, só no período, recibo verificável | ✅ implementado e testado |
+| **Apuramento e resultados** (RF09–RF10): contagem, integridade dos votos, vencedor / 2.ª volta | ✅ implementado e testado |
+| **Worker**: encerra rondas no fim do período e apura automaticamente | ✅ implementado e testado |
+| **Auditoria** (RF11): registo, consulta e cadeia de hashes contra adulterações | ✅ implementado e testado |
+| Previsão por IA | ⏳ por fazer (UC de Inteligência Artificial) |
 
 ## Estrutura
 
@@ -18,14 +22,18 @@ Backend/
 ├── app/
 │   ├── config.py           # configuração (variáveis de ambiente / Docker secrets)
 │   ├── database.py         # engine, sessões, get_db
-│   ├── models/             # ORM: utilizador, eleicao (eleição, ronda, candidato, habilitação), auditoria
+│   ├── redis_client.py     # ligação ao Redis (estado partilhado pelas instâncias)
+│   ├── models/             # ORM: utilizador, eleicao (eleição, ronda, candidato, habilitação),
+│   │                       #      votacao (participação, voto, resultado), auditoria
 │   ├── schemas/            # validação de entrada/saída (Pydantic)
 │   ├── repositories/       # consultas à BD
-│   ├── services/           # regras de negócio (autenticacao.py, eleicao.py, auditoria.py, erros.py)
-│   ├── routers/            # rotas HTTP (autenticacao.py, eleicoes.py)
-│   ├── security/           # passwords (Argon2), tokens (JWT RS256), totp (AES-GCM), dependencias (acesso)
+│   ├── services/           # regras de negócio: autenticacao, eleicao, votacao, apuramento, auditoria, erros
+│   ├── routers/            # rotas HTTP: autenticacao, eleicoes, votacao (+ resultados e auditoria)
+│   ├── security/           # passwords (Argon2), tokens (JWT RS256), totp (AES-GCM), integridade (HMAC/hashes),
+│   │                       # estado_partilhado (Redis: bloqueio de login, logout, códigos), dependencias (acesso)
+│   ├── worker/             # processo de fundo: encerra rondas e apura (python -m app.worker)
 │   ├── scripts/            # gerar_segredos.py, criar_admin.py
-│   └── testes/             # pytest (contra PostgreSQL real)
+│   └── testes/             # pytest (contra PostgreSQL e Redis reais)
 ├── config/database/init/docker_sql_and_sh/trustvote.sql   # esquema da BD (fonte única)
 ├── Dockerfile              # porta 8080, healthcheck em /health
 ├── requirements.txt / requirements-dev.txt
@@ -79,6 +87,10 @@ $env:TOTP_ENCRYPTION_KEY_FILE="..\Infraestrutura\secrets\totp_key.txt"
 | `TOTP_ENCRYPTION_KEY_FILE` | chave AES-256 em base64 que cifra os segredos TOTP (ou `TOTP_ENCRYPTION_KEY`) |
 | `JWT_MINUTOS` | validade do token (por omissão 30) |
 | `APP_INSTANCE` | nome da instância (aparece em `/health`) |
+| `REDIS_HOST/PORT/PASSWORD` | Redis partilhado (bloqueio de login, logout, códigos de reposição) |
+| `LOGIN_MAX_TENTATIVAS` / `LOGIN_JANELA_SEGUNDOS` | bloqueio após falhas (por omissão 5 em 15 min) |
+| `RESET_CODIGO_MINUTOS` | validade do código de reposição de password (por omissão 30) |
+| `WORKER_INTERVALO` | segundos entre ciclos do worker (por omissão 10) |
 
 A app recusa arrancar se faltarem as chaves.
 
@@ -92,6 +104,10 @@ Autenticação: `Authorization: Bearer <access_token>` (obtido em `/auth/login`)
 | POST | `/auth/registo` | público | cria conta de **eleitor** |
 | POST | `/auth/login` | público | `{email, password, codigo_totp?}` → token JWT |
 | GET | `/auth/eu` | autenticado | dados da própria conta |
+| POST | `/auth/logout` | autenticado | invalida o token usado |
+| POST | `/auth/password/alterar` | autenticado | `{password_atual, nova_password}`; termina todas as sessões |
+| POST | `/auth/password/redefinir` | público | `{email, nova_password, codigo_reset \| codigo_totp}` |
+| POST | `/utilizadores/{id}/codigo-reset` | admin | gera código de reposição (uso único, 30 min) |
 | POST | `/auth/totp/configurar` | autenticado | gera segredo + URI `otpauth://` (QR code) |
 | POST | `/auth/totp/ativar` · `/desativar` | autenticado | confirmar com um código de 6 dígitos |
 | GET | `/utilizadores?perfil=` | admin | listar contas |
@@ -104,9 +120,18 @@ Autenticação: `Authorization: Bearer <access_token>` (obtido em `/auth/login`)
 | POST | `/eleicoes/{id}/rondas/{n}/abrir` · `/encerrar` | admin | abrir 2.ª volta / encerrar ronda |
 | POST · PATCH · DELETE | `/eleicoes/{id}/candidatos[/{cid}]` | admin | gerir candidatos |
 | GET · POST · DELETE | `/eleicoes/{id}/habilitados[/{uid}]` | admin | habilitar eleitores (`{utilizador_ids: [...]}`) |
+| POST | `/eleicoes/{id}/rondas/{n}/votos` | eleitor habilitado | `{candidato_id}` → recibo |
+| GET | `/eleicoes/{id}/minha-participacao` | eleitor | em que rondas já votou |
+| GET | `/votos/{recibo}` | autenticado | confirma que o voto foi registado e não alterado (sem mostrar o candidato) |
+| POST | `/eleicoes/{id}/rondas/{n}/apurar` | admin | apurar uma ronda encerrada (o worker faz isto sozinho) |
+| GET | `/eleicoes/{id}/resultados` | autenticado | resultados das rondas apuradas (mesma visibilidade da eleição) |
+| GET | `/eleicoes/{id}/estatisticas` | admin | participação por ronda |
+| GET | `/auditoria?acao=&utilizador_id=&entidade=&entidade_id=&limite=&antes_de=` | admin | registos, mais recentes primeiro (`acao` aceita `*`) |
+| GET | `/auditoria/verificar` | admin | recalcula a cadeia de hashes e aponta o 1.º registo adulterado |
 
 Erros: `401` não autenticado · `403` sem permissão · `404` não existe (ou não visível) ·
-`409` operação incompatível com o estado atual · `422` dados inválidos.
+`409` operação incompatível com o estado atual · `422` dados inválidos · `429` demasiadas tentativas ·
+`503` serviço auxiliar (Redis) indisponível.
 
 ## Regras implementadas
 
@@ -122,6 +147,38 @@ Erros: `401` não autenticado · `403` sem permissão · `404` não existe (ou n
   Um admin não pode retirar o seu próprio acesso.
 - **TOTP**: segredo guardado cifrado com **AES-256-GCM**; janela de ±30 s; o último passo usado é guardado
   e um código **não pode ser reutilizado** (com bloqueio de linha, mesmo entre instâncias).
+- **Bloqueio de força bruta**: 5 falhas (password, TOTP ou código de reposição) bloqueiam o email 15 min
+  (`429`), contadas no Redis e por isso iguais nas duas instâncias.
+- **Logout** revoga o token no Redis; **mudar ou repor a password** revoga todos os tokens anteriores.
+- **Reposição de password** sem servidor de email: código de uso único gerado por um admin (só o hash
+  fica no Redis, expira em 30 min) ou o código da app autenticadora, se o TOTP estiver ativo.
+- Se o Redis falhar, o login e a verificação de tokens continuam a funcionar sem o bloqueio/revogação
+  (registado no log), para a votação não parar por um serviço auxiliar; logout e códigos dão `503`.
+
+**Votação (RF06–RF08)**
+- Um voto só é aceite se a eleição está `em_curso`, o eleitor está habilitado, a ronda está `aberta`,
+  **a hora atual está entre `data_inicio` e `data_fim`** e o candidato concorre nessa ronda.
+  Administradores não votam.
+- **Anonimato**: `participacao` guarda quem votou (sem candidato) e `voto` guarda em quem (sem eleitor
+  nem hora, id UUID aleatório). A auditoria regista que alguém votou, nunca o candidato.
+- **Um voto por ronda**: participação e voto na mesma transação; o `UNIQUE` da participação impede o
+  duplicado mesmo com dois pedidos simultâneos em instâncias diferentes (testado).
+- **Integridade**: `vot_hash` = HMAC-SHA256 (chave derivada da `TOTP_ENCRYPTION_KEY`). Alterar o candidato
+  de um voto na BD é detetado. O **recibo** (id do voto) deixa o eleitor confirmar que o voto foi contado.
+
+**Apuramento e resultados (RF09–RF10)**
+- Só rondas encerradas. Verifica o HMAC de cada voto (adulterados não contam e são reportados) e
+  confirma que o número de votos é igual ao de participações (`consistente`).
+- Ronda 1: vence quem tiver **mais de 50%**; senão passam os 2 mais votados à 2.ª volta. Ronda 2: vence o
+  mais votado. Empates ficam assinalados (`empate`) para decisão do admin.
+- Não há contagens parciais: os resultados só aparecem depois de apurados.
+- O **worker** (`python -m app.worker`, serviço `worker` no Docker) encerra as rondas cujo período acabou
+  e apura-as, a cada 10 s. É seguro correr vários: cada ação bloqueia a eleição e volta a confirmar o estado.
+
+**Auditoria (RF11)**
+- Cada registo guarda o hash do anterior (cadeia SHA-256); `/auditoria/verificar` deteta registos
+  alterados ou apagados. A escrita usa um advisory lock para a cadeia ser linear com duas instâncias.
+- Registos antigos sem hash no início da tabela (de antes desta funcionalidade) contam à parte.
 
 **Ciclo de vida da eleição**
 
@@ -152,19 +209,22 @@ instâncias diferentes, não deixam a eleição inconsistente (testado).
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-Correm contra o PostgreSQL da infraestrutura (`compose.debug.yaml`, porta 15432) num schema isolado
-`tv_testes`, criado a partir do `trustvote.sql` e apagado no fim. Os dados da aplicação não são tocados.
-Outra BD: definir `TEST_DATABASE_URL`.
+Correm contra o PostgreSQL e o Redis da infraestrutura (`compose.debug.yaml`: BD em 15432, Redis em
+16379), num schema isolado `tv_testes` (criado a partir do `trustvote.sql` e apagado no fim) e com chaves
+Redis com o prefixo `tv_testes:`. Os dados da aplicação não são tocados. Outra BD: `TEST_DATABASE_URL`.
 
-34 testes: registo, login, ataques ao JWT (outra chave, HS256, `none`, expirado), contas desativadas,
-permissões, TOTP (cifra, reutilização de códigos, fluxo completo), ciclo de vida da eleição com 2.ª volta,
-transições inválidas, habilitações, visibilidade para eleitores e concorrência.
+56 testes:
+- **autenticação** (14): registo, login, ataques ao JWT (outra chave, HS256, `none`, expirado), contas
+  desativadas, permissões;
+- **TOTP** (6): cifra, reutilização de códigos, fluxo completo;
+- **passwords e sessões** (6): bloqueio após falhas, logout, alterar, repor com código e com TOTP;
+- **gestão eleitoral** (14): ciclo de vida com 2.ª volta, transições inválidas, habilitações, visibilidade,
+  concorrência;
+- **votação** (6): voto anónimo e recibo, duplicado, dois votos simultâneos, quem pode votar, período;
+- **apuramento** (6): vencedor, 2.ª volta, empate/sem votos, voto adulterado, estatísticas, worker;
+- **auditoria** (4): consulta e filtros, adulteração e remoção detetadas, registos antigos.
 
-## Para quem vai implementar a votação
-
-- Utilizador autenticado: `from app.security.dependencias import UtilizadorAtual, DbSession`.
-- Um voto só deve ser aceite se: a eleição está `em_curso`, a ronda está `aberta`, **e** a hora atual
-  está entre `data_inicio` e `data_fim` da ronda (RF08), o eleitor está em `habilitacao` e o candidato
-  está em `ronda_candidato`.
-- `participacao` + `voto` na **mesma transação** (o `UNIQUE` de `participacao` impede o voto duplicado, RF07).
-- Erros de negócio: lançar as exceções de `app/services/erros.py`.
+## Limitações conhecidas
+- A ordem física das linhas na BD pode, em teoria, permitir a quem tenha acesso direto ao PostgreSQL
+  relacionar a ordem das participações com a dos votos; a API nunca expõe essa relação.
+- Trocar a `TOTP_ENCRYPTION_KEY` torna ilegíveis os segredos TOTP e os votos deixam de ser verificáveis.
