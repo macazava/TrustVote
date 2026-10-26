@@ -8,7 +8,7 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.database import get_engine
-from app.routers import autenticacao, eleicoes
+from app.routers import autenticacao, eleicoes, votacao
 from app.services.erros import ErroNegocio
 
 
@@ -23,6 +23,8 @@ app = FastAPI(title="TrustVote API", lifespan=lifespan)
 app.include_router(autenticacao.router)
 app.include_router(autenticacao.router_utilizadores)
 app.include_router(eleicoes.router)
+app.include_router(votacao.router)
+app.include_router(votacao.router_auditoria)
 
 
 @app.exception_handler(ErroNegocio)
