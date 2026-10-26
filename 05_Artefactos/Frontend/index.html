@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -7,480 +6,273 @@
     <title>TrustVote | Eleição Presidencial</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-
-    <!-- 1. Barra superior -->
     <header>
-
         <div class="top-bar">
             <a href="index.html">TrustVote</a>
-
             <nav aria-label="Acessos de utilizador">
-    <a href="login.html?destino=equipa">Área da equipa</a>
-    <a href="login.html?destino=eleitor">Área do eleitor</a>
-</nav>
+                <a href="login.html?destino=equipa">Área da equipa</a>
+                <a href="login.html?destino=eleitor">Área do eleitor</a>
+            </nav>
         </div>
 
-        <!-- 2. Identidade e navegação principal -->
         <div class="main-header">
-
             <div class="brand">
-                <div class="brand-logo">
-                    LOGO
-                </div>
-
+                <div class="brand-logo" aria-label="Logótipo TrustVote">TV</div>
                 <div class="brand-info">
                     <h1>TRUSTVOTE</h1>
                     <p>Eleição presidencial</p>
                 </div>
             </div>
-
             <nav aria-label="Navegação principal">
-    <a href="index.html">Início</a>
-    <a href="login.html?destino=eleicoes">Eleições</a>
-    <a href="partidos.html">Partidos</a>
-    <a href="legislacao.html">Legislação</a>
-    <a href="#como-funciona">Como funciona</a>
-    <a href="apoio.html">Ajuda</a>
-</nav>
-
+                <a href="index.html">Início</a>
+                <a href="login.html?destino=eleicoes">Eleições</a>
+                <a href="partidos.html">Partidos</a>
+                <a href="legislacao.html">Legislação</a>
+                <a href="#como-funciona">Como funciona</a>
+                <a href="apoio.html">Ajuda</a>
+            </nav>
         </div>
-
     </header>
 
-    <!-- 3. Conteúdo principal -->
     <main>
-
         <section class="hero">
-
-            <!-- Coluna esquerda -->
             <div class="hero-content">
-
                 <h2>O seu voto.<br>Seguro e Simples.</h2>
-
                 <p class="hero-description">
-                    Consulte informação eleitoral e vote online com tranquilidade. 
-                    A plataforma acompanha-o em cada passo e protege sempre a sua escolha.                    
+                    Consulte informação eleitoral e vote online com tranquilidade.
+                    A plataforma acompanha-o em cada passo e protege sempre a sua escolha.
                 </p>
-
                 <div class="hero-actions">
-                    <a href="eleitor.html">
-                        Aceder à votação
-                    </a>
-
-                    <a href="#como-funciona">
-                        Ver como funciona →
-                    </a>
+                    <a href="eleitor.html">Aceder à votação</a>
+                    <a href="#como-funciona">Ver como funciona →</a>
                 </div>
-
                 <div class="trust-indicators">
                     <span>✓ Voto anónimo</span>
                     <span>✓ Auditável</span>
                     <span>✓ Tolerante a falhas</span>
                 </div>
-
                 <div class="next-election" id="eleicoes">
-
-                    <div class="calendar-icon">
-                        LOGO
-                    </div>
-
+                    <div class="calendar-icon" aria-hidden="true">▦</div>
                     <div>
                         <p>PRÓXIMO ATO ELEITORAL</p>
                         <p>Votação aberta até 16 de maio, às 20h</p>
                     </div>
-
                 </div>
-
             </div>
 
-            <!-- Coluna direita -->
             <section class="voting-guide" id="como-funciona">
-
                 <div class="guide-heading">
-                    <div class="guide-icon">X</div>
-
+                    <div class="guide-icon" aria-hidden="true">✓</div>
                     <div>
                         <h2>Votar é simples</h2>
                         <p>Eleições 2026</p>
                     </div>
                 </div>
-
                 <ol class="guide-steps">
-
-                    <li>
-                        <span>1</span>
-                        <h3>Entre com segurança</h3>
-                    </li>
-
-                    <li>
-                        <span>2</span>
-                        <h3>Escolha o candidato</h3>
-                    </li>
-
-                    <li>
-                        <span>3</span>
-                        <h3>Guarde o comprovativo</h3>
-                    </li>
-
+                    <li><span>1</span><h3>Entre com segurança</h3></li>
+                    <li><span>2</span><h3>Escolha o candidato</h3></li>
+                    <li><span>3</span><h3>Guarde o comprovativo</h3></li>
                 </ol>
-
                 <div class="help-panel" id="ajuda">
                     <span>?</span>
-
                     <div>
                         <h3>Precisa de ajuda?</h3>
                         <p>Ligue para o contacto de apoio.</p>
                     </div>
                 </div>
-
             </section>
-
         </section>
-    <section class="services" id="servicos">
-    <div class="services-heading">
-        <div>
-            <p class="section-label">SERVIÇOS MAIS PROCURADOS</p>
-            <h2>O que precisa de fazer?</h2>
-        </div>
-        <p class="section-description">
-            Acesso rápido aos principais serviços eleitorais.
-        </p>
-    </div>
 
-    <div class="services-grid">
-        <a href="login.html?destino=votacao" class="service-card">
-            <span class="service-icon">☑</span>
-            <span class="service-text">
-                <strong>Votar online</strong>
-                <small>Aceder ao boletim digital</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-
-        <a href="login.html?destino=inscricao" class="service-card">
-            <span class="service-icon">♧</span>
-            <span class="service-text">
-                <strong>Consultar inscrição</strong>
-                <small>Confirmar círculo eleitoral</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-
-        <a href="calendario.html" class="service-card">
-            <span class="service-icon">▦</span>
-            <span class="service-text">
-                <strong>Calendário eleitoral</strong>
-                <small>Datas e prazos oficiais</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-
-        <a href="login.html?destino=resultados" class="service-card">
-            <span class="service-icon">♧</span>
-            <span class="service-text">
-                <strong>Resultados</strong>
-                <small>Acompanhar o apuramento</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-
-        <a href="login.html?destino=certidoes" class="service-card">
-            <span class="service-icon">▤</span>
-            <span class="service-text">
-                <strong>Certidões e recibos</strong>
-                <small>Obter comprovativos</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-
-        <a href="apoio.html" class="service-card">
-            <span class="service-icon">?</span>
-            <span class="service-text">
-                <strong>Apoio ao eleitor</strong>
-                <small>Esclarecer dúvidas</small>
-            </span>
-            <span class="service-arrow">›</span>
-        </a>
-    </div>
-</section>
-
-<!-- Como Portugal escolhe o Presidente -->
-<section class="election-info" id="institucional">
-
-    <div class="election-image">
-        <img
-            src="assets/portugal-eleicoes.jpg"
-            alt="Rua movimentada em Portugal"
-        >
-    </div>
-
-    <div class="election-content">
-
-        <p class="section-label">ELEIÇÕES EM PORTUGAL</p>
-
-        <h2>Como Portugal escolhe o Presidente da República.</h2>
-
-        <p class="election-description">
-            O Presidente é eleito por sufrágio universal e direto para um
-            mandato de cinco anos. Se nenhum candidato conseguir mais de
-            metade dos votos válidos, realiza-se uma segunda volta entre
-            os dois candidatos mais votados.
-        </p>
-
-        <div class="election-facts">
-
-            <div class="election-fact">
-                <strong>18 anos</strong>
-                <span>idade mínima para votar</span>
-            </div>
-
-            <div class="election-fact">
-                <strong>5 anos</strong>
-                <span>duração do mandato presidencial</span>
-            </div>
-
-            <div class="election-fact">
-                <strong>2 voltas</strong>
-                <span>quando não existe maioria absoluta</span>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="trust-section" id="confianca">
-    <div class="trust-heading">
-        <div>
-            <p class="trust-label">CONFIANÇA VERIFICÁVEL</p>
-            <h2>Segurança que se vê.<br>Privacidade que se sente.</h2>
-        </div>
-        <p class="trust-intro">
-            Cada etapa foi desenhada para proteger o eleitor sem
-            transformar a votação num processo complicado.
-        </p>
-    </div>
-
-    <div class="trust-grid">
-
-        <!-- 01 — Identidade -->
-        <article class="trust-card trust-identity">
-            <div class="trust-card-top">
-                <span class="trust-icon">♙</span>
-                <span class="trust-number">01 / IDENTIDADE</span>
-            </div>
-
-            <div class="trust-card-content">
-                <h3>Autenticação forte,<br>voto verdadeiramente anónimo.</h3>
-                <p>
-                    Confirmamos quem és sem nunca ligar a tua
-                    identidade à escolha depositada.
-                </p>
-            </div>
-
-            <div class="credential">
-                <div class="credential-line"></div>
-                <div class="credential-seal">♙</div>
-                <p>IDENTIDADE CONFIRMADA</p>
-                <strong>Credencial eleitoral válida</strong>
-                <span class="credential-check">✓</span>
-            </div>
-        </article>
-
-        <!-- 02 — Integridade -->
-        <article class="trust-card trust-integrity">
-            <div class="trust-card-top">
-                <span class="trust-icon">♧</span>
-                <span class="trust-number">02 / INTEGRIDADE</span>
-            </div>
-
-            <div class="trust-card-content">
-                <h3>Imutável por princípio.</h3>
-                <p>
-                    Cada voto integra uma cadeia criptográfica.
-                    Qualquer alteração é detetada imediatamente.
-                </p>
-            </div>
-
-            <div class="chain">
-                <div class="chain-step">
-                    <span>↗</span>
-                    <small>HASH</small>
+        <section class="services" id="servicos">
+            <div class="services-heading">
+                <div>
+                    <p class="section-label">SERVIÇOS MAIS PROCURADOS</p>
+                    <h2>O que precisa de fazer?</h2>
                 </div>
-                <div class="chain-step">
-                    <span>↗</span>
-                    <small>HASH</small>
-                </div>
-                <div class="chain-step">
-                    <span>↗</span>
-                    <small>HASH</small>
-                </div>
-                <div class="chain-step">
-                    <span>✓</span>
-                    <small>O TEU VOTO</small>
-                </div>
+                <p class="section-description">Acesso rápido aos principais serviços eleitorais.</p>
             </div>
-        </article>
-
-        <!-- 03 — Auditoria -->
-        <article class="trust-card trust-audit">
-            <div class="trust-card-top">
-                <span class="trust-icon">▤</span>
-                <span class="trust-number">03 / AUDITORIA</span>
-            </div>
-
-            <div class="trust-card-content">
-                <h3>Confiança não é promessa.<br>É evidência.</h3>
-                <p>
-                    Recibos verificáveis e registos assinados permitem
-                    auditoria independente sem revelar escolhas.
-                </p>
-            </div>
-
-            <div class="audit-log">
-                <div><span>●</span> 10:42:18 · Voto selado</div>
-                <div><span>●</span> 10:42:18 · Hash verificado</div>
-                <div><span>●</span> 10:42:19 · Réplica confirmada</div>
-            </div>
-        </article>
-
-    </div>
-</section>
-
-
-<!-- Áreas da plataforma -->
-<section class="platform-section" id="areas-plataforma">
-
-    <div class="platform-heading">
-        <div>
-            <p class="platform-label">ÁREAS DA PLATAFORMA</p>
-            <h2>Uma área para o eleitor.<br>Outra para a nossa equipa.</h2>
-        </div>
-    </div>
-
-    <div class="platform-grid">
-
-        <!-- Área do eleitor -->
-        <article class="platform-card">
-            <div class="platform-card-header">
-                <span>PAINEL DO ELEITOR</span>
-                <span class="platform-number">01</span>
-            </div>
-
-            <div class="platform-card-body">
-                <h3>Votar sem dúvidas.</h3>
-                <p>
-                    Um percurso orientado, transparente e acessível
-                    para concluir o voto em poucos minutos.
-                </p>
-
-                <a href="login.html?destino=eleitor" class="platform-button">
-                    Área do eleitor
-                    <span aria-hidden="true">→</span>
+            <div class="services-grid">
+                <a href="login.html?destino=votacao" class="service-card">
+                    <span class="service-icon">☑</span>
+                    <span class="service-text"><strong>Votar online</strong><small>Aceder ao boletim digital</small></span>
+                    <span class="service-arrow">›</span>
+                </a>
+                <a href="login.html?destino=inscricao" class="service-card">
+                    <span class="service-icon">♧</span>
+                    <span class="service-text"><strong>Consultar inscrição</strong><small>Confirmar círculo eleitoral</small></span>
+                    <span class="service-arrow">›</span>
+                </a>
+                <a href="calendario.html" class="service-card">
+                    <span class="service-icon">▦</span>
+                    <span class="service-text"><strong>Calendário eleitoral</strong><small>Datas e prazos oficiais</small></span>
+                    <span class="service-arrow">›</span>
+                </a>
+                <a href="login.html?destino=resultados" class="service-card">
+                    <span class="service-icon">♧</span>
+                    <span class="service-text"><strong>Resultados</strong><small>Acompanhar o apuramento</small></span>
+                    <span class="service-arrow">›</span>
+                </a>
+                <a href="login.html?destino=certidoes" class="service-card">
+                    <span class="service-icon">▤</span>
+                    <span class="service-text"><strong>Certidões e recibos</strong><small>Obter comprovativos</small></span>
+                    <span class="service-arrow">›</span>
+                </a>
+                <a href="apoio.html" class="service-card">
+                    <span class="service-icon">?</span>
+                    <span class="service-text"><strong>Apoio ao eleitor</strong><small>Esclarecer dúvidas</small></span>
+                    <span class="service-arrow">›</span>
                 </a>
             </div>
-        </article>
+        </section>
 
-        <!-- Área da equipa -->
-        <article class="platform-card">
-            <div class="platform-card-header">
-                <span>CENTRO DE ADMINISTRAÇÃO</span>
-                <span class="platform-number">02</span>
+        <section class="election-info" id="institucional">
+            <div class="election-image">
+                <img src="assets/portugal-eleicoes.jpg" alt="Rua movimentada em Portugal">
             </div>
-
-            <div class="platform-card-body">
-                <h3>Gestão pela equipa.</h3>
-                <p>
-                    Área reservada aos responsáveis para configurar
-                    a eleição, acompanhar o sistema e consultar auditorias.
+            <div class="election-content">
+                <p class="section-label">ELEIÇÕES EM PORTUGAL</p>
+                <h2>Como Portugal escolhe o Presidente da República.</h2>
+                <p class="election-description">
+                    O Presidente é eleito por sufrágio universal e direto para um
+                    mandato de cinco anos. Se nenhum candidato conseguir mais de
+                    metade dos votos válidos, realiza-se uma segunda volta entre
+                    os dois candidatos mais votados.
                 </p>
-
-                <a href="login.html?destino=equipa" class="platform-button">
-                    Área da equipa
-                    <span aria-hidden="true">→</span>
-                </a>
+                <div class="election-facts">
+                    <div class="election-fact"><strong>18 anos</strong><span>idade mínima para votar</span></div>
+                    <div class="election-fact"><strong>5 anos</strong><span>duração do mandato presidencial</span></div>
+                    <div class="election-fact"><strong>2 voltas</strong><span>quando não existe maioria absoluta</span></div>
+                </div>
             </div>
-        </article>
+        </section>
 
-    </div>
-</section>
+        <section class="trust-section" id="confianca">
+            <div class="trust-heading">
+                <div>
+                    <p class="trust-label">CONFIANÇA VERIFICÁVEL</p>
+                    <h2>Segurança que se vê.<br>Privacidade que se sente.</h2>
+                </div>
+                <p class="trust-intro">
+                    Cada etapa foi desenhada para proteger o eleitor sem
+                    transformar a votação num processo complicado.
+                </p>
+            </div>
+            <div class="trust-grid">
+                <article class="trust-card trust-identity">
+                    <div class="trust-card-top"><span class="trust-icon">♙</span><span class="trust-number">01 / IDENTIDADE</span></div>
+                    <div class="trust-card-content">
+                        <h3>Autenticação forte,<br>voto verdadeiramente anónimo.</h3>
+                        <p>Confirmamos quem és sem nunca ligar a tua identidade à escolha depositada.</p>
+                    </div>
+                    <div class="credential">
+                        <div class="credential-line"></div>
+                        <div class="credential-seal">♙</div>
+                        <p>IDENTIDADE CONFIRMADA</p>
+                        <strong>Credencial eleitoral válida</strong>
+                        <span class="credential-check">✓</span>
+                    </div>
+                </article>
+                <article class="trust-card trust-integrity">
+                    <div class="trust-card-top"><span class="trust-icon">♧</span><span class="trust-number">02 / INTEGRIDADE</span></div>
+                    <div class="trust-card-content">
+                        <h3>Imutável por princípio.</h3>
+                        <p>Cada voto integra uma cadeia criptográfica. Qualquer alteração é detetada imediatamente.</p>
+                    </div>
+                    <div class="chain">
+                        <div class="chain-step"><span>↗</span><small>HASH</small></div>
+                        <div class="chain-step"><span>↗</span><small>HASH</small></div>
+                        <div class="chain-step"><span>↗</span><small>HASH</small></div>
+                        <div class="chain-step"><span>✓</span><small>O TEU VOTO</small></div>
+                    </div>
+                </article>
+                <article class="trust-card trust-audit">
+                    <div class="trust-card-top"><span class="trust-icon">▤</span><span class="trust-number">03 / AUDITORIA</span></div>
+                    <div class="trust-card-content">
+                        <h3>Confiança não é promessa.<br>É evidência.</h3>
+                        <p>Recibos verificáveis e registos assinados permitem auditoria independente sem revelar escolhas.</p>
+                    </div>
+                    <div class="audit-log">
+                        <div><span>●</span> 10:42:18 · Voto selado</div>
+                        <div><span>●</span> 10:42:18 · Hash verificado</div>
+                        <div><span>●</span> 10:42:19 · Réplica confirmada</div>
+                    </div>
+                </article>
+            </div>
+        </section>
 
-<!-- Chamada final -->
-<section class="final-cta">
-    <div class="final-cta-content">
-        <h2>Consulte a eleição<br>ou entre para votar.</h2>
-        <a href="login.html?destino=eleitor" class="final-cta-button">
-            Entrar na plataforma
-            <span aria-hidden="true">→</span>
-        </a>
-    </div>
-    <div class="final-cta-oval" aria-hidden="true"></div>
-</section>
+        <section class="platform-section" id="areas-plataforma">
+            <div class="platform-heading">
+                <div>
+                    <p class="platform-label">ÁREAS DA PLATAFORMA</p>
+                    <h2>Uma área para o eleitor.<br>Outra para a nossa equipa.</h2>
+                </div>
+            </div>
+            <div class="platform-grid">
+                <article class="platform-card">
+                    <div class="platform-card-header"><span>PAINEL DO ELEITOR</span><span class="platform-number">01</span></div>
+                    <div class="platform-card-body">
+                        <h3>Votar sem dúvidas.</h3>
+                        <p>Um percurso orientado, transparente e acessível para concluir o voto em poucos minutos.</p>
+                        <a href="login.html?destino=eleitor" class="platform-button">Área do eleitor <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+                <article class="platform-card">
+                    <div class="platform-card-header"><span>CENTRO DE ADMINISTRAÇÃO</span><span class="platform-number">02</span></div>
+                    <div class="platform-card-body">
+                        <h3>Gestão pela equipa.</h3>
+                        <p>Área reservada aos responsáveis para configurar a eleição, acompanhar o sistema e consultar auditorias.</p>
+                        <a href="login.html?destino=equipa" class="platform-button">Área da equipa <span aria-hidden="true">→</span></a>
+                    </div>
+                </article>
+            </div>
+        </section>
 
+        <section class="final-cta">
+            <div class="final-cta-content">
+                <h2>Consulte a eleição<br>ou entre para votar.</h2>
+                <a href="login.html?destino=eleitor" class="final-cta-button">Entrar na plataforma <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="final-cta-oval" aria-hidden="true"></div>
+        </section>
     </main>
-    
-<!-- Footer -->
-<footer class="site-footer">
-    <div class="footer-main">
 
-        <div class="footer-brand">
-            <a href="index.html" class="footer-logo">
-                <span class="footer-logo-symbol" aria-hidden="true">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-                <span class="footer-logo-text">
-                    <strong>TRUSTVOTE</strong>
-                    <small>ELEIÇÃO PRESIDENCIAL</small>
-                </span>
-            </a>
-
-            <p>
-                Plataforma de votação digital segura,
-                auditável e tolerante a falhas.
-            </p>
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">
+                    <span class="footer-logo-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+                    <span class="footer-logo-text"><strong>TRUSTVOTE</strong><small>ELEIÇÃO PRESIDENCIAL</small></span>
+                </a>
+                <p>Plataforma de votação digital segura, auditável e tolerante a falhas.</p>
+            </div>
+            <div class="footer-column">
+                <h3>ELEIÇÕES</h3>
+                <a href="login.html?destino=eleicoes">Presidenciais 2026</a>
+                <a href="login.html?destino=resultados">Resultados</a>
+                <a href="calendario.html">Calendário</a>
+            </div>
+            <div class="footer-column">
+                <h3>ELEITOR</h3>
+                <a href="login.html?destino=eleitor">Área reservada</a>
+                <a href="login.html?destino=servicos">Serviços</a>
+                <a href="apoio.html">Perguntas frequentes</a>
+            </div>
+            <div class="footer-column">
+                <h3>INSTITUCIONAL</h3>
+                <a href="#confianca">Transparência</a>
+                <a href="#institucional">Julgados históricos</a>
+                <a href="login.html?destino=equipa">Administração</a>
+            </div>
         </div>
-
-        <div class="footer-column">
-            <h3>ELEIÇÕES</h3>
-            <a href="login.html?destino=eleicoes">Presidenciais 2026</a>
-            <a href="login.html?destino=resultados">Resultados</a>
-            <a href="calendario.html">Calendário</a>
+        <div class="footer-bottom">
+            <p>Projeto · 2026</p>
+            <div class="footer-legal">
+                <a href="#privacidade">Privacidade</a><span>·</span>
+                <a href="#acessibilidade">Acessibilidade</a><span>·</span>
+                <a href="#confianca">Transparência</a>
+            </div>
         </div>
-
-        <div class="footer-column">
-            <h3>ELEITOR</h3>
-            <a href="login.html?destino=eleitor">Área reservada</a>
-            <a href="login.html?destino=servicos">Serviços</a>
-            <a href="apoio.html">Perguntas frequentes</a>
-        </div>
-
-        <div class="footer-column">
-            <h3>INSTITUCIONAL</h3>
-            <a href="#confianca">Transparência</a>
-            <a href="#institucional">Julgados históricos</a>
-            <a href="login.html?destino=equipa">Administração</a>
-        </div>
-
-    </div>
-
-    <div class="footer-bottom">
-        <p>Projeto · 2026</p>
-
-        <div class="footer-legal">
-            <a href="#privacidade">Privacidade</a>
-            <span>·</span>
-            <a href="#acessibilidade">Acessibilidade</a>
-            <span>·</span>
-            <a href="#confianca">Transparência</a>
-        </div>
-    </div>
-</footer>
-
+    </footer>
 </body>
 </html>

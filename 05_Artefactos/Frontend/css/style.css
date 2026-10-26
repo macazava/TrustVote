@@ -1,4 +1,3 @@
-
 /* =====================================
    1. CORES E ESTILOS GERAIS
    ===================================== */
@@ -13,14 +12,13 @@
     --border: #d7cfc1;
 }
 
-/* Retirar margens automaíticas do navegador */
-
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
+    padding-top: 140px;
     font-family: Arial, sans-serif;
     color: var(--text);
     background-color: var(--cream);
@@ -67,17 +65,24 @@ p {
 }
 
 /* =====================================
-   3. CABE├çALHO PRINCIPAL
+   3. CABEÇALHO PRINCIPAL
    ===================================== */
 
-/* main header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
 .main-header {
     padding: 24px 3%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 30px;
-
     background-color: var(--white);
     border-bottom: 1px solid var(--border);
 }
@@ -135,7 +140,7 @@ p {
 }
 
 /* =====================================
-   4. SEC├ç├âO PRINCIPAL ÔÇö DUAS COLUNAS
+   4. SECÇÃO PRINCIPAL
    ===================================== */
 
 .hero {
@@ -168,7 +173,7 @@ p {
 }
 
 /* =====================================
-   5. BOT├òES
+   5. BOTÕES
    ===================================== */
 
 .hero-actions {
@@ -203,7 +208,7 @@ p {
 }
 
 /* =====================================
-   6. INDICADORES DE SEGURAN├çA
+   6. INDICADORES DE SEGURANÇA
    ===================================== */
 
 .trust-indicators {
@@ -216,7 +221,7 @@ p {
 }
 
 /* =====================================
-   7. PR├ôXIMO ATO ELEITORAL
+   7. PRÓXIMO ATO ELEITORAL
    ===================================== */
 
 .next-election {
@@ -238,7 +243,7 @@ p {
     justify-content: center;
     background-color: var(--cream);
     color: var(--navy);
-    font-size: 11px;
+    font-size: 22px;
 }
 
 .next-election p:first-child {
@@ -255,7 +260,7 @@ p {
 }
 
 /* =====================================
-   8. PAINEL "VOTAR ├ë SIMPLES"
+   8. PAINEL "VOTAR É SIMPLES"
    ===================================== */
 
 .voting-guide {
@@ -299,8 +304,6 @@ p {
     font-size: 13px;
 }
 
-/* Lista dos tr├¬s passos */
-
 .guide-steps {
     margin: 0;
     padding: 0;
@@ -336,8 +339,6 @@ p {
     font-size: 17px;
 }
 
-/* Caixa de ajuda */
-
 .help-panel {
     padding: 20px 22px;
     display: flex;
@@ -370,74 +371,9 @@ p {
 }
 
 /* =====================================
-   9. ECR├âS MAIS PEQUENOS
+   9. SERVIÇOS
    ===================================== */
 
-@media (max-width: 1050px) {
-    .main-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .main-header nav {
-        justify-content: flex-start;
-        gap: 18px;
-    }
-
-    .hero {
-        gap: 30px;
-    }
-}
-
-@media (max-width: 760px) {
-    .top-bar {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 12px 5%;
-    }
-
-    .top-bar nav {
-        flex-wrap: wrap;
-    }
-
-    .top-bar nav a {
-        padding: 8px 10px;
-    }
-
-    .main-header {
-        padding: 22px 5%;
-    }
-
-    .main-header nav {
-        gap: 14px;
-    }
-
-    .hero {
-        padding: 36px 5%;
-        grid-template-columns: 1fr;
-        gap: 36px;
-    }
-
-    .hero-content h2 {
-        font-size: 44px;
-    }
-
-    .hero-description {
-        font-size: 16px;
-    }
-
-    .hero-actions {
-        gap: 12px;
-    }
-
-    .hero-actions a {
-        padding: 14px;
-    }
-
-    .trust-indicators {
-        gap: 12px;
-    }
-}
 .services {
     margin: 0 1.2%;
     padding: 30px;
@@ -524,22 +460,9 @@ p {
     font-size: 24px;
 }
 
-@media (max-width: 760px) {
-    .services {
-        padding: 22px 16px;
-    }
-
-    .services-heading {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Informa├º├úo sobre as elei├º├Áes em Portugal */
+/* =====================================
+   10. INFORMAÇÃO ELEITORAL
+   ===================================== */
 
 .election-info {
     padding: 74px 5.4%;
@@ -595,8 +518,6 @@ p {
     line-height: 1.8;
 }
 
-/* Indicadores */
-
 .election-facts {
     margin-top: 28px;
     display: grid;
@@ -629,9 +550,88 @@ p {
     line-height: 1.5;
 }
 
-/* Adapta├º├úo a ecr├ús pequenos */
+/* =====================================
+   11. RESPONSIVIDADE
+   ===================================== */
+
+@media (max-width: 1050px) {
+    .main-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .main-header nav {
+        justify-content: flex-start;
+        gap: 18px;
+    }
+
+    .hero {
+        gap: 30px;
+    }
+}
 
 @media (max-width: 760px) {
+    .top-bar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 5%;
+    }
+
+    .top-bar nav {
+        flex-wrap: wrap;
+    }
+
+    .top-bar nav a {
+        padding: 8px 10px;
+    }
+
+    .main-header {
+        padding: 22px 5%;
+    }
+
+    .main-header nav {
+        gap: 14px;
+    }
+
+    .hero {
+        padding: 36px 5%;
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+
+    .hero-content h2 {
+        font-size: 44px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+    }
+
+    .hero-actions {
+        gap: 12px;
+    }
+
+    .hero-actions a {
+        padding: 14px;
+    }
+
+    .trust-indicators {
+        gap: 12px;
+    }
+
+    .services {
+        padding: 22px 16px;
+    }
+
+    .services-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
     .election-info {
         padding: 40px 5%;
         grid-template-columns: 1fr;
@@ -654,86 +654,68 @@ p {
         font-size: 20px;
     }
 }
-/* Cabe├ºalho fixo: barra azul + barra branca */
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    width: 100%;
-}
-
-/* Compensa o espa├ºo ocupado pelo cabe├ºalho */
-body {
-    padding-top: 140px;
-}
-
-
-/* ===== SEC├ç├âO DE CONFIAN├çA E SEGURAN├çA ===== */
+/* =====================================
+   12. SECÇÃO DE CONFIANÇA E SEGURANÇA
+   ===================================== */
 
 .trust-section {
-    padding: 58px 3% 64px;
-    background-color: var(--cream);
-    color: var(--navy);
+    padding: 80px 5.4%;
+    background-color: var(--white);
+    border-top: 1px solid var(--border);
 }
 
 .trust-heading {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    align-items: end;
-    gap: 40px;
-    margin-bottom: 36px;
+    margin-bottom: 38px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 35px;
 }
 
 .trust-label {
-    margin: 0 0 14px;
-    font-size: 10px;
-    letter-spacing: 1px;
+    margin-bottom: 16px;
     color: var(--blue);
+    font-size: 11px;
+    letter-spacing: 1.5px;
 }
 
 .trust-heading h2 {
     margin: 0;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(30px, 4vw, 38px);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.8px;
+    color: var(--navy);
+    font-family: Georgia, serif;
+    font-size: clamp(32px, 3.6vw, 46px);
+    font-weight: normal;
+    line-height: 1.15;
 }
 
 .trust-intro {
-    max-width: 310px;
-    margin: 0 0 3px auto;
-    font-size: 12px;
+    max-width: 350px;
+    margin: 0 0 4px;
+    color: #59606a;
+    font-size: 14px;
     line-height: 1.8;
-    color: #555963;
 }
 
 .trust-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 269px 314px;
-    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
 }
 
 .trust-card {
     min-width: 0;
     padding: 24px;
-    border: 1px solid var(--border);
-    background-color: var(--white);
     display: flex;
     flex-direction: column;
-}
-
-.trust-identity {
-    grid-row: 1 / 3;
+    background-color: var(--cream);
+    border: 1px solid var(--border);
 }
 
 .trust-card-top {
+    margin-bottom: 30px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
@@ -741,430 +723,261 @@ body {
 .trust-icon {
     width: 42px;
     height: 42px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #252525;
-    border-radius: 50%;
-    box-shadow: 3px 3px 0 #252525;
-    font-size: 20px;
+    display: grid;
+    place-items: center;
+    background-color: var(--white);
+    border: 1px solid var(--border);
     color: var(--navy);
+    font-size: 22px;
 }
 
 .trust-number {
-    padding-top: 5px;
-    font-size: 7px;
-    letter-spacing: 0.2px;
-    color: #555963;
+    color: #626a65;
+    font-size: 9px;
+    letter-spacing: 1px;
 }
 
 .trust-card-content {
-    margin-top: 28px;
+    flex: 1;
 }
 
 .trust-card-content h3 {
-    margin: 0 0 10px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.15;
+    margin: 0 0 14px;
+    color: var(--navy);
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: normal;
+    line-height: 1.3;
 }
 
 .trust-card-content p {
-    margin: 0;
-    font-size: 11px;
+    margin: 0 0 24px;
+    color: #515761;
+    font-size: 13px;
     line-height: 1.8;
-    color: #555963;
 }
 
 /* Credencial de identidade */
 
 .credential {
     position: relative;
-    min-height: 168px;
     margin-top: auto;
-    padding: 24px 12px 18px;
-    border: 1px solid #b9c8e9;
-    background: #f0ede5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 20px;
+    background-color: var(--white);
+    border: 1px solid var(--border);
 }
 
 .credential-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 24px;
-    border-bottom: 1px solid var(--blue);
-    box-shadow: 0 3px 4px #00000018;
+    height: 4px;
+    margin-bottom: 18px;
+    background-color: var(--blue);
 }
 
 .credential-seal {
-    width: 60px;
-    height: 60px;
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    display: grid;
+    place-items: center;
     border: 1px solid var(--blue);
     border-radius: 50%;
-    box-shadow: 0 0 0 10px #dce1e9;
     color: var(--navy);
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .credential p {
-    margin: 25px 0 6px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 8px;
-    color: var(--blue);
+    margin-bottom: 7px;
+    color: #6a726d;
+    font-size: 9px;
+    letter-spacing: 1px;
 }
 
 .credential strong {
-    font-size: 8px;
-    color: var(--text);
+    display: block;
+    padding-right: 20px;
+    color: var(--navy);
+    font-size: 12px;
 }
 
 .credential-check {
     position: absolute;
-    right: 14px;
-    bottom: 12px;
-    color: #287653;
-    font-size: 14px;
+    right: 18px;
+    bottom: 18px;
+    color: var(--blue);
+    font-size: 20px;
 }
 
-/* Integridade da cadeia */
-
-.trust-integrity .trust-card-content {
-    margin-top: 28px;
-}
+/* Cadeia de integridade */
 
 .chain {
-    display: flex;
-    align-items: flex-start;
     margin-top: auto;
-    padding: 0 4px 12px;
+    padding: 18px 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    background-color: var(--white);
+    border: 1px solid var(--border);
 }
 
 .chain-step {
-    position: relative;
-    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-}
-
-.chain-step:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    top: 12px;
-    left: calc(50% + 12px);
-    width: calc(100% - 24px);
-    border-top: 1px dashed var(--blue);
+    color: var(--navy);
 }
 
 .chain-step span {
-    z-index: 1;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
     border: 1px solid var(--blue);
     border-radius: 50%;
-    background: var(--white);
-    font-size: 10px;
+    font-size: 16px;
 }
 
 .chain-step small {
-    font-size: 6px;
-    color: var(--text);
+    font-size: 8px;
+    letter-spacing: 0.4px;
 }
 
-/* Auditoria */
-
-.trust-audit {
-    background-color: var(--navy);
-    border-color: var(--navy);
-    color: var(--white);
-}
-
-.trust-audit .trust-icon {
-    background: #f0ede5;
-    color: var(--navy);
-    border-color: #d7cfc1;
-    box-shadow: 3px 3px 0 #c19a3b;
-}
-
-.trust-audit .trust-number {
-    color: #f0ede5;
-}
-
-.trust-audit .trust-card-content h3 {
-    font-weight: 600;
-}
-
-.trust-audit .trust-card-content p {
-    color: #c5d0e1;
-}
+/* Registos de auditoria */
 
 .audit-log {
     margin-top: auto;
-    font-size: 7px;
-    color: #e2e8f0;
+    padding: 18px;
+    background-color: var(--navy);
+    color: var(--white);
 }
 
 .audit-log div {
     padding: 10px 0;
-    border-bottom: 1px solid #ffffff12;
+    font-size: 10px;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.audit-log div:last-child {
+    border-bottom: 0;
 }
 
 .audit-log span {
-    margin-right: 6px;
-    color: #57d69a;
+    margin-right: 8px;
+    color: #9bd6b7;
 }
 
-/* Adapta├º├úo a ecr├ús pequenos */
-
-@media (max-width: 760px) {
-    .trust-section {
-        padding: 42px 5%;
-    }
-
-    .trust-heading {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .trust-intro {
-        margin: 0;
-    }
-
-    .trust-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
-
-    .trust-identity {
-        grid-row: auto;
-        min-height: 460px;
-    }
-
-    .trust-integrity {
-        min-height: 269px;
-    }
-
-    .trust-audit {
-        min-height: 300px;
-    }
-}
-
-@media (max-width: 420px) {
-    .trust-card {
-        padding: 20px;
-    }
-
-    .trust-heading h2 {
-        font-size: 30px;
-    }
-
-    .trust-card-content h3 {
-        font-size: 18px;
-    }
-}
-
-/* ===== ├üREAS DA PLATAFORMA ===== */
+/* =====================================
+   13. ÁREAS DA PLATAFORMA
+   ===================================== */
 
 .platform-section {
-    padding: 54px 2.8% 64px;
-    background-color: #e7e1d5;
-    color: var(--navy);
+    padding: 78px 5.4%;
+    background-color: var(--cream);
 }
 
 .platform-heading {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    align-items: center;
-    gap: 40px;
-    margin-bottom: 56px;
+    margin-bottom: 34px;
 }
 
 .platform-label {
-    margin: 0 0 20px;
+    margin-bottom: 15px;
     color: var(--blue);
     font-size: 11px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.5px;
 }
 
 .platform-heading h2 {
     margin: 0;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(36px, 5vw, 56px);
-    font-weight: 400;
-    line-height: 1.08;
-    letter-spacing: -1.2px;
-}
-
-.platform-intro {
-    max-width: 400px;
-    margin: 20px auto 0;
-    color: #4e535b;
-    font-size: 15px;
-    line-height: 1.7;
+    color: var(--navy);
+    font-family: Georgia, serif;
+    font-size: clamp(32px, 3.5vw, 45px);
+    font-weight: normal;
+    line-height: 1.2;
 }
 
 .platform-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    gap: 20px;
 }
 
 .platform-card {
     min-width: 0;
-    min-height: 310px;
     background-color: var(--white);
     border: 1px solid var(--border);
 }
 
 .platform-card-header {
-    min-height: 48px;
-    padding: 0 20px;
+    padding: 20px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #292d33;
-    color: #424650;
-    font-size: 8px;
-    letter-spacing: 0.2px;
+    gap: 15px;
+    background-color: var(--navy);
+    color: var(--white);
+    font-size: 10px;
+    letter-spacing: 1px;
 }
 
 .platform-number {
-    color: var(--blue);
-    font-weight: 700;
+    font-size: 12px;
 }
 
 .platform-card-body {
-    padding: 40px 34px 32px;
+    padding: 30px 26px;
 }
 
 .platform-card-body h3 {
-    margin: 0 0 6px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(23px, 2.5vw, 30px);
-    font-weight: 400;
-    line-height: 1.2;
-    color: #292d33;
+    margin: 0 0 15px;
+    color: var(--navy);
+    font-family: Georgia, serif;
+    font-size: 29px;
+    font-weight: normal;
 }
 
 .platform-card-body p {
-    margin: 0;
-    color: #4e535b;
-    font-size: 16px;
-    line-height: 1.65;
+    max-width: 460px;
+    margin-bottom: 28px;
+    color: #515761;
+    font-size: 14px;
+    line-height: 1.8;
 }
 
 .platform-button {
-    width: fit-content;
-    min-height: 50px;
-    padding: 0 22px;
+    min-height: 48px;
+    padding: 14px 18px;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    border: 1px solid var(--navy);
-    border-radius: 2px;
-    background: transparent;
-    color: #292d33;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
+    gap: 30px;
+    background-color: var(--blue);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .platform-button:hover {
     background-color: var(--navy);
-    color: var(--white);
 }
 
 .platform-button span {
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 17px;
 }
 
-/* Adapta├º├úo a tablets e telem├│veis */
-
-@media (max-width: 760px) {
-    .platform-section {
-        padding: 42px 5%;
-    }
-
-    .platform-heading {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        margin-bottom: 32px;
-    }
-
-    .platform-heading h2 {
-        font-size: clamp(34px, 7vw, 46px);
-    }
-
-    .platform-intro {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .platform-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .platform-card {
-        min-height: 270px;
-    }
-
-    .platform-card-body {
-        padding: 32px 24px;
-    }
-
-    .platform-card-body h3 {
-        font-size: 25px;
-    }
-
-    .platform-card-body p {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 420px) {
-    .platform-heading h2 {
-        font-size: 32px;
-        letter-spacing: -0.5px;
-    }
-
-    .platform-card-body {
-        padding: 28px 20px;
-    }
-
-    .platform-button {
-        padding: 0 16px;
-        font-size: 13px;
-    }
-}
-
-/* ===== CHAMADA FINAL ===== */
+/* =====================================
+   14. CHAMADA FINAL
+   ===================================== */
 
 .final-cta {
     position: relative;
-    min-height: 450px;
-    padding: 70px 20px;
+    min-height: 300px;
+    padding: 55px 7%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 35px;
     overflow: hidden;
     background-color: var(--navy);
     color: var(--white);
@@ -1173,120 +986,135 @@ body {
 .final-cta-content {
     position: relative;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
 }
 
-.final-cta h2 {
-    margin: 0 0 28px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(38px, 6vw, 62px);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -1.3px;
+.final-cta-content h2 {
+    margin: 0 0 25px;
+    font-family: Georgia, serif;
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: normal;
+    line-height: 1.2;
 }
 
 .final-cta-button {
-    min-height: 42px;
-    padding: 0 20px;
+    padding: 15px 20px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 18px;
-    border-radius: 2px;
+    gap: 25px;
     background-color: var(--white);
-    color: var(--blue);
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: background-color 0.2s;
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .final-cta-button:hover {
-    background-color: #e8e1d5;
+    background-color: var(--cream);
 }
 
 .final-cta-button span {
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 18px;
 }
 
 .final-cta-oval {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: min(60%, 630px);
-    height: 205px;
-    border: 1px solid #ffffff38;
+    top: -100px;
+    right: 8%;
+    width: 350px;
+    height: 350px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    transform: translate(-50%, -50%) rotate(-8deg);
-    pointer-events: none;
 }
 
-/* ===== FOOTER ===== */
+.final-cta-oval::before,
+.final-cta-oval::after {
+    position: absolute;
+    content: "";
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.final-cta-oval::before {
+    inset: 30px;
+}
+
+.final-cta-oval::after {
+    inset: 65px;
+}
+
+/* =====================================
+   15. RODAPÉ
+   ===================================== */
 
 .site-footer {
-    padding: 44px 6.6% 0;
-    background-color: #eeeae0;
-    color: #252a32;
-    font-family: Georgia, "Times New Roman", serif;
+    padding: 50px 5.4% 20px;
+    background-color: #123b2e;
+    color: var(--white);
 }
 
 .footer-main {
+    padding-bottom: 40px;
     display: grid;
-    grid-template-columns: 1.5fr 0.9fr 0.9fr 0.9fr;
-    gap: 36px;
-    padding-bottom: 38px;
+    grid-template-columns: 1.7fr 1fr 1fr 1fr;
+    gap: 35px;
+}
+
+.footer-brand {
+    max-width: 310px;
 }
 
 .footer-logo {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    color: #292d33;
-    text-decoration: none;
+    gap: 12px;
 }
 
 .footer-logo-symbol {
-    width: 28px;
-    height: 28px;
-    padding: 5px 4px;
+    width: 42px;
+    height: 42px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    gap: 2px;
-    background-color: var(--navy);
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .footer-logo-symbol span {
-    display: block;
-    width: 100%;
-    height: 3px;
+    width: 5px;
     background-color: var(--white);
-    transform: skewY(-14deg);
+}
+
+.footer-logo-symbol span:nth-child(1) {
+    height: 12px;
+}
+
+.footer-logo-symbol span:nth-child(2) {
+    height: 20px;
+}
+
+.footer-logo-symbol span:nth-child(3) {
+    height: 15px;
 }
 
 .footer-logo-text {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
 }
 
 .footer-logo-text strong {
-    font-size: 16px;
-    letter-spacing: 0.8px;
+    font-size: 17px;
+    letter-spacing: 2px;
 }
 
 .footer-logo-text small {
-    font-size: 7px;
-    letter-spacing: 0.3px;
+    font-size: 8px;
+    letter-spacing: 1px;
 }
 
 .footer-brand > p {
-    max-width: 260px;
-    margin: 17px 0 0;
+    margin-top: 22px;
+    color: #d5e0d9;
     font-size: 12px;
     line-height: 1.8;
 }
@@ -1295,21 +1123,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 14px;
 }
 
 .footer-column h3 {
-    margin: 4px 0 8px;
-    color: var(--blue);
-    font-size: 11px;
-    font-weight: 700;
+    margin: 0 0 6px;
+    color: #b8d5c4;
+    font-size: 10px;
+    letter-spacing: 1.5px;
 }
 
-.footer-column a,
-.footer-legal a {
-    color: #252a32;
+.footer-column a {
+    color: #e4ebe6;
     font-size: 12px;
-    text-decoration: none;
 }
 
 .footer-column a:hover,
@@ -1318,81 +1144,166 @@ body {
 }
 
 .footer-bottom {
-    min-height: 48px;
-    border-top: 1px solid #d2ccc0;
+    padding-top: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .footer-bottom p {
     margin: 0;
+    color: #d5e0d9;
     font-size: 11px;
 }
 
 .footer-legal {
     display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-.footer-legal a {
+    flex-wrap: wrap;
+    gap: 12px;
+    color: #d5e0d9;
     font-size: 11px;
 }
 
-/* Adapta├º├úo para dispositivos mais pequenos */
+/* =====================================
+   16. AJUSTES PARA TABLETS
+   ===================================== */
 
-@media (max-width: 760px) {
-    .final-cta {
-        min-height: 360px;
+@media (max-width: 1000px) {
+    .trust-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .final-cta h2 {
-        font-size: clamp(36px, 8vw, 48px);
-    }
-
-    .final-cta-oval {
-        width: 90%;
-        height: 170px;
-    }
-
-    .site-footer {
-        padding: 36px 5% 0;
+    .trust-card:last-child {
+        grid-column: 1 / -1;
     }
 
     .footer-main {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 32px 24px;
     }
 
-    .footer-bottom {
-        padding: 16px 0;
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .footer-legal {
-        flex-wrap: wrap;
+    .election-info {
+        gap: 30px;
     }
 }
 
-@media (max-width: 420px) {
+/* =====================================
+   17. AJUSTES PARA TELEMÓVEIS
+   ===================================== */
+
+@media (max-width: 760px) {
+    body {
+        padding-top: 0;
+    }
+
+    header {
+        position: relative;
+    }
+
+    .trust-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .trust-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trust-card:last-child {
+        grid-column: auto;
+    }
+
+    .trust-section,
+    .platform-section {
+        padding: 48px 5%;
+    }
+
+    .platform-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .final-cta {
+        min-height: 280px;
+        padding: 45px 6%;
+    }
+
+    .final-cta-oval {
+        right: -200px;
+        opacity: 0.6;
+    }
+
     .footer-main {
         grid-template-columns: 1fr 1fr;
-        gap: 28px 18px;
+        gap: 30px 20px;
     }
 
     .footer-brand {
         grid-column: 1 / -1;
     }
 
-    .footer-column a {
-        font-size: 11px;
+    .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* =====================================
+   18. AJUSTES PARA ECRÃS MUITO PEQUENOS
+   ===================================== */
+
+@media (max-width: 420px) {
+    .brand-logo {
+        width: 46px;
+        height: 46px;
     }
 
-    .footer-bottom p,
-    .footer-legal a {
-        font-size: 10px;
+    .brand-info h1 {
+        font-size: 20px;
+    }
+
+    .main-header nav {
+        gap: 12px;
+    }
+
+    .main-header nav a {
+        font-size: 12px;
+    }
+
+    .hero-content h2 {
+        font-size: 38px;
+    }
+
+    .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .hero-actions a {
+        text-align: center;
+    }
+
+    .guide-heading h2 {
+        font-size: 25px;
+    }
+
+    .election-facts {
+        grid-template-columns: 1fr;
+    }
+
+    .election-fact + .election-fact {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+    }
+
+    .footer-main {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-brand {
+        grid-column: auto;
     }
 }
