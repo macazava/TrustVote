@@ -139,12 +139,6 @@ TrustVote/
     └── health_check.sh
 ```
 
-## Nota sobre a estrutura
-
-A estrutura apresentada representa a organização proposta para o repositório. Os diretórios e ficheiros devem ser criados e preenchidos de acordo com os componentes efetivamente desenvolvidos.
-
-Os diretórios de `00_Identificacao` a `07_Autorizacoes` destinam-se à documentação académica. Os restantes diretórios organizam o código-fonte, os serviços distribuídos, a base de dados, a componente de Inteligência Artificial, a segurança, os testes e os scripts de execução.
-
 ---
 
 *Repositório académico — Universidade Europeia / IADE | Engenharia Informática | 2026/2027*
