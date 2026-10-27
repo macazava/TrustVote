@@ -37,10 +37,6 @@ O sistema destina-se a cenários de votação definidos para o projeto, não dev
 ```
 TrustVote/
 │
-├── README.md
-├── .gitignore
-├── .env.example
-├── docker-compose.yml
 │
 ├── 00_Identificacao/
 │   └── info.md
@@ -87,52 +83,5 @@ TrustVote/
 ├── 07_Autorizacoes/
 │   └── README.md
 │
-├── frontend/
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   └── assets/
-│
-├── backend/
-│   ├── api/
-│   ├── services/
-│   ├── models/
-│   ├── repositories/
-│   ├── middleware/
-│   └── config/
-│
-├── distributed/
-│   ├── load_balancer/
-│   ├── service_instances/
-│   ├── replication/
-│   ├── health_checks/
-│   └── recovery/
-│
-├── database/
-│   ├── schema/
-│   ├── migrations/
-│   └── seeds/
-│
-├── ai/
-│   ├── data/
-│   ├── models/
-│   ├── training/
-│   └── predictions/
-│
-├── security/
-│   ├── authentication/
-│   ├── encryption/
-│   └── audit_logs/
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   ├── distributed/
-│   ├── security/
-│   └── fault_tolerance/
-│
-└── scripts/
-    ├── start.sh
-    ├── stop.sh
-    └── health_check.sh
-```
+
+
