@@ -1,19 +1,20 @@
-
 <!doctype html>
 <html lang="pt-PT">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Calendário eleitoral, Presidenciais 2025, estatísticas e resultados.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calendário, eleições académicas, estatísticas e resultados.">
 
-    <title>Eleições | TrustVote</title>
+  <title>Eleições | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <script defer src="../js/main.js"></script>
-    <script defer src="../js/api.js"></script>
-    <script defer src="../js/site.js"></script>
-    <script defer src="../js/publico.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/site.js"></script>
+  <script defer src="../js/publico.js"></script>
 </head>
 
 <body>
@@ -29,24 +30,25 @@
     </div>
   </div>
 
-  <header class="site-header">
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="../index.html">
         <span class="brand-mark">✓</span>
-        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="servicos.html">Serviços eleitorais</a>
         <a href="calendario.html">Eleições</a>
-        <a href="partidos.html">Partidos</a>
+        <a href="listas.html">Listas</a>
         <a href="comunicacao.html">Comunicação</a>
-        <a href="julgados.html">Julgados históricos</a>
-        <a href="legislacao.html">Legislação</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="regulamento.html">Regulamento</a>
         <a href="institucional.html">Institucional</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+          data-voter-link>Votar <span>→</span></a>
       </div>
     </div>
   </header>
@@ -66,29 +68,30 @@
     </div>
   </div>
 
-  <main class="container section-page">
+  <main
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
 
     <!-- Menu da secção -->
     <aside class="section-aside">
-      <div class="side-menu">
+      <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
         <h2>Eleições</h2>
         <nav aria-label="Eleições">
           <a href="#calendario-eleitoral">Calendário eleitoral</a>
-          <a href="#presidenciais-2025">Presidenciais 2025</a>
+          <a href="#associacao-de-estudantes">Associação de Estudantes 2025</a>
+          <a href="#outras-eleicoes">Outras eleições académicas</a>
           <a href="#estatisticas">Estatísticas</a>
           <a href="#resultados-das-eleicoes">Resultados das eleições</a>
           <a href="#guia-do-eleitor">Guia do eleitor</a>
-          <a href="#arquivo-de-resultados">Arquivo de resultados</a>
         </nav>
       </div>
-      <div class="manager-card">
+      <div class="manager-card rounded-2xl shadow-soft">
         <h2>Gestor responsável</h2>
-        <a href="institucional.html#contactos">Direção de Assuntos Estratégicos <span>›</span></a>
+        <a href="institucional.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
       </div>
     </aside>
 
     <!-- Conteúdo: um tema de cada vez -->
-    <div class="section-content">
+    <div class="section-content rounded-2xl shadow-soft">
       <article class="section-item" id="calendario-eleitoral" data-item>
         <div class="section-item-head">
           <h1>Calendário eleitoral</h1>
@@ -97,82 +100,89 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-    <p class="lead">
-        Consulte as etapas ilustrativas do processo eleitoral
-        nesta maquete.
-    </p>
+        <p class="lead">
+          Etapas das eleições académicas da Universidade Exemplo, com as datas obtidas a partir da plataforma.
+        </p>
 
-    <article class="dash-card" data-calendar-live></article>
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift"
+          data-calendar-live></article>
 
-    <!-- Etapas do processo eleitoral -->
-    <div class="timeline">
+        <!-- Etapas do processo eleitoral -->
+        <div class="timeline">
 
-        <article data-phase="preparacao">
+          <article data-phase="preparacao">
             <time>FASE 01</time>
-
             <div>
-                <h2>Preparação da eleição</h2>
-
-                <p>
-                    Publicação de informação e preparação
-                    dos materiais eleitorais.
-                </p>
-
-                <span class="status-pill">EXEMPLO</span>
+              <h2>Apresentação das listas</h2>
+              <p>
+                Entrega das listas candidatas à comissão eleitoral académica
+                e publicação dos cadernos eleitorais.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
             </div>
-        </article>
+          </article>
 
-        <article data-phase="votacao">
+          <article data-phase="votacao">
             <time>FASE 02</time>
-
             <div>
-                <h2>Período de votação</h2>
-
-                <p>
-                    Período demonstrativo de acesso à interface
-                    de votação.
-                </p>
-
-                <span class="status-pill">EXEMPLO</span>
+              <h2>Período de votação</h2>
+              <p>
+                Os estudantes elegíveis votam online, a partir de qualquer
+                dispositivo, durante o período definido.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
             </div>
-        </article>
+          </article>
 
-        <article data-phase="apuramento">
+          <article data-phase="apuramento">
             <time>FASE 03</time>
-
             <div>
-                <h2>Apuramento e resultados</h2>
-
-                <p>
-                    Verificação e divulgação de resultados
-                    por canais oficiais.
-                </p>
-
-                <span class="status-pill">EXEMPLO</span>
+              <h2>Apuramento e resultados</h2>
+              <p>
+                Contagem verificada e publicação dos resultados
+                pela comissão eleitoral académica.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
             </div>
-        </article>
+          </article>
 
-    </div>
+        </div>
 
-    <p class="notice">
-        As datas concretas não estão confirmadas nesta maquete.
-        Consulte as fontes oficiais para informação eleitoral atualizada.
-    </p>
+        <p class="notice rounded-xl">
+          As datas são definidas pela comissão eleitoral académica e atualizadas automaticamente a partir da plataforma.
+        </p>
       </article>
 
-      <article class="section-item" id="presidenciais-2025" data-item>
+      <article class="section-item" id="associacao-de-estudantes" data-item>
         <div class="section-item-head">
-          <h1>Presidenciais 2025</h1>
+          <h1>Associação de Estudantes 2025</h1>
           <div class="section-item-tools">
             <button class="pill-button" type="button" data-share>↗ Partilhar</button>
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>A simulação utiliza nomes de candidatos reais das Presidenciais de 2021. Os resultados apresentados são inteiramente fictícios.</p>
-        <p>A participação é atualizada em tempo real sem ligar o voto à identidade do eleitor.</p>
+        <p>Eleição da direção da Associação de Estudantes da Universidade Exemplo. Concorrem as listas admitidas pela
+          comissão eleitoral académica.</p>
+        <p>A participação é atualizada em tempo real sem ligar o voto à identidade do estudante.</p>
         <ul class="section-links">
           <li><a href="login.html?area=eleitor" data-voter-link>Aceder à votação</a></li>
-          <li><a href="partidos.html#candidaturas-registadas">Ver candidaturas</a></li>
+          <li><a href="listas.html#listas-candidatas">Ver listas candidatas</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="outras-eleicoes" data-item>
+        <div class="section-item-head">
+          <h1>Outras eleições académicas</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>A plataforma também é usada para eleger representantes de turma, representantes de curso, direções de núcleos
+          académicos e membros de órgãos e comissões académicas.</p>
+        <p>Cada estudante só vê as eleições em que foi habilitado pela comissão eleitoral.</p>
+        <ul class="section-links">
+          <li><a href="login.html?area=eleitor" data-voter-link>Ver as minhas eleições</a></li>
         </ul>
       </article>
 
@@ -185,8 +195,8 @@
           </div>
         </div>
         <p>Participação da eleição em curso, obtida em tempo real a partir da plataforma.</p>
-        <div class="facts" data-live-stats>
-          <div><b data-live="eleitores">—</b><small>eleitores na simulação</small></div>
+        <div class="facts grid-cols-2 sm:grid-cols-3" data-live-stats>
+          <div><b data-live="eleitores">—</b><small>estudantes elegíveis</small></div>
           <div><b data-live="votos">—</b><small>votos depositados</small></div>
           <div><b data-live="participacao">—</b><small>participação atual</small></div>
         </div>
@@ -203,8 +213,9 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>Os resultados provisórios só ficam definitivos depois da verificação de integridade.</p>
-        <p>Qualquer cidadão pode confirmar a contagem a partir dos dados publicados.</p>
+        <p>Os resultados provisórios só ficam definitivos depois da verificação de integridade pela comissão eleitoral
+          académica.</p>
+        <p>Os resultados das eleições anteriores continuam disponíveis na plataforma.</p>
         <ul class="section-links">
           <li><a href="resultados.html">Consultar resultados</a></li>
           <li><a href="institucional.html#transparencia">Verificar integridade da contagem</a></li>
@@ -219,27 +230,13 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>Confirme a sua inscrição e tenha consigo o Cartão de Cidadão ou a Chave Móvel Digital.</p>
-        <p>O voto é cifrado no dispositivo e separado da identidade. No final recebe um comprovativo anónimo.</p>
+        <p>Entre com o e-mail e a palavra-passe da sua conta de estudante. Se tiver a autenticação de dois fatores
+          ativa, tenha a aplicação autenticadora à mão.</p>
+        <p>O voto é cifrado e separado da identidade. No final recebe um comprovativo anónimo.</p>
         <ul class="section-links">
-          <li><a href="servicos.html#local-voto">Preparar a votação</a></li>
-          <li><a href="privacidade.html">Como proteger os seus dados</a></li>
+          <li><a href="servicos.html#como-votar">Preparar a votação</a></li>
+          <li><a href="privacidade.html">Como protegemos os seus dados</a></li>
           <li><a href="servicos.html#recibo-de-voto">Compreender o recibo de voto</a></li>
-        </ul>
-      </article>
-
-      <article class="section-item" id="arquivo-de-resultados" data-item>
-        <div class="section-item-head">
-          <h1>Arquivo de resultados</h1>
-          <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
-          </div>
-        </div>
-        <p>Desde 1976 os portugueses escolhem o Presidente da República pelo voto direto.</p>
-        <ul class="section-links">
-          <li><a href="resultados.html">Eleições encerradas na plataforma</a></li>
-          <li><a href="julgados.html">Linha do tempo histórica</a></li>
         </ul>
       </article>
 
@@ -250,17 +247,17 @@
 
   <!-- Rodapé TrustVote -->
   <footer class="site-footer">
-    <div class="footer-main container">
-      <div class="footer-about">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="../index.html">
           <span class="brand-mark">✓</span>
-          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
         <a href="resultados.html">Resultados</a>
         <a href="calendario.html">Calendário</a>
       </div>
@@ -273,13 +270,14 @@
       <div>
         <b>INSTITUCIONAL</b>
         <a href="institucional.html#transparencia">Transparência</a>
-        <a href="julgados.html">Julgados históricos</a>
+        <a href="historico.html">Histórico eleitoral</a>
         <a href="login.html?area=equipa">Administração</a>
       </div>
     </div>
     <div class="footer-bottom container">
       <span>Projeto académico demonstrativo · 2025</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a href="institucional.html#transparencia">Transparência</a></span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
+          href="institucional.html#transparencia">Transparência</a></span>
     </div>
   </footer>
 

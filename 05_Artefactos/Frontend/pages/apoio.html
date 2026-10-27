@@ -1,23 +1,24 @@
-
 <!doctype html>
 <html lang="pt-PT">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Apoio ao eleitor | TrustVote</title>
+  <title>Apoio ao eleitor | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <script defer src="../js/main.js"></script>
-    <script defer src="../js/api.js"></script>
-    <script defer src="../js/site.js"></script>
-    <script defer src="../js/publico.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/site.js"></script>
+  <script defer src="../js/publico.js"></script>
 </head>
 
 <body>
 
-    <!-- Cabeçalho original do TrustVote -->
+  <!-- Cabeçalho original do TrustVote -->
   <div class="topbar">
     <div class="topbar-inner">
       <a href="acessibilidade.html">Acessibilidade</a>
@@ -28,24 +29,25 @@
     </div>
   </div>
 
-  <header class="site-header">
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="../index.html">
         <span class="brand-mark">✓</span>
-        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="servicos.html">Serviços eleitorais</a>
         <a href="calendario.html">Eleições</a>
-        <a href="partidos.html">Partidos</a>
+        <a href="listas.html">Listas</a>
         <a href="comunicacao.html">Comunicação</a>
-        <a href="julgados.html">Julgados históricos</a>
-        <a href="legislacao.html">Legislação</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="regulamento.html">Regulamento</a>
         <a href="institucional.html">Institucional</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+          data-voter-link>Votar <span>→</span></a>
       </div>
     </div>
   </header>
@@ -60,113 +62,104 @@
     </div>
   </div>
 
-    <main class="container content-page">
+  <main class="container content-page">
 
-        <p class="eyebrow">APOIO AO ELEITOR</p>
+    <p class="eyebrow">APOIO AO ELEITOR</p>
 
-        <h1>Como podemos ajudar?</h1>
+    <h1>Como podemos ajudar?</h1>
 
-        <p class="lead">
-            Respostas às dúvidas mais comuns sobre esta interface demonstrativa.
+    <p class="lead">
+      Respostas às dúvidas mais comuns sobre esta interface demonstrativa.
+    </p>
+
+    <!-- Perguntas frequentes -->
+    <div class="faq-list">
+
+      <details open>
+        <summary>
+          Em que eleições posso votar nesta plataforma?
+        </summary>
+
+        <p>
+          Nas eleições académicas em que a comissão eleitoral o habilitou: Associação de Estudantes, representantes de
+          turma e de curso, núcleos e órgãos académicos.
         </p>
+      </details>
 
-        <!-- Perguntas frequentes -->
-        <div class="faq-list">
+      <details>
+        <summary>
+          O que faço se não conseguir iniciar sessão?
+        </summary>
 
-            <details open>
-                <summary>
-                    Esta plataforma permite votar numa eleição real?
-                </summary>
+        <p>
+          Confirme o e-mail da sua conta de estudante e a palavra-passe. Se continuar sem acesso, use “Recuperar acesso”
+          ou contacte a comissão eleitoral.
+        </p>
+      </details>
 
-                <p>
-                    Não. Esta versão é uma maquete académica de interface
-                    e não regista votos reais.
-                </p>
-            </details>
+      <details>
+        <summary>
+          Para que serve o recibo de voto?
+        </summary>
 
-            <details>
-                <summary>
-                    O que faço se não conseguir iniciar sessão?
-                </summary>
+        <p>
+          Confirma que o seu voto foi incluído na contagem, sem revelar a escolha. Pode verificá-lo na área do eleitor.
+        </p>
+      </details>
 
-                <p>
-                    A autenticação ainda precisa de ser ligada ao backend
-                    Python. Não introduza credenciais reais nesta demonstração.
-                </p>
-            </details>
+      <details>
+        <summary>
+          Onde posso confirmar datas e regras?
+        </summary>
 
-            <details>
-                <summary>
-                    O recibo de voto é oficial?
-                </summary>
+        <p>
+          No calendário eleitoral e no regulamento, publicados pela comissão eleitoral académica.
+        </p>
+      </details>
 
-                <p>
-                    Não. Os recibos reais dependem da implementação do backend
-                    e dos mecanismos de verificação definidos para o projeto.
-                </p>
-            </details>
+    </div>
 
-            <details>
-                <summary>
-                    Onde posso confirmar datas e legislação?
-                </summary>
+    <!-- Formulário de contacto demonstrativo -->
+    <form id="support-form"
+      class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift support-form">
 
-                <p>
-                    Consulte as fontes oficiais, incluindo a Comissão Nacional
-                    de Eleições e os portais institucionais relevantes.
-                </p>
-            </details>
+      <h2>Contactar a comissão eleitoral académica</h2>
 
-        </div>
+      <label class="field-label">
+        E-mail
+        <input type="email" required placeholder="nome@exemplo.pt">
+      </label>
 
-        <!-- Formulário de contacto demonstrativo -->
-        <form id="support-form" class="dash-card support-form">
+      <label class="field-label">
+        Mensagem
+        <textarea required rows="4" placeholder="Descreva a sua dúvida"></textarea>
+      </label>
 
-            <h2>Contactar a equipa do projeto</h2>
+      <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift">
+        Preparar mensagem →
+      </button>
 
-            <label class="field-label">
-                E-mail
-                <input
-                    type="email"
-                    required
-                    placeholder="nome@exemplo.pt"
-                >
-            </label>
+      <p class="form-message" role="status">
+        O formulário é demonstrativo e não envia mensagens.
+      </p>
 
-            <label class="field-label">
-                Mensagem
-                <textarea
-                    required
-                    rows="4"
-                    placeholder="Descreva a sua dúvida"
-                ></textarea>
-            </label>
+    </form>
 
-            <button class="button button-primary">
-                Preparar mensagem →
-            </button>
+  </main>
 
-            <p class="form-message" role="status">
-                O formulário é demonstrativo e não envia mensagens.
-            </p>
-
-        </form>
-
-    </main>
-
-    <!-- Rodapé original -->
+  <!-- Rodapé original -->
   <footer class="site-footer">
-    <div class="footer-main container">
-      <div class="footer-about">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="../index.html">
           <span class="brand-mark">✓</span>
-          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
         <a href="resultados.html">Resultados</a>
         <a href="calendario.html">Calendário</a>
       </div>
@@ -179,15 +172,17 @@
       <div>
         <b>INSTITUCIONAL</b>
         <a href="institucional.html#transparencia">Transparência</a>
-        <a href="julgados.html">Julgados históricos</a>
+        <a href="historico.html">Histórico eleitoral</a>
         <a href="login.html?area=equipa">Administração</a>
       </div>
     </div>
     <div class="footer-bottom container">
       <span>Projeto académico demonstrativo · 2025</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a href="institucional.html#transparencia">Transparência</a></span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
+          href="institucional.html#transparencia">Transparência</a></span>
     </div>
   </footer>
 
 </body>
+
 </html>
