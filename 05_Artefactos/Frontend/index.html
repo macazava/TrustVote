@@ -1,17 +1,20 @@
-
 <!doctype html>
 <html lang="pt-PT">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="TrustVote — informação eleitoral e demonstração de votação digital.">
-  <title>TrustVote | Eleição Presidencial</title>
+  <meta name="description" content="TrustVote — votação digital para eleições académicas.">
+  <title>TrustVote | Eleições Académicas</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="js/tailwind.config.js"></script>
   <script defer src="js/main.js"></script>
   <script defer src="js/api.js"></script>
   <script defer src="js/site.js"></script>
   <script defer src="js/inicio.js"></script>
 </head>
+
 <body data-page="home">
   <div class="topbar">
     <div class="topbar-inner">
@@ -23,36 +26,38 @@
     </div>
   </div>
 
-  <header class="site-header">
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="index.html">
         <span class="brand-mark">✓</span>
-        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="pages/servicos.html">Serviços eleitorais</a>
         <a href="pages/calendario.html">Eleições</a>
-        <a href="pages/partidos.html">Partidos</a>
+        <a href="pages/listas.html">Listas</a>
         <a href="pages/comunicacao.html">Comunicação</a>
-        <a href="pages/julgados.html">Julgados históricos</a>
-        <a href="pages/legislacao.html">Legislação</a>
+        <a href="pages/historico.html">Histórico eleitoral</a>
+        <a href="pages/regulamento.html">Regulamento</a>
         <a href="pages/institucional.html">Institucional</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="pages/login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="pages/login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
       </div>
     </div>
   </header>
 
   <main id="inicio">
-    <section class="hero container">
+    <section class="hero grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 xl:gap-16 container">
       <div class="hero-copy">
-        <p class="eyebrow"><i></i> PROJETO ACADÉMICO · ELEIÇÕES PRESIDENCIAIS 2025</p>
+        <p class="eyebrow"><i></i> PROJETO ACADÉMICO · ASSOCIAÇÃO DE ESTUDANTES 2025</p>
         <h1>O seu voto.<br><em>Seguro e simples.</em></h1>
-        <p class="lead">Consulte informação eleitoral e vote online com tranquilidade. A plataforma acompanha-o em cada passo e protege sempre a sua escolha.</p>
+        <p class="lead">Consulte informação eleitoral e vote online com tranquilidade. A plataforma acompanha-o em cada
+          passo e protege sempre a sua escolha.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="pages/login.html?area=eleitor">Aceder à votação <span>→</span></a>
+          <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift"
+            href="pages/login.html?area=eleitor">Aceder à votação <span>→</span></a>
           <a class="text-link" href="#seguranca">Ver como funciona <span>↘</span></a>
         </div>
         <div class="trust-points">
@@ -60,7 +65,7 @@
           <span>✓ Auditável</span>
           <span>✓ Tolerante a falhas</span>
         </div>
-        <div class="election-alert">
+        <div class="election-alert rounded-xl">
           <span class="alert-icon">▦</span>
           <div>
             <small>PRÓXIMO ATO ELEITORAL</small>
@@ -69,70 +74,82 @@
           <a href="pages/calendario.html">Ver datas →</a>
         </div>
       </div>
-      <aside class="steps-card" aria-label="Como votar">
+      <aside class="steps-card rounded-2xl overflow-hidden" aria-label="Como votar">
         <div class="steps-head">
-          <span class="large-icon">▣</span>
+          <span class="large-icon rounded-xl">▣</span>
           <div>
-            <small>ELEIÇÕES PRESIDENCIAIS 2025</small>
+            <small>ASSOCIAÇÃO DE ESTUDANTES 2025</small>
             <h2>Votar é simples</h2>
           </div>
         </div>
         <ol class="steps-list">
-          <li><span>1</span><b>Entre com segurança</b><small>Use o seu e-mail e a palavra-passe, com código de dois fatores se o tiver ativo.</small></li>
-          <li><span>2</span><b>Escolha o candidato</b><small>Leia o boletim com calma antes de confirmar.</small></li>
-          <li><span>3</span><b>Guarde o comprovativo</b><small>Recebe um recibo anónimo para verificar o voto.</small></li>
+          <li><span>1</span><b>Entre com segurança</b><small>Use o e-mail e a palavra-passe da sua conta de estudante, com código de dois fatores se o tiver ativo.</small></li>
+          <li><span>2</span><b>Escolha a lista</b><small>Leia o boletim com calma antes de confirmar.</small></li>
+          <li><span>3</span><b>Guarde o comprovativo</b><small>Recebe um recibo anónimo para verificar o voto.</small>
+          </li>
         </ol>
         <div class="steps-help">
           <span>☏</span>
-          <div><b>Precisa de ajuda?</b><small>Linha gratuita 800 200 300</small></div>
+          <div><b>Precisa de ajuda?</b><small>Linha de apoio 800 200 300</small></div>
         </div>
       </aside>
     </section>
 
     <section class="services container" id="servicos">
-      <div class="services-panel">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">SERVIÇOS MAIS PROCURADOS</p>
-          <h2>O que precisa de fazer?</h2>
+      <div class="services-panel rounded-2xl shadow-soft">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SERVIÇOS MAIS PROCURADOS</p>
+            <h2>O que precisa de fazer?</h2>
+          </div>
+          <p>Acesso rápido aos principais serviços eleitorais.</p>
         </div>
-        <p>Acesso rápido aos principais serviços eleitorais.</p>
-      </div>
-      <div class="service-grid">
-        <a class="service-card" href="pages/login.html?area=eleitor#votar"><span>▣</span><b>Votar online</b><small>Aceder ao boletim digital</small><i>↗</i></a>
-        <a class="service-card" href="pages/login.html?area=eleitor#inscricao"><span>⌖</span><b>Consultar inscrição</b><small>Confirmar círculo eleitoral</small><i>↗</i></a>
-        <a class="service-card" href="pages/calendario.html"><span>▦</span><b>Calendário eleitoral</b><small>Datas e prazos eleitorais</small><i>↗</i></a>
-        <a class="service-card" href="pages/resultados.html"><span>▥</span><b>Resultados</b><small>Acompanhar o apuramento</small><i>↗</i></a>
-        <a class="service-card" href="pages/login.html?area=eleitor#recibos"><span>▤</span><b>Certidões e recibos</b><small>Consultar comprovativos</small><i>↗</i></a>
-        <a class="service-card" href="pages/apoio.html"><span>?</span><b>Apoio ao eleitor</b><small>Esclarecer dúvidas</small><i>↗</i></a>
-      </div>
+        <div class="service-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/login.html?area=eleitor#votar"><span>▣</span><b>Votar online</b><small>Aceder ao boletim
+              digital</small><i>↗</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/servicos.html#cadernos-eleitorais"><span>⌖</span><b>Consultar inscrição</b><small>Confirmar curso ou faculdade</small><i>↗</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/calendario.html"><span>▦</span><b>Calendário eleitoral</b><small>Datas e prazos
+              eleitorais</small><i>↗</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/resultados.html"><span>▥</span><b>Resultados</b><small>Acompanhar o
+              apuramento</small><i>↗</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/login.html?area=eleitor#recibos"><span>▤</span><b>Certidões e recibos</b><small>Consultar
+              comprovativos</small><i>↗</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/apoio.html"><span>?</span><b>Apoio ao eleitor</b><small>Esclarecer dúvidas</small><i>↗</i></a>
+        </div>
       </div>
     </section>
 
-    <section class="metrics container">
-      <div><b>12 840</b><small>eleitores registados*</small></div>
+    <section class="metrics rounded-2xl container">
+      <div><b>—</b><small>estudantes elegíveis</small></div>
       <i></i>
-      <div><b>99,99%</b><small>disponibilidade*</small></div>
+      <div><b>—</b><small>votos depositados</small></div>
       <i></i>
       <div><b>256-bit</b><small>encriptação de referência</small></div>
       <i></i>
-      <div><b>0</b><small>votos comprometidos*</small></div>
-      <p>*Valores demonstrativos da maquete, não representam dados reais.</p>
+      <div><b>—</b><small>participação</small></div>
+      <p>A obter os dados da plataforma…</p>
     </section>
 
-    <section class="election-info container" id="eleicoes">
+    <section class="election-info grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 container" id="eleicoes">
       <figure class="photo-panel">
-        <img src="https://images.unsplash.com/photo-1571786501319-8bb7ba838799?w=1100&h=760&fit=crop&auto=format" alt="Pessoas a caminhar numa rua portuguesa">
-        <figcaption>Cidadãos em Portugal · Cidadania e participação democrática</figcaption>
+        <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1100&h=760&fit=crop&auto=format"
+          alt="Edifício principal de uma universidade">
+        <figcaption>Universidade Exemplo · Participação dos estudantes</figcaption>
       </figure>
       <div class="election-copy">
-        <p class="eyebrow">ELEIÇÕES EM PORTUGAL</p>
-        <h2>Como Portugal escolhe o Presidente da República.</h2>
-        <p>O Presidente é eleito por sufrágio universal e direto para um mandato de cinco anos. Se nenhum candidato conseguir mais de metade dos votos válidos, realiza-se uma segunda volta entre os dois candidatos mais votados.</p>
-        <div class="facts">
-          <div><b>18 anos</b><small>idade mínima para votar</small></div>
-          <div><b>5 anos</b><small>duração do mandato</small></div>
-          <div><b>2 voltas</b><small>quando não existe maioria absoluta</small></div>
+        <p class="eyebrow">ELEIÇÕES ACADÉMICAS</p>
+        <h2>Como os estudantes escolhem os seus representantes.</h2>
+        <p>A Associação de Estudantes, os representantes de turma e de curso e os núcleos académicos são eleitos pelos estudantes inscritos. Se nenhuma lista conseguir mais de metade dos votos, pode realizar-se uma segunda volta entre as duas mais votadas.</p>
+        <div class="facts grid-cols-2 sm:grid-cols-3">
+          <div><b>Matrícula ativa</b><small>condição para votar</small></div>
+          <div><b>1 ano</b><small>duração do mandato da Associação de Estudantes</small></div>
+          <div><b>2 voltas</b><small>quando nenhuma lista tem maioria</small></div>
         </div>
       </div>
     </section>
@@ -143,16 +160,16 @@
           <p class="eyebrow">ELEIÇÕES E RESULTADOS</p>
           <h2>Toda a informação.<br>Antes, durante e depois.</h2>
         </div>
-        <p>Consulte candidaturas, datas, participação e resultados certificados num único lugar.</p>
+        <p>Consulte listas candidatas, datas, participação e resultados verificados num único lugar.</p>
       </div>
-      <div class="hub-grid">
-        <article class="hub-card" data-hub-election>
+      <div class="hub-grid grid-cols-1 lg:grid-cols-[1.25fr_1fr]">
+        <article class="hub-card rounded-2xl shadow-soft" data-hub-election>
           <div class="status-row">
-            <span class="status-pill"><i></i> A CARREGAR</span>
+            <span class="status-pill rounded-full"><i></i> A CARREGAR</span>
             <span>Atualização em tempo real</span>
           </div>
-          <p class="eyebrow">PRESIDENCIAIS 2025</p>
-          <h3>Eleição para a Presidência da República</h3>
+          <p class="eyebrow">ASSOCIAÇÃO DE ESTUDANTES 2025</p>
+          <h3>Eleição da Associação de Estudantes</h3>
           <p data-hub-copy>A obter os dados da eleição…</p>
           <div class="hub-progress">
             <div><small>PARTICIPAÇÃO</small><b data-hub-turnout>—</b></div>
@@ -160,15 +177,22 @@
             <small data-hub-votes>—</small>
           </div>
           <div class="hero-actions">
-            <a class="button button-primary" href="pages/login.html?area=eleitor" data-voter-link>Votar agora →</a>
-            <a class="button button-outline" href="pages/partidos.html">Ver candidaturas</a>
+            <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="pages/login.html?area=eleitor"
+              data-voter-link>Votar agora →</a>
+            <a class="button rounded-xl button-outline" href="pages/listas.html">Ver listas</a>
           </div>
         </article>
-        <div class="hub-links">
-          <a class="service-card" href="pages/servicos.html#voto-acessivel"><span>♙</span><small>GUIA DO ELEITOR</small><b>Como votar em segurança</b><i>→</i></a>
-          <a class="service-card" href="pages/calendario.html"><span>▦</span><small>DATAS IMPORTANTES</small><b>Calendário eleitoral 2025</b><i>→</i></a>
-          <a class="service-card" href="pages/resultados.html"><span>▥</span><small>ARQUIVO DE RESULTADOS</small><b>Eleições de 2016 e 2021</b><i>→</i></a>
-          <a class="service-card" href="pages/apoio.html"><span>?</span><small>PERGUNTAS FREQUENTES</small><b>Tire as suas dúvidas</b><i>→</i></a>
+        <div class="hub-links grid-cols-1 xs:grid-cols-2">
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/servicos.html#voto-acessivel"><span>♙</span><small>GUIA DO ELEITOR</small><b>Como votar em
+              segurança</b><i>→</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/calendario.html"><span>▦</span><small>DATAS IMPORTANTES</small><b>Calendário eleitoral 2025</b><i>→</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/resultados.html"><span>▥</span><small>ARQUIVO DE RESULTADOS</small><b>Eleições académicas anteriores</b><i>→</i></a>
+          <a class="service-card rounded-xl transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+            href="pages/apoio.html"><span>?</span><small>PERGUNTAS FREQUENTES</small><b>Tire as suas
+              dúvidas</b><i>→</i></a>
         </div>
       </div>
     </section>
@@ -182,8 +206,8 @@
           </div>
           <p>Cada etapa foi desenhada para proteger o eleitor sem transformar a votação num processo complicado.</p>
         </div>
-        <div class="security-grid">
-          <article class="security-card identity-card">
+        <div class="security-grid grid-cols-1 md:grid-cols-2">
+          <article class="security-card rounded-2xl identity-card">
             <div class="card-meta"><span class="round-icon">♙</span><small>01 / IDENTIDADE</small></div>
             <h3>Autenticação forte,<br>voto verdadeiramente anónimo.</h3>
             <p>Confirmamos quem és sem nunca ligar a tua identidade à escolha depositada.</p>
@@ -194,13 +218,13 @@
               <i>✓</i>
             </div>
           </article>
-          <article class="security-card">
+          <article class="security-card rounded-2xl">
             <div class="card-meta"><span class="round-icon">⌁</span><small>02 / INTEGRIDADE</small></div>
             <h3>Imutável por princípio.</h3>
             <p>Cada voto integra uma cadeia criptográfica. Qualquer alteração deve ser detetável.</p>
             <div class="hash-chain"><span>HASH</span><i>→</i><span>HASH</span><i>→</i><span>VALIDADO</span></div>
           </article>
-          <article class="security-card dark-card">
+          <article class="security-card rounded-2xl dark-card">
             <div class="card-meta"><span class="round-icon">▤</span><small>03 / AUDITORIA</small></div>
             <h3>Confiança não é promessa.<br>É evidência.</h3>
             <p>Recibos demonstrativos e registos assinados apoiam uma auditoria independente.</p>
@@ -216,27 +240,28 @@
 
     <section class="platform-section">
       <div class="container">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">ÁREAS DA PLATAFORMA</p>
-          <h2>Uma área para o eleitor.<br>Outra para a nossa equipa.</h2>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ÁREAS DA PLATAFORMA</p>
+            <h2>Uma área para o eleitor.<br>Outra para a nossa equipa.</h2>
+          </div>
+          <p>Uma interface de demonstração para eleitores e equipa responsável pela plataforma.</p>
         </div>
-        <p>Uma interface de demonstração para eleitores e equipa responsável pela plataforma.</p>
-      </div>
-      <div class="platform-grid">
-        <article>
-          <small>PAINEL DO ELEITOR <b>01</b></small>
-          <h3>Votar sem dúvidas.</h3>
-          <p>Um percurso orientado, transparente e acessível para acompanhar o processo eleitoral.</p>
-          <a class="button button-outline" href="pages/login.html?area=eleitor">Explorar painel →</a>
-        </article>
-        <article>
-          <small>CENTRO DE ADMINISTRAÇÃO <b>02</b></small>
-          <h3>Gestão pela equipa do projeto.</h3>
-          <p>Área reservada para consultar o estado demonstrativo do sistema, eleições e auditorias.</p>
-          <a class="button button-outline" href="pages/login.html?area=equipa">Entrar na área da equipa →</a>
-        </article>
-      </div>
+        <div class="platform-grid grid-cols-1 md:grid-cols-2">
+          <article>
+            <small>PAINEL DO ELEITOR <b>01</b></small>
+            <h3>Votar sem dúvidas.</h3>
+            <p>Um percurso orientado, transparente e acessível para acompanhar o processo eleitoral.</p>
+            <a class="button rounded-xl button-outline" href="pages/login.html?area=eleitor">Explorar painel →</a>
+          </article>
+          <article>
+            <small>CENTRO DE ADMINISTRAÇÃO <b>02</b></small>
+            <h3>Gestão pela equipa do projeto.</h3>
+            <p>Área reservada para consultar o estado demonstrativo do sistema, eleições e auditorias.</p>
+            <a class="button rounded-xl button-outline" href="pages/login.html?area=equipa">Entrar na área da equipa
+              →</a>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -244,31 +269,33 @@
       <div class="section-heading">
         <div>
           <p class="eyebrow">ATUALIDADE ELEITORAL</p>
-          <h2>Informação para<br>eleitores em Portugal.</h2>
+          <h2>Informação para<br>os estudantes.</h2>
         </div>
-        <p>Avisos e explicações úteis sobre recenseamento, voto antecipado e participação nas eleições presidenciais simuladas.</p>
+        <p>Avisos e explicações úteis sobre cadernos eleitorais, listas candidatas e participação nas eleições académicas.</p>
       </div>
-      <div class="news-grid">
-        <article class="dash-card" data-live-data>
+      <div class="news-grid grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift"
+          data-live-data>
           <figure class="news-photo">
-            <img src="https://images.unsplash.com/photo-1626262316773-83f3607ec3b8?w=1000&h=560&fit=crop&auto=format" alt="Cidadãos numa rua da freguesia da Estrela, em Lisboa">
+            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1000&h=560&fit=crop&auto=format"
+              alt="Grupo de estudantes ao ar livre">
           </figure>
           <p class="eyebrow">DADOS DA SIMULAÇÃO</p>
-          <h3>Presidenciais 2025 no TrustVote.</h3>
-          <p>Números atualizados em tempo real a partir da plataforma. É um projeto académico e não uma eleição oficial em Portugal.</p>
-          <div class="facts">
-            <div><b data-live="eleitores">—</b><small>eleitores na simulação</small></div>
+          <h3>Associação de Estudantes 2025 no TrustVote.</h3>
+          <p>Números atualizados em tempo real a partir da plataforma. Os dados são demonstrativos de uma eleição académica.</p>
+          <div class="facts grid-cols-2 sm:grid-cols-3">
+            <div><b data-live="eleitores">—</b><small>estudantes elegíveis</small></div>
             <div><b data-live="votos">—</b><small>votos depositados</small></div>
             <div><b data-live="participacao">—</b><small>participação atual</small></div>
           </div>
-          <a class="button button-outline" href="pages/resultados.html">Consultar dados do projeto →</a>
+          <a class="button rounded-xl button-outline" href="pages/resultados.html">Consultar dados do projeto →</a>
         </article>
-        <article class="dash-card">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           <p class="eyebrow">NOTÍCIAS E PUBLICAÇÕES</p>
           <div class="news-list">
-            <a href="pages/comunicacao.html"><time>14 MAI 2025</time><b>Votação simulada abre para os eleitores registados no projeto</b><i>→</i></a>
-            <a href="pages/servicos.html#recenseamento-eleitoral"><time>12 MAI 2025</time><b>Como confirmar a inscrição e o local de voto em Portugal</b><i>→</i></a>
-            <a href="pages/servicos.html#voto-antecipado"><time>08 MAI 2025</time><b>Guia explica o voto antecipado e os documentos necessários</b><i>→</i></a>
+            <a href="pages/comunicacao.html"><time>14 MAI 2025</time><b>Votação para a Associação de Estudantes abre para os estudantes inscritos</b><i>→</i></a>
+            <a href="pages/servicos.html#cadernos-eleitorais"><time>12 MAI 2025</time><b>Como confirmar que está nos cadernos eleitorais do seu curso</b><i>→</i></a>
+            <a href="pages/listas.html#sessoes-de-esclarecimento"><time>08 MAI 2025</time><b>Listas candidatas apresentam-se em sessões de esclarecimento</b><i>→</i></a>
           </div>
           <a class="text-link" href="pages/comunicacao.html">Abrir sala de imprensa →</a>
         </article>
@@ -277,17 +304,17 @@
   </main>
 
   <footer class="site-footer">
-    <div class="footer-main container">
-      <div class="footer-about">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="index.html">
           <span class="brand-mark">✓</span>
-          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="pages/calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="pages/calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
         <a href="pages/resultados.html">Resultados</a>
         <a href="pages/calendario.html">Calendário</a>
       </div>
@@ -300,7 +327,7 @@
       <div>
         <b>INSTITUCIONAL</b>
         <a href="pages/institucional.html#transparencia">Transparência</a>
-        <a href="pages/julgados.html">Julgados históricos</a>
+        <a href="pages/historico.html">Histórico eleitoral</a>
         <a href="pages/login.html?area=equipa">Administração</a>
       </div>
     </div>
@@ -310,4 +337,5 @@
     </div>
   </footer>
 </body>
+
 </html>

@@ -1,0 +1,456 @@
+/* Adaptação a todos os tipos de ecrã (as grelhas usam os breakpoints do Tailwind no HTML) */
+
+/* ===== Cantos arredondados nos elementos que não têm classe própria ===== */
+.field-label input,
+.field-label select,
+.field-label textarea,
+.auth-card input:not([type="checkbox"]),
+.row-actions button {
+    border-radius: 10px;
+}
+
+.candidate-list label,
+.candidate-grid article,
+.platform-grid article,
+.chain-blocks > div,
+.history-rows .year,
+.timeline article:first-child,
+.photo-panel img,
+.news-photo img {
+    border-radius: 14px;
+}
+
+.news-photo {
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+.press-news article,
+.press-hero {
+    border-radius: 14px;
+}
+
+.timeline {
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.timeline article:first-child {
+    border-radius: 0;
+}
+
+.button:focus-visible,
+.panel-link:focus-visible,
+.main-nav a:focus-visible,
+.side-menu a:focus-visible {
+    outline: 3px solid #6f9c84;
+    outline-offset: 2px;
+}
+
+/* ===== Ecrãs grandes (monitores 1800px+) ===== */
+@media (min-width: 1800px) {
+    :root {
+        --container: 1360px;
+    }
+
+    .dashboard-content {
+        width: min(1360px, calc(100% - 96px));
+    }
+
+    body[data-page="admin"] .dashboard-content {
+        width: min(1560px, calc(100% - 96px));
+    }
+
+    .hero h1 {
+        font-size: 78px;
+    }
+
+    .lead {
+        font-size: 19px;
+    }
+}
+
+/* ===== Portátil pequeno e tablet deitado (até 1100px): menu "☰" ===== */
+@media (max-width: 1100px) {
+    .site-header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 72px;
+        padding: 12px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+        min-width: 44px;
+        min-height: 44px;
+        margin-left: auto;
+        border-radius: 10px;
+        font-size: 18px;
+    }
+
+    .main-nav {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .main-nav a {
+        min-height: 48px;
+        padding: 0 4px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px;
+    }
+
+    .main-nav a[aria-current="page"] {
+        border-bottom-color: var(--line);
+        border-left: 3px solid #6f9c84;
+        padding-left: 12px;
+    }
+
+    .header-actions {
+        display: none;
+        order: 5;
+        width: 100%;
+        padding-top: 12px;
+    }
+
+    .main-nav.open + .header-actions {
+        display: flex;
+    }
+
+    .header-actions .button {
+        width: 100%;
+    }
+
+    .hero {
+        padding-top: 44px;
+    }
+
+    .steps-card {
+        max-width: 640px;
+    }
+}
+
+/* ===== Tablet (até 1023px): secções com menu em botões deslizantes ===== */
+@media (max-width: 1023px) {
+    .section-page {
+        gap: 16px;
+        padding-top: 20px;
+    }
+
+    .side-menu h2,
+    .manager-card {
+        display: none;
+    }
+
+    .side-menu {
+        background: transparent;
+        border: 0;
+        box-shadow: none !important;
+    }
+
+    .side-menu nav {
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+        scrollbar-width: thin;
+    }
+
+    .side-menu a {
+        flex: none;
+        padding: 10px 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        font-size: 14px;
+        white-space: nowrap;
+        scroll-snap-align: start;
+    }
+
+    .side-menu a[aria-current="true"] {
+        border-color: var(--title);
+        background: var(--title);
+        color: white;
+    }
+
+    .section-content {
+        min-height: 0;
+    }
+
+    .dashboard-content {
+        padding-top: 32px;
+    }
+
+    .panel-nav {
+        scrollbar-width: none;
+    }
+
+    .panel-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .security-grid {
+        grid-template-rows: auto;
+    }
+
+    .identity-card {
+        grid-row: auto;
+    }
+}
+
+/* ===== Telemóvel (até 640px) ===== */
+@media (max-width: 640px) {
+    .container,
+    .topbar-inner,
+    .site-header-inner,
+    .dashboard-content {
+        width: calc(100% - 32px);
+    }
+
+    .topbar a,
+    .topbar button {
+        padding: 0 9px;
+        font-size: 11px;
+    }
+
+    .brand b {
+        font-size: 16px;
+    }
+
+    .hero h1 {
+        font-size: clamp(38px, 11vw, 46px);
+    }
+
+    .section-heading h2 {
+        font-size: clamp(28px, 8vw, 36px);
+    }
+
+    .lead,
+    .section-item > p,
+    .section-body > p {
+        font-size: 15px;
+    }
+
+    .section-item h1 {
+        font-size: 28px;
+    }
+
+    .section-item-tools {
+        margin-top: 0;
+    }
+
+    .section-content,
+    .services-panel,
+    .dash-card,
+    .hub-card,
+    .auth-card {
+        padding: 22px 18px;
+    }
+
+    .services .service-card {
+        padding: 14px;
+    }
+
+    .news-photo {
+        margin: -22px -18px 20px;
+    }
+
+    .metrics {
+        padding: 22px 18px;
+    }
+
+    .metrics b {
+        font-size: 24px;
+    }
+
+    .election-info {
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+
+    .security-card h3,
+    .platform-grid h3 {
+        font-size: 22px;
+    }
+
+    .breadcrumb {
+        font-size: 13px;
+    }
+
+    .breadcrumb-tools {
+        display: none;
+    }
+
+    .press-hero img {
+        height: 220px;
+    }
+
+    .press-hero h2 {
+        font-size: 20px;
+    }
+
+    .history-hero,
+    .history-hero .container {
+        min-height: 160px;
+    }
+
+    .dashboard-header {
+        padding: 10px 16px;
+    }
+
+    .dashboard-header .brand small {
+        display: none;
+    }
+
+    .panel-link {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .dashboard-content h1 {
+        font-size: clamp(28px, 8vw, 34px);
+    }
+
+    .dashboard-content .muted {
+        font-size: 15px;
+    }
+
+    .election-card-body {
+        padding: 24px 18px;
+    }
+
+    .election-card-body h2 {
+        font-size: 24px;
+    }
+
+    .election-card-actions,
+    .election-card-actions .button,
+    .form-actions .button {
+        width: 100%;
+    }
+
+    .election-card-top {
+        flex-wrap: wrap;
+    }
+
+    .candidate-list label {
+        grid-template-columns: 44px 1fr 24px;
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .candidate-list .avatar {
+        width: 44px;
+        height: 44px;
+    }
+
+    .ballot-foot .button {
+        width: 100%;
+    }
+
+    .receipt-card {
+        padding: 26px 18px;
+        text-align: center;
+    }
+
+    .receipt-card .seal-icon {
+        margin: 0 auto;
+    }
+
+    .receipt-card .receipt-code {
+        align-items: center;
+    }
+
+    .receipt-checks {
+        justify-content: center;
+    }
+
+    .metric-card {
+        padding: 18px;
+    }
+
+    .election-row {
+        padding: 20px 16px;
+    }
+
+    .election-row .button {
+        width: 100%;
+    }
+
+    .integrity h2 {
+        font-size: 24px !important;
+    }
+
+    .totp-qr {
+        align-self: center;
+    }
+
+    th,
+    td {
+        padding: 12px;
+    }
+
+    .toast-host {
+        right: 12px;
+        left: 12px;
+        max-width: none;
+    }
+}
+
+/* ===== Telemóveis muito pequenos (até 380px) ===== */
+@media (max-width: 380px) {
+    .topbar a:first-child {
+        display: none;
+    }
+
+    .facts {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Telemóvel deitado (pouca altura) ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .dashboard-header,
+    .site-header {
+        position: static !important;
+    }
+
+    .auth-layout {
+        min-height: 0;
+    }
+}
+
+/* ===== Impressão ===== */
+@media print {
+    .topbar,
+    .site-header,
+    .breadcrumb-bar,
+    .section-aside,
+    .site-footer,
+    .section-item-tools,
+    .visit-also,
+    .dashboard-header {
+        display: none !important;
+    }
+
+    .section-page {
+        display: block;
+    }
+
+    .section-content {
+        border: 0;
+        box-shadow: none !important;
+    }
+}

@@ -30,7 +30,7 @@
     letter-spacing: -0.02em;
 }
 
-.auth-intro > p:not(.eyebrow) {
+.auth-intro>p:not(.eyebrow) {
     max-width: 550px;
     color: var(--muted);
     font-size: 16px;
@@ -43,13 +43,13 @@
     margin-top: 35px;
 }
 
-.assurances > div {
+.assurances>div {
     display: flex;
     align-items: center;
     gap: 14px;
 }
 
-.assurances > div > span {
+.assurances>div>span {
     display: grid;
     place-items: center;
     width: 44px;
@@ -60,7 +60,7 @@
     font-size: 22px;
 }
 
-.assurances > div > div {
+.assurances>div>div {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -119,7 +119,7 @@
     font-weight: 700;
 }
 
-.auth-card form > p:not(.eyebrow):not(.form-message):not(.server-status) {
+.auth-card form>p:not(.eyebrow):not(.form-message):not(.server-status) {
     color: var(--muted);
     font-size: 15px;
     line-height: 1.7;

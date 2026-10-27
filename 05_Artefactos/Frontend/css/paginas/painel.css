@@ -63,7 +63,7 @@
         font-size: 14px;
     }
 
-    .panel-user .user-chip > span:last-child {
+    .panel-user .user-chip>span:last-child {
         display: none;
     }
 }
@@ -109,7 +109,7 @@
     font-size: 11px;
 }
 
-.user-chip > span:last-child {
+.user-chip>span:last-child {
     display: flex;
     flex-direction: column;
 }
@@ -245,7 +245,7 @@ body[data-page="admin"] .dashboard-content h1 {
     padding: 36px 30px;
 }
 
-.election-card-body > div:nth-child(2) {
+.election-card-body>div:nth-child(2) {
     flex: 1;
 }
 
@@ -281,7 +281,7 @@ body[data-page="admin"] .dashboard-content h1 {
     background: var(--sand);
 }
 
-.steps-track > span {
+.steps-track>span {
     display: grid;
     grid-template-columns: 30px auto;
     align-items: center;
@@ -289,7 +289,7 @@ body[data-page="admin"] .dashboard-content h1 {
     font-size: 11px;
 }
 
-.steps-track > span > i {
+.steps-track>span>i {
     display: grid;
     grid-row: span 2;
     place-items: center;
@@ -302,8 +302,8 @@ body[data-page="admin"] .dashboard-content h1 {
     font-style: normal;
 }
 
-.steps-track > span.is-done > i,
-.steps-track > span.is-current > i {
+.steps-track>span.is-done>i,
+.steps-track>span.is-current>i {
     border-color: var(--title);
     background: var(--title);
     color: white;
@@ -317,7 +317,7 @@ body[data-page="admin"] .dashboard-content h1 {
     color: var(--muted);
 }
 
-.steps-track > hr {
+.steps-track>hr {
     flex: 1;
     height: 1px;
     margin: 0;
@@ -350,7 +350,7 @@ body[data-page="admin"] .dashboard-content h1 {
     font-size: 13px;
 }
 
-.check-list li > i {
+.check-list li>i {
     grid-row: 1 / span 2;
     grid-column: 3;
     color: var(--muted);
@@ -372,7 +372,7 @@ body[data-page="admin"] .dashboard-content h1 {
     text-align: center;
 }
 
-.history-rows > div {
+.history-rows>div {
     display: flex;
     align-items: center;
     gap: 18px;
@@ -380,7 +380,7 @@ body[data-page="admin"] .dashboard-content h1 {
     border-top: 1px solid var(--line);
 }
 
-.history-rows > div > span:nth-child(2) {
+.history-rows>div>span:nth-child(2) {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -444,7 +444,7 @@ body[data-page="admin"] .dashboard-content h1 {
     background: var(--mint);
 }
 
-.candidate-list label > span:nth-of-type(2) {
+.candidate-list label>span:nth-of-type(2) {
     display: flex;
     flex-direction: column;
     gap: 3px;
@@ -634,7 +634,7 @@ body[data-page="admin"] .dashboard-content h1 {
     align-self: center;
 }
 
-.metric-card > small {
+.metric-card>small {
     grid-column: 2;
     grid-row: 1;
     color: var(--muted);
@@ -662,7 +662,7 @@ body[data-page="admin"] .dashboard-content h1 {
     font-size: 22px;
 }
 
-.metric-card > span:not(.check-box) {
+.metric-card>span:not(.check-box) {
     grid-column: 2 / 4;
     grid-row: 3;
     color: var(--muted);
@@ -682,7 +682,7 @@ body[data-page="admin"] .dashboard-content h1 {
     gap: 18px;
 }
 
-.overview-grid > .dash-card {
+.overview-grid>.dash-card {
     margin-top: 18px;
     background: white;
 }
@@ -708,7 +708,7 @@ body[data-page="admin"] .dashboard-content h1 {
     stroke-width: 2.5;
 }
 
-.ring {
+.ring-chart {
     display: grid;
     place-items: center;
     width: 150px;
@@ -718,7 +718,7 @@ body[data-page="admin"] .dashboard-content h1 {
     background: conic-gradient(var(--title) var(--ring, 75%), #e6e8f0 0);
 }
 
-.ring div {
+.ring-chart div {
     display: grid;
     place-items: center;
     width: 126px;
@@ -728,11 +728,11 @@ body[data-page="admin"] .dashboard-content h1 {
     text-align: center;
 }
 
-.ring b {
+.ring-chart b {
     font-size: 18px;
 }
 
-.ring small {
+.ring-chart small {
     color: var(--muted);
     font-size: 8px;
 }
@@ -760,7 +760,7 @@ body[data-page="admin"] .dashboard-content h1 {
     color: var(--muted);
 }
 
-.election-row > div:nth-child(2) {
+.election-row>div:nth-child(2) {
     flex: 1;
 }
 
@@ -806,7 +806,7 @@ body[data-page="admin"] .dashboard-content h1 {
     background: white;
 }
 
-.service-item > div {
+.service-item>div {
     flex: 1;
 }
 
@@ -820,15 +820,15 @@ body[data-page="admin"] .dashboard-content h1 {
     font-size: 9px;
 }
 
-.service-item > i {
+.service-item>i {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: var(--accent);
 }
 
-.service-item.is-warn > i,
-.service-item.is-down > i {
+.service-item.is-warn>i,
+.service-item.is-down>i {
     background: #c0392b;
 }
 
@@ -836,7 +836,7 @@ body[data-page="admin"] .dashboard-content h1 {
     opacity: 0.7;
 }
 
-.service-item.is-pending > i {
+.service-item.is-pending>i {
     background: #b8bbc1;
 }
 
@@ -879,7 +879,7 @@ body[data-page="admin"] .dashboard-content h1 {
     margin-top: 40px;
 }
 
-.chain-blocks > div {
+.chain-blocks>div {
     display: grid;
     gap: 6px;
     justify-items: center;
@@ -942,7 +942,7 @@ body[data-page="admin"] .dashboard-content h1 {
     }
 
     .session-chip,
-    .user-chip > span:last-child,
+    .user-chip>span:last-child,
     .portal-link {
         display: none;
     }
@@ -958,7 +958,7 @@ body[data-page="admin"] .dashboard-content h1 {
         flex-wrap: wrap;
     }
 
-    .steps-track > hr {
+    .steps-track>hr {
         display: none;
     }
 

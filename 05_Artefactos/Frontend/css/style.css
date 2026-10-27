@@ -13,6 +13,8 @@
 @import url("paginas/inicio.css");
 @import url("paginas/seccoes.css");
 @import url("paginas/comunicacao.css");
-@import url("paginas/julgados.css");
+@import url("paginas/historico.css");
 @import url("paginas/login.css");
 @import url("paginas/painel.css");
+
+@import url("base/ecras.css");
