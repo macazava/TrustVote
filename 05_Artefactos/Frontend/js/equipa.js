@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cardHead = (eyebrow, title, extra = "") =>
     `<div class="card-head"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div>${extra}</div>`;
 
-  const pill = (text, warn = false) => `<span class="status-pill${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
+  const pill = (text, warn = false) => `<span class="status-pill rounded-full${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${ok ? "✓" : "!"} ${escapeHtml(text)}</span>`;
 
   const resultBars = (rondas) =>
@@ -139,42 +139,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     el.innerHTML = `
       ${head("CENTRO DE OPERAÇÕES", "Visão operacional", "Controlo seguro e auditável da infraestrutura eleitoral.", systemsPill(servicos.lista))}
-      <div class="admin-metrics">
-        <article class="metric-card">
-          <span class="check-box">✓</span>
+      <div class="admin-metrics grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4">
+        <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
+          <span class="check-box rounded-lg">✓</span>
           <small>PARTICIPAÇÃO</small><em>${s ? percent(s.participacao) : ""}</em>
           <b>${s ? `${number(s.votantes)} <small style="font-size:11px">/ ${number(s.habilitados)}</small>` : "—"}</b>
           <div class="bar"><i style="width:${s ? Math.min(100, s.participacao) : 0}%"></i></div>
         </article>
-        <article class="metric-card">
-          <span class="check-box">✓</span>
+        <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
+          <span class="check-box rounded-lg">✓</span>
           <small>VOTOS REGISTADOS</small><em>${eleicao ? escapeHtml(elections.statusLabels[eleicao.estado]) : ""}</em>
           <b>${s ? number(s.votantes) : "—"}</b>
           <span>${ultimaHora !== null ? `${number(ultimaHora)} na última hora` : escapeHtml(stats.error ? stats.error.message : "Sem eleição ativa")}</span>
         </article>
-        <article class="metric-card">
-          <span class="check-box">✓</span>
+        <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
+          <span class="check-box rounded-lg">✓</span>
           <small>SERVIÇOS</small><em>${allOk(servicos.lista) ? "ESTÁVEL" : "ATENÇÃO"}</em>
           <b>${okCount(servicos.lista)} / ${servicos.lista.length}</b>
           <span>Operacionais · ${number(lista.length)} eleições</span>
         </article>
-        <article class="metric-card">
-          <span class="check-box">✓</span>
+        <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
+          <span class="check-box rounded-lg">✓</span>
           <small>INTEGRIDADE</small><em>${integridade.data ? (integridade.data.valida ? "VÁLIDA" : "QUEBRADA") : ""}</em>
           <b>${integridade.data ? (integridade.data.valida ? "100%" : "Falha") : "—"}</b>
           <span>${integridade.data ? `${number(integridade.data.registos)} registos · ${time(new Date().toISOString())}` : escapeHtml(integridade.error.message)}</span>
         </article>
       </div>
-      <div class="overview-grid">
-        <article class="dash-card">
-          ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag">${escapeHtml(eleicao.titulo)}</span>` : "")}
-          ${serie.length ? lineChart(serie) : `<div class="empty-box">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
+      <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+          ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag rounded-lg">${escapeHtml(eleicao.titulo)}</span>` : "")}
+          ${serie.length ? lineChart(serie) : `<div class="empty-box rounded-xl">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
         </article>
-        <article class="dash-card resilience-text">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift resilience-text">
           ${cardHead("CONTROLO DE RESILIÊNCIA", "Failover automático")}
-          <div class="ring" style="--ring:${replicasOk ? 75 : 30}%"><div><span><b>${replicasOk ? "PRONTO" : "ATENÇÃO"}</b><br><small>ESTADO</small></span></div></div>
+          <div class="ring-chart" style="--ring:${replicasOk ? 75 : 30}%"><div><span><b>${replicasOk ? "PRONTO" : "ATENÇÃO"}</b><br><small>ESTADO</small></span></div></div>
           <p>${replicasOk ? `${servicos.instancias.length} réplicas a responder (${escapeHtml(servicos.instancias.join(", "))}) e prontas para assumir.` : "Só uma réplica respondeu. Verifique a segunda instância."}</p>
-          <button class="button button-light" type="button" data-test-replicas style="width:100%">Testar réplicas</button>
+          <button class="button rounded-xl button-light" type="button" data-test-replicas style="width:100%">Testar réplicas</button>
         </article>
       </div>`;
 
@@ -197,15 +197,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const stats = await Promise.all(detalhes.map((e) => (e.estado === "rascunho" ? { error: true } : attempt(api.votacao.estatisticas(e.id)))));
 
     el.innerHTML = `
-      ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", '<button class="button button-primary" type="button" data-new>Nova eleição →</button>')}
-      <article class="dash-card">
+      ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", '<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-new>Nova eleição →</button>')}
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("GESTÃO ELEITORAL", "Eleições configuradas")}
         ${
           detalhes.length
             ? `<div class="election-rows">${detalhes
                 .map(
                   (e, i) => `
-                  <div class="election-row${e.estado === "em_curso" ? "" : " is-muted"}">
+                  <div class="election-row rounded-2xl transition hover:shadow-soft${e.estado === "em_curso" ? "" : " is-muted"}">
                     <span class="round-mark">✓</span>
                     <div>
                       ${pill(e.estadoLabel, e.estado === "rascunho")}
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                       <small>${escapeHtml(e.periodo)} · ${(e.candidatos || []).filter((c) => c.ativo).length} candidatos</small>
                     </div>
                     <div class="turnout"><b>${stats[i].data ? percent(stats[i].data.participacao) : "—"}</b><small>participação</small></div>
-                    <button class="button button-outline" type="button" data-edit="${e.id}">${e.estado === "rascunho" ? "Configurar" : "Gerir"}</button>
+                    <button class="button rounded-xl button-outline" type="button" data-edit="${e.id}">${e.estado === "rascunho" ? "Configurar" : "Gerir"}</button>
                   </div>`
                 )
                 .join("")}</div>`
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     el.innerHTML = `
       ${head("GESTÃO ELEITORAL", e ? "Editar eleição" : "Criar eleição", e ? "Atualize a configuração do ato eleitoral." : "Configure um novo ato eleitoral na plataforma.")}
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("DADOS DA ELEIÇÃO", "Informação principal")}
         <form data-election-form>
           <label class="field-label">Título<input name="titulo" required maxlength="200" value="${escapeHtml(e ? e.titulo : "")}"${dis}></label>
@@ -252,9 +252,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           <label class="field-label">Descrição<textarea name="descricao" rows="3"${dis}>${escapeHtml(e ? e.descricao || "" : "")}</textarea></label>
           <p class="form-message" role="status"></p>
           <div class="form-actions">
-            ${e && e.estado === "rascunho" ? '<button class="button button-outline" type="button" data-remove>Apagar eleição</button>' : ""}
-            <button class="button button-primary" type="submit">${e ? "Guardar alterações" : "Guardar eleição"}</button>
-            <button class="button button-light" type="button" data-back>Cancelar</button>
+            ${e && e.estado === "rascunho" ? '<button class="button rounded-xl button-outline" type="button" data-remove>Apagar eleição</button>' : ""}
+            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">${e ? "Guardar alterações" : "Guardar eleição"}</button>
+            <button class="button rounded-xl button-light" type="button" data-back>Cancelar</button>
           </div>
         </form>
       </article>
@@ -313,12 +313,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const box = panel("elections").querySelector("[data-candidates-card]");
     const rascunho = e.estado === "rascunho";
     box.innerHTML = `
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("CANDIDATURAS", `Candidatos · ${(e.candidatos || []).length}`)}
         ${
           (e.candidatos || []).length
-            ? `<div class="table-scroll"><table>
-                <thead><tr><th>Opção</th><th>Candidato</th><th>Partido</th><th>Estado</th><th>Ações</th></tr></thead>
+            ? `<div class="table-scroll rounded-xl"><table>
+                <thead><tr><th>Opção</th><th>Candidato</th><th>Lista</th><th>Estado</th><th>Ações</th></tr></thead>
                 <tbody>${e.candidatos
                   .map(
                     (c, i) => `
@@ -340,9 +340,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           rascunho
             ? `<form class="inline-form" data-cand-form>
                 <label class="field-label">Nome<input name="nome" required maxlength="200"></label>
-                <label class="field-label">Partido<input name="partido" maxlength="200"></label>
+                <label class="field-label">Lista<input name="partido" maxlength="200"></label>
                 <label class="field-label">Descrição<input name="descricao" maxlength="500"></label>
-                <button class="button button-primary" type="submit">Adicionar →</button>
+                <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar →</button>
               </form>`
             : '<p class="muted">Só é possível adicionar ou remover candidatos em rascunho.</p>'
         }
@@ -396,11 +396,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const livres = todos.filter((u) => !ids.has(u.id) && u.ativo);
 
       box.innerHTML = `
-        <article class="dash-card">
-          ${cardHead("RECENSEAMENTO", `Eleitores habilitados · ${habilitados.length}`, livres.length ? `<button class="button button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : "")}
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+          ${cardHead("ESTUDANTES ELEGÍVEIS", `Eleitores habilitados · ${habilitados.length}`, livres.length ? `<button class="button rounded-xl button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : "")}
           ${
             habilitados.length
-              ? `<div class="table-scroll voter-picker"><table>
+              ? `<div class="table-scroll rounded-xl voter-picker"><table>
                   <thead><tr><th>Eleitor</th><th>E-mail</th><th>Habilitado em</th><th></th></tr></thead>
                   <tbody>${habilitados
                     .map(
@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                       ${livres.map((u) => `<option value="${u.id}">${escapeHtml(u.nome)} · ${escapeHtml(u.email)}</option>`).join("")}
                     </select>
                   </label>
-                  <button class="button button-primary" type="submit">Habilitar →</button>
+                  <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Habilitar →</button>
                 </form>`
               : ""
           }
@@ -465,11 +465,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ativos = (e.candidatos || []).filter((c) => c.ativo);
 
     box.innerHTML = `
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("CALENDÁRIO", "Rondas")}
         ${
           rondas.length
-            ? `<div class="table-scroll"><table>
+            ? `<div class="table-scroll rounded-xl"><table>
                 <thead><tr><th>Ronda</th><th>Período</th><th>Estado</th><th>Ações</th></tr></thead>
                 <tbody>${rondas
                   .map(
@@ -488,10 +488,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           podeSegunda
             ? `<form class="inline-form" data-second-round>
                 <p class="muted">Criar 2.ª volta: escolha exatamente 2 candidatos.</p>
-                ${ativos.map((c) => `<label class="radio-line"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
+                ${ativos.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
                 <label class="field-label">Início<input type="datetime-local" name="inicio" required></label>
                 <label class="field-label">Fim<input type="datetime-local" name="fim" required></label>
-                <button class="button button-primary" type="submit">Criar 2.ª volta →</button>
+                <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Criar 2.ª volta →</button>
               </form>`
             : ""
         }
@@ -531,8 +531,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const el = panel("candidates");
     const lista = await api.eleicoes.listar();
     el.innerHTML = `
-      ${head("GESTÃO ELEITORAL", "Candidatos", "Candidaturas incluídas na simulação académica.", lista.length ? `<label class="field-label" style="margin:0;min-width:280px">Eleição<select data-cand-election>${lista.map((e) => `<option value="${e.id}">${escapeHtml(e.titulo)} · ${elections.statusLabels[e.estado]}</option>`).join("")}</select></label>` : "")}
-      <article class="dash-card" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições")}</article>`;
+      ${head("GESTÃO ELEITORAL", "Candidatos", "Listas e candidatos incluídos nas eleições académicas.", lista.length ? `<label class="field-label" style="margin:0;min-width:280px">Eleição<select data-cand-election>${lista.map((e) => `<option value="${e.id}">${escapeHtml(e.titulo)} · ${elections.statusLabels[e.estado]}</option>`).join("")}</select></label>` : "")}
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições")}</article>`;
     const select = el.querySelector("[data-cand-election]");
     if (!select) return;
     const table = el.querySelector("[data-cand-table]");
@@ -540,13 +540,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       ui.mount(table, async () => {
         const e = await api.eleicoes.detalhe(select.value);
         table.innerHTML = (e.candidatos || []).length
-          ? `<div class="table-scroll"><table>
+          ? `<div class="table-scroll rounded-xl"><table>
               <thead><tr><th>Opção</th><th>Candidato</th><th>Descrição</th><th>Estado</th></tr></thead>
               <tbody>${e.candidatos
                 .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
                 .join("")}</tbody></table></div>
-             <button class="button button-outline" type="button" data-manage>Gerir na eleição →</button>`
-          : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button button-outline" type="button" data-manage>Adicionar candidatos →</button></div>`;
+             <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição →</button>`
+          : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos →</button></div>`;
         table.querySelector("[data-manage]").addEventListener("click", () => {
           go("elections");
           renderElectionForm(Number(select.value));
@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function renderVoters() {
     const el = panel("voters");
     el.innerHTML = `
-      ${head("RECENSEAMENTO", "Eleitores", "Credenciais eleitorais emitidas na plataforma.", `
+      ${head("ESTUDANTES", "Eleitores", "Estudantes inscritos com credencial eleitoral na plataforma.", `
         <label class="field-label" style="margin:0;min-width:220px">Perfil
           <select data-profile>
             <option value="">Todos</option>
@@ -568,14 +568,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             <option value="administrador">Administradores</option>
           </select>
         </label>`)}
-      <article class="dash-card" data-users></article>`;
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-users></article>`;
     const select = el.querySelector("[data-profile]");
     const box = el.querySelector("[data-users]");
     const load = () =>
       ui.mount(box, async () => {
         const lista = await api.utilizadores.listar(select.value || undefined);
         box.innerHTML = lista.length
-          ? `<div class="table-scroll"><table>
+          ? `<div class="table-scroll rounded-xl"><table>
               <thead><tr><th>Número</th><th>Eleitor</th><th>Tipo</th><th>2FA</th><th>Estado</th><th>Ações</th></tr></thead>
               <tbody>${lista
                 .map(
@@ -618,14 +618,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { lista } = await probe();
     el.innerHTML = `
       ${head("CENTRO DE OPERAÇÕES", "Serviços", "Estado medido agora a partir do backend.", systemsPill(lista))}
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("INFRAESTRUTURA", "Estado dos serviços", `<div class="row-actions">${pill(`${okCount(lista)} de ${lista.length} operacionais`)}<button type="button" data-refresh>Atualizar</button></div>`)}
-        <div class="service-status">
+        <div class="service-status grid-cols-1 md:grid-cols-2">
           ${lista
             .map(
               (s) => `
-              <div class="service-item is-${s.state}" title="${stateLabel[s.state]}">
-                <span class="check-box">${s.state === "ok" ? "✓" : s.state === "pending" ? "…" : "!"}</span>
+              <div class="service-item rounded-xl is-${s.state}" title="${stateLabel[s.state]}">
+                <span class="check-box rounded-lg">${s.state === "ok" ? "✓" : s.state === "pending" ? "…" : "!"}</span>
                 <div><b>${escapeHtml(s.name)}</b><small>${escapeHtml(s.info)} · ${stateLabel[s.state].toLowerCase()}</small></div>
                 <i></i>
               </div>`
@@ -647,21 +647,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     el.innerHTML = `
       ${head("VERIFICAÇÃO CRIPTOGRÁFICA", "Integridade", "Validação da cadeia e dos lotes eleitorais.")}
-      <article class="dash-card integrity">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift integrity">
         <span class="integrity-seal${v.data && !ok ? " is-invalid" : ""}">${v.data ? (ok ? "✓" : "!") : "…"}</span>
         <p class="eyebrow">${v.data ? "VERIFICAÇÃO CONCLUÍDA" : "VERIFICAÇÃO INDISPONÍVEL"}</p>
         <h2>${v.data ? (ok ? "A cadeia eleitoral está íntegra." : "Foi detetada uma inconsistência.") : "Não foi possível verificar."}</h2>
         <p>${v.data ? `${number(v.data.registos)} registos verificados.${ok ? " Nenhuma inconsistência detetada." : ""}` : escapeHtml(v.error.message)}</p>
-        <button class="button button-primary" type="button" data-verify>Executar nova verificação →</button>
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-verify>Executar nova verificação →</button>
         ${
           v.data && (v.data.blocos || []).length
-            ? `<div class="chain-blocks">${v.data.blocos
+            ? `<div class="chain-blocks grid-cols-2 md:grid-cols-4">${v.data.blocos
                 .map((b, i) => `<div><i>✓</i><b>${i === 0 ? "GENESIS" : `#${number(b.id)}`}</b><small>${escapeHtml(String(b.hash).slice(0, 6))}…</small></div>`)
                 .join("")}</div>`
             : ""
         }
       </article>
-      ${comResultados.map((e) => `<article class="dash-card" data-result="${e.id}"></article>`).join("") || `<article class="dash-card">${ui.empty("Sem resultados", "Os resultados aparecem quando uma eleição começa.")}</article>`}`;
+      ${comResultados.map((e) => `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-result="${e.id}"></article>`).join("") || `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Sem resultados", "Os resultados aparecem quando uma eleição começa.")}</article>`}`;
 
     el.querySelector("[data-verify]").addEventListener("click", (event) => ui.busy(event.currentTarget, "A verificar…", renderIntegrity));
     comResultados.forEach((e) => {
@@ -681,11 +681,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     registos = await api.auditoria.listar(200);
     el.innerHTML = `
       ${head("REGISTO IMUTÁVEL", "Auditoria", "Eventos assinados produzidos pela plataforma eleitoral.")}
-      <article class="dash-card">
-        ${cardHead("REGISTO IMUTÁVEL", `Eventos de auditoria · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button class="button button-light" type="button" data-csv>Exportar relatório</button></div>')}
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+        ${cardHead("REGISTO IMUTÁVEL", `Eventos de auditoria · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button class="button rounded-xl button-light" type="button" data-csv>Exportar relatório</button></div>')}
         ${
           registos.length
-            ? `<div class="table-scroll"><table>
+            ? `<div class="table-scroll rounded-xl"><table>
                 <thead><tr><th>Hora</th><th>Evento</th><th>Origem</th><th>Hash</th><th>Estado</th></tr></thead>
                 <tbody>${registos
                   .map(
@@ -717,8 +717,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const offset = -new Date().getTimezoneOffset() / 60;
     el.innerHTML = `
       ${head("CENTRO DE OPERAÇÕES", "Configuração", "Controlo seguro e auditável da infraestrutura eleitoral.")}
-      <div class="dash-grid">
-        <article class="dash-card">
+      <div class="dash-grid grid-cols-1 lg:grid-cols-2">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           ${cardHead("CONFIGURAÇÃO ELEITORAL", "Parâmetros globais")}
           <form data-api-form>
             <label class="field-label">Endereço da API<input name="base" type="url" required value="${escapeHtml(TV.base)}"></label>
@@ -726,14 +726,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             <label class="field-label">Algoritmo de assinatura dos tokens<input value="RS256 · sessão de 30 minutos" readonly></label>
             <p class="form-message" role="status"></p>
             <div class="form-actions" style="justify-content:flex-start">
-              <button class="button button-primary" type="submit">Testar e guardar</button>
+              <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Testar e guardar</button>
               <button class="link-button" type="button" data-default>Repor ${escapeHtml(TV.DEFAULT_BASE)}</button>
             </div>
           </form>
         </article>
         <div>
           ${twoFactor.card(session.user)}
-          <article class="dash-card">
+          <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
             ${cardHead("ACESSIBILIDADE", "Preferências deste navegador")}
             <div class="toggle-row"><div><b>Texto maior</b><small>Aumenta o tamanho de todas as páginas.</small></div><button class="switch" type="button" data-pref="largeText"></button></div>
             <div class="toggle-row"><div><b>Contraste elevado</b><small>Cores com mais contraste.</small></div><button class="switch" type="button" data-pref="contrast"></button></div>

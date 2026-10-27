@@ -16,7 +16,7 @@
   function card(user) {
     const active = !!(user && user.totp_ativo);
     return `
-      <article class="dash-card" data-totp>
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-totp>
         <p class="eyebrow">PRIVACIDADE E SEGURANÇA</p>
         <h2>Proteção da conta</h2>
         <div class="toggle-row">
@@ -39,7 +39,7 @@
           Código de 6 dígitos
           <input name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="000000">
         </label>
-        <button class="button button-primary" type="submit">${label} →</button>
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">${label} →</button>
       </form>`;
   }
 
@@ -58,7 +58,7 @@
         try {
           const setup = await api.auth.totpConfigurar();
           area.innerHTML = `
-            <div class="totp-setup">
+            <div class="totp-setup rounded-xl">
               <div class="totp-qr">${qrSvg(setup.uri)}</div>
               <div>
                 <p class="muted">1. Leia o código QR com a aplicação autenticadora, ou introduza a chave manualmente:</p>

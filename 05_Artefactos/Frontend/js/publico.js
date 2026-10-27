@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h2>${escapeHtml(e.titulo)}</h2>
             <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
           </div>
-          <span class="status-pill"><i></i> ${elections.statusLabels[e.estado] || e.estado}</span>
+          <span class="status-pill rounded-full"><i></i> ${elections.statusLabels[e.estado] || e.estado}</span>
         </div>`;
 
       const phases = {
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
           el.textContent = el.dataset.live === "participacao" ? percent(value) : number(value);
         })
       )
-      .catch(() => {});
+      .catch(() => { });
   }
 
   // ===== Candidaturas =====
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="candidate-badge">${escapeHtml(initials(c.nome))}</span>
                 <h2>${escapeHtml(c.nome)}</h2>
                 <p>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "Candidatura registada")}</p>
-                <span class="status-pill">${escapeHtml(dados.eleicao.titulo.toUpperCase())}</span>
+                <span class="status-pill rounded-full">${escapeHtml(dados.eleicao.titulo.toUpperCase())}</span>
               </article>`
           )
           .join("");
@@ -89,10 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           const dados = await resumo();
           resumoHtml = `
-            <article class="dash-card">
+            <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
               <p class="eyebrow">PARTICIPAÇÃO EM TEMPO REAL</p>
               <h2>${escapeHtml(dados.eleicao.titulo)}</h2>
-              <div class="facts">
+              <div class="facts grid-cols-2 sm:grid-cols-3">
                 <div><b>${number(dados.eleitores)}</b><small>eleitores</small></div>
                 <div><b>${number(dados.votos)}</b><small>votos</small></div>
                 <div><b>${percent(dados.participacao)}</b><small>participação</small></div>
@@ -101,10 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch { }
         results.innerHTML = `
           ${resumoHtml}
-          <article class="dash-card">
+          <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
             <h2>Resultados detalhados</h2>
             <p>Os resultados por candidatura estão disponíveis na área reservada.</p>
-            <a class="button button-primary" href="login.html?area=eleitor">Iniciar sessão →</a>
+            <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor">Iniciar sessão →</a>
           </article>`;
         return;
       }
@@ -148,10 +148,10 @@ document.addEventListener("DOMContentLoaded", () => {
         )
         .join("");
     return `
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <div class="heading-row">
           <h2>${escapeHtml(eleicao.titulo)}</h2>
-          <span class="status-pill"><i></i> ${elections.statusLabels[eleicao.estado] || eleicao.estado}</span>
+          <span class="status-pill rounded-full"><i></i> ${elections.statusLabels[eleicao.estado] || eleicao.estado}</span>
         </div>
         ${body}
       </article>`;

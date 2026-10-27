@@ -81,17 +81,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }, 30000);
 
   const statusLine = (e) =>
-    `<span class="status-pill status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
+    `<span class="status-pill rounded-full status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
 
   function voteAction(e, label = "Iniciar votação →") {
-    if (e.votou) return '<button class="button button-outline" type="button" data-go="receipts">Ver recibo →</button>';
-    if (!e.aberta) return '<button class="button button-outline" type="button" disabled>Votação fechada</button>';
-    return `<button class="button button-primary" type="button" data-vote="${e.id}">${label}</button>`;
+    if (e.votou) return '<button class="button rounded-xl button-outline" type="button" data-go="receipts">Ver recibo →</button>';
+    if (!e.aberta) return '<button class="button rounded-xl button-outline" type="button" disabled>Votação fechada</button>';
+    return `<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-vote="${e.id}">${label}</button>`;
   }
 
   function electionCard(e, withDetails) {
     return `
-      <article class="election-card">
+      <article class="election-card rounded-2xl overflow-hidden shadow-soft">
         <div class="election-card-top">${statusLine(e)}<span>${timeInfo(e)}</span></div>
         <div class="election-card-body">
           <span class="round-mark">✓</span>
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p>${escapeHtml(e.descricao || `${e.periodo} · ${e.voltaLabel}`)}</p>
           </div>
           <div class="election-card-actions">
-            ${withDetails ? `<button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
+            ${withDetails ? `<button class="button rounded-xl button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
             ${voteAction(e)}
           </div>
         </div>
@@ -143,36 +143,36 @@ document.addEventListener("DOMContentLoaded", async () => {
       : e.votou
         ? "O teu voto já foi registado. Obrigado por participares."
         : e.aberta
-          ? "Tens uma eleição presidencial à espera do teu voto."
+          ? "Tens uma eleição académica à espera do teu voto."
           : `A próxima eleição começa a ${dateTime(e.inicio)}.`;
 
     panel("overview").innerHTML = `
       ${head(hoje, `${saudacao}, ${escapeHtml(user.nome.split(" ")[0])}.`, subtitulo, `
-        <div class="badge-card">
+        <div class="badge-card rounded-xl shadow-soft">
           <span class="ok-label">✓</span>
           <div><small>CREDENCIAL ELEITORAL · ${escapeHtml(voterNumber(user))}</small><b>${user.ativo === false ? "Suspensa" : "Verificada e válida"}</b></div>
           <i></i>
         </div>`)}
 
-      ${e ? electionCard(e, false) : `<article class="dash-card">${ui.empty("Sem eleições ativas", "Quando a equipa te habilitar numa eleição, ela aparece aqui.")}</article>`}
+      ${e ? electionCard(e, false) : `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Sem eleições ativas", "Quando a equipa te habilitar numa eleição, ela aparece aqui.")}</article>`}
 
-      <div class="overview-grid">
-        <article class="dash-card">
+      <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           <p class="eyebrow">A TUA SEGURANÇA</p>
           <h2>Proteção em todas as etapas</h2>
           <ul class="check-list">
-            <li><span class="check-box">✓</span><b>Voto anónimo</b><small>A identidade nunca é associada à escolha.</small><i>✓</i></li>
-            <li><span class="check-box">✓</span><b>Registo distribuído</b><small>O voto é replicado de forma segura.</small><i>✓</i></li>
-            <li><span class="check-box">${user.totp_ativo ? "✓" : "!"}</span><b>Autenticação de dois fatores</b><small>${user.totp_ativo ? "Ativa nesta conta." : "Desativada — ativa nas Definições."}</small><i>${user.totp_ativo ? "✓" : "→"}</i></li>
+            <li><span class="check-box rounded-lg">✓</span><b>Voto anónimo</b><small>A identidade nunca é associada à escolha.</small><i>✓</i></li>
+            <li><span class="check-box rounded-lg">✓</span><b>Registo distribuído</b><small>O voto é replicado de forma segura.</small><i>✓</i></li>
+            <li><span class="check-box rounded-lg">${user.totp_ativo ? "✓" : "!"}</span><b>Autenticação de dois fatores</b><small>${user.totp_ativo ? "Ativa nesta conta." : "Desativada — ativa nas Definições."}</small><i>${user.totp_ativo ? "✓" : "→"}</i></li>
           </ul>
         </article>
-        <article class="dash-card">
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           <p class="eyebrow">ATIVIDADE RECENTE</p>
           <h2>${recibos.length ? "O teu último voto" : "Ainda não votaste"}</h2>
           ${
             recibos.length
-              ? `<div class="receipt-code"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
-              : '<div class="empty-box">O recibo criptográfico ficará disponível depois da votação.</div>'
+              ? `<div class="receipt-code rounded-xl"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
+              : '<div class="empty-box rounded-xl">O recibo criptográfico ficará disponível depois da votação.</div>'
           }
           <button class="link-button" type="button" data-go="receipts">Como funciona o recibo? →</button>
         </article>
@@ -187,9 +187,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const el = panel("elections");
 
     el.innerHTML = `
-      ${head("ELEIÇÕES PRESIDENCIAIS", "As tuas eleições", "Consulta eleições ativas, agendadas e anteriores.")}
-      ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : `<article class="dash-card">${ui.empty("Sem eleições ativas", "Ainda não estás habilitado em nenhuma eleição a decorrer.")}</article>`}
-      <article class="dash-card">
+      ${head("ELEIÇÕES ACADÉMICAS", "As tuas eleições", "Consulta eleições ativas, agendadas e anteriores.")}
+      ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Sem eleições ativas", "Ainda não estás habilitado em nenhuma eleição a decorrer.")}</article>`}
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <p class="eyebrow">HISTÓRICO</p>
         <h2>Eleições concluídas</h2>
         ${
@@ -213,13 +213,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     el.innerHTML = `
       ${head(`ELEIÇÃO · ${e.ano}`, escapeHtml(e.titulo), "Informação completa sobre o ato eleitoral.")}
-      <article class="dash-card">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <p class="eyebrow"><i></i> ${e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</p>
         <h2>Dados da eleição</h2>
         <label class="field-label">Período de votação<input value="${escapeHtml(e.periodo)}" readonly></label>
         <label class="field-label">Ronda<input value="${escapeHtml(e.voltaLabel)}" readonly></label>
         <label class="field-label">Candidaturas<input value="${escapeHtml(e.candidatosRonda.map((c) => c.nome).join(" · ") || "—")}" readonly></label>
-        ${e.descricao ? `<p class="notice"><b>Sobre esta eleição</b>${escapeHtml(e.descricao)}</p>` : ""}
+        ${e.descricao ? `<p class="notice rounded-xl"><b>Sobre esta eleição</b>${escapeHtml(e.descricao)}</p>` : ""}
         <div class="form-actions" style="justify-content:flex-start">
           ${voteAction(e, "Abrir boletim digital →")}
           <button class="link-button" type="button" data-back>← Voltar às eleições</button>
@@ -250,17 +250,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     el.innerHTML = `
-      <article class="dash-card ballot">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
         <p class="eyebrow">BOLETIM DIGITAL · PASSO 1 DE 3</p>
         <h1>Escolha uma candidatura</h1>
         <p class="muted">Selecione uma opção. Pode rever a escolha antes de a depositar.</p>
-        <p class="notice"><b>${escapeHtml(e.titulo)}</b>${escapeHtml(e.descricao || e.voltaLabel)}</p>
+        <p class="notice rounded-xl"><b>${escapeHtml(e.titulo)}</b>${escapeHtml(e.descricao || e.voltaLabel)}</p>
         <form data-ballot>
           <div class="candidate-list">${e.candidatosRonda.map((c, i) => candidateOption(c, i)).join("")}</div>
           <p class="form-message" role="status"></p>
           <div class="ballot-foot">
             <small>A escolha será encriptada localmente</small>
-            <button class="button button-primary" type="submit">Rever escolha →</button>
+            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Rever escolha →</button>
           </div>
         </form>
         <button class="link-button" type="button" data-back>← Voltar às eleições</button>
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function review(e, candidato) {
     const el = panel("elections");
     el.innerHTML = `
-      <article class="dash-card ballot">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
         <p class="eyebrow">BOLETIM DIGITAL · PASSO 2 DE 3</p>
         <h1>Confirme a sua escolha</h1>
         <p class="muted">Depois de depositado, o voto não pode ser alterado.</p>
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p class="form-message" role="status" data-vote-message></p>
         <div class="ballot-foot">
           <button class="link-button" type="button" data-change>← Alterar escolha</button>
-          <button class="button button-primary" type="button" data-deposit>Depositar voto →</button>
+          <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-deposit>Depositar voto →</button>
         </div>
       </article>`;
 
@@ -312,13 +312,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function done(e, recibo) {
     panel("elections").innerHTML = `
-      <article class="dash-card ballot ballot-done">
+      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot ballot-done">
         <span class="seal-icon">✓</span>
         <p class="eyebrow">VOTO DEPOSITADO</p>
         <h1>${recibo ? "O teu voto foi registado." : "Já votaste nesta eleição."}</h1>
         <p class="muted">${recibo ? "O voto foi selado, replicado e incluído no registo eleitoral." : "Cada eleitor só pode votar uma vez por ronda."}</p>
-        ${recibo ? `<div class="receipt-code"><small>RECIBO CRIPTOGRÁFICO</small><b>${escapeHtml(recibo.recibo)}</b></div>` : ""}
-        <button class="button button-primary" type="button" data-go="receipts">Continuar para o recibo →</button>
+        ${recibo ? `<div class="receipt-code rounded-xl"><small>RECIBO CRIPTOGRÁFICO</small><b>${escapeHtml(recibo.recibo)}</b></div>` : ""}
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-go="receipts">Continuar para o recibo →</button>
       </article>`;
     loadReceipts();
   }
@@ -330,17 +330,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const title = (extra = "") =>
       head("MODELO PREDITIVO · SIMULAÇÃO ACADÉMICA", "Sondagem eleitoral com IA", "Projeção experimental baseada em resultados históricos e numa amostra simulada de intenção de voto.", extra);
     if (!e) {
-      el.innerHTML = title() + `<article class="dash-card">${ui.empty("Sem eleição para projetar")}</article>`;
+      el.innerHTML = title() + `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Sem eleição para projetar")}</article>`;
       return;
     }
     el.innerHTML = title() + `<div data-poll-body></div>`;
     const body = el.querySelector("[data-poll-body]");
     ui.mount(body, async () => {
       const s = await api.sondagem.obter(e.id);
-      el.querySelector(".page-head").insertAdjacentHTML("beforeend", `<span class="model-tag">MODELO ${escapeHtml(String(s.modelo || "TRUSTVOTE").toUpperCase())}</span>`);
+      el.querySelector(".page-head").insertAdjacentHTML("beforeend", `<span class="model-tag rounded-lg">MODELO ${escapeHtml(String(s.modelo || "TRUSTVOTE").toUpperCase())}</span>`);
       body.innerHTML = `
-        <div class="poll-grid">
-          <article class="dash-card">
+        <div class="poll-grid grid-cols-1 lg:grid-cols-[1.95fr_1fr]">
+          <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
             <div class="card-head">
               <div><p class="eyebrow">PROJEÇÃO ATUAL</p><h2>Estimativa para ${e.ano}</h2></div>
               <small class="muted" style="font-size:9px">AMOSTRA SIMULADA · N=${number(s.amostra)}</small>
@@ -356,16 +356,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>`
               )
               .join("")}
-            <p class="notice"><b>Intervalo de confiança estimado: ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Esta projeção não representa uma sondagem oficial nem utiliza dados pessoais reais.</p>
+            <p class="notice rounded-xl"><b>Intervalo de confiança estimado: ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Esta projeção não representa uma sondagem oficial nem utiliza dados pessoais reais.</p>
           </article>
-          <article class="dash-card">
+          <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
             <p class="eyebrow">PARTICIPAÇÃO ANÓNIMA</p>
             <h2>Se a eleição fosse hoje?</h2>
             <p>A resposta é agregada à demonstração e não afeta o voto.</p>
             <form class="poll-form" data-poll-form>
-              ${e.candidatosRonda.map((c) => `<label class="radio-line"><input type="radio" name="poll" value="${c.id}" required> ${escapeHtml(c.nome)}</label>`).join("")}
+              ${e.candidatosRonda.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="radio" name="poll" value="${c.id}" required> ${escapeHtml(c.nome)}</label>`).join("")}
               <p class="form-message" role="status"></p>
-              <button class="button button-primary" type="submit">Incluir na simulação</button>
+              <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Incluir na simulação</button>
             </form>
           </article>
         </div>`;
@@ -389,10 +389,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const title = head("INFORMAÇÃO ELEITORAL", "Resultados", "Apuramento das eleições em curso e concluídas.");
     const comResultados = lista.filter((e) => ["em_curso", "encerrada"].includes(e.estado));
     if (!comResultados.length) {
-      el.innerHTML = title + `<article class="dash-card">${ui.empty("Resultados ainda não disponíveis", "Os resultados aparecem quando uma eleição começa.")}</article>`;
+      el.innerHTML = title + `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Resultados ainda não disponíveis", "Os resultados aparecem quando uma eleição começa.")}</article>`;
       return;
     }
-    el.innerHTML = title + comResultados.map((e) => `<article class="dash-card" data-result="${e.id}"></article>`).join("");
+    el.innerHTML = title + comResultados.map((e) => `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-result="${e.id}"></article>`).join("");
     comResultados.forEach((e) => {
       const card = el.querySelector(`[data-result="${e.id}"]`);
       ui.mount(card, async () => {
@@ -433,10 +433,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       } catch (error) {
         if (!error.pending) throw error;
         recibos = localReceipts.all();
-        aviso = '<p class="notice">A mostrar os recibos guardados neste dispositivo.</p>';
+        aviso = '<p class="notice rounded-xl">A mostrar os recibos guardados neste dispositivo.</p>';
       }
       if (!recibos.length) {
-        box.innerHTML = `<article class="dash-card">${ui.empty("Ainda não existem recibos", "O recibo é emitido quando depositas um voto.")}<div class="state-box"><button class="button button-outline" type="button" data-go="elections">Ver eleições →</button></div></article>`;
+        box.innerHTML = `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Ainda não existem recibos", "O recibo é emitido quando depositas um voto.")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-go="elections">Ver eleições →</button></div></article>`;
         return;
       }
       box.innerHTML =
@@ -444,18 +444,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         recibos
           .map(
             (r, i) => `
-            <article class="dash-card receipt-card">
+            <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift receipt-card grid-cols-1 md:grid-cols-[auto_1fr_auto]">
               <span class="seal-icon">✓</span>
               <div>
-                <span class="status-pill status-plain" data-verify-status="${i}"><i></i> DEPOSITADO</span>
+                <span class="status-pill rounded-full status-plain" data-verify-status="${i}"><i></i> DEPOSITADO</span>
                 <h2>${escapeHtml(r.eleicao_titulo || `Eleição #${r.eleicao_id}`)}</h2>
                 <p>Depositado a ${dateTime(r.data)} · ${r.ronda === 2 ? "2.ª" : "1.ª"} volta.</p>
-                <div class="receipt-code"><small>IDENTIFICADOR CRIPTOGRÁFICO</small><b>${escapeHtml(r.recibo)}</b></div>
+                <div class="receipt-code rounded-xl"><small>IDENTIFICADOR CRIPTOGRÁFICO</small><b>${escapeHtml(r.recibo)}</b></div>
                 <div class="receipt-checks" data-verify-checks="${i}"></div>
               </div>
               <div class="receipt-actions">
-                <button class="button button-primary" type="button" data-verify="${i}">Verificar</button>
-                <button class="button button-outline" type="button" data-download="${i}">Descarregar recibo</button>
+                <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-verify="${i}">Verificar</button>
+                <button class="button rounded-xl button-outline" type="button" data-download="${i}">Descarregar recibo</button>
               </div>
             </article>`
           )
@@ -508,8 +508,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     accessibility.insertAdjacentHTML(
       "beforebegin",
       `
-      <div class="dash-grid" data-settings-extra>
-        <article class="dash-card">
+      <div class="dash-grid grid-cols-1 lg:grid-cols-2" data-settings-extra>
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           <p class="eyebrow">PERFIL ELEITORAL</p>
           <h2>Informação da conta</h2>
           <label class="field-label">Nome completo<input value="${escapeHtml(user.nome)}" readonly></label>
@@ -519,11 +519,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         </article>
         <div>
           ${twoFactor.card(user)}
-          <article class="dash-card">
+          <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
             <p class="eyebrow">SESSÃO ATUAL</p>
             <h2>Sessão verificada</h2>
             <p>Iniciada às ${claims.iat ? time(new Date(claims.iat * 1000).toISOString()) : "—"} · termina às ${claims.exp ? time(new Date(claims.exp * 1000).toISOString()) : "—"}.</p>
-            <button class="button button-outline" type="button" data-logout-settings>Terminar sessão →</button>
+            <button class="button rounded-xl button-outline" type="button" data-logout-settings>Terminar sessão →</button>
           </article>
         </div>
       </div>`
