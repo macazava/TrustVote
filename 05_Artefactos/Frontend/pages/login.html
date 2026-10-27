@@ -1,11 +1,13 @@
-
 <!doctype html>
 <html lang="pt-PT">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acesso | TrustVote</title>
   <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/site.js"></script>
@@ -19,7 +21,7 @@
       <span class="brand-mark">✓</span>
       <span>
         <b>TRUSTVOTE</b>
-        <small>ELEIÇÃO PRESIDENCIAL</small>
+        <small>ELEIÇÕES ACADÉMICAS</small>
       </span>
     </a>
 
@@ -28,7 +30,7 @@
     </a>
   </header>
 
-  <main class="auth-layout">
+  <main class="auth-layout grid-cols-1 lg:grid-cols-[1fr_minmax(360px,530px)]">
 
     <section class="auth-intro">
       <p class="eyebrow">ACESSO RESERVADO E PROTEGIDO</p>
@@ -67,9 +69,9 @@
       </div>
     </section>
 
-    <section class="auth-card">
+    <section class="auth-card rounded-2xl shadow-lift">
 
-      <div class="role-switch">
+      <div class="role-switch rounded-xl overflow-hidden">
         <button type="button" data-role="eleitor" class="active">
           Eleitor
         </button>
@@ -98,56 +100,29 @@
 
         <label id="name-field" hidden>
           Nome completo
-          <input
-            name="name"
-            autocomplete="name"
-            placeholder="Nome completo"
-          >
+          <input name="name" autocomplete="name" placeholder="Nome completo">
         </label>
 
         <label>
           E-mail
-          <input
-            name="email"
-            type="email"
-            autocomplete="username"
-            required
-            placeholder="nome@exemplo.pt"
-          >
+          <input name="email" type="email" autocomplete="username" required placeholder="nome@exemplo.pt">
         </label>
 
         <label>
           Palavra-passe
-          <input
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            required
-            minlength="8"
-            placeholder="Introduza a sua palavra-passe"
-          >
+          <input name="password" type="password" autocomplete="current-password" required minlength="8"
+            placeholder="Introduza a sua palavra-passe">
         </label>
 
         <label id="confirm-field" hidden>
           Confirmar palavra-passe
-          <input
-            name="confirm"
-            type="password"
-            minlength="8"
-            placeholder="Repita a palavra-passe"
-          >
+          <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
         </label>
 
         <label id="totp-field" hidden>
           Código de autenticação
-          <input
-            name="totp"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            pattern="[0-9]{6}"
-            maxlength="6"
-            placeholder="000000"
-          >
+          <input name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"
+            placeholder="000000">
         </label>
 
         <label class="check-label" id="terms-field" hidden>
@@ -168,19 +143,12 @@
 
         <p class="form-message" role="status" aria-live="polite"></p>
 
-        <button
-          class="button button-primary full-button"
-          type="submit"
-          id="submit-label"
-        >
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift full-button" type="submit"
+          id="submit-label">
           Iniciar sessão →
         </button>
 
-        <button
-          class="link-button register-link"
-          type="button"
-          data-mode="register"
-        >
+        <button class="link-button register-link" type="button" data-mode="register">
           Ainda não tenho conta · Criar conta
         </button>
 
@@ -203,4 +171,5 @@
   </main>
 
 </body>
+
 </html>

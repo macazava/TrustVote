@@ -1,23 +1,24 @@
-
 <!doctype html>
 <html lang="pt-PT">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Privacidade | TrustVote</title>
+  <title>Privacidade | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <script defer src="../js/main.js"></script>
-    <script defer src="../js/api.js"></script>
-    <script defer src="../js/site.js"></script>
-    <script defer src="../js/publico.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/site.js"></script>
+  <script defer src="../js/publico.js"></script>
 </head>
 
 <body>
 
-    <!-- Cabeçalho TrustVote -->
+  <!-- Cabeçalho TrustVote -->
   <div class="topbar">
     <div class="topbar-inner">
       <a href="acessibilidade.html">Acessibilidade</a>
@@ -28,24 +29,25 @@
     </div>
   </div>
 
-  <header class="site-header">
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="../index.html">
         <span class="brand-mark">✓</span>
-        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="servicos.html">Serviços eleitorais</a>
         <a href="calendario.html">Eleições</a>
-        <a href="partidos.html">Partidos</a>
+        <a href="listas.html">Listas</a>
         <a href="comunicacao.html">Comunicação</a>
-        <a href="julgados.html">Julgados históricos</a>
-        <a href="legislacao.html">Legislação</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="regulamento.html">Regulamento</a>
         <a href="institucional.html">Institucional</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+          data-voter-link>Votar <span>→</span></a>
       </div>
     </div>
   </header>
@@ -60,81 +62,81 @@
     </div>
   </div>
 
-    <main class="container content-page">
+  <main class="container content-page">
 
-        <p class="eyebrow">PROTEÇÃO DE DADOS</p>
+    <p class="eyebrow">PROTEÇÃO DE DADOS</p>
 
-        <h1>Privacidade</h1>
+    <h1>Privacidade</h1>
 
-        <p class="lead">
-            Recolhemos o mínimo necessário. A identidade e o sentido do voto nunca
-            são guardados no mesmo sistema.
-        </p>
+    <p class="lead">
+      Recolhemos o mínimo necessário. A identidade e o sentido do voto nunca
+      são guardados no mesmo sistema.
+    </p>
 
-        <div class="info-list">
+    <div class="info-list">
 
-            <article>
-                <span>01</span>
-                <div>
-                    <h2>Que dados guardamos</h2>
-                    <p>
-                        Nome, e-mail e a palavra-passe cifrada, para iniciar sessão; a lista
-                        de eleições em que está habilitado; e se já votou em cada ronda.
-                    </p>
-                </div>
-            </article>
-
-            <article>
-                <span>02</span>
-                <div>
-                    <h2>O que nunca guardamos</h2>
-                    <p>
-                        A ligação entre a sua conta e a candidatura escolhida. O recibo
-                        confirma que o voto foi contado sem revelar a escolha.
-                    </p>
-                </div>
-            </article>
-
-            <article>
-                <span>03</span>
-                <div>
-                    <h2>Sessão e dispositivo</h2>
-                    <p>
-                        A sessão dura 30 minutos e fica guardada apenas neste navegador.
-                        Se escolher "manter o identificador", fica até terminar sessão.
-                    </p>
-                </div>
-            </article>
-
-            <article>
-                <span>04</span>
-                <div>
-                    <h2>Os seus direitos</h2>
-                    <p>
-                        Pode pedir acesso, correção ou eliminação dos seus dados através
-                        de geral@trustvote.pt.
-                    </p>
-                    <a href="apoio.html">Contactar a equipa →</a>
-                </div>
-            </article>
-
+      <article>
+        <span>01</span>
+        <div>
+          <h2>Que dados guardamos</h2>
+          <p>
+            Nome, e-mail e a palavra-passe cifrada, para iniciar sessão; a lista
+            de eleições em que está habilitado; e se já votou em cada ronda.
+          </p>
         </div>
+      </article>
 
-    </main>
+      <article>
+        <span>02</span>
+        <div>
+          <h2>O que nunca guardamos</h2>
+          <p>
+            A ligação entre a sua conta e a candidatura escolhida. O recibo
+            confirma que o voto foi contado sem revelar a escolha.
+          </p>
+        </div>
+      </article>
 
-    <!-- Rodapé TrustVote -->
+      <article>
+        <span>03</span>
+        <div>
+          <h2>Sessão e dispositivo</h2>
+          <p>
+            A sessão dura 30 minutos e fica guardada apenas neste navegador.
+            Se escolher "manter o identificador", fica até terminar sessão.
+          </p>
+        </div>
+      </article>
+
+      <article>
+        <span>04</span>
+        <div>
+          <h2>Os seus direitos</h2>
+          <p>
+            Pode pedir acesso, correção ou eliminação dos seus dados através
+            de geral@trustvote.pt.
+          </p>
+          <a href="apoio.html">Contactar a equipa →</a>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
   <footer class="site-footer">
-    <div class="footer-main container">
-      <div class="footer-about">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="../index.html">
           <span class="brand-mark">✓</span>
-          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
         <a href="resultados.html">Resultados</a>
         <a href="calendario.html">Calendário</a>
       </div>
@@ -147,13 +149,14 @@
       <div>
         <b>INSTITUCIONAL</b>
         <a href="institucional.html#transparencia">Transparência</a>
-        <a href="julgados.html">Julgados históricos</a>
+        <a href="historico.html">Histórico eleitoral</a>
         <a href="login.html?area=equipa">Administração</a>
       </div>
     </div>
     <div class="footer-bottom container">
       <span>Projeto académico demonstrativo · 2025</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a href="institucional.html#transparencia">Transparência</a></span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
+          href="institucional.html#transparencia">Transparência</a></span>
     </div>
   </footer>
 

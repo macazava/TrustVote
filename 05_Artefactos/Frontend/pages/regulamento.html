@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="Regras eleitorais, voto digital, proteção de dados e deliberações da comissão eleitoral.">
+
+  <title>Regulamento | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/site.js"></script>
+  <script defer src="../js/publico.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="acessibilidade.html">Acessibilidade</a>
+      <a href="login.html?area=equipa">Área da equipa</a>
+      <button type="button" data-font-toggle aria-pressed="false" aria-label="Aumentar o texto">A+</button>
+      <button type="button" data-contrast-toggle aria-pressed="false">Contraste</button>
+      <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
+    </div>
+  </div>
+
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
+    <div class="site-header-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">✓</span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="servicos.html">Serviços eleitorais</a>
+        <a href="calendario.html">Eleições</a>
+        <a href="listas.html">Listas</a>
+        <a href="comunicacao.html">Comunicação</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="regulamento.html">Regulamento</a>
+        <a href="institucional.html">Institucional</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+          data-voter-link>Votar <span>→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Caminho da página -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a href="../index.html" aria-label="Início">⌂</a></li>
+        <li><a href="regulamento.html">Regulamento</a></li>
+        <li data-crumb-current>Regras eleitorais</li>
+      </ol>
+      <div class="breadcrumb-tools">
+        <button type="button" data-share aria-label="Partilhar">↗</button>
+        <button type="button" data-print aria-label="Imprimir">▣</button>
+      </div>
+    </div>
+  </div>
+
+  <main
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
+        <h2>Regulamento</h2>
+        <nav aria-label="Regulamento">
+          <a href="#regras-eleitorais">Regras eleitorais</a>
+          <a href="#regulamento-voto-digital">Regulamento do voto digital</a>
+          <a href="#protecao-de-dados">Proteção de dados</a>
+          <a href="#deliberacoes">Deliberações</a>
+        </nav>
+      </div>
+      <div class="manager-card rounded-2xl shadow-soft">
+        <h2>Gestor responsável</h2>
+        <a href="institucional.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo: um tema de cada vez -->
+    <div class="section-content rounded-2xl shadow-soft">
+      <article class="section-item" id="regras-eleitorais" data-item>
+        <div class="section-item-head">
+          <h1>Regras eleitorais</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p class="lead">
+          Resumo das regras usadas nas eleições académicas da plataforma.
+        </p>
+
+        <!-- Regras principais -->
+        <div class="info-list">
+
+          <article>
+            <span>01</span>
+            <div>
+              <h2>Quem pode votar</h2>
+              <p>
+                Estudantes com matrícula ativa, habilitados pela comissão eleitoral
+                na eleição do seu curso, turma, núcleo ou órgão académico.
+              </p>
+            </div>
+          </article>
+
+          <article>
+            <span>02</span>
+            <div>
+              <h2>Como se apuram os resultados</h2>
+              <p>
+                Ganha a lista com mais de metade dos votos. Se nenhuma o conseguir,
+                pode realizar-se uma segunda volta entre as duas listas mais votadas.
+              </p>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Nota informativa -->
+        <p class="notice rounded-xl">
+          Esta página resume as regras usadas na demonstração.
+          Não substitui os regulamentos oficiais da instituição de ensino.
+        </p>
+      </article>
+
+      <article class="section-item" id="regulamento-voto-digital" data-item>
+        <div class="section-item-head">
+          <h1>Regulamento do voto digital</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Define como o voto digital é emitido, cifrado, guardado e auditado, e os direitos do eleitor em cada fase.
+        </p>
+        <ul class="section-links">
+          <li><a href="servicos.html#recibo-de-voto">Recibo de voto</a></li>
+          <li><a href="apoio.html">Perguntas e respostas</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="protecao-de-dados" data-item>
+        <div class="section-item-head">
+          <h1>Proteção de dados</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Recolhemos o mínimo necessário, de acordo com o Regulamento Geral sobre a Proteção de Dados (RGPD). A
+          identidade e o sentido do voto nunca são guardados no mesmo sistema.</p>
+        <ul class="section-links">
+          <li><a href="privacidade.html">Política de privacidade</a></li>
+          <li><a href="privacidade.html">Exercer os meus direitos</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="deliberacoes" data-item>
+        <div class="section-item-head">
+          <h1>Deliberações</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Decisões da comissão eleitoral académica sobre listas admitidas, calendário e resultados, ordenadas por data.
+        </p>
+        <ul class="section-links">
+          <li><a href="institucional.html#comissao-eleitoral">Comissão eleitoral académica</a></li>
+        </ul>
+      </article>
+
+      <div class="visit-also" data-visit-also></div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <footer class="site-footer">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">✓</span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
+        </a>
+        <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
+      </div>
+      <div>
+        <b>ELEIÇÕES</b>
+        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
+        <a href="resultados.html">Resultados</a>
+        <a href="calendario.html">Calendário</a>
+      </div>
+      <div>
+        <b>ELEITOR</b>
+        <a href="login.html?area=eleitor" data-voter-link>Área reservada</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="apoio.html">Perguntas frequentes</a>
+      </div>
+      <div>
+        <b>INSTITUCIONAL</b>
+        <a href="institucional.html#transparencia">Transparência</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="login.html?area=equipa">Administração</a>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      <span>Projeto académico demonstrativo · 2025</span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
+          href="institucional.html#transparencia">Transparência</a></span>
+    </div>
+  </footer>
+
+</body>
+
+</html>

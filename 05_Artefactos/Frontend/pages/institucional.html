@@ -1,19 +1,20 @@
-
 <!doctype html>
 <html lang="pt-PT">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Quem somos, auditoria, transparência e contactos do TrustVote.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Quem somos, comissão eleitoral, transparência e contactos do TrustVote.">
 
-    <title>Institucional | TrustVote</title>
+  <title>Institucional | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <script defer src="../js/main.js"></script>
-    <script defer src="../js/api.js"></script>
-    <script defer src="../js/site.js"></script>
-    <script defer src="../js/publico.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/site.js"></script>
+  <script defer src="../js/publico.js"></script>
 </head>
 
 <body>
@@ -29,24 +30,25 @@
     </div>
   </div>
 
-  <header class="site-header">
+  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="../index.html">
         <span class="brand-mark">✓</span>
-        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="servicos.html">Serviços eleitorais</a>
         <a href="calendario.html">Eleições</a>
-        <a href="partidos.html">Partidos</a>
+        <a href="listas.html">Listas</a>
         <a href="comunicacao.html">Comunicação</a>
-        <a href="julgados.html">Julgados históricos</a>
-        <a href="legislacao.html">Legislação</a>
+        <a href="historico.html">Histórico eleitoral</a>
+        <a href="regulamento.html">Regulamento</a>
         <a href="institucional.html">Institucional</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+          data-voter-link>Votar <span>→</span></a>
       </div>
     </div>
   </header>
@@ -66,27 +68,28 @@
     </div>
   </div>
 
-  <main class="container section-page">
+  <main
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
 
     <!-- Menu da secção -->
     <aside class="section-aside">
-      <div class="side-menu">
+      <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
         <h2>Institucional</h2>
         <nav aria-label="Institucional">
           <a href="#quem-somos">Quem somos</a>
-          <a href="#comissao-de-auditoria">Comissão de Auditoria</a>
+          <a href="#comissao-eleitoral">Comissão eleitoral académica</a>
           <a href="#transparencia">Transparência</a>
           <a href="#contactos">Contactos</a>
         </nav>
       </div>
-      <div class="manager-card">
+      <div class="manager-card rounded-2xl shadow-soft">
         <h2>Gestor responsável</h2>
-        <a href="institucional.html#contactos">Secretaria-Geral <span>›</span></a>
+        <a href="institucional.html#contactos">Equipa TrustVote <span>›</span></a>
       </div>
     </aside>
 
     <!-- Conteúdo: um tema de cada vez -->
-    <div class="section-content">
+    <div class="section-content rounded-2xl shadow-soft">
       <article class="section-item" id="quem-somos" data-item>
         <div class="section-item-head">
           <h1>Quem somos</h1>
@@ -95,19 +98,22 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>O TrustVote é um projeto académico que simula um portal eleitoral presidencial para estudar segurança, privacidade e tolerância a falhas.</p>
-        <p>Foi feito por estudantes, com a ajuda de professores, e nenhuma eleição real depende dele.</p>
+        <p>O TrustVote é um projeto académico de votação digital para eleições académicas: Associação de Estudantes,
+          representantes de turma e de curso, núcleos e órgãos académicos.</p>
+        <p>Foi feito por estudantes, com a ajuda de professores, para estudar segurança, privacidade e tolerância a
+          falhas. Os dados apresentados são demonstrativos.</p>
       </article>
 
-      <article class="section-item" id="comissao-de-auditoria" data-item>
+      <article class="section-item" id="comissao-eleitoral" data-item>
         <div class="section-item-head">
-          <h1>Comissão de Auditoria</h1>
+          <h1>Comissão eleitoral académica</h1>
           <div class="section-item-tools">
             <button class="pill-button" type="button" data-share>↗ Partilhar</button>
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>Grupo independente que verifica o código, a contagem e os registos de cada eleição.</p>
+        <p>Grupo de estudantes e docentes que organiza as eleições, admite as listas, habilita os eleitores e verifica a
+          contagem.</p>
         <ul class="section-links">
           <li><a href="resultados.html">Resultados verificados</a></li>
         </ul>
@@ -121,7 +127,8 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>Registos de auditoria, relatórios de disponibilidade e provas de integridade são publicados para consulta pública. Estado atual dos serviços:</p>
+        <p>Registos de auditoria, relatórios de disponibilidade e provas de integridade são publicados para consulta.
+          Estado atual dos serviços:</p>
         <div data-transparency></div>
         <ul class="section-links">
           <li><a href="resultados.html">Consultar resultados e participação</a></li>
@@ -136,7 +143,7 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p>Rua da Democracia, 25 · 1250-096 Lisboa</p>
+        <p>Universidade Exemplo · Edifício da Associação de Estudantes</p>
         <p>Telefone 213 000 025 · geral@trustvote.pt</p>
         <ul class="section-links">
           <li><a href="apoio.html">Enviar uma mensagem</a></li>
@@ -150,17 +157,17 @@
 
   <!-- Rodapé TrustVote -->
   <footer class="site-footer">
-    <div class="footer-main container">
-      <div class="footer-about">
+    <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
+      <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="../index.html">
           <span class="brand-mark">✓</span>
-          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
         <a href="resultados.html">Resultados</a>
         <a href="calendario.html">Calendário</a>
       </div>
@@ -173,13 +180,14 @@
       <div>
         <b>INSTITUCIONAL</b>
         <a href="institucional.html#transparencia">Transparência</a>
-        <a href="julgados.html">Julgados históricos</a>
+        <a href="historico.html">Histórico eleitoral</a>
         <a href="login.html?area=equipa">Administração</a>
       </div>
     </div>
     <div class="footer-bottom container">
       <span>Projeto académico demonstrativo · 2025</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a href="institucional.html#transparencia">Transparência</a></span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
+          href="institucional.html#transparencia">Transparência</a></span>
     </div>
   </footer>
 
