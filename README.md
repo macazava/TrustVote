@@ -1,5 +1,3 @@
-Aqui tens o texto organizado em formato `README.md`, com a descrição académica e a arquitetura completa do repositório TrustVote, pronto para copiares para o GitHub.
-
 # TrustVote — Sistema de Votação Online Distribuído
 
 **Projeto académico | Universidade Europeia — IADE**\
