@@ -1,0 +1,256 @@
+
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Candidaturas, contas partidárias, financiamento e propaganda eleitoral.">
+
+    <title>Partidos | TrustVote</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../js/main.js"></script>
+    <script defer src="../js/api.js"></script>
+    <script defer src="../js/site.js"></script>
+    <script defer src="../js/publico.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="acessibilidade.html">Acessibilidade</a>
+      <a href="login.html?area=equipa">Área da equipa</a>
+      <button type="button" data-font-toggle aria-pressed="false" aria-label="Aumentar o texto">A+</button>
+      <button type="button" data-contrast-toggle aria-pressed="false">Contraste</button>
+      <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">✓</span>
+        <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="servicos.html">Serviços eleitorais</a>
+        <a href="calendario.html">Eleições</a>
+        <a href="partidos.html">Partidos</a>
+        <a href="comunicacao.html">Comunicação</a>
+        <a href="julgados.html">Julgados históricos</a>
+        <a href="legislacao.html">Legislação</a>
+        <a href="institucional.html">Institucional</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar <span>→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Caminho da página -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a href="../index.html" aria-label="Início">⌂</a></li>
+        <li><a href="partidos.html">Partidos</a></li>
+        <li data-crumb-current>Contas partidárias</li>
+      </ol>
+      <div class="breadcrumb-tools">
+        <button type="button" data-share aria-label="Partilhar">↗</button>
+        <button type="button" data-print aria-label="Imprimir">▣</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container section-page">
+
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu">
+        <h2>Partidos</h2>
+        <nav aria-label="Partidos">
+          <a href="#contas-partidarias">Contas partidárias</a>
+          <a href="#candidaturas-registadas">Candidaturas registadas</a>
+          <a href="#financiamento-de-campanha">Financiamento de campanha</a>
+          <a href="#propaganda-eleitoral">Propaganda eleitoral</a>
+          <a href="#partidos-registados">Partidos registados</a>
+        </nav>
+      </div>
+      <div class="manager-card">
+        <h2>Gestor responsável</h2>
+        <a href="institucional.html#contactos">Entidade das Contas e Financiamentos Políticos <span>›</span></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo: um tema de cada vez -->
+    <div class="section-content">
+      <article class="section-item" id="contas-partidarias" data-item>
+        <div class="section-item-head">
+          <h1>Contas partidárias</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>A Constituição da República Portuguesa prevê a obrigação das agremiações em prestar contas.</p>
+        <p>Consulte os processos, demonstrativos contabilísticos e dados em formato aberto.</p>
+        <ul class="section-links">
+          <li><a href="https://www.tribunalconstitucional.pt/tc/contas.html" target="_blank" rel="noopener noreferrer">Consulta da prestação de contas ↗</a></li>
+          <li><a href="https://www.tribunalconstitucional.pt/tc/contas.html" target="_blank" rel="noopener noreferrer">Normas e regulamentos ↗</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="candidaturas-registadas" data-item>
+        <div class="section-item-head">
+          <h1>Candidaturas registadas</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+    <p class="lead">
+        Área preparada para consultar informação de candidaturas.
+        Os exemplos abaixo não representam candidaturas oficiais.
+    </p>
+
+    <!-- Cartões originais A, B e C -->
+    <div class="candidate-grid" data-candidates>
+
+        <article>
+            <span class="candidate-badge">A</span>
+
+            <h2>Candidatura A</h2>
+
+            <p>
+                Cartão ilustrativo para informação da candidatura,
+                programa e ligações oficiais.
+            </p>
+
+            <span class="status-pill">EXEMPLO</span>
+        </article>
+
+        <article>
+            <span class="candidate-badge">B</span>
+
+            <h2>Candidatura B</h2>
+
+            <p>
+                Cartão ilustrativo para informação da candidatura,
+                programa e ligações oficiais.
+            </p>
+
+            <span class="status-pill">EXEMPLO</span>
+        </article>
+
+        <article>
+            <span class="candidate-badge">C</span>
+
+            <h2>Candidatura C</h2>
+
+            <p>
+                Cartão ilustrativo para informação da candidatura,
+                programa e ligações oficiais.
+            </p>
+
+            <span class="status-pill">EXEMPLO</span>
+        </article>
+
+    </div>
+
+    <p class="notice">
+        Os nomes e dados reais devem ser adicionados a partir
+        de fontes oficiais verificadas.
+    </p>
+      </article>
+
+      <article class="section-item" id="financiamento-de-campanha" data-item>
+        <div class="section-item-head">
+          <h1>Financiamento de campanha</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Os limites de despesa e as fontes de receita de cada campanha são públicos.</p>
+        <ul class="section-links">
+          <li><a href="https://www.cne.pt/" target="_blank" rel="noopener noreferrer">Limites de despesa ↗</a></li>
+          <li><a href="https://www.cne.pt/" target="_blank" rel="noopener noreferrer">Donativos declarados ↗</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="propaganda-eleitoral" data-item>
+        <div class="section-item-head">
+          <h1>Propaganda eleitoral</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>A campanha termina antes do dia de reflexão. É proibida qualquer propaganda durante esse período.</p>
+        <ul class="section-links">
+          <li><a href="https://www.cne.pt/" target="_blank" rel="noopener noreferrer">Regras de propaganda ↗</a></li>
+          <li><a href="apoio.html">Denunciar irregularidade</a></li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="partidos-registados" data-item>
+        <div class="section-item-head">
+          <h1>Partidos registados</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Consulte a lista de partidos e coligações inscritos e os órgãos nacionais em funções.</p>
+        <ul class="section-links">
+          <li><a href="https://www.tribunalconstitucional.pt/tc/partidos.html" target="_blank" rel="noopener noreferrer">Lista de partidos ↗</a></li>
+        </ul>
+      </article>
+
+      <div class="visit-also" data-visit-also></div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <footer class="site-footer">
+    <div class="footer-main container">
+      <div class="footer-about">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">✓</span>
+          <span><b>TRUSTVOTE</b><small>ELEIÇÃO PRESIDENCIAL</small></span>
+        </a>
+        <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
+      </div>
+      <div>
+        <b>ELEIÇÕES</b>
+        <a href="calendario.html#presidenciais-2025">Presidenciais 2025</a>
+        <a href="resultados.html">Resultados</a>
+        <a href="calendario.html">Calendário</a>
+      </div>
+      <div>
+        <b>ELEITOR</b>
+        <a href="login.html?area=eleitor" data-voter-link>Área reservada</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="apoio.html">Perguntas frequentes</a>
+      </div>
+      <div>
+        <b>INSTITUCIONAL</b>
+        <a href="institucional.html#transparencia">Transparência</a>
+        <a href="julgados.html">Julgados históricos</a>
+        <a href="login.html?area=equipa">Administração</a>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      <span>Projeto académico demonstrativo · 2025</span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a href="institucional.html#transparencia">Transparência</a></span>
+    </div>
+  </footer>
+
+</body>
+
+</html>
