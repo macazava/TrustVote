@@ -138,9 +138,3 @@ TrustVote/
     ├── stop.sh
     └── health_check.sh
 ```
-
----
-
-*Repositório académico — Universidade Europeia / IADE | Engenharia Informática | 2026/2027*
-
-Add clear setup and execution stepsClarify the actual implementation stack
