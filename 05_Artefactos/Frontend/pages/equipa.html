@@ -1,11 +1,13 @@
-
 <!doctype html>
 <html lang="pt-PT">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Centro de operações | TrustVote</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="../js/tailwind.config.js"></script>
     <script defer src="../js/main.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script defer src="../js/api.js"></script>
@@ -23,26 +25,32 @@
             <span class="brand-mark">✓</span>
             <span>
                 <b>TRUSTVOTE</b>
-                <small>ELEIÇÃO PRESIDENCIAL</small>
+                <small>ELEIÇÕES ACADÉMICAS</small>
             </span>
         </a>
 
         <nav class="panel-nav" aria-label="Navegação da área da equipa">
-            <button class="panel-link active" type="button" data-view="overview">Visão geral</button>
-            <button class="panel-link" type="button" data-view="elections">Eleições</button>
-            <button class="panel-link" type="button" data-view="candidates">Candidatos</button>
-            <button class="panel-link" type="button" data-view="voters">Eleitores</button>
-            <button class="panel-link" type="button" data-view="services">Serviços</button>
-            <button class="panel-link" type="button" data-view="integrity">Resultados</button>
-            <button class="panel-link" type="button" data-view="audit">Auditoria</button>
-            <button class="panel-link" type="button" data-view="settings">Configuração</button>
+            <button class="panel-link rounded-lg transition-colors active" type="button" data-view="overview">Visão
+                geral</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="elections">Eleições</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="candidates">Candidatos</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="voters">Eleitores</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="services">Serviços</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="integrity">Resultados</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="audit">Auditoria</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="settings">Configuração</button>
         </nav>
 
         <div class="panel-user">
-            <span class="session-chip" data-session-chip>SESSÃO SEGURA</span>
+            <span class="session-chip rounded-lg" data-session-chip>SESSÃO SEGURA</span>
             <span class="user-chip" data-user-chip></span>
             <a class="portal-link" href="../index.html">Portal ↗</a>
-            <button class="logout-button" type="button" data-logout aria-label="Terminar sessão" title="Terminar sessão">↪</button>
+            <button class="logout-button" type="button" data-logout aria-label="Terminar sessão"
+                title="Terminar sessão">↪</button>
         </div>
 
     </header>
@@ -64,12 +72,12 @@
                         </p>
                     </div>
 
-                    <span class="status-pill">
+                    <span class="status-pill rounded-full">
                         <i></i> ESTADO SIMULADO
                     </span>
                 </div>
 
-                <div class="admin-metrics">
+                <div class="admin-metrics grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4">
                     <article>
                         <small>PARTICIPAÇÃO (EXEMPLO)</small>
                         <b>58,3%</b>
@@ -98,25 +106,21 @@
                     </article>
                 </div>
 
-                <div class="dash-grid">
-                    <article class="dash-card">
+                <div class="dash-grid grid-cols-1 lg:grid-cols-2">
+                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <p class="eyebrow">ELEIÇÃO</p>
-                        <h3>Presidenciais 2025</h3>
+                        <h3>Associação de Estudantes 2025</h3>
                         <p>
                             Os indicadores desta página são ilustrativos.
                             Não representam uma eleição real.
                         </p>
 
-                        <button
-                            class="button button-outline"
-                            type="button"
-                            data-view-go="elections"
-                        >
+                        <button class="button rounded-xl button-outline" type="button" data-view-go="elections">
                             Gerir eleição →
                         </button>
                     </article>
 
-                    <article class="dash-card">
+                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <p class="eyebrow">AUDITORIA</p>
                         <h3>Registos de exemplo</h3>
                         <p>
@@ -124,11 +128,7 @@
                             testar o aspeto do painel.
                         </p>
 
-                        <button
-                            class="button button-outline"
-                            type="button"
-                            data-view-go="audit"
-                        >
+                        <button class="button rounded-xl button-outline" type="button" data-view-go="audit">
                             Consultar registos →
                         </button>
                     </article>
@@ -140,25 +140,21 @@
                 <p class="eyebrow">GESTÃO ELEITORAL</p>
                 <h1>Eleições</h1>
 
-                <article class="dash-card">
+                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                     <div class="heading-row">
                         <div>
-                            <h2>Presidenciais 2025</h2>
+                            <h2>Associação de Estudantes 2025</h2>
                             <p class="muted">
                                 Estado ilustrativo · configuração não persistida
                             </p>
                         </div>
 
-                        <span class="status-pill">RASCUNHO DEMO</span>
+                        <span class="status-pill rounded-full">RASCUNHO DEMO</span>
                     </div>
 
                     <label class="field-label">
                         Nome da eleição
-                        <input
-                            type="text"
-                            name="election-name"
-                            value="Eleição para a Presidência da República"
-                        >
+                        <input type="text" name="election-name" value="Eleição da Associação de Estudantes">
                     </label>
 
                     <label class="field-label">
@@ -170,11 +166,8 @@
                         </select>
                     </label>
 
-                    <button
-                        class="button button-primary"
-                        type="button"
-                        data-action="demo-save"
-                    >
+                    <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
+                        data-action="demo-save">
                         Guardar configuração local →
                     </button>
 
@@ -199,24 +192,24 @@
                 <p class="eyebrow">INFRAESTRUTURA</p>
                 <h1>Serviços</h1>
 
-                <div class="dash-grid">
-                    <article class="dash-card">
+                <div class="dash-grid grid-cols-1 lg:grid-cols-2">
+                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <h3>Frontend</h3>
-                        <span class="status-pill">INTERFACE LOCAL</span>
+                        <span class="status-pill rounded-full">INTERFACE LOCAL</span>
                         <p>Esta página está a ser servida no navegador.</p>
                     </article>
 
-                    <article class="dash-card">
+                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <h3>Backend Python</h3>
-                        <span class="status-pill status-warn">POR INTEGRAR</span>
+                        <span class="status-pill rounded-full status-warn">POR INTEGRAR</span>
                         <p>
                             O estado real precisa de uma chamada à API do projeto.
                         </p>
                     </article>
 
-                    <article class="dash-card">
+                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <h3>Base de dados</h3>
-                        <span class="status-pill status-warn">NÃO VERIFICADA</span>
+                        <span class="status-pill rounded-full status-warn">NÃO VERIFICADA</span>
                         <p>Não existe ligação nesta maquete.</p>
                     </article>
                 </div>
@@ -227,7 +220,7 @@
                 <p class="eyebrow">VERIFICAÇÃO</p>
                 <h1>Integridade</h1>
 
-                <article class="dash-card">
+                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                     <h2>Verificações demonstrativas</h2>
 
                     <div class="audit-list">
@@ -259,12 +252,12 @@
                 <p class="eyebrow">REGISTOS</p>
                 <h1>Auditoria</h1>
 
-                <article class="dash-card">
+                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                     <p class="muted">
                         Eventos fictícios para demonstrar o formato da tabela.
                     </p>
 
-                    <div class="table-scroll">
+                    <div class="table-scroll rounded-xl">
                         <table>
                             <thead>
                                 <tr>
@@ -307,16 +300,12 @@
                 <p class="eyebrow">SISTEMA</p>
                 <h1>Configuração</h1>
 
-                <article class="dash-card">
+                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                     <h2>Configuração da interface</h2>
 
                     <label class="field-label">
                         Nome da plataforma
-                        <input
-                            type="text"
-                            name="platform-name"
-                            value="TrustVote"
-                        >
+                        <input type="text" name="platform-name" value="TrustVote">
                     </label>
 
                     <label class="field-label">
@@ -327,11 +316,8 @@
                         </select>
                     </label>
 
-                    <button
-                        class="button button-primary"
-                        type="button"
-                        data-action="demo-save"
-                    >
+                    <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
+                        data-action="demo-save">
                         Guardar localmente →
                     </button>
 
@@ -343,4 +329,5 @@
     </div>
 
 </body>
+
 </html>
