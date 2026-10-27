@@ -1,0 +1,70 @@
+/* Tabelas dos painéis */
+.table-scroll {
+    overflow: auto;
+    border: 1px solid var(--line);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+th {
+    background: #f2f0e9;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+td.mono,
+td code {
+    color: var(--accent);
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+}
+
+.ok-label {
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ok-label.is-off {
+    color: var(--warn);
+}
+
+.row-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.row-actions button {
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    background: white;
+    font-size: 12px;
+}
+
+.row-actions button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.voter-picker {
+    max-height: 300px;
+}

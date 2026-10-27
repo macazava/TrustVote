@@ -1,0 +1,986 @@
+/* Painéis do eleitor e da equipa */
+.panel-body {
+    background: var(--ivory);
+}
+
+/* ===== Cabeçalho verde com o menu ===== */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    min-height: 76px;
+    padding: 0 30px;
+    background: var(--dark);
+    color: white;
+}
+
+.dashboard-header .brand {
+    color: white;
+}
+
+.dashboard-header .brand-mark {
+    background: white;
+    color: var(--dark);
+}
+
+.panel-nav {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.panel-link {
+    padding: 10px 14px;
+    border: 0;
+    background: none;
+    color: #cbd8d0;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+@media (max-width: 1560px) {
+    .dashboard-header {
+        gap: 24px;
+    }
+
+    .panel-link {
+        padding: 10px 11px;
+        font-size: 15px;
+    }
+
+    .portal-link {
+        display: none;
+    }
+}
+
+@media (max-width: 1360px) {
+    .panel-link {
+        padding: 9px 9px;
+        font-size: 14px;
+    }
+
+    .panel-user .user-chip > span:last-child {
+        display: none;
+    }
+}
+
+.panel-link:hover {
+    color: white;
+}
+
+.panel-link.active {
+    background: #2c5e48;
+    color: white;
+}
+
+.panel-user {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 16px;
+}
+
+.session-chip {
+    padding: 8px 10px;
+    border: 1px solid #ffffff55;
+    color: #e8efe9;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-chip .avatar {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ffffff55;
+    border-radius: 0;
+    background: #2c5e48;
+    color: white;
+    font-size: 11px;
+}
+
+.user-chip > span:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-chip b {
+    font-size: 12px;
+}
+
+.user-chip small {
+    color: #cbd8d0;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+}
+
+.logout-button {
+    border: 0;
+    background: none;
+    color: white;
+    font-size: 20px;
+}
+
+.portal-link {
+    color: #cbd8d0;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.portal-link:hover {
+    color: white;
+}
+
+/* ===== Conteúdo ===== */
+.dashboard-content {
+    width: min(1232px, calc(100% - 48px));
+    margin: auto;
+    padding: 50px 0 70px;
+}
+
+.dashboard-wrap:not(.is-ready) .dashboard-content {
+    visibility: hidden;
+}
+
+.view-panel {
+    display: none;
+}
+
+.view-panel.active {
+    display: block;
+}
+
+.dashboard-content h1 {
+    margin: 8px 0 10px;
+    color: var(--title);
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+body[data-page="admin"] .dashboard-content {
+    width: min(1412px, calc(100% - 48px));
+}
+
+body[data-page="admin"] .dashboard-content h1 {
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.dashboard-content .muted {
+    font-size: 18px;
+}
+
+.page-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.badge-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.badge-card small {
+    display: block;
+    color: var(--muted);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+}
+
+.badge-card b {
+    font-size: 13px;
+}
+
+.badge-card i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* ===== Cartão da eleição ===== */
+.election-card {
+    margin-top: 32px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.election-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.election-card-top b {
+    color: var(--ink);
+}
+
+.election-card-body {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 36px 30px;
+}
+
+.election-card-body > div:nth-child(2) {
+    flex: 1;
+}
+
+.election-card-body small {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+}
+
+.election-card-body h2 {
+    margin: 6px 0 8px;
+    font-size: 30px;
+}
+
+.election-card-body p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.election-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.steps-track {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 28px;
+    border-top: 1px solid var(--line);
+    background: var(--sand);
+}
+
+.steps-track > span {
+    display: grid;
+    grid-template-columns: 30px auto;
+    align-items: center;
+    gap: 0 10px;
+    font-size: 11px;
+}
+
+.steps-track > span > i {
+    display: grid;
+    grid-row: span 2;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: white;
+    font-size: 11px;
+    font-style: normal;
+}
+
+.steps-track > span.is-done > i,
+.steps-track > span.is-current > i {
+    border-color: var(--title);
+    background: var(--title);
+    color: white;
+}
+
+.steps-track b {
+    font-size: 14px;
+}
+
+.steps-track small {
+    color: var(--muted);
+}
+
+.steps-track > hr {
+    flex: 1;
+    height: 1px;
+    margin: 0;
+    border: 0;
+    background: var(--line);
+}
+
+/* ===== Listas ===== */
+.check-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.check-list li {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 6px 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+}
+
+.check-list b {
+    font-size: 15px;
+}
+
+.check-list small {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.check-list li > i {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+    color: var(--muted);
+    font-style: normal;
+}
+
+.check-list .check-box {
+    grid-row: span 2;
+}
+
+.empty-box {
+    display: grid;
+    place-items: center;
+    min-height: 150px;
+    padding: 20px;
+    border: 1px dashed #e0c9b0;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.history-rows > div {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+}
+
+.history-rows > div > span:nth-child(2) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.history-rows b {
+    font-size: 15px;
+}
+
+.history-rows small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.year {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 42px;
+    background: #eef0fb;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ===== Boletim ===== */
+.ballot {
+    max-width: 720px;
+    padding: 56px 48px 46px;
+}
+
+.ballot h1 {
+    font-size: 38px !important;
+}
+
+.candidate-list {
+    display: grid;
+    gap: 10px;
+    margin: 22px 0;
+}
+
+.candidate-list label {
+    display: grid;
+    grid-template-columns: 54px 1fr 28px;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+}
+
+.candidate-list label.is-static {
+    grid-template-columns: 54px 1fr;
+    cursor: default;
+}
+
+.candidate-list label:has(input:checked) {
+    border-color: var(--accent);
+    border-left: 3px solid var(--accent);
+    background: var(--mint);
+}
+
+.candidate-list label > span:nth-of-type(2) {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.candidate-list label small:first-child {
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.candidate-list b {
+    font-size: 18px;
+}
+
+.candidate-list label small:last-child {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.candidate-list input {
+    order: 3;
+    width: 26px;
+    height: 26px;
+    margin: 0;
+    accent-color: var(--accent);
+}
+
+.ballot-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.ballot-foot small {
+    color: var(--accent);
+    font-size: 12px;
+}
+
+.ballot-done {
+    text-align: center;
+}
+
+.ballot-done .eyebrow {
+    justify-content: center;
+}
+
+.seal-icon {
+    display: grid;
+    place-items: center;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: var(--accent-strong);
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 0 0 12px var(--mint);
+}
+
+.receipt-code {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 22px 0;
+    padding: 20px;
+    border: 1px dashed var(--accent);
+    background: #f1f4ff;
+}
+
+.ballot-done .receipt-code {
+    align-items: center;
+}
+
+.receipt-code small {
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+}
+
+.receipt-code b {
+    color: var(--accent);
+    font-size: 22px;
+    letter-spacing: 0.12em;
+}
+
+.receipt-code code {
+    color: var(--muted);
+    font-size: 10px;
+    word-break: break-all;
+}
+
+/* ===== Recibos ===== */
+.receipt-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 26px;
+    padding: 40px 30px;
+    border-color: var(--ink);
+}
+
+.receipt-card .seal-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0;
+}
+
+.receipt-card h2 {
+    font-size: 28px;
+}
+
+.receipt-card .receipt-code {
+    max-width: 480px;
+}
+
+.receipt-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    color: var(--accent);
+    font-size: 10px;
+}
+
+.receipt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ===== Sondagem ===== */
+.poll-grid {
+    display: grid;
+    grid-template-columns: 1.95fr 1fr;
+    gap: 22px;
+}
+
+.poll-grid .dash-card {
+    display: flex;
+    flex-direction: column;
+    margin-top: 34px;
+}
+
+.poll-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.poll-form .button {
+    width: 100%;
+    margin-top: auto;
+}
+
+.model-tag {
+    padding: 10px 14px;
+    border: 1px solid #c9cde8;
+    background: #f1f4ff;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+/* ===== Equipa: métricas e gráfico ===== */
+.admin-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.metric-card {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 4px 14px;
+    padding: 22px 20px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.metric-card .check-box {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: center;
+}
+
+.metric-card > small {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--muted);
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.metric-card b small {
+    color: var(--muted);
+}
+
+.metric-card em {
+    grid-column: 3;
+    grid-row: 1;
+    color: var(--accent);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.metric-card b {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    font-size: 22px;
+}
+
+.metric-card > span:not(.check-box) {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.metric-card .bar {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    align-self: center;
+    height: 3px;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 2.1fr 1fr;
+    gap: 18px;
+}
+
+.overview-grid > .dash-card {
+    margin-top: 18px;
+    background: white;
+}
+
+.line-chart {
+    width: 100%;
+    height: 260px;
+    margin-top: 18px;
+}
+
+.line-chart line {
+    stroke: #eeeeea;
+}
+
+.line-chart text {
+    fill: #9aa09a;
+    font-size: 9px;
+}
+
+.line-chart path {
+    fill: none;
+    stroke: var(--title);
+    stroke-width: 2.5;
+}
+
+.ring {
+    display: grid;
+    place-items: center;
+    width: 150px;
+    height: 150px;
+    margin: 18px auto;
+    border-radius: 50%;
+    background: conic-gradient(var(--title) var(--ring, 75%), #e6e8f0 0);
+}
+
+.ring div {
+    display: grid;
+    place-items: center;
+    width: 126px;
+    height: 126px;
+    border-radius: 50%;
+    background: white;
+    text-align: center;
+}
+
+.ring b {
+    font-size: 18px;
+}
+
+.ring small {
+    color: var(--muted);
+    font-size: 8px;
+}
+
+.resilience-text {
+    text-align: center;
+}
+
+/* ===== Equipa: eleições ===== */
+.election-rows {
+    display: grid;
+    gap: 22px;
+}
+
+.election-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 28px 22px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.election-row.is-muted h3 {
+    color: var(--muted);
+}
+
+.election-row > div:nth-child(2) {
+    flex: 1;
+}
+
+.election-row h3 {
+    margin: 6px 0;
+    font-size: 21px;
+}
+
+.election-row small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.election-row .turnout {
+    padding-right: 20px;
+    border-right: 1px solid var(--line);
+    text-align: center;
+}
+
+.election-row .turnout b {
+    display: block;
+    font-size: 22px;
+}
+
+.election-row .turnout small {
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+/* ===== Equipa: serviços ===== */
+.service-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.service-item > div {
+    flex: 1;
+}
+
+.service-item b {
+    display: block;
+    font-size: 13px;
+}
+
+.service-item small {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.service-item > i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.service-item.is-warn > i,
+.service-item.is-down > i {
+    background: #c0392b;
+}
+
+.service-item.is-pending {
+    opacity: 0.7;
+}
+
+.service-item.is-pending > i {
+    background: #b8bbc1;
+}
+
+/* ===== Equipa: integridade ===== */
+.integrity {
+    padding: 40px 24px 24px;
+    text-align: center;
+}
+
+.integrity-seal {
+    display: grid;
+    place-items: center;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 22px;
+    border: 1px solid #cfe3d7;
+    border-radius: 50%;
+    background: white;
+    color: var(--accent);
+    box-shadow: 0 0 0 12px #eef6f1;
+}
+
+.integrity-seal.is-invalid {
+    color: var(--danger);
+    box-shadow: 0 0 0 12px #fbeeed;
+}
+
+.integrity .eyebrow {
+    justify-content: center;
+}
+
+.integrity h2 {
+    font-size: 30px !important;
+}
+
+.chain-blocks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.chain-blocks > div {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    padding: 22px 10px;
+    border: 1px solid var(--line);
+    background: #f5faf7;
+}
+
+.chain-blocks i {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-strong);
+    color: white;
+    font-size: 12px;
+    font-style: normal;
+}
+
+.chain-blocks b {
+    font-size: 11px;
+}
+
+.chain-blocks small {
+    color: var(--muted);
+    font-size: 8px;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-header {
+        flex-wrap: wrap;
+        gap: 10px 20px;
+        padding: 12px 18px;
+    }
+
+    .panel-nav {
+        order: 3;
+        width: 100%;
+        flex: none;
+    }
+
+    .panel-user {
+        margin-left: auto;
+    }
+
+    .admin-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .overview-grid,
+    .poll-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-content h1 {
+        font-size: 32px;
+    }
+
+    .session-chip,
+    .user-chip > span:last-child,
+    .portal-link {
+        display: none;
+    }
+
+    .page-head,
+    .election-card-body,
+    .election-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .steps-track {
+        flex-wrap: wrap;
+    }
+
+    .steps-track > hr {
+        display: none;
+    }
+
+    .ballot {
+        padding: 30px 20px;
+    }
+
+    .ballot-foot {
+        flex-direction: column;
+    }
+
+    .receipt-card {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-metrics,
+    .service-status,
+    .chain-blocks {
+        grid-template-columns: 1fr;
+    }
+
+    .election-row .turnout {
+        border-right: 0;
+    }
+}

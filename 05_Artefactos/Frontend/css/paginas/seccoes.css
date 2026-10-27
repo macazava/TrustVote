@@ -1,0 +1,383 @@
+/* Páginas das secções: menu lateral, gestor responsável e cartão de conteúdo */
+.section-page {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+    padding-top: 34px;
+    padding-bottom: 56px;
+}
+
+.section-aside {
+    display: grid;
+    gap: 14px;
+}
+
+.side-menu,
+.manager-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.side-menu h2,
+.manager-card h2 {
+    margin: 0;
+    padding: 26px 16px 0;
+    color: var(--ink);
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.manager-card h2 {
+    color: var(--title);
+}
+
+.side-menu h2::after,
+.manager-card h2::after {
+    display: block;
+    width: 28px;
+    height: 3px;
+    margin: 12px 0 16px;
+    background: #6f9c84;
+    content: "";
+}
+
+.side-menu nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.side-menu a {
+    padding: 15px 22px;
+    border-top: 1px solid var(--line);
+    border-left: 4px solid #ecebe6;
+    color: var(--ink);
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.side-menu a:hover {
+    background: var(--ivory);
+}
+
+.side-menu a[aria-current="true"] {
+    border-left-color: #6f9c84;
+    background: var(--beige);
+    font-weight: 700;
+}
+
+.manager-card a {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 18px 24px;
+    color: var(--muted);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.manager-card a:hover {
+    color: var(--accent);
+}
+
+.section-content {
+    min-height: 560px;
+    padding: 40px 44px 48px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.section-item[hidden] {
+    display: none;
+}
+
+.section-item-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.section-item h1 {
+    margin: 0 0 26px;
+    color: var(--title);
+    font-size: clamp(32px, 3.4vw, 42px);
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+.section-item-tools {
+    display: flex;
+    flex-shrink: 0;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.section-item > p,
+.section-body > p {
+    max-width: 780px;
+    color: #3b403c;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.section-links {
+    margin: 22px 0;
+    padding-left: 34px;
+}
+
+.section-links li {
+    margin: 10px 0;
+    color: var(--ink);
+    font-size: 17px;
+}
+
+.section-links a {
+    color: var(--accent);
+    text-underline-offset: 5px;
+}
+
+.visit-also {
+    margin-top: 54px;
+}
+
+.visit-also h2 {
+    margin: 0;
+    color: var(--title);
+    font-size: 28px;
+    font-weight: 500;
+}
+
+.visit-also h2::after {
+    display: block;
+    width: 28px;
+    height: 2px;
+    margin: 14px 0 22px;
+    background: #6f9c84;
+    content: "";
+}
+
+.visit-also ul {
+    margin: 0;
+    padding: 0 0 0 28px;
+    list-style: none;
+}
+
+.visit-also li {
+    position: relative;
+    margin: 12px 0;
+    font-size: 16px;
+}
+
+.visit-also li::before {
+    position: absolute;
+    left: -28px;
+    content: "—";
+}
+
+.visit-also a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.visit-also a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+/* ===== Página de conteúdo simples ===== */
+.content-page {
+    min-height: 60vh;
+    padding-top: 56px;
+    padding-bottom: 80px;
+}
+
+.content-page > h1 {
+    margin: 12px 0 14px;
+    color: var(--title);
+    font-size: clamp(40px, 4.6vw, 56px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* ===== Conteúdos da macazava usados dentro das secções ===== */
+.timeline {
+    display: grid;
+    margin-top: 30px;
+}
+
+.timeline article {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 24px;
+    padding: 22px;
+    border-top: 1px solid var(--line);
+    background: white;
+}
+
+.timeline time {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.timeline h2,
+.candidate-grid h2,
+.info-list h2 {
+    margin: 0 0 8px;
+    font-size: 19px;
+}
+
+.timeline p,
+.candidate-grid p,
+.info-list p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.candidate-grid article {
+    padding: 24px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.candidate-badge {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--title);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.info-list {
+    margin-top: 28px;
+}
+
+.info-list article {
+    display: flex;
+    gap: 22px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line);
+}
+
+.info-list article > span {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.info-list a {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+.faq-list {
+    margin: 30px 0;
+}
+
+.faq-list details {
+    padding: 19px 5px;
+    border-bottom: 1px solid var(--line);
+}
+
+.faq-list summary {
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.faq-list details p {
+    max-width: 800px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.support-form {
+    max-width: 650px;
+}
+
+.result-row {
+    display: grid;
+    grid-template-columns: auto minmax(120px, 1fr) 2fr 70px;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+.result-row:not(:has(.avatar)) {
+    grid-template-columns: minmax(120px, 1fr) 2fr 70px 90px;
+}
+
+.result-row b {
+    text-align: right;
+}
+
+.result-row small {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+}
+
+.result-row .avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 13px;
+}
+
+.result-row .bar {
+    height: 6px;
+}
+
+@media (max-width: 960px) {
+    .section-page {
+        grid-template-columns: 1fr;
+    }
+
+    .section-content {
+        padding: 28px 22px;
+    }
+
+    .section-item-head {
+        flex-direction: column;
+    }
+
+    .candidate-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline article {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 760px) {
+    .result-row,
+    .result-row:not(:has(.avatar)) {
+        grid-template-columns: 1fr 70px;
+    }
+
+    .result-row .bar {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+
+    .result-row .avatar {
+        display: none;
+    }
+}

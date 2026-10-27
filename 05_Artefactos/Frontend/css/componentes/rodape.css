@@ -1,0 +1,80 @@
+/* Rodapé do portal */
+.site-footer {
+    padding: 56px 0 0;
+    background: var(--sand);
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 38px;
+    padding-bottom: 44px;
+}
+
+.footer-about p {
+    max-width: 270px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.footer-main > div:not(:first-child) {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.footer-main > div > b {
+    margin: 4px 0 6px;
+    color: var(--title);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+}
+
+.footer-main a:not(.brand) {
+    color: var(--ink);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.footer-main a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.footer-bottom a {
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+    .footer-main {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px 20px;
+    }
+
+    .footer-about {
+        grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding: 15px 0;
+    }
+}
