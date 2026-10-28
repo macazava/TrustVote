@@ -1,4 +1,4 @@
-# TrustVote — Sistema de Votação Online Distribuído
+# *TrustVote*
 
 **Projeto académico | Universidade Europeia — IADE**\
 **Licenciatura em Engenharia Informática | Ano letivo 2026/2027 | 5.º semestre**
