@@ -708,39 +708,6 @@ body[data-page="admin"] .dashboard-content h1 {
     stroke-width: 2.5;
 }
 
-.ring-chart {
-    display: grid;
-    place-items: center;
-    width: 150px;
-    height: 150px;
-    margin: 18px auto;
-    border-radius: 50%;
-    background: conic-gradient(var(--title) var(--ring, 75%), #e6e8f0 0);
-}
-
-.ring-chart div {
-    display: grid;
-    place-items: center;
-    width: 126px;
-    height: 126px;
-    border-radius: 50%;
-    background: white;
-    text-align: center;
-}
-
-.ring-chart b {
-    font-size: 18px;
-}
-
-.ring-chart small {
-    color: var(--muted);
-    font-size: 8px;
-}
-
-.resilience-text {
-    text-align: center;
-}
-
 /* ===== Equipa: eleições ===== */
 .election-rows {
     display: grid;
@@ -790,123 +757,123 @@ body[data-page="admin"] .dashboard-content h1 {
     text-transform: uppercase;
 }
 
-/* ===== Equipa: serviços ===== */
-.service-status {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+/* ===== Equipa: resultados ===== */
+.results-section-title {
+    margin: 34px 0 14px;
+    font-size: 20px;
 }
 
-.service-item {
-    display: flex;
+.results-split {
+    display: grid;
+    gap: 18px 40px;
+}
+
+.results-split h3 {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Barras horizontais: nome · barra · valor */
+.bar-chart {
+    display: grid;
+    gap: 4px;
+    margin: 6px 0 18px;
+}
+
+.bar-chart-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.9fr) 2fr 84px;
     align-items: center;
     gap: 14px;
-    padding: 18px;
-    border: 1px solid var(--line);
-    background: white;
+    padding: 7px 6px;
+    border-radius: 8px;
 }
 
-.service-item>div {
-    flex: 1;
+.bar-chart-row:hover {
+    background: var(--mint);
 }
 
-.service-item b {
+.bar-chart-label b,
+.bar-chart-value b {
     display: block;
     font-size: 13px;
 }
 
-.service-item small {
+.bar-chart-label small,
+.bar-chart-value small {
     color: var(--muted);
-    font-size: 9px;
-}
-
-.service-item>i {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-}
-
-.service-item.is-warn>i,
-.service-item.is-down>i {
-    background: #c0392b;
-}
-
-.service-item.is-pending {
-    opacity: 0.7;
-}
-
-.service-item.is-pending>i {
-    background: #b8bbc1;
-}
-
-/* ===== Equipa: integridade ===== */
-.integrity {
-    padding: 40px 24px 24px;
-    text-align: center;
-}
-
-.integrity-seal {
-    display: grid;
-    place-items: center;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 22px;
-    border: 1px solid #cfe3d7;
-    border-radius: 50%;
-    background: white;
-    color: var(--accent);
-    box-shadow: 0 0 0 12px #eef6f1;
-}
-
-.integrity-seal.is-invalid {
-    color: var(--danger);
-    box-shadow: 0 0 0 12px #fbeeed;
-}
-
-.integrity .eyebrow {
-    justify-content: center;
-}
-
-.integrity h2 {
-    font-size: 30px !important;
-}
-
-.chain-blocks {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.chain-blocks>div {
-    display: grid;
-    gap: 6px;
-    justify-items: center;
-    padding: 22px 10px;
-    border: 1px solid var(--line);
-    background: #f5faf7;
-}
-
-.chain-blocks i {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--accent-strong);
-    color: white;
-    font-size: 12px;
-    font-style: normal;
-}
-
-.chain-blocks b {
     font-size: 11px;
 }
 
-.chain-blocks small {
+.bar-chart-value {
+    text-align: right;
+}
+
+.bar-chart-track {
+    height: 14px;
+}
+
+.bar-chart-track i {
+    display: block;
+    min-width: 4px;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    background: var(--accent);
+}
+
+/* Colunas: participação por eleição (escala fixa de 0 a 100%) */
+.column-chart {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    height: 240px;
+    margin: 18px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+}
+
+.column-chart-item {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    max-width: 160px;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.column-chart-item:hover {
+    background: var(--mint);
+}
+
+.column-chart-item b {
+    font-size: 14px;
+}
+
+.column-chart-track {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    width: 56px;
+}
+
+.column-chart-track i {
+    display: block;
+    width: 100%;
+    min-height: 4px;
+    border-radius: 4px 4px 0 0;
+    background: var(--accent);
+}
+
+.column-chart-item small {
+    min-height: 2.6em;
     color: var(--muted);
-    font-size: 8px;
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
 }
 
 @media (max-width: 1100px) {
@@ -974,10 +941,21 @@ body[data-page="admin"] .dashboard-content h1 {
         grid-template-columns: 1fr;
     }
 
-    .admin-metrics,
-    .service-status,
-    .chain-blocks {
+    .admin-metrics {
         grid-template-columns: 1fr;
+    }
+
+    .bar-chart-row {
+        grid-template-columns: 1fr 76px;
+    }
+
+    .bar-chart-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .column-chart {
+        gap: 8px;
     }
 
     .election-row .turnout {
