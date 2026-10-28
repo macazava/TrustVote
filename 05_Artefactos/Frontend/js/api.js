@@ -29,7 +29,7 @@
   const clean = (url) => String(url || DEFAULT_BASE).trim().replace(/\/+$/, "");
   let base = clean(readBase());
 
-  // As páginas estão em pages/ e o index.html na raiz
+  // As páginas estão em pages/ (o index.html na raiz só reencaminha para pages/inicio.html)
   const inPages = window.location.pathname.includes("/pages/");
   const pageUrl = (file) =>
     file.startsWith("index.html") ? (inPages ? `../${file}` : file) : inPages ? file : `pages/${file}`;
@@ -291,7 +291,7 @@
 
     logout() {
       session.clear();
-      window.location.href = pageUrl("index.html");
+      window.location.href = pageUrl("inicio.html");
     },
   };
 
