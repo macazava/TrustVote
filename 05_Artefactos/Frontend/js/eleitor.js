@@ -158,22 +158,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-          <p class="eyebrow">A TUA SEGURANÇA</p>
-          <h2>Proteção em todas as etapas</h2>
+          <p class="eyebrow">O TEU VOTO</p>
+          <h2>O que precisas de saber</h2>
           <ul class="check-list">
-            <li><span class="check-box rounded-lg">✓</span><b>Voto anónimo</b><small>A identidade nunca é associada à escolha.</small><i>✓</i></li>
-            <li><span class="check-box rounded-lg">✓</span><b>Registo distribuído</b><small>O voto é replicado de forma segura.</small><i>✓</i></li>
+            <li><span class="check-box rounded-lg">✓</span><b>Voto secreto</b><small>Ninguém sabe em quem votaste.</small><i>✓</i></li>
+            <li><span class="check-box rounded-lg">✓</span><b>Um voto por eleição</b><small>Depois de confirmado, o voto não pode ser alterado.</small><i>✓</i></li>
             <li><span class="check-box rounded-lg">${user.totp_ativo ? "✓" : "!"}</span><b>Autenticação de dois fatores</b><small>${user.totp_ativo ? "Ativa nesta conta." : "Desativada — ativa nas Definições."}</small><i>${user.totp_ativo ? "✓" : "→"}</i></li>
           </ul>
         </article>
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           <p class="eyebrow">ATIVIDADE RECENTE</p>
           <h2>${recibos.length ? "O teu último voto" : "Ainda não votaste"}</h2>
-          ${
-            recibos.length
-              ? `<div class="receipt-code rounded-xl"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
-              : '<div class="empty-box rounded-xl">O recibo criptográfico ficará disponível depois da votação.</div>'
-          }
+          ${recibos.length
+        ? `<div class="receipt-code rounded-xl"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
+        : '<div class="empty-box rounded-xl">O recibo fica disponível depois de votares.</div>'
+      }
           <button class="link-button" type="button" data-go="receipts">Como funciona o recibo? →</button>
         </article>
       </div>`;
@@ -192,17 +191,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <p class="eyebrow">HISTÓRICO</p>
         <h2>Eleições concluídas</h2>
-        ${
-          concluidas.length
-            ? `<div class="history-rows">${concluidas
-                .map(
-                  (e) => `
+        ${concluidas.length
+        ? `<div class="history-rows">${concluidas
+          .map(
+            (e) => `
                   <div><span class="year">${e.ano}</span><span><b>${escapeHtml(e.titulo)}</b><small>${escapeHtml(e.periodo)}</small></span>
                   <span class="ok-label">✓ ${e.votou ? "VOTOU" : "ENCERRADA"}</span></div>`
-                )
-                .join("")}</div>`
-            : '<p class="muted">Ainda não existem eleições concluídas.</p>'
-        }
+          )
+          .join("")}</div>`
+        : '<p class="muted">Ainda não existem eleições concluídas.</p>'
+      }
       </article>`;
     bindVoteButtons(el);
   }
@@ -259,7 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="candidate-list">${e.candidatosRonda.map((c, i) => candidateOption(c, i)).join("")}</div>
           <p class="form-message" role="status"></p>
           <div class="ballot-foot">
-            <small>A escolha será encriptada localmente</small>
+            <small>O teu voto é secreto</small>
             <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Rever escolha →</button>
           </div>
         </form>
@@ -316,8 +314,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <span class="seal-icon">✓</span>
         <p class="eyebrow">VOTO DEPOSITADO</p>
         <h1>${recibo ? "O teu voto foi registado." : "Já votaste nesta eleição."}</h1>
-        <p class="muted">${recibo ? "O voto foi selado, replicado e incluído no registo eleitoral." : "Cada eleitor só pode votar uma vez por ronda."}</p>
-        ${recibo ? `<div class="receipt-code rounded-xl"><small>RECIBO CRIPTOGRÁFICO</small><b>${escapeHtml(recibo.recibo)}</b></div>` : ""}
+        <p class="muted">${recibo ? "Obrigado por participares. Guarda o recibo como comprovativo." : "Cada eleitor só pode votar uma vez por ronda."}</p>
+        ${recibo ? `<div class="receipt-code rounded-xl"><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(recibo.recibo)}</b></div>` : ""}
         <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-go="receipts">Continuar para o recibo →</button>
       </article>`;
     loadReceipts();
@@ -346,16 +344,16 @@ document.addEventListener("DOMContentLoaded", async () => {
               <small class="muted" style="font-size:9px">AMOSTRA SIMULADA · N=${number(s.amostra)}</small>
             </div>
             ${(s.projecao || [])
-              .map(
-                (p) => `
+          .map(
+            (p) => `
                 <div class="result-row">
                   <span class="avatar">${p.candidato_id ? escapeHtml(initials(p.nome)) : "?"}</span>
                   <span><b style="font-size:13px">${escapeHtml(p.nome)}</b></span>
                   <div class="bar"><i style="width:${Math.min(100, p.percentagem)}%"></i></div>
                   <b>${percent(p.percentagem)}</b>
                 </div>`
-              )
-              .join("")}
+          )
+          .join("")}
             <p class="notice rounded-xl"><b>Intervalo de confiança estimado: ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Esta projeção não representa uma sondagem oficial nem utiliza dados pessoais reais.</p>
           </article>
           <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
@@ -404,16 +402,16 @@ document.addEventListener("DOMContentLoaded", async () => {
               (r) => `
               <p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>
               ${r.candidatos
-                .map(
-                  (c) => `
+                  .map(
+                    (c) => `
                   <div class="result-row">
                     <span>${escapeHtml(c.nome)}</span>
                     <div class="bar"><i style="width:${Math.min(100, c.percentagem || 0)}%"></i></div>
                     <b>${percent(c.percentagem)}</b>
                     <small>${number(c.total_votos)} votos</small>
                   </div>`
-                )
-                .join("")}`
+                  )
+                  .join("")}`
             )
             .join("")}`;
       });
@@ -450,7 +448,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <span class="status-pill rounded-full status-plain" data-verify-status="${i}"><i></i> DEPOSITADO</span>
                 <h2>${escapeHtml(r.eleicao_titulo || `Eleição #${r.eleicao_id}`)}</h2>
                 <p>Depositado a ${dateTime(r.data)} · ${r.ronda === 2 ? "2.ª" : "1.ª"} volta.</p>
-                <div class="receipt-code rounded-xl"><small>IDENTIFICADOR CRIPTOGRÁFICO</small><b>${escapeHtml(r.recibo)}</b></div>
+                <div class="receipt-code rounded-xl"><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(r.recibo)}</b></div>
                 <div class="receipt-checks" data-verify-checks="${i}"></div>
               </div>
               <div class="receipt-actions">
@@ -470,7 +468,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const v = await ui.busy(b, "A verificar…", () => api.votacao.verificarRecibo(r.recibo));
             pill.classList.toggle("status-warn", !v.valido);
             pill.innerHTML = `<i></i> ${v.valido ? "INCLUÍDO E VERIFICADO" : "NÃO ENCONTRADO"}`;
-            checks.innerHTML = v.valido ? `<span>✓ Assinatura válida</span><span>✓ Incluído na contagem</span><span>✓ ${v.ronda === 2 ? "2.ª" : "1.ª"} volta</span>` : "";
+            checks.innerHTML = v.valido ? `<span>✓ Voto registado</span><span>✓ Incluído na contagem</span><span>✓ ${v.ronda === 2 ? "2.ª" : "1.ª"} volta</span>` : "";
           } catch (error) {
             ui.toast(error.message, true);
           }

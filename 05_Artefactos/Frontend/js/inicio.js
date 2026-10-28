@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const alert = document.querySelector(".election-alert");
   if (alert && eleicao) {
     const aberta = eleicao.estado === "em_curso";
-    alert.querySelector("small").textContent = aberta ? "VOTAÇÃO A DECORRER" : "PRÓXIMO ATO ELEITORAL";
+    alert.querySelector("small").textContent = aberta ? "VOTAÇÃO A DECORRER" : "PRÓXIMA ELEIÇÃO";
     alert.querySelector("b").textContent = aberta
       ? `Votação aberta até ${dateTime(eleicao.data_fim)}`
       : `${eleicao.titulo} · início a ${dateTime(eleicao.data_inicio)}`;
@@ -26,17 +26,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     metrics.innerHTML = `
       <div><b>${number(resumo && resumo.eleitores)}</b><small>estudantes elegíveis</small></div>
       <i></i>
-      <div><b>${number(resumo && resumo.votos)}</b><small>votos depositados</small></div>
+      <div><b>${number(resumo && resumo.votos)}</b><small>votos registados</small></div>
       <i></i>
-      <div><b>256-bit</b><small>encriptação ponta a ponta</small></div>
+      <div><b>1 voto</b><small>por estudante</small></div>
       <i></i>
       <div><b>${percent(resumo && resumo.participacao)}</b><small>participação</small></div>
-      <p>${
-        resumo
-          ? `Dados em tempo real · atualizado às ${time(new Date().toISOString())}`
-          : online
-            ? "Os números públicos ainda não estão disponíveis no backend."
-            : "Servidor indisponível: não foi possível obter os números."
+      <p>${resumo
+        ? `Dados em tempo real · atualizado às ${time(new Date().toISOString())}`
+        : online
+          ? "Os números públicos ainda não estão disponíveis no backend."
+          : "Servidor indisponível: não foi possível obter os números."
       }</p>`;
   }
 
@@ -48,10 +47,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       pill.innerHTML = `<i></i> ${elections.statusLabels[eleicao.estado] || eleicao.estado}`;
       hub.querySelector("h3").textContent = eleicao.titulo;
       hub.querySelector("[data-hub-copy]").textContent =
-        `Votação digital disponível para ${number(resumo.eleitores)} estudantes inscritos · ${dateTime(eleicao.data_inicio)} — ${dateTime(eleicao.data_fim)}.`;
+        `Votação online aberta a ${number(resumo.eleitores)} estudantes inscritos · ${dateTime(eleicao.data_inicio)} — ${dateTime(eleicao.data_fim)}.`;
       hub.querySelector("[data-hub-turnout]").textContent = percent(resumo.participacao);
       hub.querySelector("[data-hub-bar]").style.width = `${Math.min(100, resumo.participacao || 0)}%`;
-      hub.querySelector("[data-hub-votes]").textContent = `${number(resumo.votos)} votos depositados e verificados`;
+      hub.querySelector("[data-hub-votes]").textContent = `${number(resumo.votos)} votos registados`;
     } else {
       pill.classList.add("status-warn");
       pill.innerHTML = `<i></i> ${online ? "SEM DADOS PÚBLICOS" : "SERVIDOR INDISPONÍVEL"}`;

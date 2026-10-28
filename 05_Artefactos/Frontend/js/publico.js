@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       live.innerHTML = `
         <div class="heading-row">
           <div>
-            <p class="eyebrow">PRÓXIMO ATO ELEITORAL</p>
+            <p class="eyebrow">PRÓXIMA ELEIÇÃO</p>
             <h2>${escapeHtml(e.titulo)}</h2>
             <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
           </div>
@@ -61,23 +61,31 @@ document.addEventListener("DOMContentLoaded", () => {
           grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.");
           return;
         }
-        grid.innerHTML = lista
-          .map(
-            (c) => `
+        // Um cartão por lista (campo "partido" da API): candidatos e propostas
+        const listas = new Map();
+        lista.forEach((c) => {
+          const nome = c.partido || c.nome;
+          if (!listas.has(nome)) listas.set(nome, []);
+          listas.get(nome).push(c);
+        });
+        grid.innerHTML = [...listas]
+          .map(([nome, membros]) => {
+            const propostas = membros.map((c) => c.descricao).filter(Boolean);
+            return `
               <article>
-                <span class="candidate-badge">${escapeHtml(initials(c.nome))}</span>
-                <h2>${escapeHtml(c.nome)}</h2>
-                <p>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "Candidatura registada")}</p>
+                <span class="candidate-badge">${escapeHtml(nome.startsWith("Lista ") ? nome.slice(6) : initials(nome))}</span>
+                <h2>${escapeHtml(nome)}</h2>
+                <p><b>Candidatos:</b> ${escapeHtml(membros.map((c) => c.nome).join(", "))}</p>
+                ${propostas.length ? `<ul class="candidate-proposals">${propostas.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>` : ""}
                 <span class="status-pill rounded-full">${escapeHtml(dados.eleicao.titulo.toUpperCase())}</span>
-              </article>`
-          )
+              </article>`;
+          })
           .join("");
         const notice = grid.parentElement.querySelector(".notice");
-        if (notice) notice.textContent = "Lista das candidaturas admitidas, obtida em tempo real a partir da plataforma.";
+        if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
       })
-      .catch((error) => {
-        grid.outerHTML = ui.error(error, false);
-      });
+      // Sem dados do servidor ficam os exemplos da página
+      .catch(() => { });
   }
 
   // ===== Resultados =====
@@ -93,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <p class="eyebrow">PARTICIPAÇÃO EM TEMPO REAL</p>
               <h2>${escapeHtml(dados.eleicao.titulo)}</h2>
               <div class="facts grid-cols-2 sm:grid-cols-3">
-                <div><b>${number(dados.eleitores)}</b><small>eleitores</small></div>
+                <div><b>${number(dados.eleitores)}</b><small>estudantes elegíveis</small></div>
                 <div><b>${number(dados.votos)}</b><small>votos</small></div>
                 <div><b>${percent(dados.participacao)}</b><small>participação</small></div>
               </div>

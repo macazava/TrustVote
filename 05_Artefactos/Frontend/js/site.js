@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
       menu.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
       if (crumb) crumb.textContent = items[index].querySelector("h1").textContent;
       if (visit) {
-        const others = [items[(index + 1) % items.length], items[(index + 2) % items.length]].filter((x) => x !== items[index]);
+        const others = [...new Set([items[(index + 1) % items.length], items[(index + 2) % items.length]])].filter((x) => x !== items[index]);
+        visit.hidden = !others.length;
         visit.innerHTML = `<h2>Visite também</h2><ul>${others
           .map((x) => `<li><a href="#${x.id}">${x.querySelector("h1").textContent}</a></li>`)
           .join("")}</ul>`;
