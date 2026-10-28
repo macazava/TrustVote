@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Listas candidatas, propostas e regras de apresentação das candidaturas.">
 
-  <title>Listas | TrustVote</title>
+  <title>Listas académicas | TrustVote</title>
 
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
@@ -22,11 +22,8 @@
   <!-- Cabeçalho TrustVote -->
   <div class="topbar">
     <div class="topbar-inner">
-      <a href="acessibilidade.html">Acessibilidade</a>
-      <a href="login.html?area=equipa">Área da equipa</a>
-      <button type="button" data-font-toggle aria-pressed="false" aria-label="Aumentar o texto">A+</button>
-      <button type="button" data-contrast-toggle aria-pressed="false">Contraste</button>
       <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
+      <a href="login.html?area=equipa">Área da equipa</a>
     </div>
   </div>
 
@@ -38,13 +35,11 @@
       </a>
       <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
       <nav class="main-nav" aria-label="Navegação principal">
-        <a href="servicos.html">Serviços eleitorais</a>
         <a href="calendario.html">Eleições</a>
-        <a href="listas.html">Listas</a>
+        <a href="listas.html">Listas académicas</a>
         <a href="comunicacao.html">Comunicação</a>
         <a href="historico.html">Histórico eleitoral</a>
-        <a href="regulamento.html">Regulamento</a>
-        <a href="institucional.html">Institucional</a>
+        <a href="ajuda.html">Ajuda</a>
       </nav>
       <div class="header-actions">
         <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
@@ -58,7 +53,7 @@
     <div class="container">
       <ol class="breadcrumb">
         <li><a href="../index.html" aria-label="Início">⌂</a></li>
-        <li><a href="listas.html">Listas</a></li>
+        <li><a href="listas.html">Listas académicas</a></li>
         <li data-crumb-current>Listas candidatas</li>
       </ol>
       <div class="breadcrumb-tools">
@@ -74,18 +69,14 @@
     <!-- Menu da secção -->
     <aside class="section-aside">
       <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
-        <h2>Listas</h2>
-        <nav aria-label="Listas">
+        <h2>Listas académicas</h2>
+        <nav aria-label="Listas académicas">
           <a href="#listas-candidatas">Listas candidatas</a>
-          <a href="#propostas-das-listas">Propostas das listas</a>
-          <a href="#apresentacao-de-listas">Apresentação de listas</a>
-          <a href="#divulgacao">Divulgação das listas</a>
-          <a href="#sessoes-de-esclarecimento">Sessões de esclarecimento</a>
         </nav>
       </div>
       <div class="manager-card rounded-2xl shadow-soft">
         <h2>Gestor responsável</h2>
-        <a href="institucional.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
+        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
       </div>
     </aside>
 
@@ -99,112 +90,46 @@
             <button class="pill-button" type="button" data-print>▣ Imprimir</button>
           </div>
         </div>
-        <p class="lead">
-          Listas candidatas admitidas pela comissão eleitoral académica.
-          Os exemplos abaixo são demonstrativos.
-        </p>
+        <p class="lead">Listas candidatas à Associação de Estudantes 2025: quem são e o que propõem.</p>
 
         <!-- Cartões das listas A, B e C -->
         <div class="candidate-grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" data-candidates>
-
           <article>
             <span class="candidate-badge">A</span>
             <h2>Lista A</h2>
-            <p>
-              Cartão ilustrativo para informação da lista,
-              propostas e contactos.
-            </p>
+            <p><b>Candidatos:</b> Marta Oliveira, Rui Matos</p>
+            <ul class="candidate-proposals">
+              <li>Salas de estudo abertas até mais tarde</li>
+              <li>Apoio a estudantes deslocados</li>
+              <li>Mais atividades na semana académica</li>
+            </ul>
             <span class="status-pill rounded-full">EXEMPLO</span>
           </article>
-
           <article>
             <span class="candidate-badge">B</span>
             <h2>Lista B</h2>
-            <p>
-              Cartão ilustrativo para informação da lista,
-              propostas e contactos.
-            </p>
+            <p><b>Candidatos:</b> Tiago Ramos, Sara Nunes</p>
+            <ul class="candidate-proposals">
+              <li>Mais modalidades no desporto universitário</li>
+              <li>Mais opções na cantina</li>
+              <li>Reuniões abertas com os estudantes</li>
+            </ul>
             <span class="status-pill rounded-full">EXEMPLO</span>
           </article>
-
           <article>
             <span class="candidate-badge">C</span>
             <h2>Lista C</h2>
-            <p>
-              Cartão ilustrativo para informação da lista,
-              propostas e contactos.
-            </p>
+            <p><b>Candidatos:</b> Beatriz Lopes, Duarte Faria</p>
+            <ul class="candidate-proposals">
+              <li>Partilha de apontamentos e material</li>
+              <li>Ajuda na procura de estágios</li>
+              <li>Campus mais sustentável</li>
+            </ul>
             <span class="status-pill rounded-full">EXEMPLO</span>
           </article>
-
         </div>
 
-        <p class="notice rounded-xl">
-          A lista oficial de candidaturas é publicada pela comissão eleitoral académica.
-        </p>
-      </article>
-
-      <article class="section-item" id="propostas-das-listas" data-item>
-        <div class="section-item-head">
-          <h1>Propostas das listas</h1>
-          <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
-          </div>
-        </div>
-        <p>Cada lista apresenta as suas propostas para o mandato: atividades, apoio aos estudantes, desporto, cultura e
-          relação com os órgãos da universidade.</p>
-        <p>As propostas são publicadas pela comissão eleitoral antes do início da votação.</p>
-        <ul class="section-links">
-          <li><a href="comunicacao.html">Notícias e apresentações</a></li>
-        </ul>
-      </article>
-
-      <article class="section-item" id="apresentacao-de-listas" data-item>
-        <div class="section-item-head">
-          <h1>Apresentação de listas</h1>
-          <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
-          </div>
-        </div>
-        <p>Uma lista é composta por estudantes com matrícula ativa e entregue à comissão eleitoral académica dentro do
-          prazo definido no calendário.</p>
-        <p>A comissão verifica os requisitos e publica as listas admitidas.</p>
-        <ul class="section-links">
-          <li><a href="calendario.html#calendario-eleitoral">Prazos no calendário</a></li>
-          <li><a href="regulamento.html#regras-eleitorais">Regras eleitorais</a></li>
-        </ul>
-      </article>
-
-      <article class="section-item" id="divulgacao" data-item>
-        <div class="section-item-head">
-          <h1>Divulgação das listas</h1>
-          <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
-          </div>
-        </div>
-        <p>As listas podem divulgar as suas propostas nos espaços e canais autorizados pela comissão eleitoral.</p>
-        <p>A divulgação termina antes do início do período de votação.</p>
-        <ul class="section-links">
-          <li><a href="apoio.html">Reportar uma irregularidade</a></li>
-        </ul>
-      </article>
-
-      <article class="section-item" id="sessoes-de-esclarecimento" data-item>
-        <div class="section-item-head">
-          <h1>Sessões de esclarecimento</h1>
-          <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
-          </div>
-        </div>
-        <p>Antes da votação, as listas apresentam-se aos estudantes em sessões abertas, presenciais ou online.</p>
-        <p>As datas das sessões são divulgadas na sala de imprensa.</p>
-        <ul class="section-links">
-          <li><a href="comunicacao.html">Sala de imprensa</a></li>
-        </ul>
+        <p class="notice rounded-xl">Listas e estudantes fictícios, apenas para demonstração.</p>
       </article>
 
       <div class="visit-also" data-visit-also></div>
@@ -220,31 +145,31 @@
           <span class="brand-mark">✓</span>
           <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
-        <p>Plataforma académica de votação digital segura, auditável e acessível.</p>
+        <p>Votação online para as eleições académicas da Universidade Exemplo.</p>
       </div>
       <div>
         <b>ELEIÇÕES</b>
-        <a href="calendario.html#associacao-de-estudantes">Associação de Estudantes 2025</a>
+        <a href="calendario.html">Calendário eleitoral</a>
+        <a href="calendario.html#como-votar">Como votar</a>
         <a href="resultados.html">Resultados</a>
-        <a href="calendario.html">Calendário</a>
       </div>
       <div>
         <b>ELEITOR</b>
-        <a href="login.html?area=eleitor" data-voter-link>Área reservada</a>
-        <a href="servicos.html">Serviços</a>
-        <a href="apoio.html">Perguntas frequentes</a>
+        <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
+        <a href="listas.html">Listas académicas</a>
+        <a href="comunicacao.html">Comunicação</a>
+        <a href="historico.html">Histórico eleitoral</a>
       </div>
       <div>
-        <b>INSTITUCIONAL</b>
-        <a href="institucional.html#transparencia">Transparência</a>
-        <a href="historico.html">Histórico eleitoral</a>
-        <a href="login.html?area=equipa">Administração</a>
+        <b>AJUDA</b>
+        <a href="ajuda.html#quem-somos">Quem somos</a>
+        <a href="ajuda.html#contactos">Contactos</a>
+        <a href="login.html?area=equipa">Área da equipa</a>
       </div>
     </div>
     <div class="footer-bottom container">
       <span>Projeto académico demonstrativo · 2025</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a> · <a
-          href="institucional.html#transparencia">Transparência</a></span>
+      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
     </div>
   </footer>
 
