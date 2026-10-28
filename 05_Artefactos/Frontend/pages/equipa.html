@@ -39,9 +39,8 @@
             <button class="panel-link rounded-lg transition-colors" type="button"
                 data-view="candidates">Candidatos</button>
             <button class="panel-link rounded-lg transition-colors" type="button" data-view="voters">Eleitores</button>
-            <button class="panel-link rounded-lg transition-colors" type="button" data-view="services">Serviços</button>
             <button class="panel-link rounded-lg transition-colors" type="button"
-                data-view="integrity">Resultados</button>
+                data-view="results">Resultados</button>
             <button class="panel-link rounded-lg transition-colors" type="button" data-view="audit">Auditoria</button>
             <button class="panel-link rounded-lg transition-colors" type="button"
                 data-view="settings">Configuração</button>
@@ -68,9 +67,9 @@
 
                 <div class="heading-row">
                     <div>
-                        <h1>Visão operacional</h1>
+                        <h1>Visão geral</h1>
                         <p class="muted">
-                            Controlo seguro e auditável da infraestrutura eleitoral.
+                            Acompanhe a participação e os resultados das eleições.
                         </p>
                     </div>
 
@@ -96,22 +95,22 @@
                     </article>
 
                     <article>
-                        <small>INTEGRIDADE</small>
-                        <b>Verificação</b>
-                        <span>Sem ligação a um serviço real</span>
+                        <small>TEMPO RESTANTE</small>
+                        <b>—</b>
+                        <span>Até ao fecho da votação</span>
                     </article>
 
                     <article>
-                        <small>SERVIÇOS</small>
-                        <b>Demo</b>
-                        <span>Estado não monitorizado</span>
+                        <small>ELEIÇÕES</small>
+                        <b>—</b>
+                        <span>Em curso, encerradas e em preparação</span>
                     </article>
                 </div>
 
                 <div class="dash-grid grid-cols-1 lg:grid-cols-2">
                     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                         <p class="eyebrow">ELEIÇÃO</p>
-                        <h3>Associação de Estudantes 2025</h3>
+                        <h3>Associação de Estudantes 2026</h3>
                         <p>
                             Os indicadores desta página são ilustrativos.
                             Não representam uma eleição real.
@@ -145,7 +144,7 @@
                 <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
                     <div class="heading-row">
                         <div>
-                            <h2>Associação de Estudantes 2025</h2>
+                            <h2>Associação de Estudantes 2026</h2>
                             <p class="muted">
                                 Estado ilustrativo · configuração não persistida
                             </p>
@@ -189,112 +188,23 @@
                 <h1>Eleitores</h1>
             </section>
 
-            <!-- SERVIÇOS -->
-            <section class="view-panel" data-panel="services">
-                <p class="eyebrow">INFRAESTRUTURA</p>
-                <h1>Serviços</h1>
-
-                <div class="dash-grid grid-cols-1 lg:grid-cols-2">
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <h3>Frontend</h3>
-                        <span class="status-pill rounded-full">INTERFACE LOCAL</span>
-                        <p>Esta página está a ser servida no navegador.</p>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <h3>Backend Python</h3>
-                        <span class="status-pill rounded-full status-warn">POR INTEGRAR</span>
-                        <p>
-                            O estado real precisa de uma chamada à API do projeto.
-                        </p>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <h3>Base de dados</h3>
-                        <span class="status-pill rounded-full status-warn">NÃO VERIFICADA</span>
-                        <p>Não existe ligação nesta maquete.</p>
-                    </article>
-                </div>
-            </section>
-
-            <!-- INTEGRIDADE -->
-            <section class="view-panel" data-panel="integrity">
-                <p class="eyebrow">VERIFICAÇÃO</p>
-                <h1>Integridade</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                    <h2>Verificações demonstrativas</h2>
-
-                    <div class="audit-list">
-                        <p>
-                            <i>✓</i>
-                            Estrutura da interface carregada
-                        </p>
-
-                        <p>
-                            <i>✓</i>
-                            Navegação local disponível
-                        </p>
-
-                        <p>
-                            <i>!</i>
-                            Hashes e votos reais não verificados
-                        </p>
-
-                        <p>
-                            <i>!</i>
-                            Integridade criptográfica ainda não ligada ao backend
-                        </p>
-                    </div>
-                </article>
+            <!-- RESULTADOS -->
+            <section class="view-panel" data-panel="results">
+                <p class="eyebrow">APURAMENTO</p>
+                <h1>Resultados</h1>
+                <p class="muted">
+                    Votos por candidato e por lista, na eleição a decorrer e nas eleições anteriores.
+                </p>
             </section>
 
             <!-- AUDITORIA -->
             <section class="view-panel" data-panel="audit">
-                <p class="eyebrow">REGISTOS</p>
+                <p class="eyebrow">REGISTO DE ATIVIDADE</p>
                 <h1>Auditoria</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                    <p class="muted">
-                        Eventos fictícios para demonstrar o formato da tabela.
-                    </p>
-
-                    <div class="table-scroll rounded-xl">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Hora</th>
-                                    <th>Evento</th>
-                                    <th>Origem</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr>
-                                    <td>10:42:18</td>
-                                    <td>Voto selado (exemplo)</td>
-                                    <td>Interface</td>
-                                    <td>Demo</td>
-                                </tr>
-
-                                <tr>
-                                    <td>10:42:18</td>
-                                    <td>Hash verificado (exemplo)</td>
-                                    <td>Interface</td>
-                                    <td>Demo</td>
-                                </tr>
-
-                                <tr>
-                                    <td>10:42:19</td>
-                                    <td>Réplica confirmada (exemplo)</td>
-                                    <td>Interface</td>
-                                    <td>Demo</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </article>
+                <p class="muted">
+                    Cada alteração feita na área da equipa fica registada: o que foi feito, sobre o quê, por quem e
+                    quando.
+                </p>
             </section>
 
             <!-- CONFIGURAÇÃO -->
