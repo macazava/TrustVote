@@ -84,6 +84,7 @@
         <b>AJUDA</b>
         <a href="ajuda.html#quem-somos">Quem somos</a>
         <a href="ajuda.html#contactos">Contactos</a>
+        <a href="ajuda.html#perguntas-frequentes">Perguntas frequentes</a>
         <a href="login.html?area=equipa">Área da equipa</a>
       </div>
     </div>

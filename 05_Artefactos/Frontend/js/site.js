@@ -105,5 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-voter-link]").forEach((link) => {
       link.href = window.TrustVote.pageUrl(panel);
     });
+    // Mostra que a sessão já está iniciada (ex.: "Entrar para votar" passa a "Continuar na minha área")
+    document.querySelectorAll("[data-voter-label]").forEach((link) => {
+      link.innerHTML = `${window.TrustVote.format.escapeHtml(link.dataset.voterLabel)} <span>→</span>`;
+    });
   }
 });

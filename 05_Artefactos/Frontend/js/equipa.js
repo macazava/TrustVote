@@ -46,6 +46,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pill = (text, warn = false) => `<span class="status-pill rounded-full${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${ok ? "✓" : "!"} ${escapeHtml(text)}</span>`;
 
+  // ===== Exportação CSV (abre bem no Excel: separador ";" e BOM para os acentos) =====
+  function downloadCsv(nome, cabecalho, linhas) {
+    const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [cabecalho, ...linhas].map((l) => l.map(cell).join(";")).join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+    link.download = `${nome}-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+  const fullDate = (iso) => new Date(iso).toLocaleString("pt-PT");
+  const slug = (texto) => texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   // ===== Gráficos =====
   // Barras horizontais: o comprimento é relativo ao maior valor, o texto mostra votos e percentagem
   function barChart(linhas, label) {
@@ -388,7 +401,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       box.innerHTML = `
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-          ${cardHead("ESTUDANTES ELEGÍVEIS", `Eleitores habilitados · ${habilitados.length}`, livres.length ? `<button class="button rounded-xl button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : "")}
+          ${cardHead(
+        "CADERNO ELEITORAL",
+        `Eleitores habilitados · ${habilitados.length}`,
+        `<div class="row-actions">${habilitados.length ? '<button type="button" data-voter-csv>Exportar CSV</button>' : ""}${livres.length ? `<button class="button rounded-xl button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : ""}</div>`
+      )}
           ${habilitados.length
           ? `<div class="table-scroll rounded-xl voter-picker"><table>
                   <thead><tr><th>Eleitor</th><th>E-mail</th><th>Habilitado em</th><th></th></tr></thead>
@@ -416,6 +433,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         </article>`;
 
       const reload = () => renderVotersCard(e);
+      // Caderno eleitoral: quem pode votar (não inclui votos)
+      box.querySelector("[data-voter-csv]")?.addEventListener("click", () =>
+        downloadCsv(`caderno-eleitoral-${slug(e.titulo)}`, ["Nome", "E-mail", "Habilitado em"], habilitados.map((h) => [h.nome, h.email, fullDate(h.data)]))
+      );
       box.querySelector("[data-voter-all]")?.addEventListener("click", async (event) => {
         try {
           const r = await ui.busy(event.currentTarget, "A habilitar…", () => api.eleicoes.habilitar(e.id, livres.map((u) => u.id)));
@@ -619,7 +640,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${cardHead(
       `${provisorio ? "RESULTADOS PROVISÓRIOS" : "RESULTADOS FINAIS"} · ${e.ano} · ${escapeHtml(e.periodo)}`,
       escapeHtml(e.titulo),
-      stats ? `<span class="model-tag rounded-lg">Participação ${percent(stats.participacao)} · ${number(stats.votantes)} / ${number(stats.habilitados)}</span>` : ""
+      `<div class="row-actions">${stats ? `<span class="model-tag rounded-lg">Participação ${percent(stats.participacao)} · ${number(stats.votantes)} / ${number(stats.habilitados)}</span>` : ""}${rondas.length ? `<button type="button" data-export="${e.id}">Exportar CSV</button>` : ""}</div>`
     )}
         ${rondas.length
         ? rondas
@@ -661,6 +682,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             ${historico.slice().reverse().map((d) => electionCard(d, false)).join("")}`
         : `<article class="dash-card rounded-2xl shadow-soft">${ui.empty("Ainda não há eleições encerradas")}</article>`
       }`;
+
+    // Relatório de resultados: uma linha por candidato e por volta
+    el.querySelectorAll("[data-export]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const { e, stats, rondas } = dados.find((d) => d.e.id === Number(b.dataset.export));
+        const linhas = rondas.flatMap((r) =>
+          resultRows(r, e.candidatos).map((l) => [e.titulo, `${r.ronda}.ª volta`, l.nome, l.detalhe, l.votos, percent(l.percentagem)])
+        );
+        if (stats) linhas.push([], ["Participação", "", "", "", `${stats.votantes} de ${stats.habilitados}`, percent(stats.participacao)]);
+        downloadCsv(`resultados-${slug(e.titulo)}`, ["Eleição", "Volta", "Candidato", "Lista", "Votos", "Percentagem"], linhas);
+      })
+    );
   }
 
   // ===== Auditoria: registo de quem fez o quê e quando =====
@@ -679,7 +712,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? nomes.get(r.entidade_id)
           : [nomesEntidade[r.entidade] || r.entidade, r.entidade_id && `#${r.entidade_id}`].filter(Boolean).join(" ") || "—";
     const autor = (r) => (r.utilizador_id ? nomes.get(r.utilizador_id) || `Utilizador #${r.utilizador_id}` : "Sistema");
-    registos = lista.map((r) => ({ data: dateTime(r.data), acao: r.acao, sobre: sobre(r), autor: autor(r) }));
+    registos = lista.map((r) => ({ data: dateTime(r.data), completa: fullDate(r.data), acao: r.acao, sobre: sobre(r), autor: autor(r) }));
 
     el.innerHTML = `
       ${head("REGISTO DE ATIVIDADE", "Auditoria", "Cada alteração feita na área da equipa fica registada: o que foi feito, sobre o quê, por quem e quando.")}
@@ -695,15 +728,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       </article>`;
     el.querySelector("[data-refresh]").addEventListener("click", () => ui.mount(el, renderAudit));
-    el.querySelector("[data-csv]").addEventListener("click", () => {
-      const cols = [["data", "Data e hora"], ["acao", "Ação"], ["sobre", "Sobre"], ["autor", "Feito por"]];
-      const csv = [cols.map((c) => c[1]).join(";"), ...registos.map((r) => cols.map(([c]) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`).join(";"))].join("\n");
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
-      link.download = `auditoria-${new Date().toISOString().slice(0, 10)}.csv`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-    });
+    el.querySelector("[data-csv]").addEventListener("click", () =>
+      downloadCsv("auditoria", ["Data e hora", "Ação", "Sobre", "Feito por"], registos.map((r) => [r.completa, r.acao, r.sobre, r.autor]))
+    );
   }
 
   // ===== Configuração =====

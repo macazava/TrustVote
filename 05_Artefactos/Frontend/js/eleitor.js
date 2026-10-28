@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     bindVoteButtons(el);
   }
 
-  function candidateOption(c, i, selectable = true) {
+  function candidateOption(c, i, selectable = true, checked = false) {
     const info = [c.partido, c.descricao].filter(Boolean).join(" · ") || "Candidatura registada";
     return `
       <label${selectable ? "" : ' class="is-static"'}>
@@ -237,11 +237,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           <b>${escapeHtml(c.nome)}</b>
           <small>${escapeHtml(info)}</small>
         </span>
-        ${selectable ? `<input type="radio" name="candidate" value="${c.id}" required aria-label="${escapeHtml(c.nome)}">` : ""}
+        ${selectable ? `<input type="radio" name="candidate" value="${c.id}" required aria-label="${escapeHtml(c.nome)}"${checked ? " checked" : ""}>` : ""}
       </label>`;
   }
 
-  function openBallot(id) {
+  function openBallot(id, escolhidoId = null) {
     const e = lista.find((x) => x.id === id);
     const el = panel("elections");
     if (!e || !e.aberta) return renderElections();
@@ -250,11 +250,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.innerHTML = `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
         <p class="eyebrow">BOLETIM DIGITAL · PASSO 1 DE 3</p>
-        <h1>Escolha uma candidatura</h1>
-        <p class="muted">Selecione uma opção. Pode rever a escolha antes de a depositar.</p>
+        <h1>Escolhe uma candidatura</h1>
+        <p class="muted">Seleciona uma opção. Podes rever a escolha antes de a depositar.</p>
         <p class="notice rounded-xl"><b>${escapeHtml(e.titulo)}</b>${escapeHtml(e.descricao || e.voltaLabel)}</p>
         <form data-ballot>
-          <div class="candidate-list">${e.candidatosRonda.map((c, i) => candidateOption(c, i)).join("")}</div>
+          <div class="candidate-list">${e.candidatosRonda.map((c, i) => candidateOption(c, i, true, c.id === escolhidoId)).join("")}</div>
           <p class="form-message" role="status"></p>
           <div class="ballot-foot">
             <small>O teu voto é secreto</small>
@@ -268,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.querySelector("[data-ballot]").addEventListener("submit", (event) => {
       event.preventDefault();
       const escolhido = event.currentTarget.candidate.value;
-      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Selecione uma candidatura.");
+      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Seleciona uma candidatura.");
       review(e, e.candidatosRonda.find((c) => String(c.id) === escolhido));
     });
   }
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.innerHTML = `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
         <p class="eyebrow">BOLETIM DIGITAL · PASSO 2 DE 3</p>
-        <h1>Confirme a sua escolha</h1>
+        <h1>Confirma a tua escolha</h1>
         <p class="muted">Depois de depositado, o voto não pode ser alterado.</p>
         <div class="candidate-list">${candidateOption(candidato, e.candidatosRonda.indexOf(candidato), false)}</div>
         <p class="form-message" role="status" data-vote-message></p>
@@ -288,7 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       </article>`;
 
-    el.querySelector("[data-change]").addEventListener("click", () => openBallot(e.id));
+    el.querySelector("[data-change]").addEventListener("click", () => openBallot(e.id, candidato.id));
     el.querySelector("[data-deposit]").addEventListener("click", async (event) => {
       try {
         const res = await ui.busy(event.currentTarget, "A depositar…", () => api.votacao.votar(e.id, e.ronda.numero, candidato.id));

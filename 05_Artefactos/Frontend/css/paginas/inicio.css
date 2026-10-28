@@ -763,3 +763,17 @@
         grid-column: 1 / -1;
     }
 }
+
+/* ===== Perguntas frequentes ===== */
+.faq-section {
+    padding-top: 100px;
+}
+
+.faq-section .faq-list {
+    max-width: none;
+}
+
+.faq-section .text-link {
+    display: inline-block;
+    margin-top: 22px;
+}
