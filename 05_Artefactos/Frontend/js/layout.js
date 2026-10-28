@@ -88,7 +88,7 @@
       </div>
     </div>
     <div class="footer-bottom container">
-      <span>Projeto académico demonstrativo · 2025</span>
+      <span>Projeto académico demonstrativo · 2026</span>
       <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
     </div>
   </footer>`;

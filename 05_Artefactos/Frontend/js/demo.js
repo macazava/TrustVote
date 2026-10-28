@@ -22,7 +22,7 @@
   const elections = [
     {
       id: 1,
-      titulo: "Associação de Estudantes 2025",
+      titulo: "Associação de Estudantes 2026",
       descricao: "Eleição da direção da Associação de Estudantes da Universidade Exemplo.",
       estado: "em_curso",
       criador_id: 1,
@@ -57,7 +57,7 @@
     },
     {
       id: 3,
-      titulo: "Núcleo de Informática 2024",
+      titulo: "Núcleo de Informática 2025",
       descricao: "Eleição da direção do núcleo académico de Informática.",
       estado: "encerrada",
       criador_id: 1,
@@ -68,6 +68,39 @@
       totalHabilitados: 420,
       votantes: 251,
       votos: { 7: 146, 8: 105 },
+    },
+    // Eleições anteriores da Associação de Estudantes (só a equipa as vê, para o histórico de resultados)
+    {
+      id: 4,
+      titulo: "Associação de Estudantes 2025",
+      descricao: "Eleição da direção da Associação de Estudantes da Universidade Exemplo.",
+      estado: "encerrada",
+      criador_id: 1,
+      data_criacao: iso(now - 540 * DAY),
+      candidatos: [
+        cand(9, "Leonor Pinto", "Lista A", "Mais espaços de estudo no campus"),
+        cand(10, "Gonçalo Ferreira", "Lista B", "Descontos nos transportes"),
+        cand(11, "Catarina Sousa", "Lista C", "Feira de emprego anual"),
+      ],
+      rondas: [{ id: 4, numero: 1, data_inicio: iso(now - 532 * DAY), data_fim: iso(now - 530 * DAY), estado: "encerrada", candidatos: [] }],
+      habilitados: [1, 3, 4].map((uid) => ({ uid, data: iso(now - 535 * DAY) })),
+      totalHabilitados: 3050,
+      votantes: 1612,
+      votos: { 9: 702, 10: 548, 11: 362 },
+    },
+    {
+      id: 5,
+      titulo: "Associação de Estudantes 2024",
+      descricao: "Eleição da direção da Associação de Estudantes da Universidade Exemplo.",
+      estado: "encerrada",
+      criador_id: 1,
+      data_criacao: iso(now - 905 * DAY),
+      candidatos: [cand(12, "Miguel Correia", "Lista A", "Bar académico aberto ao fim de semana"), cand(13, "Ana Rocha", "Lista B", "Mais bolsas de mérito")],
+      rondas: [{ id: 5, numero: 1, data_inicio: iso(now - 897 * DAY), data_fim: iso(now - 895 * DAY), estado: "encerrada", candidatos: [] }],
+      habilitados: [1, 3].map((uid) => ({ uid, data: iso(now - 900 * DAY) })),
+      totalHabilitados: 2900,
+      votantes: 1218,
+      votos: { 12: 571, 13: 647 },
     },
   ];
   elections.forEach((e) => e.rondas.forEach((r) => (r.candidatos = e.candidatos.filter((c) => c.ativo))));
@@ -88,23 +121,18 @@
     } catch {}
   };
 
+  // ===== Registo de atividade: cada alteração feita na área da equipa acrescenta uma linha =====
+  let nextAuditId = 1;
   const audit = [
-    ["Votação aberta", "ronda", 1, null],
-    ["Eleição iniciada", "eleicao", 1, 1],
-    ["Eleitores habilitados", "eleicao", 1, 1],
-    ["Lista adicionada", "candidato", 6, 1],
-    ["Eleição criada", "eleicao", 2, 1],
-    ["Resultados publicados", "eleicao", 3, 1],
-  ].map(([acao, entidade, entidade_id, utilizador_id], i) => ({
-    id: 60 - i,
-    data: iso(now - (i + 1) * 5 * HOUR),
-    acao,
-    entidade,
-    entidade_id,
-    utilizador_id,
-    ip: "10.0.0." + (12 + i),
-    hash_atual: (i + 10).toString(16).repeat(64).slice(0, 64),
-  }));
+    ["Eleição criada", "eleicao", 1, 10 * DAY],
+    ["Candidato adicionado", "candidato", 6, 9 * DAY],
+    ["Eleitores habilitados", "eleicao", 1, 5 * DAY],
+    ["Eleição agendada", "eleicao", 1, 4 * DAY],
+    ["Eleição criada", "eleicao", 2, 2 * DAY],
+    ["Eleição iniciada", "eleicao", 1, 6 * HOUR],
+  ].map(([acao, entidade, entidade_id, ago]) => ({ id: nextAuditId++, data: iso(now - ago), acao, entidade, entidade_id, utilizador_id: 1 }));
+  const log = (acao, entidade, entidade_id) =>
+    audit.push({ id: nextAuditId++, data: iso(Date.now()), acao, entidade, entidade_id, utilizador_id: me().id });
 
   // ===== Respostas =====
   let instance = 0;
@@ -153,7 +181,10 @@
     }
 
     if (p === "/utilizadores") return ok(users.filter((u) => !q.get("perfil") || u.perfil === q.get("perfil")).map(pub));
-    if ((m = p.match(/^\/utilizadores\/(\d+)$/))) return ok(Object.assign(users.find((u) => u.id === +m[1]), body));
+    if ((m = p.match(/^\/utilizadores\/(\d+)$/))) {
+      log("ativo" in body ? (body.ativo ? "Conta reativada" : "Conta suspensa") : "Perfil da conta alterado", "utilizador", +m[1]);
+      return ok(Object.assign(users.find((u) => u.id === +m[1]), body));
+    }
 
     if (p === "/recibos") {
       return ok(
@@ -166,13 +197,13 @@
       const found = receipts.find((r) => r.recibo === decodeURIComponent(m[1]).trim().toUpperCase());
       return ok({ valido: !!found, incluido: !!found, ronda: found ? found.ronda : null });
     }
-    if (p === "/auditoria") return ok(audit);
-    if (p === "/auditoria/verificar") return ok({ valida: true, registos: audit.length, blocos: [1, 2, 3, 4].map((i) => ({ id: i * 15, hash: "f".repeat(64) })) });
+    if (p === "/auditoria") return ok([...audit].reverse().slice(0, +(q.get("limite") || 200)));
 
     if (p === "/eleicoes" && method === "GET") return ok(elections.filter((e) => visible(e) && (!q.get("estado") || e.estado === q.get("estado"))).map(eOut));
     if (p === "/eleicoes" && method === "POST") {
       const e = { id: nextId++, titulo: body.titulo, descricao: body.descricao, estado: "rascunho", criador_id: user.id, data_criacao: iso(Date.now()), candidatos: [], rondas: [], habilitados: [], totalHabilitados: 0, votantes: 0, votos: {} };
       elections.push(e);
+      log("Eleição criada", "eleicao", e.id);
       return [201, eOut(e)];
     }
 
@@ -215,8 +246,12 @@
       }
 
       if (!admin) return [403, { detail: "Apenas administradores" }];
-      if (!rest && method === "PATCH") return ok(eOut(Object.assign(e, body)));
+      if (!rest && method === "PATCH") {
+        log("Eleição editada", "eleicao", e.id);
+        return ok(eOut(Object.assign(e, body)));
+      }
       if (!rest && method === "DELETE") {
+        log("Eleição apagada", "eleicao", e.id);
         elections.splice(elections.indexOf(e), 1);
         return [204];
       }
@@ -226,40 +261,51 @@
         }
         e.estado = "agendada";
         e.rondas[0].candidatos = e.candidatos.filter((c) => c.ativo);
+        log("Eleição agendada", "eleicao", e.id);
         return ok(eDetail(e));
       }
       if (rest === "/iniciar") {
         e.estado = "em_curso";
         if (e.rondas[0]) e.rondas[0].estado = "aberta";
+        log("Eleição iniciada", "eleicao", e.id);
         return ok(eDetail(e));
       }
       if (rest === "/encerrar") {
         e.estado = "encerrada";
         e.rondas.forEach((x) => (x.estado = "encerrada"));
+        log("Eleição encerrada", "eleicao", e.id);
         return ok(eDetail(e));
       }
       if (rest === "/rondas" && method === "POST") {
         const rd = { id: nextId++, numero: e.rondas.length + 1, data_inicio: body.data_inicio, data_fim: body.data_fim, estado: "agendada", candidatos: e.candidatos.filter((c) => !body.candidato_ids || body.candidato_ids.includes(c.id)) };
         e.rondas.push(rd);
+        log(rd.numero === 1 ? "Datas da votação definidas" : "2.ª volta criada", "eleicao", e.id);
         return [201, rd];
       }
-      if ((r = rest.match(/^\/rondas\/(\d+)$/))) return ok(Object.assign(e.rondas.find((x) => x.numero === +r[1]), body));
+      if ((r = rest.match(/^\/rondas\/(\d+)$/))) {
+        log("Datas da votação alteradas", "eleicao", e.id);
+        return ok(Object.assign(e.rondas.find((x) => x.numero === +r[1]), body));
+      }
       if ((r = rest.match(/^\/rondas\/(\d+)\/(abrir|encerrar)$/))) {
         const rd = e.rondas.find((x) => x.numero === +r[1]);
         rd.estado = r[2] === "abrir" ? "aberta" : "encerrada";
+        log(r[2] === "abrir" ? "Votação aberta" : "Votação encerrada", "eleicao", e.id);
         return ok(rd);
       }
       if (rest === "/candidatos" && method === "POST") {
         const c = cand(nextId++, body.nome, body.partido, body.descricao);
         e.candidatos.push(c);
+        log("Candidato adicionado", "candidato", c.id);
         return [201, c];
       }
       if ((r = rest.match(/^\/candidatos\/(\d+)$/))) {
         const c = e.candidatos.find((x) => x.id === +r[1]);
         if (method === "DELETE") {
+          log("Candidato removido", "candidato", c.id);
           e.candidatos.splice(e.candidatos.indexOf(c), 1);
           return [204];
         }
+        log(body.ativo === false ? "Candidato desativado" : "Candidato ativado", "candidato", c.id);
         return ok(Object.assign(c, body));
       }
       if (rest === "/habilitados" && method === "GET") {
@@ -269,10 +315,12 @@
         let adicionados = 0;
         let ja = 0;
         body.utilizador_ids.forEach((id) => (e.habilitados.some((h) => h.uid === id) ? ja++ : (e.habilitados.push({ uid: id, data: iso(Date.now()) }), adicionados++)));
+        if (adicionados) log(adicionados === 1 ? "Eleitor habilitado" : `${adicionados} eleitores habilitados`, "eleicao", e.id);
         return ok({ adicionados, ja_habilitados: ja });
       }
       if ((r = rest.match(/^\/habilitados\/(\d+)$/))) {
         e.habilitados = e.habilitados.filter((h) => h.uid !== +r[1]);
+        log("Eleitor removido", "eleicao", e.id);
         return [204];
       }
     }

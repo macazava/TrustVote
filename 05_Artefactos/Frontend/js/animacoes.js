@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const panels = [...document.querySelectorAll(".view-panel")];
   if (!panels.length) return;
 
-  const panelTargets = ".dash-card, .election-card, .metric-card, .badge-card, .receipt-card, .candidate-list > label, .result-row, .service-item, tbody tr";
+  const panelTargets = ".dash-card, .election-card, .metric-card, .badge-card, .receipt-card, .candidate-list > label, .result-row, tbody tr";
   // Só anima o que muda por ação do utilizador; as atualizações automáticas (ex.: a cada 20 s) ficam paradas
   let lastAction = Date.now();
   ["pointerdown", "keydown", "submit"].forEach((type) => document.addEventListener(type, () => (lastAction = Date.now()), true));

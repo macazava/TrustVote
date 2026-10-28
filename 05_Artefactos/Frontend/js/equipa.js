@@ -46,64 +46,59 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pill = (text, warn = false) => `<span class="status-pill rounded-full${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${ok ? "✓" : "!"} ${escapeHtml(text)}</span>`;
 
-  const resultBars = (rondas) =>
-    rondas
-      .map(
-        (r) => `
-        <p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>
-        ${r.candidatos
-          .map(
-            (c) => `
-            <div class="result-row">
-              <span>${escapeHtml(c.nome)}</span>
-              <div class="bar"><i style="width:${Math.min(100, c.percentagem || 0)}%"></i></div>
-              <b>${percent(c.percentagem)}</b>
-              <small>${number(c.total_votos)} votos</small>
+  // ===== Gráficos =====
+  // Barras horizontais: o comprimento é relativo ao maior valor, o texto mostra votos e percentagem
+  function barChart(linhas, label) {
+    const max = Math.max(1, ...linhas.map((l) => l.votos));
+    return `
+      <div class="bar-chart" role="img" aria-label="${escapeHtml(label)}">
+        ${linhas
+        .map(
+          (l) => `
+            <div class="bar-chart-row" title="${escapeHtml(`${l.nome} · ${number(l.votos)} votos (${percent(l.percentagem)})`)}">
+              <span class="bar-chart-label"><b>${escapeHtml(l.nome)}</b>${l.detalhe ? `<small>${escapeHtml(l.detalhe)}</small>` : ""}</span>
+              <span class="bar-chart-track"><i style="width:${(l.votos / max) * 100}%"></i></span>
+              <span class="bar-chart-value"><b>${percent(l.percentagem)}</b><small>${number(l.votos)} votos</small></span>
             </div>`
-          )
-          .join("")}`
-      )
-      .join("");
-
-  // ===== Estado dos serviços =====
-  const checks = [
-    { name: "Autenticação", path: "/auth/eu" },
-    { name: "Gestão eleitoral", path: "/eleicoes" },
-    { name: "Utilizadores", path: "/utilizadores" },
-    { name: "Auditoria", path: "/auditoria?limite=1", pending: true },
-    { name: "Integridade", path: "/auditoria/verificar", pending: true },
-    { name: "Recibos", path: "/recibos", pending: true },
-  ];
-
-  async function probe() {
-    const amostras = [];
-    for (let i = 0; i < 4; i++) amostras.push(await attempt(api.health()));
-    const ok = amostras.filter((a) => a.data && a.data.ok);
-    const instancias = [...new Set(ok.map((a) => a.data.data && a.data.data.instance).filter(Boolean))];
-    const db = ok.some((a) => a.data.data && a.data.data.database === "ok");
-    const lat = ok.length ? Math.round(ok.reduce((s, a) => s + a.data.latency, 0) / ok.length) : null;
-
-    const lista = [
-      { name: "API Gateway", state: ok.length === amostras.length ? "ok" : ok.length ? "warn" : "down", info: lat !== null ? `${lat} ms` : "sem resposta" },
-      { name: "Instâncias", state: instancias.length > 1 ? "ok" : instancias.length ? "warn" : "down", info: instancias.join(" · ") || "—" },
-      { name: "Base de dados", state: db ? "ok" : "down", info: db ? "ligada" : "sem resposta" },
-    ];
-    for (const c of checks) {
-      const r = await attempt(TV.request("GET", c.path, { raw: true }));
-      const status = r.data ? r.data.status : 0;
-      lista.push({
-        name: c.name,
-        state: r.data && r.data.ok ? "ok" : c.pending && [404, 405, 501].includes(status) ? "pending" : "down",
-        info: r.data && r.data.ok ? `${r.data.latency} ms` : c.pending && status === 404 ? "por implementar no backend" : status ? `erro ${status}` : "sem resposta",
-      });
-    }
-    return { lista, instancias };
+        )
+        .join("")}
+      </div>`;
   }
 
-  const okCount = (lista) => lista.filter((x) => x.state === "ok").length;
-  const allOk = (lista) => lista.every((x) => x.state === "ok" || x.state === "pending");
-  const systemsPill = (lista) =>
-    allOk(lista) ? pill("TODOS OS SISTEMAS OPERACIONAIS") : pill(`${lista.length - okCount(lista)} SERVIÇO(S) COM FALHAS`, true);
+  // Colunas: participação de cada eleição numa escala fixa de 0 a 100%
+  function columnChart(colunas, label) {
+    return `
+      <div class="column-chart" role="img" aria-label="${escapeHtml(label)}">
+        ${colunas
+        .map(
+          (c) => `
+            <div class="column-chart-item" title="${escapeHtml(`${c.nome} · ${percent(c.valor)} (${c.detalhe})`)}">
+              <b>${percent(c.valor)}</b>
+              <span class="column-chart-track"><i style="height:${Math.min(100, c.valor || 0)}%"></i></span>
+              <small>${escapeHtml(c.nome)}</small>
+            </div>`
+        )
+        .join("")}
+      </div>`;
+  }
+
+  // Junta os resultados de uma ronda com os dados dos candidatos (lista) e ordena do mais para o menos votado
+  function resultRows(ronda, candidatos) {
+    const lista = new Map((candidatos || []).map((c) => [c.id, c.partido]));
+    return [...ronda.candidatos]
+      .map((c) => ({ nome: c.nome, detalhe: lista.get(c.id) || "", votos: c.total_votos || 0, percentagem: c.percentagem || 0 }))
+      .sort((a, b) => b.votos - a.votos);
+  }
+
+  // Soma os votos dos candidatos de cada lista
+  function listRows(linhas) {
+    const total = linhas.reduce((s, l) => s + l.votos, 0);
+    const porLista = new Map();
+    linhas.forEach((l) => porLista.set(l.detalhe || "Sem lista", (porLista.get(l.detalhe || "Sem lista") || 0) + l.votos));
+    return [...porLista]
+      .map(([nome, votos]) => ({ nome, votos, percentagem: total ? Math.round((votos / total) * 1000) / 10 : 0 }))
+      .sort((a, b) => b.votos - a.votos);
+  }
 
   // ===== Visão geral =====
   function lineChart(serie) {
@@ -125,20 +120,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function renderOverview() {
     const el = panel("overview");
-    const [eleicao, lista, integridade, servicos] = await Promise.all([
-      elections.featured(),
-      api.eleicoes.listar(),
-      attempt(api.auditoria.verificar()),
-      probe(),
-    ]);
-    const stats = eleicao ? await attempt(api.votacao.estatisticas(eleicao.id)) : { error: null };
+    const [eleicao, lista] = await Promise.all([elections.featured(), api.eleicoes.listar()]);
+    const [stats, resultados] = eleicao
+      ? await Promise.all([attempt(api.votacao.estatisticas(eleicao.id)), attempt(api.votacao.resultados(eleicao.id))])
+      : [{ error: null }, { error: null }];
     const s = stats.data;
     const serie = (s && s.serie) || [];
     const ultimaHora = serie.length ? serie[serie.length - 1].votos : null;
-    const replicasOk = servicos.instancias.length > 1;
+    const emCurso = lista.filter((e) => e.estado === "em_curso").length;
+    const encerradas = lista.filter((e) => e.estado === "encerrada").length;
+    const rondaAtual = resultados.data && resultados.data[resultados.data.length - 1];
+    const fim = eleicao && eleicao.fim ? Date.parse(eleicao.fim) - Date.now() : null;
+    const restante = fim === null ? null : fim <= 0 ? "Terminada" : fim < 864e5 ? `${Math.ceil(fim / 36e5)} h` : `${Math.floor(fim / 864e5)} ${Math.floor(fim / 864e5) === 1 ? "dia" : "dias"}`;
 
     el.innerHTML = `
-      ${head("CENTRO DE OPERAÇÕES", "Visão operacional", "Controlo seguro e auditável da infraestrutura eleitoral.", systemsPill(servicos.lista))}
+      ${head("CENTRO DE OPERAÇÕES", "Visão geral", "Acompanhe a participação e os resultados das eleições.", eleicao ? pill(eleicao.estadoLabel, !eleicao.aberta) : "")}
       <div class="admin-metrics grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4">
         <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
           <span class="check-box rounded-lg">✓</span>
@@ -154,33 +150,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         </article>
         <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
           <span class="check-box rounded-lg">✓</span>
-          <small>SERVIÇOS</small><em>${allOk(servicos.lista) ? "ESTÁVEL" : "ATENÇÃO"}</em>
-          <b>${okCount(servicos.lista)} / ${servicos.lista.length}</b>
-          <span>Operacionais · ${number(lista.length)} eleições</span>
+          <small>TEMPO RESTANTE</small><em>${eleicao ? escapeHtml(eleicao.voltaLabel.split(" · ")[0].toUpperCase()) : ""}</em>
+          <b>${restante || "—"}</b>
+          <span>${eleicao && eleicao.fim ? `Fecha a ${dateTime(eleicao.fim)}` : "Sem votação marcada"}</span>
         </article>
         <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
           <span class="check-box rounded-lg">✓</span>
-          <small>INTEGRIDADE</small><em>${integridade.data ? (integridade.data.valida ? "VÁLIDA" : "QUEBRADA") : ""}</em>
-          <b>${integridade.data ? (integridade.data.valida ? "100%" : "Falha") : "—"}</b>
-          <span>${integridade.data ? `${number(integridade.data.registos)} registos · ${time(new Date().toISOString())}` : escapeHtml(integridade.error.message)}</span>
+          <small>ELEIÇÕES</small><em>${number(lista.length)} NO TOTAL</em>
+          <b>${number(emCurso)} <small style="font-size:11px">em curso</small></b>
+          <span>${number(encerradas)} encerradas · ${number(lista.length - emCurso - encerradas)} em preparação</span>
         </article>
       </div>
-      <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
+      <div class="overview-grid grid-cols-1 xl:grid-cols-[1.6fr_1fr]">
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag rounded-lg">${escapeHtml(eleicao.titulo)}</span>` : "")}
           ${serie.length ? lineChart(serie) : `<div class="empty-box rounded-xl">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
         </article>
-        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift resilience-text">
-          ${cardHead("CONTROLO DE RESILIÊNCIA", "Failover automático")}
-          <div class="ring-chart" style="--ring:${replicasOk ? 75 : 30}%"><div><span><b>${replicasOk ? "PRONTO" : "ATENÇÃO"}</b><br><small>ESTADO</small></span></div></div>
-          <p>${replicasOk ? `${servicos.instancias.length} réplicas a responder (${escapeHtml(servicos.instancias.join(", "))}) e prontas para assumir.` : "Só uma réplica respondeu. Verifique a segunda instância."}</p>
-          <button class="button rounded-xl button-light" type="button" data-test-replicas style="width:100%">Testar réplicas</button>
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+          ${cardHead("RESULTADOS PROVISÓRIOS", "Votos por candidato")}
+          ${rondaAtual && rondaAtual.candidatos.length
+        ? barChart(resultRows(rondaAtual, eleicao.candidatos).slice(0, 5), "Votos por candidato na eleição em curso")
+        : `<div class="empty-box rounded-xl">${escapeHtml(resultados.error ? resultados.error.message : "Sem resultados por enquanto.")}</div>`
+      }
+          <button class="button rounded-xl button-outline" type="button" data-go="results">Ver todos os resultados →</button>
         </article>
       </div>`;
-
-    el.querySelector("[data-test-replicas]").addEventListener("click", (event) =>
-      ui.busy(event.currentTarget, "A testar…", renderOverview).catch((e) => ui.toast(e.message, true))
-    );
   }
 
   // ===== Eleições =====
@@ -200,11 +194,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", '<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-new>Nova eleição →</button>')}
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("GESTÃO ELEITORAL", "Eleições configuradas")}
-        ${
-          detalhes.length
-            ? `<div class="election-rows">${detalhes
-                .map(
-                  (e, i) => `
+        ${detalhes.length
+        ? `<div class="election-rows">${detalhes
+          .map(
+            (e, i) => `
                   <div class="election-row rounded-2xl transition hover:shadow-soft${e.estado === "em_curso" ? "" : " is-muted"}">
                     <span class="round-mark">✓</span>
                     <div>
@@ -215,10 +208,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="turnout"><b>${stats[i].data ? percent(stats[i].data.participacao) : "—"}</b><small>participação</small></div>
                     <button class="button rounded-xl button-outline" type="button" data-edit="${e.id}">${e.estado === "rascunho" ? "Configurar" : "Gerir"}</button>
                   </div>`
-                )
-                .join("")}</div>`
-            : ui.empty("Ainda não existem eleições", "Crie a primeira eleição para começar.")
-        }
+          )
+          .join("")}</div>`
+        : ui.empty("Ainda não existem eleições", "Crie a primeira eleição para começar.")
+      }
       </article>`;
 
     el.querySelector("[data-new]").addEventListener("click", () => renderElectionForm(null));
@@ -315,13 +308,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     box.innerHTML = `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("CANDIDATURAS", `Candidatos · ${(e.candidatos || []).length}`)}
-        ${
-          (e.candidatos || []).length
-            ? `<div class="table-scroll rounded-xl"><table>
+        ${(e.candidatos || []).length
+        ? `<div class="table-scroll rounded-xl"><table>
                 <thead><tr><th>Opção</th><th>Candidato</th><th>Lista</th><th>Estado</th><th>Ações</th></tr></thead>
                 <tbody>${e.candidatos
-                  .map(
-                    (c, i) => `
+          .map(
+            (c, i) => `
                     <tr>
                       <td class="mono">${String(i + 1).padStart(2, "0")}</td>
                       <td><b>${escapeHtml(c.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml(c.descricao || "")}</small></td>
@@ -332,20 +324,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                         ${rascunho ? `<button type="button" data-remove-cand="${c.id}">Remover</button>` : ""}
                       </div></td>
                     </tr>`
-                  )
-                  .join("")}</tbody></table></div>`
-            : '<p class="muted">Ainda não existem candidatos. São precisos pelo menos 2 para agendar.</p>'
-        }
-        ${
-          rascunho
-            ? `<form class="inline-form" data-cand-form>
+          )
+          .join("")}</tbody></table></div>`
+        : '<p class="muted">Ainda não existem candidatos. São precisos pelo menos 2 para agendar.</p>'
+      }
+        ${rascunho
+        ? `<form class="inline-form" data-cand-form>
                 <label class="field-label">Nome<input name="nome" required maxlength="200"></label>
                 <label class="field-label">Lista<input name="partido" maxlength="200"></label>
                 <label class="field-label">Descrição<input name="descricao" maxlength="500"></label>
                 <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar →</button>
               </form>`
-            : '<p class="muted">Só é possível adicionar ou remover candidatos em rascunho.</p>'
-        }
+        : '<p class="muted">Só é possível adicionar ou remover candidatos em rascunho.</p>'
+      }
       </article>`;
 
     const reload = async () => renderCandidatesCard(elections.view(await api.eleicoes.detalhe(e.id)));
@@ -398,22 +389,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       box.innerHTML = `
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           ${cardHead("ESTUDANTES ELEGÍVEIS", `Eleitores habilitados · ${habilitados.length}`, livres.length ? `<button class="button rounded-xl button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : "")}
-          ${
-            habilitados.length
-              ? `<div class="table-scroll rounded-xl voter-picker"><table>
+          ${habilitados.length
+          ? `<div class="table-scroll rounded-xl voter-picker"><table>
                   <thead><tr><th>Eleitor</th><th>E-mail</th><th>Habilitado em</th><th></th></tr></thead>
                   <tbody>${habilitados
-                    .map(
-                      (h) => `
+            .map(
+              (h) => `
                       <tr><td><b>${escapeHtml(h.nome)}</b></td><td>${escapeHtml(h.email)}</td><td>${dateTime(h.data)}</td>
                       <td><div class="row-actions"><button type="button" data-unvoter="${h.utilizador_id}">Remover</button></div></td></tr>`
-                    )
-                    .join("")}</tbody></table></div>`
-              : '<p class="muted">Nenhum eleitor habilitado. É preciso pelo menos 1 para agendar.</p>'
-          }
-          ${
-            livres.length
-              ? `<form class="inline-form" data-voter-form>
+            )
+            .join("")}</tbody></table></div>`
+          : '<p class="muted">Nenhum eleitor habilitado. É preciso pelo menos 1 para agendar.</p>'
+        }
+          ${livres.length
+          ? `<form class="inline-form" data-voter-form>
                   <label class="field-label">Habilitar eleitor
                     <select name="uid" required>
                       <option value="">Selecione um eleitor</option>
@@ -422,8 +411,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                   </label>
                   <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Habilitar →</button>
                 </form>`
-              : ""
-          }
+          : ""
+        }
         </article>`;
 
       const reload = () => renderVotersCard(e);
@@ -467,34 +456,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     box.innerHTML = `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("CALENDÁRIO", "Rondas")}
-        ${
-          rondas.length
-            ? `<div class="table-scroll rounded-xl"><table>
+        ${rondas.length
+        ? `<div class="table-scroll rounded-xl"><table>
                 <thead><tr><th>Ronda</th><th>Período</th><th>Estado</th><th>Ações</th></tr></thead>
                 <tbody>${rondas
-                  .map(
-                    (r) => `
+          .map(
+            (r) => `
                     <tr><td>${r.numero === 2 ? "2.ª" : "1.ª"} volta</td><td>${escapeHtml(format.period(r.data_inicio, r.data_fim))}</td>
                     <td>${okLabel(r.estado.toUpperCase(), r.estado === "aberta")}</td>
                     <td><div class="row-actions">
                       ${e.estado === "em_curso" && r.estado === "aberta" ? `<button type="button" data-round="${r.numero}" data-round-action="encerrar">Encerrar ronda</button>` : ""}
                       ${e.estado === "em_curso" && r.estado === "agendada" ? `<button type="button" data-round="${r.numero}" data-round-action="abrir">Abrir ronda</button>` : ""}
                     </div></td></tr>`
-                  )
-                  .join("")}</tbody></table></div>`
-            : '<p class="muted">Guarde as datas da eleição para criar a 1.ª volta.</p>'
-        }
-        ${
-          podeSegunda
-            ? `<form class="inline-form" data-second-round>
+          )
+          .join("")}</tbody></table></div>`
+        : '<p class="muted">Guarde as datas da eleição para criar a 1.ª volta.</p>'
+      }
+        ${podeSegunda
+        ? `<form class="inline-form" data-second-round>
                 <p class="muted">Criar 2.ª volta: escolha exatamente 2 candidatos.</p>
                 ${ativos.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
                 <label class="field-label">Início<input type="datetime-local" name="inicio" required></label>
                 <label class="field-label">Fim<input type="datetime-local" name="fim" required></label>
                 <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Criar 2.ª volta →</button>
               </form>`
-            : ""
-        }
+        : ""
+      }
       </article>`;
 
     box.querySelectorAll("[data-round]").forEach((b) =>
@@ -543,8 +530,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `<div class="table-scroll rounded-xl"><table>
               <thead><tr><th>Opção</th><th>Candidato</th><th>Descrição</th><th>Estado</th></tr></thead>
               <tbody>${e.candidatos
-                .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
-                .join("")}</tbody></table></div>
+            .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
+            .join("")}</tbody></table></div>
              <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição →</button>`
           : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos →</button></div>`;
         table.querySelector("[data-manage]").addEventListener("click", () => {
@@ -578,23 +565,22 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `<div class="table-scroll rounded-xl"><table>
               <thead><tr><th>Número</th><th>Eleitor</th><th>Tipo</th><th>2FA</th><th>Estado</th><th>Ações</th></tr></thead>
               <tbody>${lista
-                .map(
-                  (u) => `
+            .map(
+              (u) => `
                   <tr>
                     <td class="mono">${escapeHtml(voterNumber(u))}</td>
                     <td><b>${escapeHtml(u.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml(u.email)}</small></td>
                     <td>${u.perfil === "administrador" ? "Administrador" : "Credencial individual"}</td>
                     <td>${u.totp_ativo ? "Ativa" : "—"}</td>
                     <td>${okLabel(u.ativo ? "ATIVO" : "SUSPENSO", u.ativo)}</td>
-                    <td><div class="row-actions">${
-                      u.id === user.id
-                        ? '<small class="muted" style="font-size:11px">A sua conta</small>'
-                        : `<button type="button" data-user="${u.id}" data-patch='${JSON.stringify({ ativo: !u.ativo })}'>${u.ativo ? "Suspender" : "Reativar"}</button>
+                    <td><div class="row-actions">${u.id === user.id
+                  ? '<small class="muted" style="font-size:11px">A sua conta</small>'
+                  : `<button type="button" data-user="${u.id}" data-patch='${JSON.stringify({ ativo: !u.ativo })}'>${u.ativo ? "Suspender" : "Reativar"}</button>
                            <button type="button" data-user="${u.id}" data-patch='${JSON.stringify({ perfil: u.perfil === "administrador" ? "eleitor" : "administrador" })}'>${u.perfil === "administrador" ? "Tornar eleitor" : "Tornar administrador"}</button>`
-                    }</div></td>
+                }</div></td>
                   </tr>`
-                )
-                .join("")}</tbody></table></div>`
+            )
+            .join("")}</tbody></table></div>`
           : ui.empty("Sem contas para este filtro");
         box.querySelectorAll("[data-user]").forEach((b) =>
           b.addEventListener("click", async () => {
@@ -612,98 +598,108 @@ document.addEventListener("DOMContentLoaded", async () => {
     load();
   }
 
-  // ===== Serviços =====
-  async function renderServices() {
-    const el = panel("services");
-    const { lista } = await probe();
-    el.innerHTML = `
-      ${head("CENTRO DE OPERAÇÕES", "Serviços", "Estado medido agora a partir do backend.", systemsPill(lista))}
+  // ===== Resultados =====
+  async function renderResults() {
+    const el = panel("results");
+    const lista = await api.eleicoes.listar();
+    const aDecorrer = lista.filter((e) => e.estado === "em_curso");
+    const anteriores = lista.filter((e) => e.estado === "encerrada");
+    const [detalhes, estatisticas, resultados] = await Promise.all([
+      Promise.all([...aDecorrer, ...anteriores].map((e) => api.eleicoes.detalhe(e.id).then(elections.view))),
+      Promise.all([...aDecorrer, ...anteriores].map((e) => attempt(api.votacao.estatisticas(e.id)))),
+      Promise.all([...aDecorrer, ...anteriores].map((e) => attempt(api.votacao.resultados(e.id)))),
+    ]);
+    const dados = detalhes.map((e, i) => ({ e, stats: estatisticas[i].data, rondas: resultados[i].data || [], erro: resultados[i].error }));
+    const atuais = dados.slice(0, aDecorrer.length);
+    const historico = dados.slice(aDecorrer.length).sort((a, b) => Date.parse(a.e.inicio || a.e.data_criacao) - Date.parse(b.e.inicio || b.e.data_criacao));
+
+    // Cartão de uma eleição: votos por candidato e por lista, em cada volta
+    const electionCard = ({ e, stats, rondas, erro }, provisorio) => `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-        ${cardHead("INFRAESTRUTURA", "Estado dos serviços", `<div class="row-actions">${pill(`${okCount(lista)} de ${lista.length} operacionais`)}<button type="button" data-refresh>Atualizar</button></div>`)}
-        <div class="service-status grid-cols-1 md:grid-cols-2">
-          ${lista
-            .map(
-              (s) => `
-              <div class="service-item rounded-xl is-${s.state}" title="${stateLabel[s.state]}">
-                <span class="check-box rounded-lg">${s.state === "ok" ? "✓" : s.state === "pending" ? "…" : "!"}</span>
-                <div><b>${escapeHtml(s.name)}</b><small>${escapeHtml(s.info)} · ${stateLabel[s.state].toLowerCase()}</small></div>
-                <i></i>
-              </div>`
-            )
-            .join("")}
-        </div>
+        ${cardHead(
+      `${provisorio ? "RESULTADOS PROVISÓRIOS" : "RESULTADOS FINAIS"} · ${e.ano} · ${escapeHtml(e.periodo)}`,
+      escapeHtml(e.titulo),
+      stats ? `<span class="model-tag rounded-lg">Participação ${percent(stats.participacao)} · ${number(stats.votantes)} / ${number(stats.habilitados)}</span>` : ""
+    )}
+        ${rondas.length
+        ? rondas
+          .map((r) => {
+            const linhas = resultRows(r, e.candidatos);
+            const listas = listRows(linhas);
+            return `
+                    ${rondas.length > 1 ? `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>` : ""}
+                    <div class="results-split grid-cols-1 lg:grid-cols-2">
+                      <div><h3>Votos por candidato</h3>${barChart(linhas, `Votos por candidato · ${e.titulo}`)}</div>
+                      ${listas.length > 1 && listas.length < linhas.length ? `<div><h3>Votos por lista</h3>${barChart(listas, `Votos por lista · ${e.titulo}`)}</div>` : ""}
+                    </div>`;
+          })
+          .join("")
+        : `<div class="empty-box rounded-xl">${escapeHtml(erro ? erro.message : "Ainda não existem votos.")}</div>`
+      }
       </article>`;
-    el.querySelector("[data-refresh]").addEventListener("click", (event) => ui.busy(event.currentTarget, "A medir…", renderServices));
-  }
-
-  const stateLabel = { ok: "OPERACIONAL", warn: "DEGRADADO", down: "EM FALHA", pending: "POR IMPLEMENTAR" };
-
-  // ===== Resultados e integridade =====
-  async function renderIntegrity() {
-    const el = panel("integrity");
-    const [v, lista] = await Promise.all([attempt(api.auditoria.verificar()), api.eleicoes.listar()]);
-    const comResultados = lista.filter((e) => ["em_curso", "encerrada"].includes(e.estado));
-    const ok = v.data && v.data.valida;
 
     el.innerHTML = `
-      ${head("VERIFICAÇÃO CRIPTOGRÁFICA", "Integridade", "Validação da cadeia e dos lotes eleitorais.")}
-      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift integrity">
-        <span class="integrity-seal${v.data && !ok ? " is-invalid" : ""}">${v.data ? (ok ? "✓" : "!") : "…"}</span>
-        <p class="eyebrow">${v.data ? "VERIFICAÇÃO CONCLUÍDA" : "VERIFICAÇÃO INDISPONÍVEL"}</p>
-        <h2>${v.data ? (ok ? "A cadeia eleitoral está íntegra." : "Foi detetada uma inconsistência.") : "Não foi possível verificar."}</h2>
-        <p>${v.data ? `${number(v.data.registos)} registos verificados.${ok ? " Nenhuma inconsistência detetada." : ""}` : escapeHtml(v.error.message)}</p>
-        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-verify>Executar nova verificação →</button>
-        ${
-          v.data && (v.data.blocos || []).length
-            ? `<div class="chain-blocks grid-cols-2 md:grid-cols-4">${v.data.blocos
-                .map((b, i) => `<div><i>✓</i><b>${i === 0 ? "GENESIS" : `#${number(b.id)}`}</b><small>${escapeHtml(String(b.hash).slice(0, 6))}…</small></div>`)
-                .join("")}</div>`
-            : ""
-        }
-      </article>
-      ${comResultados.map((e) => `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-result="${e.id}"></article>`).join("") || `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty("Sem resultados", "Os resultados aparecem quando uma eleição começa.")}</article>`}`;
-
-    el.querySelector("[data-verify]").addEventListener("click", (event) => ui.busy(event.currentTarget, "A verificar…", renderIntegrity));
-    comResultados.forEach((e) => {
-      const card = el.querySelector(`[data-result="${e.id}"]`);
-      ui.mount(card, async () => {
-        const rondas = await api.votacao.resultados(e.id);
-        card.innerHTML = `${cardHead(`RESULTADOS · ${elections.statusLabels[e.estado]}`, escapeHtml(e.titulo))}${resultBars(rondas)}`;
-      });
-    });
+      ${head("APURAMENTO", "Resultados", "Votos por candidato e por lista, na eleição a decorrer e nas eleições anteriores.")}
+      <h2 class="results-section-title">A decorrer</h2>
+      ${atuais.length
+        ? atuais.map((d) => electionCard(d, true)).join("")
+        : `<article class="dash-card rounded-2xl shadow-soft">${ui.empty("Nenhuma eleição a decorrer", "Os resultados provisórios aparecem quando uma votação abre.")}</article>`
+      }
+      <h2 class="results-section-title">Histórico</h2>
+      ${historico.length
+        ? `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+              ${cardHead("COMPARAÇÃO", "Participação por eleição")}
+              ${columnChart(
+          historico.map(({ e, stats }) => ({
+            nome: e.titulo,
+            valor: stats ? stats.participacao : 0,
+            detalhe: stats ? `${number(stats.votantes)} de ${number(stats.habilitados)} votaram` : "sem dados",
+          })),
+          "Participação em cada eleição encerrada"
+        )}
+            </article>
+            ${historico.slice().reverse().map((d) => electionCard(d, false)).join("")}`
+        : `<article class="dash-card rounded-2xl shadow-soft">${ui.empty("Ainda não há eleições encerradas")}</article>`
+      }`;
   }
 
-  // ===== Auditoria =====
+  // ===== Auditoria: registo de quem fez o quê e quando =====
   let registos = [];
+  const nomesEntidade = { eleicao: "Eleição", candidato: "Candidato", utilizador: "Conta", ronda: "Votação" };
 
   async function renderAudit() {
     const el = panel("audit");
-    registos = await api.auditoria.listar(200);
+    const [lista, utilizadores, eleicoes] = await Promise.all([api.auditoria.listar(200), attempt(api.utilizadores.listar()), attempt(api.eleicoes.listar())]);
+    const nomes = new Map((utilizadores.data || []).map((u) => [u.id, u.nome]));
+    const titulos = new Map((eleicoes.data || []).map((e) => [e.id, e.titulo]));
+    const sobre = (r) =>
+      r.entidade === "eleicao" && titulos.has(r.entidade_id)
+        ? titulos.get(r.entidade_id)
+        : r.entidade === "utilizador" && nomes.has(r.entidade_id)
+          ? nomes.get(r.entidade_id)
+          : [nomesEntidade[r.entidade] || r.entidade, r.entidade_id && `#${r.entidade_id}`].filter(Boolean).join(" ") || "—";
+    const autor = (r) => (r.utilizador_id ? nomes.get(r.utilizador_id) || `Utilizador #${r.utilizador_id}` : "Sistema");
+    registos = lista.map((r) => ({ data: dateTime(r.data), acao: r.acao, sobre: sobre(r), autor: autor(r) }));
+
     el.innerHTML = `
-      ${head("REGISTO IMUTÁVEL", "Auditoria", "Eventos assinados produzidos pela plataforma eleitoral.")}
+      ${head("REGISTO DE ATIVIDADE", "Auditoria", "Cada alteração feita na área da equipa fica registada: o que foi feito, sobre o quê, por quem e quando.")}
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-        ${cardHead("REGISTO IMUTÁVEL", `Eventos de auditoria · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button class="button rounded-xl button-light" type="button" data-csv>Exportar relatório</button></div>')}
-        ${
-          registos.length
-            ? `<div class="table-scroll rounded-xl"><table>
-                <thead><tr><th>Hora</th><th>Evento</th><th>Origem</th><th>Hash</th><th>Estado</th></tr></thead>
+        ${cardHead("HISTÓRICO DE AÇÕES", `Registos · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button class="button rounded-xl button-light" type="button" data-csv>Exportar CSV</button></div>')}
+        ${registos.length
+        ? `<div class="table-scroll rounded-xl"><table>
+                <thead><tr><th>Data e hora</th><th>Ação</th><th>Sobre</th><th>Feito por</th></tr></thead>
                 <tbody>${registos
-                  .map(
-                    (r) => `
-                    <tr><td class="mono">${escapeHtml(new Date(r.data).toLocaleTimeString("pt-PT"))}</td><td><b>${escapeHtml(r.acao)}</b></td>
-                    <td>${escapeHtml([r.entidade, r.entidade_id].filter(Boolean).join(" #") || (r.utilizador_id ? `Utilizador #${r.utilizador_id}` : r.ip || "—"))}</td>
-                    <td><code>${escapeHtml(String(r.hash_atual || "").slice(0, 12))}…</code></td><td>${okLabel("VERIFICADO")}</td></tr>`
-                  )
-                  .join("")}</tbody></table></div>`
-            : ui.empty("Sem registos")
-        }
+          .map((r) => `<tr><td class="mono">${escapeHtml(r.data)}</td><td><b>${escapeHtml(r.acao)}</b></td><td>${escapeHtml(r.sobre)}</td><td>${escapeHtml(r.autor)}</td></tr>`)
+          .join("")}</tbody></table></div>`
+        : ui.empty("Sem registos", "As ações feitas na área da equipa aparecem aqui.")
+      }
       </article>`;
     el.querySelector("[data-refresh]").addEventListener("click", () => ui.mount(el, renderAudit));
     el.querySelector("[data-csv]").addEventListener("click", () => {
-      const cols = ["id", "data", "acao", "entidade", "entidade_id", "utilizador_id", "ip", "hash_atual"];
-      const csv = [cols.join(";"), ...registos.map((r) => cols.map((c) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`).join(";"))].join("\n");
+      const cols = [["data", "Data e hora"], ["acao", "Ação"], ["sobre", "Sobre"], ["autor", "Feito por"]];
+      const csv = [cols.map((c) => c[1]).join(";"), ...registos.map((r) => cols.map(([c]) => `"${String(r[c] ?? "").replace(/"/g, '""')}"`).join(";"))].join("\n");
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+      link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
       link.download = `auditoria-${new Date().toISOString().slice(0, 10)}.csv`;
       link.click();
       URL.revokeObjectURL(link.href);
@@ -716,7 +712,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const zona = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const offset = -new Date().getTimezoneOffset() / 60;
     el.innerHTML = `
-      ${head("CENTRO DE OPERAÇÕES", "Configuração", "Controlo seguro e auditável da infraestrutura eleitoral.")}
+      ${head("CENTRO DE OPERAÇÕES", "Configuração", "Ligação ao servidor, verificação em dois passos e preferências deste navegador.")}
       <div class="dash-grid grid-cols-1 lg:grid-cols-2">
         <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
           ${cardHead("CONFIGURAÇÃO ELEITORAL", "Parâmetros globais")}
@@ -756,7 +752,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const prefs = { ...read(), [b.dataset.pref]: !read()[b.dataset.pref] };
         try {
           localStorage.setItem(PREFS, JSON.stringify(prefs));
-        } catch {}
+        } catch { }
         document.body.classList.toggle("large-text", !!prefs.largeText);
         document.body.classList.toggle("high-contrast", !!prefs.contrast);
         paint();
@@ -794,8 +790,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     elections: renderElectionList,
     candidates: renderCandidates,
     voters: renderVoters,
-    services: renderServices,
-    integrity: renderIntegrity,
+    results: renderResults,
     audit: renderAudit,
   };
   Object.entries(loaders).forEach(([name, load]) => ui.mount(panel(name), load));
@@ -810,6 +805,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Atualiza a visão operacional a cada 20 s
   setInterval(() => {
-    if (panel("overview").classList.contains("active") && !document.hidden) renderOverview().catch(() => {});
+    if (panel("overview").classList.contains("active") && !document.hidden) renderOverview().catch(() => { });
   }, 20000);
 });

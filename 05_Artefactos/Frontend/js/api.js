@@ -38,7 +38,7 @@
     base = clean(url);
     try {
       localStorage.setItem(BASE_KEY, base);
-    } catch {}
+    } catch { }
   }
 
   // ===== Erros =====
@@ -181,7 +181,6 @@
 
     auditoria: {
       listar: (limite = 200) => get("/auditoria", { ...pend, query: { limite } }),
-      verificar: () => get("/auditoria/verificar", pend),
     },
 
     sondagem: {
@@ -222,7 +221,7 @@
       };
       try {
         (remember ? localStorage : sessionStorage).setItem(SESSION_KEY, JSON.stringify(value));
-      } catch {}
+      } catch { }
     },
 
     clear() {
@@ -230,7 +229,7 @@
       try {
         sessionStorage.removeItem(SESSION_KEY);
         localStorage.removeItem(SESSION_KEY);
-      } catch {}
+      } catch { }
     },
 
     claims() {
@@ -263,16 +262,16 @@
       }
       if (!session.token()) {
         window.location.href = pageUrl(`login.html?area=${area}`);
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
       const user = await session.refresh();
       if (area === "equipa" && !session.isAdmin(user)) {
         window.location.href = pageUrl("eleitor.html");
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
       if (area === "eleitor" && session.isAdmin(user)) {
         window.location.href = pageUrl("equipa.html");
-        return new Promise(() => {});
+        return new Promise(() => { });
       }
       const expiresAt = (readSession() || {}).expiresAt;
       if (expiresAt) {
@@ -419,7 +418,7 @@
       list.unshift(recibo);
       try {
         localStorage.setItem(receiptsKey(), JSON.stringify(list));
-      } catch {}
+      } catch { }
     },
   };
 
