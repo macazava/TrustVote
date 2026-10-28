@@ -1,0 +1,247 @@
+/* Página inicial: eleição em curso e cartões de segurança */
+
+/* ===== Toda a informação ===== */
+.hub-section,
+.news-section {
+    padding: 30px 0 100px;
+}
+
+.hub-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 16px;
+}
+
+.hub-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 28px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.hub-card h3 {
+    margin: 0;
+    color: var(--title);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.hub-card > p:not(.eyebrow) {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.hub-card .eyebrow {
+    margin: 22px 0 4px;
+}
+
+.hub-progress {
+    display: grid;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.hub-progress > div:first-child {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.hub-progress small {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+}
+
+.hub-progress b {
+    color: var(--title);
+    font-size: 30px;
+}
+
+.hub-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.hub-links .service-card small {
+    margin-top: auto;
+    letter-spacing: 0.06em;
+}
+
+/* ===== Segurança ===== */
+.security-section {
+    padding: 90px 0 100px;
+}
+
+.security-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 280px 300px;
+    gap: 16px;
+}
+
+.security-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 28px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.identity-card {
+    grid-row: span 2;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.card-meta small {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+}
+
+.round-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: white;
+    font-size: 19px;
+}
+
+.security-card h3 {
+    margin: 30px 0 10px;
+    color: var(--ink);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.security-card p {
+    max-width: 480px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.credential {
+    position: relative;
+    display: flex;
+    min-height: 190px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    border: 1px solid var(--line);
+    background: var(--beige);
+}
+
+.credential-symbol {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-size: 26px;
+    box-shadow: 0 0 0 9px #1F5A4511;
+}
+
+.credential small {
+    margin-top: 12px;
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+}
+
+.credential b {
+    font-size: 13px;
+}
+
+.credential i {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    color: var(--green);
+    font-style: normal;
+}
+
+.hash-chain {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding: 10px 0;
+}
+
+.hash-chain span {
+    padding: 10px;
+    border: 1px solid var(--accent);
+    background: var(--ivory);
+    color: var(--accent);
+    font-size: 10px;
+}
+
+.hash-chain i {
+    color: var(--accent);
+    font-style: normal;
+}
+
+.dark-card {
+    border-color: var(--dark);
+    background: var(--dark);
+    color: white;
+}
+
+.dark-card h3 {
+    color: white;
+}
+
+.dark-card .round-icon {
+    border-color: #ffffff44;
+    background: transparent;
+}
+
+.dark-card .card-meta small {
+    color: #c6cedb;
+}
+
+.dark-card p {
+    color: #b9c9bf;
+}
+
+.audit-log {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    color: #e1e7f0;
+    font-size: 11px;
+}
+
+.audit-log span {
+    padding: 9px 0;
+    border-bottom: 1px solid #ffffff19;
+}
+
+.audit-log span::first-letter {
+    color: #4bd59a;
+}
+

@@ -9,14 +9,25 @@
 
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="../js/tailwind.config.js"></script>
-  <script defer src="../js/layout.js"></script>
-  <script defer src="../js/main.js"></script>
-  <script defer src="../js/demo.js"></script>
-  <script defer src="../js/api.js"></script>
-  <script defer src="../js/site.js"></script>
-  <script defer src="../js/publico.js"></script>
-  <script defer src="../js/animacoes.js"></script>
+  <script src="../js/config/tailwind.config.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
 </head>
 
 <body>

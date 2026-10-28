@@ -1,0 +1,153 @@
+/* Páginas das secções: conteúdos (cronologia, cartões, listas de informação) */
+
+/* ===== Conteúdos da macazava usados dentro das secções ===== */
+.timeline {
+    display: grid;
+    margin-top: 30px;
+}
+
+.timeline article {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 24px;
+    padding: 22px;
+    border-top: 1px solid var(--line);
+    background: white;
+}
+
+.timeline time {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.timeline h2,
+.candidate-grid h2,
+.info-list h2 {
+    margin: 0 0 8px;
+    font-size: 19px;
+}
+
+.timeline p,
+.candidate-grid p,
+.info-list p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.candidate-proposals {
+    margin: 0 0 18px;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.candidate-grid article {
+    padding: 24px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.candidate-badge {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--title);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.info-list {
+    margin-top: 28px;
+}
+
+.info-list article {
+    display: flex;
+    gap: 22px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line);
+}
+
+.info-list article > span {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.info-list a {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+.faq-list {
+    margin: 30px 0;
+}
+
+.faq-list details {
+    padding: 19px 5px;
+    border-bottom: 1px solid var(--line);
+}
+
+.faq-list summary {
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.faq-list details p {
+    max-width: 800px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.support-form {
+    max-width: 650px;
+}
+
+.result-row {
+    display: grid;
+    grid-template-columns: auto minmax(120px, 1fr) 2fr 70px;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+.result-row:not(:has(.avatar)) {
+    grid-template-columns: minmax(120px, 1fr) 2fr 70px 90px;
+}
+
+.result-row b {
+    text-align: right;
+}
+
+.result-row small {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+}
+
+.result-row .avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 13px;
+}
+
+.result-row .bar {
+    height: 6px;
+}
+

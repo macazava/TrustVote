@@ -1,0 +1,221 @@
+/* Adaptação ao telemóvel */
+
+/* ===== Telemóvel (até 640px) ===== */
+@media (max-width: 640px) {
+    .container,
+    .topbar-inner,
+    .site-header-inner,
+    .dashboard-content {
+        width: calc(100% - 32px);
+    }
+
+    .topbar a,
+    .topbar button {
+        padding: 0 14px;
+        font-size: 13px;
+    }
+
+    .brand b {
+        font-size: 16px;
+    }
+
+    .hero h1 {
+        font-size: clamp(38px, 11vw, 46px);
+    }
+
+    .section-heading h2 {
+        font-size: clamp(28px, 8vw, 36px);
+    }
+
+    .lead,
+    .section-item > p,
+    .section-body > p {
+        font-size: 15px;
+    }
+
+    .section-item h1 {
+        font-size: 28px;
+    }
+
+    .section-item-tools {
+        margin-top: 0;
+    }
+
+    .section-content,
+    .services-panel,
+    .dash-card,
+    .hub-card,
+    .auth-card {
+        padding: 22px 18px;
+    }
+
+    .services .service-card {
+        padding: 14px;
+    }
+
+    .news-photo {
+        margin: -22px -18px 20px;
+    }
+
+    .metrics {
+        padding: 22px 18px;
+    }
+
+    .metrics b {
+        font-size: 24px;
+    }
+
+    .election-info {
+        padding-top: 80px;
+        padding-bottom: 60px;
+    }
+
+    .security-card h3,
+    .platform-grid h3 {
+        font-size: 22px;
+    }
+
+    .breadcrumb {
+        font-size: 13px;
+    }
+
+    .breadcrumb-tools {
+        display: none;
+    }
+
+    .press-hero img {
+        height: 220px;
+    }
+
+    .press-hero h2 {
+        font-size: 20px;
+    }
+
+    .history-hero,
+    .history-hero .container {
+        min-height: 160px;
+    }
+
+    .dashboard-header {
+        padding: 10px 16px;
+    }
+
+    .dashboard-header .brand small {
+        display: none;
+    }
+
+    .panel-link {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .dashboard-content h1 {
+        font-size: clamp(28px, 8vw, 34px);
+    }
+
+    .dashboard-content .muted {
+        font-size: 15px;
+    }
+
+    .election-card-body {
+        padding: 24px 18px;
+    }
+
+    .election-card-body h2 {
+        font-size: 24px;
+    }
+
+    .election-card-actions,
+    .election-card-actions .button,
+    .form-actions .button {
+        width: 100%;
+    }
+
+    .election-card-top {
+        flex-wrap: wrap;
+    }
+
+    .candidate-list label {
+        grid-template-columns: 44px 1fr 24px;
+        gap: 12px;
+        padding: 14px;
+    }
+
+    .candidate-list .avatar {
+        width: 44px;
+        height: 44px;
+    }
+
+    .ballot-foot .button {
+        width: 100%;
+    }
+
+    .receipt-card {
+        padding: 26px 18px;
+        text-align: center;
+    }
+
+    .receipt-card .seal-icon {
+        margin: 0 auto;
+    }
+
+    .receipt-card .receipt-code {
+        align-items: center;
+    }
+
+    .receipt-checks {
+        justify-content: center;
+    }
+
+    .metric-card {
+        padding: 18px;
+    }
+
+    .election-row {
+        padding: 20px 16px;
+    }
+
+    .election-row .button {
+        width: 100%;
+    }
+
+
+    .totp-qr {
+        align-self: center;
+    }
+
+    th,
+    td {
+        padding: 12px;
+    }
+
+    .toast-host {
+        right: 12px;
+        left: 12px;
+        max-width: none;
+    }
+}
+
+/* ===== Telemóveis muito pequenos (até 380px) ===== */
+@media (max-width: 380px) {
+    .facts {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Telemóvel deitado (pouca altura) ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .dashboard-header,
+    .site-header {
+        position: static !important;
+    }
+
+    .auth-layout {
+        min-height: 0;
+    }
+}
+

@@ -1,4 +1,4 @@
-/* Comum a todas as páginas: acessibilidade, menu ativo e links da sessão */
+/* Controller · comum a todas as páginas: texto maior e contraste, menu ativo, temas das secções, imprimir/partilhar e links da sessão */
 document.addEventListener("DOMContentLoaded", () => {
   const PREFS_KEY = "trustvote:preferencias";
   const { session } = window.TrustVote;

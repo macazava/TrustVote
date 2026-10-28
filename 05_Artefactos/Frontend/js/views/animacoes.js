@@ -1,4 +1,4 @@
-/* Animações: revelação ao fazer scroll, profundidade 3D e transições nos painéis (sem alterar o design) */
+/* View · animações: revelação ao fazer scroll, profundidade 3D e transições nos painéis (sem alterar o design) */
 document.addEventListener("DOMContentLoaded", () => {
   if (!("animate" in Element.prototype) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 

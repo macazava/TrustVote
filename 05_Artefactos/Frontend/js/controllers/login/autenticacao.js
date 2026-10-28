@@ -1,4 +1,4 @@
-/* Login e registo ligados ao backend */
+/* Controller · página de login: estado do servidor e envio do formulário (entrar ou criar conta) */
 document.addEventListener("DOMContentLoaded", () => {
   const { api, session, ui } = window.TrustVote;
   const form = document.querySelector("#auth-form");
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Envio do formulário =====
-  // Fase de captura: corre antes do código de demonstração do main.js
+  // Fase de captura: corre antes da validação local de formulario.js
   document.addEventListener(
     "submit",
     async (event) => {

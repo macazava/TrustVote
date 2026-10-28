@@ -1,0 +1,143 @@
+/* Painéis do eleitor e da equipa */
+.panel-body {
+    background: var(--ivory);
+}
+
+/* ===== Cabeçalho verde com o menu ===== */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    min-height: 76px;
+    padding: 0 30px;
+    background: var(--dark);
+    color: white;
+}
+
+.dashboard-header .brand {
+    color: white;
+}
+
+.dashboard-header .brand-mark {
+    background: white;
+    color: var(--dark);
+}
+
+.panel-nav {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.panel-link {
+    padding: 10px 14px;
+    border: 0;
+    background: none;
+    color: #cbd8d0;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+@media (max-width: 1560px) {
+    .dashboard-header {
+        gap: 24px;
+    }
+
+    .panel-link {
+        padding: 10px 11px;
+        font-size: 15px;
+    }
+
+    .portal-link {
+        display: none;
+    }
+}
+
+@media (max-width: 1360px) {
+    .panel-link {
+        padding: 9px 9px;
+        font-size: 14px;
+    }
+
+    .panel-user .user-chip>span:last-child {
+        display: none;
+    }
+}
+
+.panel-link:hover {
+    color: white;
+}
+
+.panel-link.active {
+    background: #2c5e48;
+    color: white;
+}
+
+.panel-user {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 16px;
+}
+
+.session-chip {
+    padding: 8px 10px;
+    border: 1px solid #ffffff55;
+    color: #e8efe9;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-chip .avatar {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ffffff55;
+    border-radius: 0;
+    background: #2c5e48;
+    color: white;
+    font-size: 11px;
+}
+
+.user-chip>span:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-chip b {
+    font-size: 12px;
+}
+
+.user-chip small {
+    color: #cbd8d0;
+    font-size: 8px;
+    letter-spacing: 0.05em;
+}
+
+.logout-button {
+    border: 0;
+    background: none;
+    color: white;
+    font-size: 20px;
+}
+
+.portal-link {
+    color: #cbd8d0;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.portal-link:hover {
+    color: white;
+}
+

@@ -1,0 +1,88 @@
+/* Áreas do eleitor e da equipa: tablet e telemóvel */
+
+@media (max-width: 1100px) {
+    .dashboard-header {
+        flex-wrap: wrap;
+        gap: 10px 20px;
+        padding: 12px 18px;
+    }
+
+    .panel-nav {
+        order: 3;
+        width: 100%;
+        flex: none;
+    }
+
+    .panel-user {
+        margin-left: auto;
+    }
+
+    .admin-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .overview-grid,
+    .poll-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-content h1 {
+        font-size: 32px;
+    }
+
+    .session-chip,
+    .user-chip>span:last-child,
+    .portal-link {
+        display: none;
+    }
+
+    .page-head,
+    .election-card-body,
+    .election-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .steps-track {
+        flex-wrap: wrap;
+    }
+
+    .steps-track>hr {
+        display: none;
+    }
+
+    .ballot {
+        padding: 30px 20px;
+    }
+
+    .ballot-foot {
+        flex-direction: column;
+    }
+
+    .receipt-card {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .bar-chart-row {
+        grid-template-columns: 1fr 76px;
+    }
+
+    .bar-chart-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .column-chart {
+        gap: 8px;
+    }
+
+    .election-row .turnout {
+        border-right: 0;
+    }
+}

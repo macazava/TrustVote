@@ -7,15 +7,40 @@
     <title>Centro de operações | TrustVote</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="../js/tailwind.config.js"></script>
-    <script defer src="../js/main.js"></script>
+    <script src="../js/config/tailwind.config.js"></script>
+    <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+    <script defer src="../js/models/servidor.js"></script>
+    <script defer src="../js/models/demo/dados-exemplo.js"></script>
+    <script defer src="../js/models/demo/servidor-simulado.js"></script>
+    <script defer src="../js/models/api.js"></script>
+    <script defer src="../js/models/sessao.js"></script>
+    <script defer src="../js/views/formatar.js"></script>
+    <script defer src="../js/models/eleicoes.js"></script>
+    <script defer src="../js/views/componentes.js"></script>
+    <script defer src="../js/models/resultados.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-    <script defer src="../js/demo.js"></script>
-    <script defer src="../js/api.js"></script>
-    <script defer src="../js/site.js"></script>
-    <script defer src="../js/dois-fatores.js"></script>
-    <script defer src="../js/equipa.js"></script>
-    <script defer src="../js/animacoes.js"></script>
+    <!-- View: desenho do HTML -->
+    <script defer src="../js/views/dois-fatores.js"></script>
+    <script defer src="../js/views/graficos.js"></script>
+    <script defer src="../js/views/equipa/visao-geral.js"></script>
+    <script defer src="../js/views/equipa/eleicoes.js"></script>
+    <script defer src="../js/views/equipa/candidatos-e-eleitores.js"></script>
+    <script defer src="../js/views/equipa/resultados.js"></script>
+    <script defer src="../js/views/equipa/auditoria-e-configuracao.js"></script>
+    <!-- Controller: o que acontece em cada página -->
+    <script defer src="../js/controllers/comum/menu.js"></script>
+    <script defer src="../js/controllers/comum/paineis.js"></script>
+    <script defer src="../js/controllers/comum/pagina.js"></script>
+    <script defer src="../js/controllers/comum/dois-fatores.js"></script>
+    <script defer src="../js/controllers/comum/descarregar.js"></script>
+    <script defer src="../js/controllers/equipa/visao-geral.js"></script>
+    <script defer src="../js/controllers/equipa/eleicoes.js"></script>
+    <script defer src="../js/controllers/equipa/eleicao-detalhes.js"></script>
+    <script defer src="../js/controllers/equipa/candidatos-e-eleitores.js"></script>
+    <script defer src="../js/controllers/equipa/resultados.js"></script>
+    <script defer src="../js/controllers/equipa/auditoria-e-configuracao.js"></script>
+    <script defer src="../js/controllers/equipa/arranque.js"></script>
+    <script defer src="../js/views/animacoes.js"></script>
 </head>
 
 <body class="panel-body" data-page="admin">

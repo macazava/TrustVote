@@ -10,14 +10,25 @@
 
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="../js/tailwind.config.js"></script>
-  <script defer src="../js/layout.js"></script>
-  <script defer src="../js/main.js"></script>
-  <script defer src="../js/demo.js"></script>
-  <script defer src="../js/api.js"></script>
-  <script defer src="../js/site.js"></script>
-  <script defer src="../js/publico.js"></script>
-  <script defer src="../js/animacoes.js"></script>
+  <script src="../js/config/tailwind.config.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
 </head>
 
 <body>
@@ -26,7 +37,8 @@
   <div data-layout="cabecalho"></div>
 
   <!-- Caminho da página -->
-  <div data-layout="caminho" data-seccao="Ajuda" data-seccao-link="ajuda.html" data-atual="Quem somos" data-atual-muda></div>
+  <div data-layout="caminho" data-seccao="Ajuda" data-seccao-link="ajuda.html" data-atual="Quem somos" data-atual-muda>
+  </div>
 
   <main
     class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
@@ -90,31 +102,37 @@
         <div class="faq-list">
           <details>
             <summary>Quem pode votar?</summary>
-            <p>Os estudantes com matrícula ativa que a comissão eleitoral habilitou nessa eleição. Se não vê a eleição na
+            <p>Os estudantes com matrícula ativa que a comissão eleitoral habilitou nessa eleição. Se não vê a eleição
+              na
               sua área, fale com a comissão através dos <a href="#contactos">contactos</a>.</p>
           </details>
           <details>
             <summary>Até quando posso votar?</summary>
-            <p>Até ao fim do período de votação indicado no <a href="calendario.html">calendário eleitoral</a>. Na Área do
+            <p>Até ao fim do período de votação indicado no <a href="calendario.html">calendário eleitoral</a>. Na Área
+              do
               Eleitor aparece o tempo que falta para a votação fechar.</p>
           </details>
           <details>
             <summary>Como sei que o meu voto foi registado?</summary>
-            <p>No fim recebe um código de recibo. Na Área do Eleitor, em Recibos, pode usar esse código para confirmar que
+            <p>No fim recebe um código de recibo. Na Área do Eleitor, em Recibos, pode usar esse código para confirmar
+              que
               o voto foi contado.</p>
           </details>
           <details>
             <summary>O recibo mostra em quem votei?</summary>
-            <p>Não. O recibo só confirma que o voto foi registado. Assim ninguém o pode usar para provar em quem votou, nem
+            <p>Não. O recibo só confirma que o voto foi registado. Assim ninguém o pode usar para provar em quem votou,
+              nem
               para o obrigar a mostrar o voto.</p>
           </details>
           <details>
             <summary>Posso mudar o voto depois de votar?</summary>
-            <p>Não. Por isso, antes de depositar o voto, a plataforma mostra um resumo da escolha para a rever ou alterar.</p>
+            <p>Não. Por isso, antes de depositar o voto, a plataforma mostra um resumo da escolha para a rever ou
+              alterar.</p>
           </details>
           <details>
             <summary>E se a ligação falhar ou a sessão terminar a meio?</summary>
-            <p>Se não chegou a ver o código do recibo, o voto não foi registado: entre de novo e vote. Se o voto já tinha
+            <p>Se não chegou a ver o código do recibo, o voto não foi registado: entre de novo e vote. Se o voto já
+              tinha
               sido registado, a plataforma avisa que já votou. O mesmo voto nunca conta duas vezes.</p>
           </details>
           <details>

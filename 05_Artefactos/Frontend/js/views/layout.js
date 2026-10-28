@@ -1,6 +1,6 @@
-/* Partes comuns das páginas públicas: topo, caminho da página e rodapé.
+/* View · partes comuns das páginas públicas: topo, caminho da página e rodapé.
    Cada página só tem os marcadores <div data-layout="..."></div> e esta função preenche-os.
-   Corre antes de main.js e site.js (scripts "defer" correm pela ordem em que aparecem). */
+   Corre antes dos outros scripts (scripts "defer" correm pela ordem em que aparecem). */
 (function montarLayout() {
   // ===== Topo: atalhos, marca, menu principal e botão de votar =====
   const cabecalho = `

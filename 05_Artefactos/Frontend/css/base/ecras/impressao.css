@@ -1,0 +1,24 @@
+/* Versão para imprimir */
+
+/* ===== Impressão ===== */
+@media print {
+    .topbar,
+    .site-header,
+    .breadcrumb-bar,
+    .section-aside,
+    .site-footer,
+    .section-item-tools,
+    .visit-also,
+    .dashboard-header {
+        display: none !important;
+    }
+
+    .section-page {
+        display: block;
+    }
+
+    .section-content {
+        border: 0;
+        box-shadow: none !important;
+    }
+}

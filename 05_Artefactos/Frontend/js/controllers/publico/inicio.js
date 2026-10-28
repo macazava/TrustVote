@@ -1,7 +1,7 @@
-/* Página inicial: números e eleição em tempo real */
+/* Controller · página inicial: números e eleição em tempo real */
 document.addEventListener("DOMContentLoaded", async () => {
-  const { api, format, elections } = window.TrustVote;
-  const { number, percent, dateTime, time, escapeHtml } = format;
+  const { api, format, elections, publicView } = window.TrustVote;
+  const { number, percent, dateTime, escapeHtml } = format;
 
   const [resumo, health] = await Promise.all([
     api.publico.resumo().catch(() => null),
@@ -22,22 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ===== Métricas =====
   const metrics = document.querySelector(".metrics");
-  if (metrics) {
-    metrics.innerHTML = `
-      <div><b>${number(resumo && resumo.eleitores)}</b><small>estudantes elegíveis</small></div>
-      <i></i>
-      <div><b>${number(resumo && resumo.votos)}</b><small>votos registados</small></div>
-      <i></i>
-      <div><b>1 voto</b><small>por estudante</small></div>
-      <i></i>
-      <div><b>${percent(resumo && resumo.participacao)}</b><small>participação</small></div>
-      <p>${resumo
-        ? `Dados em tempo real · atualizado às ${time(new Date().toISOString())}`
-        : online
-          ? "Os números públicos ainda não estão disponíveis no backend."
-          : "Servidor indisponível: não foi possível obter os números."
-      }</p>`;
-  }
+  if (metrics) metrics.innerHTML = publicView.metrics(resumo, online);
 
   // ===== Cartão da eleição =====
   const hub = document.querySelector("[data-hub-election]");
