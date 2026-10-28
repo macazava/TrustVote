@@ -2,14 +2,16 @@
 .topbar {
     background: var(--dark);
     color: #e8efe9;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .topbar-inner {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
+    gap: 8px;
     width: min(var(--container), calc(100% - 48px));
-    min-height: 38px;
+    min-height: 48px;
     margin: auto;
 }
 
@@ -17,12 +19,14 @@
 .topbar button {
     display: flex;
     align-items: center;
-    padding: 0 13px;
-    border: 0;
-    border-left: 1px solid #ffffff24;
+    min-height: 34px;
+    padding: 0 18px;
+    border: 1px solid #ffffff33;
+    border-radius: 8px;
     background: none;
     color: inherit;
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
 }
 
@@ -266,6 +270,6 @@
     .topbar a,
     .topbar button {
         min-width: max-content;
-        padding: 9px;
+        padding: 0 14px;
     }
 }

@@ -217,8 +217,8 @@
 
     .topbar a,
     .topbar button {
-        padding: 0 9px;
-        font-size: 11px;
+        padding: 0 14px;
+        font-size: 13px;
     }
 
     .brand b {
@@ -407,10 +407,6 @@
 
 /* ===== Telemóveis muito pequenos (até 380px) ===== */
 @media (max-width: 380px) {
-    .topbar a:first-child {
-        display: none;
-    }
-
     .facts {
         grid-template-columns: 1fr;
     }

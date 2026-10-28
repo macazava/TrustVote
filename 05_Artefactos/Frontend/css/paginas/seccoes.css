@@ -236,6 +236,14 @@
     line-height: 1.7;
 }
 
+.candidate-proposals {
+    margin: 0 0 18px;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
 .candidate-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
