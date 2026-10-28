@@ -1,0 +1,53 @@
+GUIA DE IMPLEMENTAÇÃO E ROADMAP: FUTURO DO TRUSTVOTE (AE)
+
+Este documento descreve como as funcionalidades centrais serão implementadas tecnicamente e que melhorias devem ser acrescentadas para elevar o sistema ao nível de uma votação académica profissional.
+
+---
+1. IMPLEMENTAÇÃO DO NÚCLEO DE VOTAÇÃO (ANONIMATO & INTEGRIDADE)
+---
+O maior desafio técnico é garantir que o voto é secreto (quem votou) mas auditável (integridade do dado).
+
+A. TRANSAÇÃO ATÓMICA DE VOTO
+Como será feito: No Service de Voto, utilizaremos um bloco 'with sessao.begin():' do SQLAlchemy.
+1. Inserção em 'participacao': Regista o ID do utilizador e da ronda. Isto marca que o estudante já exerceu o seu direito (impede voto duplo via constraint UNIQUE).
+2. Inserção em 'voto': Inserção de um UUID aleatório, o ID do candidato e o 'vot_hash'.
+Importância: Se a luz falhar ou o servidor cair entre o passo 1 e 2, a transação é revertida e o estudante pode tentar votar de novo. Nunca haverá um registo de que votou sem haver um voto na urna, e vice-versa.
+
+B. GARANTIA DE ANONIMATO
+Como será feito: A tabela 'voto' NÃO tem chave estrangeira para o utilizador. Além disso, os votos serão inseridos com um ligeiro 'delay' aleatório ou processados via fila (Redis) para que a ordem de inserção na base de dados não coincida com a ordem de chegada dos estudantes, impossibilitando o cruzamento de timestamps entre as tabelas 'participacao' e 'voto'.
+
+C. VERIFICAÇÃO DE INTEGRIDADE (HMAC)
+Como será feito: Cada voto guardará um hash SHA-256 gerado a partir de (ID_RONDA + ID_CANDIDATO + SEGREDO_DO_SISTEMA).
+Impacto: Um administrador da BD não pode alterar um voto manualmente (ex: mudar o ID do candidato), pois o hash deixaria de bater certo, disparando um alerta de integridade.
+
+---
+2. APURAMENTO E RESULTADOS (STATISTICS ENGINE)
+---
+A. MOTOR DE CONTAGEM
+Implementação: Um serviço que, após o fecho da ronda (ron_estado = 'encerrada'), executa uma query de agregação:
+   SELECT cand_id, COUNT(*) FROM voto WHERE ron_id = X GROUP BY cand_id;
+Os resultados são movidos para a tabela 'resultado' para consulta rápida e histórica.
+
+B. ESTATÍSTICAS POR CURSO/ANO
+Melhoria futura: Como agora temos o 'ut_curso' e 'ut_ano', podemos gerar gráficos de adesão (turnout) por curso em tempo real, sem revelar em quem cada curso votou. Isto é fundamental para a AE medir a mobilização estudantil.
+
+---
+3. MELHORIAS ESPECÍFICAS PARA A ASSOCIAÇÃO DE ESTUDANTES
+---
+A. LISTAS COMPLETAS (ÓRGÃOS SOCIAIS)
+Atualmente: Candidatos individuais.
+Acrescentar: Uma tabela 'candidato_membro' ligada a 'candidato' (que passaria a ser a 'Lista'). Isto permitiria que o estudante visse todos os membros (Presidente, Vice, Tesoureiro) antes de votar na lista.
+
+B. QUÓRUM MÍNIMO E VOTOS EM BRANCO/NULO
+Implementação:
+- Votos Brancos/Nulos: Devem ser candidatos "virtuais" criados automaticamente em cada ronda para permitir a contagem oficial.
+- Quórum: O sistema deve validar se a 'participacao' atingiu a percentagem mínima de eleitores inscritos (censo) exigida pelos estatutos da AE.
+
+C. AUTENTICAÇÃO FORTE (TOTP/2FA)
+Para quem: Administradores e Mesa da Assembleia Geral.
+Implementação: Utilizar a biblioteca 'pyotp' (já planeada em security/totp.py) para exigir um código do telemóvel antes de abrir urnas ou alterar candidatos.
+
+D. COMPROVATIVO DE VOTO (DIGITAL RECEIPT)
+Como: Após o voto, o sistema gera um código curto (ex: 8 caracteres) que é o hash do ID do voto. O estudante pode guardar este código. Após a eleição, a AE publica a lista de todos os códigos que entraram na urna. O estudante confirma que o seu código está lá, garantindo que o seu voto foi contado, sem que ninguém saiba qual foi a sua escolha.
+
+

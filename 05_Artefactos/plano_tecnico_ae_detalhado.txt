@@ -1,0 +1,62 @@
+RELATÓRIO TÉCNICO DETALHADO: ADAPTAÇÃO TRUSTVOTE PARA ASSOCIAÇÃO DE ESTUDANTES (AE)
+
+Este documento detalha as modificações estruturais, lógicas e o roadmap técnico para a transição do sistema para o contexto universitário europeu.
+
+---
+1. ESTRUTURA DE DADOS (SQL & MODELS)
+---
+A fonte da verdade (esquema SQL) foi alterada para refletir a hierarquia e os dados de uma AE.
+
+A. TABELA 'UTILIZADOR' (ELEITORES)
+- Nova Coluna 'ut_num_estudante': VARCHAR(20), UNIQUE, NOT NULL.
+  * Constraint 'ut_ck_num_estudante': Validação via Regex (^[A-Za-z0-9]{4,20}$) para garantir identificadores académicos válidos.
+- Nova Coluna 'ut_curso': VARCHAR(150). Permite segmentar resultados ou validar elegibilidade por faculdade/departamento.
+- Impacto no Model: [utilizador.py](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/app/models/utilizador.py) atualizado com mapeamento SQLAlchemy.
+
+B. TABELA 'CANDIDATO' (LISTAS/CANDIDATURAS)
+- Substituição 'cand_partido' por 'cand_orgao': Mapeamento direto para os órgãos sociais da AE.
+  * Valores aceites (CHECK): 'direcao', 'assembleia', 'conselho_fiscal'.
+- Nova Coluna 'cand_curso' e 'cand_ano': Identificação académica do candidato individual.
+- Impacto no Model: [candidato.py](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/app/models/candidato.py) agora utiliza SmallInteger para o ano curricular (1-6).
+
+---
+2. LÓGICA DE NEGÓCIO E SEGURANÇA (SERVICES & SCHEMAS)
+---
+A inteligência do sistema foi adaptada para automatizar processos que antes eram manuais.
+
+A. REGISTO E ELEGIBILIDADE AUTOMÁTICA
+- O Schema [autenticacao.py](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/app/schemas/autenticacao.py) exige o nº de estudante no payload de registo.
+- O Service [autenticacao.py](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/app/services/autenticacao.py) executa agora o fluxo:
+  1. Valida unicidade de Email, Nome e Nº Estudante.
+  2. Cria o utilizador.
+  3. Invoca '_habilitar_nas_eleicoes_nao_encerradas': Consulta todas as eleições ativas (estado != 'encerrada') e insere automaticamente o utilizador na tabela 'habilitacao'.
+  * Resultado: Um estudante que se registe hoje está instantaneamente pronto para votar em todas as eleições abertas.
+
+B. VALIDAÇÃO DE CANDIDATURAS
+- O Schema [candidato.py](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/app/schemas/candidato.py) utiliza 'Literal' de Python para impedir a criação de candidatos para órgãos inexistentes (ex: impede erro humano na criação de um órgão 'presidente' se este deve pertencer à 'direcao').
+
+---
+3. INFRAESTRUTURA E MANUTENÇÃO
+---
+- Docker Compose: [compose.yaml](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Infraestrutura/compose.yaml) monta os scripts SQL corrigidos. Os volumes de dados foram reiniciados para garantir que o novo esquema (com constraints de nº estudante) está ativo.
+- Git Hygiene: O ficheiro [Backend/.env](file:///c:/Users/alexr/Desktop/TrustVote/05_Artefactos/Backend/.env) foi removido do cache do Git para evitar fuga de credenciais da BD da universidade.
+
+---
+4. ROADMAP: O QUE SERÁ FEITO (PRÓXIMOS PASSOS DETALHADOS)
+---
+A. NÚCLEO DO VOTO (ALTA PRIORIDADE)
+- Transação Atómica de Voto: Implementar o Service que insere em 'participacao' e 'voto' num único bloco. Se um falhar, o outro é revertido. Isto garante que ninguém vota sem ficar registado, mas ninguém sabe em quem votou.
+- Verificação de Habilitação: O endpoint 'POST /votos' deve verificar se o ID do utilizador (do token JWT) existe na tabela 'habilitacao' para aquela eleição específica.
+
+B. APURAMENTO E FECHO (MÉDIA PRIORIDADE)
+- Lógica de Resultados: Criar o algoritmo que conta os UUIDs da tabela 'voto' agrupados por 'cand_id'.
+- Transição de Estados: Automatizar a mudança de 'em_curso' para 'encerrada' com base na 'ron_data_fim'.
+
+C. AUDITORIA E TRANSPARÊNCIA (REQUISITO EUROPEU)
+- Logs de Auditoria: Implementar o registo automático de IPs e timestamps para cada voto (na tabela participacao) e cada ação administrativa.
+- Integridade: Gerar o hash SHA-256 do voto usando o segredo HMAC, permitindo verificar que os votos não foram alterados na base de dados após a inserção.
+
+---
+Documento gerado em: 2026-10-28 01:07
+Responsável: Code Assistant (TRAE)
+Versão: 2.0 (AE-Detailed)
