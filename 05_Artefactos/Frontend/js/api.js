@@ -7,6 +7,15 @@
   const SESSION_KEY = "trustvote:sessao";
   const TIMEOUT = 12000;
 
+  // Enquanto o backend não estiver ligado: os pedidos são respondidos pelos dados de exemplo do demo.js
+  const MODO_ESTATICO = true;
+  // Enquanto o backend não estiver ligado: entra nas áreas sem credenciais (pôr a false para voltar a exigir login)
+  const LOGIN_DESATIVADO = true;
+  const demoUsers = {
+    eleitor: { id: 2, nome: "Estudante Demonstração", email: "estudante@trustvote.pt", perfil: "eleitor", ativo: true, totp_ativo: false, data_registo: null },
+    equipa: { id: 1, nome: "Equipa Demonstração", email: "equipa@trustvote.pt", perfil: "administrador", ativo: true, totp_ativo: false, data_registo: null },
+  };
+
   function readBase() {
     const fromQuery = new URLSearchParams(window.location.search).get("api");
     try {
@@ -85,12 +94,8 @@
     const started = performance.now();
     let response;
     try {
-      response = await fetch(url, {
-        method,
-        headers,
-        body: body === undefined ? undefined : JSON.stringify(body),
-        signal: controller.signal,
-      });
+      const init = { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal };
+      response = MODO_ESTATICO && window.TrustVoteDemo ? await window.TrustVoteDemo(method, url, init.body) : await fetch(url, init);
     } catch (error) {
       throw new ApiError(
         error.name === "AbortError"
@@ -252,6 +257,10 @@
 
     // Protege as áreas reservadas: sem sessão volta ao login
     async require(area) {
+      if (LOGIN_DESATIVADO) {
+        currentUser = demoUsers[area];
+        return currentUser;
+      }
       if (!session.token()) {
         window.location.href = pageUrl(`login.html?area=${area}`);
         return new Promise(() => {});
@@ -488,6 +497,8 @@
       return base;
     },
     DEFAULT_BASE,
+    LOGIN_DESATIVADO,
+    MODO_ESTATICO,
     setBase,
     pageUrl,
     ApiError,

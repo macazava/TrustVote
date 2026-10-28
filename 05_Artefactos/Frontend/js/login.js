@@ -61,6 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
     message.innerHTML = `Já tem sessão iniciada. <a href="${panel}">Continuar para a sua área →</a>`;
   }
 
+  // ===== Login desativado: o botão entra diretamente na área escolhida =====
+  if (window.TrustVote.LOGIN_DESATIVADO) {
+    form.noValidate = true;
+    ui.message(message, "Login desativado temporariamente: clique em Entrar para aceder sem credenciais.");
+  }
+
   // ===== Envio do formulário =====
   // Fase de captura: corre antes do código de demonstração do main.js
   document.addEventListener(
@@ -69,6 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.target !== form) return;
       event.preventDefault();
       event.stopPropagation();
+      if (window.TrustVote.LOGIN_DESATIVADO) {
+        window.location.href = role() === "equipa" ? "equipa.html" : "eleitor.html";
+        return;
+      }
       ui.message(message, "");
       if (!form.reportValidity()) return;
 
