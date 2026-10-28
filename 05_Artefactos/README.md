@@ -1,7 +1,8 @@
 # TrustVote
 
-Sistema de votação eletrónica — **API FastAPI + PostgreSQL + Redis**, a correr em
-Docker num único PC Windows.
+Sistema de votação eletrónica para a **Associação de Estudantes de uma universidade
+europeia** — **API FastAPI + PostgreSQL + Redis**, a correr em Docker num único PC
+Windows.
 
 Este README é o **ponto de entrada**: explica o que existe no repositório, como
 pôr tudo a funcionar do zero e onde está a documentação detalhada. Quem pega no
@@ -22,7 +23,7 @@ código pela primeira vez deve começar por aqui.
 
 | Pasta | O que é | Documentação detalhada |
 |---|---|---|
-| [`Backend/`](Backend/README.md) | API REST: autenticação (JWT), eleições, candidatos, rondas, habilitações | [Backend/README.md](Backend/README.md) |
+| [`Backend/`](Backend/README.md) | API REST: autenticação (JWT), atos eleitorais, órgãos sociais, candidaturas, rondas e habilitações | [Backend/README.md](Backend/README.md) |
 | [`Infraestrutura/`](Infraestrutura/README.md) | `compose.yaml` com nginx (balanceador), 2 instâncias, PostgreSQL primário + réplica e Redis | [Infraestrutura/README.md](Infraestrutura/README.md) |
 
 Cada pasta tem o seu próprio README, com todos os detalhes. Este documento só
@@ -118,7 +119,9 @@ servir o código antigo que tem em memória depois de editares um ficheiro.
 - Documentação interativa (Swagger): <http://localhost:8001/docs>
 - Página através do nginx: <http://localhost:8080/> (placeholder, por agora)
 
-Para testar as rotas de administração, cria uma conta e promove-a:
+O registo exige o **número de estudante** (identificador do eleitor) e a conta é
+automaticamente habilitada a votar nas eleições ainda não encerradas. Para testar as
+rotas de administração, cria uma conta e promove-a:
 
 ```powershell
 docker exec trustvote-db-primary psql -U trustvote -d trustvote -c "UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='<o teu nome>';"
@@ -173,9 +176,10 @@ Detalhes em [Backend/README.md](Backend/README.md).
 
 Estado atual, em resumo:
 
-**Backend** — feito: registo, login com JWT, e a gestão de eleições/candidatos/rondas/
-habilitações. Falta: **voto** e **apuramento de resultados**, **auditoria**, TOTP,
-worker assíncrono e uso do Redis/réplica.
+**Backend** — feito: registo (com nº de estudante), login com JWT, gestão de
+atos eleitorais, órgãos sociais, candidaturas, rondas e habilitações, e
+**auto-habilitação do eleitor no registo**. Falta: **voto** e **apuramento de
+resultados**, **auditoria**, TOTP, worker assíncrono e uso do Redis/réplica.
 
 **Infraestrutura** — feito: stack completa a funcionar (balanceamento, replicação,
 failover manual). Falta **ligar o backend ao Compose**: apontar a âncora `x-app` à

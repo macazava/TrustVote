@@ -10,11 +10,18 @@ def criar(
     sessao: Session,
     eleicao_id: int,
     nome: str,
-    partido: str | None,
+    orgao: str,
+    curso: str | None,
+    ano: int | None,
     descricao: str | None,
 ) -> Candidato:
     candidato = Candidato(
-        eleicao_id=eleicao_id, nome=nome, partido=partido, descricao=descricao
+        eleicao_id=eleicao_id,
+        nome=nome,
+        orgao=orgao,
+        curso=curso,
+        ano=ano,
+        descricao=descricao,
     )
     sessao.add(candidato)
     sessao.commit()

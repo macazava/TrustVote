@@ -1,0 +1,25 @@
+# IDEs
+.idea/
+.trae/
+*.iml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+.env
+
+# Docker
+Infraestrutura/.env
+Backend/.env
+Infraestrutura/secrets/
+!Infraestrutura/secrets/LEIA-ME.txt
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

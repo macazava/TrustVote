@@ -1,6 +1,7 @@
 # TrustVote — Infraestrutura Docker (ambiente local)
 
-Infraestrutura para executar o TrustVote **num único PC Windows** com Docker Desktop:
+Infraestrutura para executar o TrustVote — **votações da Associação de Estudantes de
+uma universidade europeia** — **num único PC Windows** com Docker Desktop:
 balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e Redis.
 
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
@@ -281,7 +282,8 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 ### Backend (servidor1 / servidor2)
 
 **Ponto de situação.** O backend em [`../Backend`](../Backend/README.md) já tem
-autenticação (registo + login com JWT) e a gestão de eleições, mas ainda não cumpre
+autenticação (registo com número de estudante + login com JWT), a gestão de atos
+eleitorais e a auto-habilitação do eleitor no registo, mas ainda não cumpre
 todos os pontos do contrato abaixo:
 
 | Ponto do contrato | Estado |

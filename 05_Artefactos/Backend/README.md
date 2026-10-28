@@ -1,7 +1,8 @@
 # Backend do TrustVote
 
 API REST do TrustVote, construída com **FastAPI**, **SQLAlchemy** e **PostgreSQL**.
-Serve o frontend e as instâncias de aplicação definidas na infraestrutura Docker
+Serve as votações da **Associação de Estudantes de uma universidade europeia** e as
+instâncias de aplicação definidas na infraestrutura Docker
 ([`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml)).
 
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
@@ -19,9 +20,10 @@ Serve o frontend e as instâncias de aplicação definidas na infraestrutura Doc
 
 | Área | Descrição |
 |---|---|
-| Autenticação | Registo de utilizadores e login real com **JWT (HS256)** e passwords em **Argon2** |
+| Autenticação | Registo de utilizadores (com **número de estudante**) e login real com **JWT (HS256)** e passwords em **Argon2** |
+| Elegibilidade | **Auto-habilitação**: ao registar-se, o eleitor fica habilitado nas eleições ainda não encerradas (tabela `habilitacao`) |
+| Gestão de eleições | CRUD de `eleicao`, `candidato` (por **órgão social**), `ronda`, `ronda_candidato` e `habilitacao` |
 | Autorização | Dependências `utilizador_atual` (401) e `exigir_administrador` (403) |
-| Gestão de eleições | CRUD de `eleicao`, `candidato`, `ronda`, `ronda_candidato` e `habilitacao` |
 | Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos |
 | Erros | Exceções de negócio traduzidas automaticamente em `404` / `409` / `400` |
 | Healthcheck | `GET /health` — usado pelo healthcheck do Compose e pelo balanceador |
@@ -39,7 +41,28 @@ Serve o frontend e as instâncias de aplicação definidas na infraestrutura Doc
 
 ---
 
-## 2. Arquitetura em camadas
+## 2. Enquadramento: eleições da Associação de Estudantes
+
+O TrustVote modela um **ato eleitoral** da Associação de Estudantes de uma
+universidade europeia. Conceitos:
+
+- **Eleição** (`eleicao`) — o ato eleitoral como um todo.
+- **Órgãos sociais** — cada candidatura concorre a um órgão:
+  `direcao` (Direção), `assembleia` (Assembleia Geral/Mesa) ou
+  `conselho_fiscal` (Conselho Fiscal).
+- **Candidaturas individuais** — cada candidato (`candidato`) concorre a título
+  individual a um órgão, com `curso` e `ano` opcionais.
+- **Rondas** (`ronda`) — 1.ª e 2.ª volta, com janela temporal própria.
+- **Elegibilidade** — quem vota tem **número de estudante** validado
+  (`ut_num_estudante`, único) e é **auto-habilitado** (`habilitacao`) no registo,
+  para todas as eleições ainda não encerradas.
+
+> Anonimato: `participacao` regista **quem** votou e `voto` registra **a escolha**,
+sem ligação entre as duas — ver [secção 6](#6-base-de-dados).
+
+---
+
+## 3. Arquitetura em camadas
 
 Cada domínio atravessa quatro camadas, sempre pela mesma ordem:
 
@@ -75,7 +98,7 @@ Componentes transversais:
 
 ---
 
-## 3. Estrutura de ficheiros
+## 4. Estrutura de ficheiros
 
 ```text
 Backend/
@@ -101,7 +124,7 @@ Backend/
 
 ---
 
-## 4. Pré-requisitos
+## 5. Pré-requisitos
 
 - **Python 3.12 ou superior** (o `Dockerfile` fixa 3.12).
 - **Docker Desktop** iniciado, para a base de dados e o Redis.
@@ -109,7 +132,7 @@ Backend/
 
 ---
 
-## 5. Configuração (`.env`)
+## 6. Configuração (`.env`)
 
 O `app/database.py` lê a configuração de um ficheiro `.env` na pasta `Backend`:
 
@@ -142,7 +165,7 @@ JWT_SECRET=<uma string longa e aleatória>
 
 ---
 
-## 6. Base de dados
+## 7. Base de dados
 
 O esquema **não é criado pelo Python**: as tabelas vêm dos scripts SQL canónicos
 em [`config/database/init/docker_sql_and_sh/`](config/database/init/docker_sql_and_sh),
@@ -154,10 +177,10 @@ que o PostgreSQL monta no volume de inicialização. A criação automática de 
 
 | Tabela | Mapeada no Python? |
 |---|---|
-| `utilizador` | sim |
+| `utilizador` | sim (com `ut_num_estudante` e `ut_curso`) |
 | `eleicao` | sim |
 | `ronda` | sim |
-| `candidato` | sim |
+| `candidato` | sim (por `cand_orgao`: `direcao` / `assembleia` / `conselho_fiscal`) |
 | `ronda_candidato` | sim |
 | `habilitacao` | sim |
 | `participacao` | não (voto por implementar) |
@@ -171,7 +194,7 @@ dados, aplica a alteração por migração (`ALTER TABLE ...`) em vez de apagar 
 
 ---
 
-## 7. Executar localmente (Windows)
+## 8. Executar localmente (Windows)
 
 O ambiente virtual do projeto vive na **raiz de `05_Artefactos`**, na pasta `.venv`.
 A API é executada a partir da pasta `Backend`.
@@ -208,7 +231,7 @@ o código antigo que tem em memória depois de editares um ficheiro.
 
 ---
 
-## 8. Endpoints
+## 9. Endpoints
 
 ### Públicos
 
@@ -218,7 +241,7 @@ o código antigo que tem em memória depois de editares um ficheiro.
 | `GET` | `/health` | Estado da instância (`{"status":"ok","instance":...}`) — healthcheck da infraestrutura |
 | `GET` | `/docs`, `/openapi.json` | Documentação interativa e esquema OpenAPI |
 | `GET` | `/auth/` | Mensagem de boas-vindas |
-| `POST` | `/auth/register` | Cria uma conta → `201` · `409` se o nome/email já existem · `422` se os dados são inválidos |
+| `POST` | `/auth/register` | Cria uma conta (exige **nº de estudante**) → `201` · `409` se o nome/email/nº já existem · `422` se os dados são inválidos |
 | `POST` | `/auth/login` | Devolve um token de acesso → `200` · `401` se as credenciais estão erradas |
 | `POST` | `/auth/logout` | *Stub* |
 | `POST` | `/auth/reset-password` | *Stub* |
@@ -228,7 +251,7 @@ o código antigo que tem em memória depois de editares um ficheiro.
 `POST /auth/register`:
 
 ```json
-{ "nome_utilizador": "ana_silva", "email": "ana@exemplo.pt", "password": "Password123" }
+{ "nome_utilizador": "ana_silva", "email": "ana@exemplo.pt", "num_estudante": "20241234", "curso": "Engenharia Informática", "password": "Password123" }
 ```
 
 `POST /auth/login` → `{"access_token": "<jwt>", "token_type": "bearer"}`
@@ -245,7 +268,7 @@ sem token → `401`; com perfil `eleitor` → `403`.
 | `POST` | `/eleicoes` | Cria uma eleição (nasce em `rascunho`) |
 | `GET` | `/eleicoes` | Lista as eleições |
 | `GET` | `/eleicoes/{eleicao_id}` | Obtém uma eleição |
-| `POST` | `/candidatos` | Cria um candidato numa eleição |
+| `POST` | `/candidatos` | Cria uma candidatura a um órgão (`direcao` / `assembleia` / `conselho_fiscal`) |
 | `GET` | `/candidatos?eleicao_id=` | Lista candidatos (filtro opcional) |
 | `GET` | `/candidatos/{candidato_id}` | Obtém um candidato |
 | `POST` | `/rondas` | Cria uma ronda (1.ª ou 2.ª volta) |
@@ -253,7 +276,7 @@ sem token → `401`; com perfil `eleitor` → `403`.
 | `GET` | `/rondas/{ronda_id}` | Obtém uma ronda |
 | `POST` | `/rondas-candidatos` | Põe um candidato a concorrer numa ronda |
 | `GET` | `/rondas-candidatos?ronda_id=` | Lista inscrições (filtro opcional) |
-| `POST` | `/habilitacoes` | Habilita um utilizador a votar numa eleição |
+| `POST` | `/habilitacoes` | Habilita um utilizador a votar numa eleição (o registo já o faz automaticamente nas eleições abertas) |
 | `GET` | `/habilitacoes?eleicao_id=` | Lista habilitações (filtro opcional) |
 
 ### Códigos de erro
@@ -269,7 +292,7 @@ sem token → `401`; com perfil `eleitor` → `403`.
 
 ---
 
-## 9. Segurança
+## 10. Segurança
 
 - Passwords guardadas em **Argon2** (`pwdlib[argon2]`); nunca são devolvidas pela API.
 - Tokens **JWT HS256** com as claims `sub`, `nome_utilizador`, `perfil` e `exp`.
@@ -279,7 +302,7 @@ sem token → `401`; com perfil `eleitor` → `403`.
 
 ---
 
-## 10. Executar com Docker
+## 11. Executar com Docker
 
 ```powershell
 cd "C:\...\05_Artefactos\Backend"
@@ -300,7 +323,7 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 ---
 
-## 11. Resolução de problemas
+## 12. Resolução de problemas
 
 - **`ModuleNotFoundError: No module named 'app'`:** estás a executar a partir da pasta
   errada. Corre o Uvicorn a partir de `Backend` (`python -m uvicorn main:app ...`).
@@ -318,7 +341,7 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 ---
 
-## 12. Próximos passos
+## 13. Próximos passos
 
 1. Fluxo de **voto** (`participacao` + `voto`) com transação atómica e anonimato.
 2. **Auditoria** (RF11) e **apuramento de resultados** (RF09/RF10).

@@ -22,3 +22,15 @@ def obter_por_id(sessao: Session, eleicao_id: int) -> Eleicao | None:
 
 def listar(sessao: Session, limite: int = 100) -> list[Eleicao]:
     return list(sessao.scalars(select(Eleicao).order_by(Eleicao.id).limit(limite)))
+
+
+def listar_para_habilitacao(sessao: Session, limite: int = 1000) -> list[Eleicao]:
+    """Eleições em que um novo eleitor pode votar: ainda não encerradas."""
+    return list(
+        sessao.scalars(
+            select(Eleicao)
+            .where(Eleicao.estado != "encerrada")
+            .order_by(Eleicao.id)
+            .limit(limite)
+        )
+    )

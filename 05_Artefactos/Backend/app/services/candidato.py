@@ -18,7 +18,9 @@ def criar_candidato(sessao: Session, dados: CandidatoCriar) -> Candidato:
         sessao,
         eleicao_id=dados.eleicao_id,
         nome=dados.nome,
-        partido=dados.partido,
+        orgao=dados.orgao,
+        curso=dados.curso,
+        ano=dados.ano,
         descricao=dados.descricao,
     )
 

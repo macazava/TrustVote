@@ -4,11 +4,14 @@ CREATE TABLE utilizador (
     ut_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ut_nome VARCHAR(255) NOT NULL UNIQUE,
     ut_email VARCHAR(255) NOT NULL UNIQUE,
+    ut_num_estudante VARCHAR(20) NOT NULL UNIQUE,
+    ut_curso VARCHAR(150),
     ut_password_hash VARCHAR(255) NOT NULL,
     ut_perfil VARCHAR(20) NOT NULL DEFAULT 'eleitor',
     ut_ativo BOOLEAN DEFAULT TRUE,
     ut_datareg TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador'))
+    CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador')),
+    CONSTRAINT ut_ck_num_estudante CHECK (ut_num_estudante ~ '^[A-Za-z0-9]{4,20}$')
 );
 
 -- ============================================
@@ -49,9 +52,12 @@ CREATE TABLE candidato (
     cand_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cand_ele_id BIGINT NOT NULL,
     cand_nome VARCHAR(255) NOT NULL,
-    cand_partido VARCHAR(255),
+    cand_orgao VARCHAR(50) NOT NULL DEFAULT 'direcao',
+    cand_curso VARCHAR(150),
+    cand_ano SMALLINT,
     cand_descricao TEXT,
     cand_ativo BOOLEAN DEFAULT TRUE,
+    CONSTRAINT cand_ck_orgao CHECK (cand_orgao IN ('direcao', 'assembleia', 'conselho_fiscal')),
     CONSTRAINT candidato_fk_eleicao FOREIGN KEY (cand_ele_id) REFERENCES eleicao (ele_id) ON DELETE CASCADE
 );
 

@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 # Validação simples, sem dependências extra (o projeto não usa email-validator).
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 NOME_UTILIZADOR_PATTERN = r"^[A-Za-z0-9_.-]+$"
+NUM_ESTUDANTE_PATTERN = r"^[A-Za-z0-9]{4,20}$"
 
 
 class UtilizadorCriar(BaseModel):
@@ -16,6 +17,8 @@ class UtilizadorCriar(BaseModel):
         min_length=3, max_length=50, pattern=NOME_UTILIZADOR_PATTERN
     )
     email: str = Field(min_length=5, max_length=255, pattern=EMAIL_PATTERN)
+    num_estudante: str = Field(pattern=NUM_ESTUDANTE_PATTERN)
+    curso: str | None = Field(default=None, max_length=150)
     password: str = Field(min_length=8, max_length=128)
 
 
@@ -27,6 +30,8 @@ class UtilizadorResposta(BaseModel):
     id: int
     nome_utilizador: str
     email: str
+    num_estudante: str
+    curso: str | None
     criado_em: datetime
 
 
