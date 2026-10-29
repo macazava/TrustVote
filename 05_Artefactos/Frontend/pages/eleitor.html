@@ -8,8 +8,7 @@
     <title>Área do eleitor | TrustVote</title>
 
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="../js/config/tailwind.config.js"></script>
+    <link rel="stylesheet" href="../css/tailwind.css">
     <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
     <script defer src="../js/models/servidor.js"></script>
     <script defer src="../js/models/demo/dados-exemplo.js"></script>
@@ -26,7 +25,8 @@
     <script defer src="../js/views/eleitor/eleicoes.js"></script>
     <script defer src="../js/views/eleitor/visao-geral-e-boletim.js"></script>
     <script defer src="../js/views/eleitor/sondagem-e-resultados.js"></script>
-    <script defer src="../js/views/eleitor/recibos-e-definicoes.js"></script>
+    <script defer src="../js/views/eleitor/recibos.js"></script>
+    <script defer src="../js/views/eleitor/perfil.js"></script>
     <!-- Controller: o que acontece em cada página -->
     <script defer src="../js/controllers/comum/menu.js"></script>
     <script defer src="../js/controllers/comum/paineis.js"></script>
@@ -37,7 +37,8 @@
     <script defer src="../js/controllers/eleitor/eleicoes.js"></script>
     <script defer src="../js/controllers/eleitor/boletim.js"></script>
     <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js"></script>
-    <script defer src="../js/controllers/eleitor/recibos-e-definicoes.js"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js"></script>
     <script defer src="../js/controllers/eleitor/arranque.js"></script>
     <script defer src="../js/views/animacoes.js"></script>
 </head>
@@ -65,8 +66,7 @@
             <button class="panel-link rounded-lg transition-colors" type="button"
                 data-view="results">Resultados</button>
             <button class="panel-link rounded-lg transition-colors" type="button" data-view="help">Ajuda</button>
-            <button class="panel-link rounded-lg transition-colors" type="button"
-                data-view="settings">Definições</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="profile">Perfil</button>
         </nav>
 
         <div class="panel-user">
@@ -85,335 +85,23 @@
         <main class="dashboard-content">
 
             <!-- VISÃO GERAL -->
-            <section class="view-panel active" data-panel="overview">
-
-                <p class="eyebrow">PAINEL DO ELEITOR</p>
-
-                <h1>Bem-vindo à sua área.</h1>
-
-                <p class="muted">
-                    Consulte a eleição, as sondagens, os resultados
-                    e os seus recibos.
-                </p>
-
-                <article class="election-status-card rounded-2xl shadow-soft">
-
-                    <div class="status-row">
-                        <span class="status-pill rounded-full">
-                            <i></i> ELEIÇÃO DEMONSTRATIVA
-                        </span>
-
-                        <span>Associação de Estudantes · 2026</span>
-                    </div>
-
-                    <div class="election-summary">
-
-                        <span class="large-icon rounded-xl">▣</span>
-
-                        <div>
-                            <h2>Associação de Estudantes</h2>
-
-                            <p>
-                                Interface de demonstração. A votação
-                                não é transmitida nem registada num
-                                sistema eleitoral real.
-                            </p>
-                        </div>
-
-                        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
-                            data-view-go="elections">
-                            Ver eleição →
-                        </button>
-
-                    </div>
-
-                    <div class="progress-steps">
-                        <span class="step-done">
-                            ✓ <b>Identidade</b>
-                            <small>Interface</small>
-                        </span>
-
-                        <i></i>
-
-                        <span>
-                            2 <b>Votação</b>
-                            <small>Por iniciar</small>
-                        </span>
-
-                        <i></i>
-
-                        <span>
-                            3 <b>Recibo</b>
-                            <small>Após votação</small>
-                        </span>
-                    </div>
-
-                </article>
-
-                <div class="dash-grid grid-cols-1 lg:grid-cols-2">
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">ELEIÇÕES</p>
-
-                        <h3>Consultar eleição</h3>
-
-                        <p>
-                            Consulte as opções disponíveis e experimente
-                            o percurso de votação demonstrativo.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="elections">
-                            Consultar eleição →
-                        </button>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">RECIBOS</p>
-
-                        <h3>Os seus comprovativos</h3>
-
-                        <p>
-                            Consulte a área destinada aos comprovativos
-                            do processo de votação.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="receipts">
-                            Consultar recibos →
-                        </button>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">RESULTADOS</p>
-
-                        <h3>Resultados eleitorais</h3>
-
-                        <p>
-                            Aceda à área de consulta dos resultados
-                            disponibilizados para a eleição.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="results">
-                            Ver resultados →
-                        </button>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">APOIO</p>
-
-                        <h3>Precisa de ajuda?</h3>
-
-                        <p>
-                            Consulte a área de apoio e prepare uma
-                            mensagem para a equipa do projeto.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="help">
-                            Pedir ajuda →
-                        </button>
-                    </article>
-
-                </div>
-
-            </section>
+            <section class="view-panel active" data-panel="overview"></section>
 
 
             <!-- ELEIÇÕES -->
-            <section class="view-panel" data-panel="elections">
-
-                <p class="eyebrow">ELEIÇÕES DISPONÍVEIS</p>
-
-                <h1>Eleições</h1>
-
-                <p class="muted">
-                    Consulte as opções da eleição demonstrativa.
-                </p>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <span class="status-pill rounded-full">DEMONSTRAÇÃO</span>
-
-                    <h2>Eleição da Associação de Estudantes</h2>
-
-                    <p>
-                        As opções abaixo servem para testar a interface.
-                        Não correspondem a um boletim oficial.
-                    </p>
-
-                    <div class="candidate-list">
-
-                        <label>
-                            <input type="radio" name="candidate" value="Lista A">
-
-                            <span>
-                                <b>Lista A</b>
-                                <small>Opção de demonstração</small>
-                            </span>
-                        </label>
-
-                        <label>
-                            <input type="radio" name="candidate" value="Lista B">
-
-                            <span>
-                                <b>Lista B</b>
-                                <small>Opção de demonstração</small>
-                            </span>
-                        </label>
-
-                        <label>
-                            <input type="radio" name="candidate" value="Voto em branco">
-
-                            <span>
-                                <b>Voto em branco</b>
-                                <small>Opção de demonstração</small>
-                            </span>
-                        </label>
-
-                    </div>
-
-                    <p class="form-message" id="vote-message" role="status"></p>
-
-                    <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
-                        data-action="demo-vote">
-                        Rever escolha →
-                    </button>
-
-                </article>
-
-            </section>
+            <section class="view-panel" data-panel="elections"></section>
 
 
             <!-- SONDAGENS -->
-            <section class="view-panel" data-panel="poll">
-
-                <p class="eyebrow">PARTICIPAÇÃO</p>
-
-                <h1>Sondagens</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <span class="status-pill rounded-full">DEMONSTRAÇÃO</span>
-
-                    <h2>Opinião sobre prioridades eleitorais</h2>
-
-                    <p>
-                        Escolha o tema que considera prioritário para a Associação de Estudantes nesta sondagem
-                        demonstrativa.
-                    </p>
-
-                    <form id="poll-form">
-
-                        <label class="radio-line rounded-xl transition hover:border-tv-accent">
-                            <input type="radio" name="poll" required value="Ação social">
-                            Ação social
-                        </label>
-
-                        <label class="radio-line rounded-xl transition hover:border-tv-accent">
-                            <input type="radio" name="poll" value="Desporto">
-                            Desporto
-                        </label>
-
-                        <label class="radio-line rounded-xl transition hover:border-tv-accent">
-                            <input type="radio" name="poll" value="Cultura">
-                            Cultura
-                        </label>
-
-                        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">
-                            Registar resposta local →
-                        </button>
-
-                        <p class="form-message" role="status"></p>
-
-                    </form>
-
-                    <p class="muted">
-                        A resposta é validada apenas nesta interface.
-                        Não é enviada para um servidor nem representa
-                        uma sondagem oficial.
-                    </p>
-
-                </article>
-
-            </section>
+            <section class="view-panel" data-panel="poll"></section>
 
 
             <!-- RESULTADOS -->
-            <section class="view-panel" data-panel="results">
-
-                <p class="eyebrow">INFORMAÇÃO ELEITORAL</p>
-
-                <h1>Resultados</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <span class="status-pill rounded-full">INFORMAÇÃO</span>
-
-                    <h2>Resultados eleitorais</h2>
-
-                    <p>
-                        Esta área destina-se à consulta dos resultados
-                        da eleição após a sua disponibilização.
-                    </p>
-
-                    <div class="empty-state">
-
-                        <span class="large-icon rounded-xl">▤</span>
-
-                        <h3>Resultados ainda não disponíveis</h3>
-
-                        <p>
-                            Esta versão demonstrativa não está ligada
-                            a uma fonte de resultados eleitorais.
-                            Os resultados serão apresentados aqui quando
-                            existir integração com o backend.
-                        </p>
-
-                    </div>
-
-                </article>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <h2>Resultados das sondagens</h2>
-
-                    <p>
-                        As respostas da sondagem demonstrativa não são
-                        agregadas nem guardadas num servidor. Por isso,
-                        ainda não existem resultados consolidados para
-                        consultar.
-                    </p>
-
-                </article>
-
-            </section>
+            <section class="view-panel" data-panel="results"></section>
 
 
             <!-- RECIBOS -->
-            <section class="view-panel" data-panel="receipts">
-
-                <p class="eyebrow">COMPROVATIVOS</p>
-
-                <h1>Recibos e verificações</h1>
-
-                <article
-                    class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift empty-state">
-
-                    <span class="large-icon rounded-xl">▤</span>
-
-                    <h2>Ainda não existem recibos</h2>
-
-                    <p>
-                        Os recibos reais exigem uma votação e uma
-                        integração com o backend. Esta versão não
-                        emite comprovativos oficiais.
-                    </p>
-
-                    <button class="button rounded-xl button-outline" type="button" data-view-go="elections">
-                        Ver eleição →
-                    </button>
-
-                </article>
-
-            </section>
+            <section class="view-panel" data-panel="receipts"></section>
 
 
             <!-- AJUDA -->
@@ -481,39 +169,8 @@
             </section>
 
 
-            <!-- DEFINIÇÕES -->
-            <section class="view-panel" data-panel="settings">
-
-                <p class="eyebrow">CONTA</p>
-
-                <h1>Definições</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <h2>Preferências de acessibilidade</h2>
-
-                    <label class="radio-line rounded-xl transition hover:border-tv-accent">
-                        <input type="checkbox" id="large-text">
-                        Texto maior
-                    </label>
-
-                    <label class="radio-line rounded-xl transition hover:border-tv-accent">
-                        <input type="checkbox" id="contrast">
-                        Contraste elevado
-                    </label>
-
-                    <p class="muted">
-                        Estas preferências são aplicadas localmente
-                        neste navegador. Não alteram os dados da conta.
-                    </p>
-
-                    <a class="button rounded-xl button-outline" href="privacidade.html">
-                        Privacidade →
-                    </a>
-
-                </article>
-
-            </section>
+            <!-- PERFIL (preenchido por controllers/eleitor/perfil.js) -->
+            <section class="view-panel" data-panel="profile"></section>
 
         </main>
 
