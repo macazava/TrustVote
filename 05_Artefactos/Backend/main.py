@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
@@ -20,11 +21,17 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="TrustVote API", lifespan=lifespan)
 
+# O frontend pode estar noutra origem (ex.: Live Server em :5500). A autenticação é por token
+# Bearer (não há cookies), por isso não são precisas credenciais CORS.
+app.add_middleware(CORSMiddleware, allow_origins=get_settings().cors_origins, allow_methods=["*"],
+                   allow_headers=["Authorization", "Content-Type", "Accept"])
+
 app.include_router(autenticacao.router)
 app.include_router(autenticacao.router_utilizadores)
 app.include_router(eleicoes.router)
 app.include_router(votacao.router)
 app.include_router(votacao.router_auditoria)
+app.include_router(votacao.router_publico)
 
 
 @app.exception_handler(ErroNegocio)

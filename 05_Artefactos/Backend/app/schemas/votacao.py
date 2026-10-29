@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from decimal import Decimal
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
@@ -12,8 +11,10 @@ class VotoIn(BaseModel):
 
 class ReciboOut(BaseModel):
     """O recibo (voto_id) permite ao eleitor confirmar mais tarde que o voto foi contado,
-    sem revelar o candidato a ninguém."""
+    sem revelar o candidato a ninguém. O hash é o HMAC do voto (sem a chave não revela o candidato)."""
     recibo: uuid.UUID
+    hash: str
+    data: datetime
     eleicao_id: int
     ronda: int
     mensagem: str = "Voto registado. Guarde o recibo para confirmar que o seu voto foi contado."
@@ -26,11 +27,24 @@ class ParticipacaoRondaOut(BaseModel):
     data: datetime | None
 
 
+class ParticipacaoOut(BaseModel):
+    """votou: se o eleitor já votou na ronda atual (a aberta, senão a agendada, senão a última)."""
+    votou: bool
+    ronda: int | None
+    rondas: list[ParticipacaoRondaOut]
+
+
 class VerificacaoReciboOut(BaseModel):
     registado: bool
     integro: bool | None
     eleicao_id: int | None
     ronda: int | None
+
+
+class VerificacaoReciboFrontOut(VerificacaoReciboOut):
+    """Formato usado pelo frontend: valido = registado e não alterado; incluido = conta no apuramento."""
+    valido: bool
+    incluido: bool
 
 
 class ApuramentoOut(BaseModel):
@@ -43,11 +57,11 @@ class ApuramentoOut(BaseModel):
 
 
 class LinhaResultadoOut(BaseModel):
-    candidato_id: int
+    id: int
     nome: str
     partido: str | None
-    votos: int
-    percentagem: Decimal
+    total_votos: int
+    percentagem: float
 
 
 class DecisaoOut(BaseModel):
@@ -56,32 +70,81 @@ class DecisaoOut(BaseModel):
 
 
 class ResultadoRondaOut(BaseModel):
+    """Uma ronda com contagem. provisorio=True: ronda ainda não apurada (só os admins a veem)."""
     ronda: int
     estado: str
     apurada: bool
-    total_votos: int | None = None
-    candidatos: list[LinhaResultadoOut] | None = None
+    provisorio: bool
+    total_votos: int
+    candidatos: list[LinhaResultadoOut]
     decisao: DecisaoOut | None = None
 
 
-class ResultadosOut(BaseModel):
-    eleicao_id: int
-    titulo: str
-    estado: str
-    rondas: list[ResultadoRondaOut]
+class PontoSerieOut(BaseModel):
+    hora: datetime
+    votos: int
 
 
 class EstatisticaRondaOut(BaseModel):
     ronda: int
     estado: str
     votantes: int
-    taxa_participacao: Decimal
+    taxa_participacao: float
 
 
 class EstatisticasOut(BaseModel):
+    """habilitados/votantes/participacao/serie referem-se à ronda atual; rondas tem o detalhe de todas."""
     eleicao_id: int
     habilitados: int
+    ronda: int | None
+    votantes: int
+    participacao: float
+    serie: list[PontoSerieOut]
     rondas: list[EstatisticaRondaOut]
+
+
+class CandidatoPublicoOut(BaseModel):
+    id: int
+    nome: str
+    partido: str | None
+    descricao: str | None
+
+
+class EleicaoPublicaOut(BaseModel):
+    id: int
+    titulo: str
+    estado: str
+    data_inicio: datetime | None
+    data_fim: datetime | None
+
+
+class ResumoPublicoOut(BaseModel):
+    eleicao: EleicaoPublicaOut | None
+    eleitores: int
+    votos: int
+    participacao: float
+    candidatos: list[CandidatoPublicoOut]
+
+
+class ProjecaoOut(BaseModel):
+    candidato_id: int | None
+    nome: str
+    percentagem: float
+
+
+class SondagemOut(BaseModel):
+    modelo: str
+    amostra: int
+    intervalo: float | None
+    projecao: list[ProjecaoOut]
+
+
+class SondagemRespostaIn(BaseModel):
+    candidato_id: int
+
+
+class SondagemRespostaOut(BaseModel):
+    amostra: int
 
 
 class AuditoriaOut(BaseModel):

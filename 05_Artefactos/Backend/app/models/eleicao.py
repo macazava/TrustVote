@@ -37,6 +37,12 @@ class Eleicao(Base):
     def ronda(self, numero: int) -> "Ronda | None":
         return next((r for r in self.rondas if r.numero == numero), None)
 
+    def ronda_atual(self) -> "Ronda | None":
+        """A ronda que interessa mostrar: a aberta, senão a agendada, senão a última (igual ao frontend)."""
+        return (next((r for r in self.rondas if r.estado == RONDA_ABERTA), None)
+                or next((r for r in self.rondas if r.estado == RONDA_AGENDADA), None)
+                or (self.rondas[-1] if self.rondas else None))
+
 
 class Ronda(Base):
     __tablename__ = "ronda"

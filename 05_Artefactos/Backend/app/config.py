@@ -33,6 +33,7 @@ class Settings:
     login_max_tentativas: int
     login_janela_segundos: int
     reset_codigo_minutos: int
+    cors_origins: list[str]
 
 
 @lru_cache
@@ -72,4 +73,6 @@ def get_settings() -> Settings:
         login_max_tentativas=int(os.getenv("LOGIN_MAX_TENTATIVAS", "5")),
         login_janela_segundos=int(os.getenv("LOGIN_JANELA_SEGUNDOS", "900")),
         reset_codigo_minutos=int(os.getenv("RESET_CODIGO_MINUTOS", "30")),
+        # Origens do frontend autorizadas (separadas por vírgulas); "*" aceita qualquer uma
+        cors_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()],
     )

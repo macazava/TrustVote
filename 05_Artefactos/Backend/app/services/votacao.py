@@ -28,7 +28,8 @@ from app.services.erros import Conflito, DadosInvalidos, NaoEncontrado
 
 
 def votar(db: Session, eleitor: Utilizador, eleicao_id: int, numero_ronda: int, candidato_id: int,
-          *, ip: str | None = None, agora: datetime | None = None) -> tuple[uuid.UUID, Ronda]:
+          *, ip: str | None = None, agora: datetime | None = None) -> dict:
+    """Devolve o recibo: {recibo, hash, data, eleicao_id, ronda}."""
     agora = agora or datetime.now(timezone.utc)
     eleicao = db.scalar(select(Eleicao).where(Eleicao.id == eleicao_id).with_for_update(read=True))
     if eleicao is None or not repo_eleicao.esta_habilitado(db, eleicao_id, eleitor.id):
@@ -53,13 +54,13 @@ def votar(db: Session, eleitor: Utilizador, eleicao_id: int, numero_ronda: int, 
         raise Conflito("Já votou nesta ronda")
 
     voto_id = uuid.uuid4()
-    db.add(Voto(id=voto_id, ronda_id=ronda.id, candidato_id=candidato_id,
-                hash=hash_voto(str(voto_id), ronda.id, candidato_id)))
+    hash_ = hash_voto(str(voto_id), ronda.id, candidato_id)
+    db.add(Voto(id=voto_id, ronda_id=ronda.id, candidato_id=candidato_id, hash=hash_))
     # a auditoria regista QUE votou (já visível em participacao), nunca o candidato
     auditoria.registar(db, "voto.registado", utilizador_id=eleitor.id, entidade="ronda", entidade_id=ronda.id,
                        detalhes={"eleicao": eleicao.id, "ronda": ronda.numero}, ip=ip)
     db.commit()
-    return voto_id, ronda
+    return {"recibo": voto_id, "hash": hash_, "data": agora, "eleicao_id": eleicao.id, "ronda": ronda.numero}
 
 
 def minha_participacao(db: Session, eleitor: Utilizador, eleicao_id: int) -> list[dict]:
@@ -69,6 +70,26 @@ def minha_participacao(db: Session, eleitor: Utilizador, eleicao_id: int) -> lis
                                    Participacao.ronda_id.in_([r.id for r in eleicao.rondas])))}
     return [{"ronda": r.numero, "estado": r.estado, "votou": r.id in votou, "data": votou.get(r.id)}
             for r in eleicao.rondas]
+
+
+def participacao(db: Session, eleitor: Utilizador, eleicao_id: int) -> dict:
+    """Se o eleitor já votou na ronda atual (é o que o frontend usa para mostrar "Já votou")."""
+    rondas = minha_participacao(db, eleitor, eleicao_id)
+    atual = servico_eleicao.obter_visivel(db, eleitor, eleicao_id).ronda_atual()
+    votou = atual is not None and any(r["ronda"] == atual.numero and r["votou"] for r in rondas)
+    return {"votou": votou, "ronda": atual.numero if atual else None, "rondas": rondas}
+
+
+def verificar_codigo(db: Session, codigo: str) -> dict:
+    """Verificação pelo código do recibo em texto (um código que não é UUID simplesmente não existe)."""
+    try:
+        voto_id = uuid.UUID(codigo.strip())
+    except ValueError:
+        resposta = {"registado": False, "integro": None, "eleicao_id": None, "ronda": None}
+    else:
+        resposta = verificar_recibo(db, voto_id)
+    valido = bool(resposta["registado"] and resposta["integro"])
+    return {**resposta, "valido": valido, "incluido": valido}
 
 
 def verificar_recibo(db: Session, voto_id: uuid.UUID) -> dict:
