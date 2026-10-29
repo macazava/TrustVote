@@ -51,4 +51,21 @@ if [ "$PG_NODE_ROLE" = "replica" ] && [ -s "$PGDATA/PG_VERSION" ] && [ ! -f "$PG
     exit 1
 fi
 
+# Segunda proteção: um nó configurado como primário, com dados, não arranca se o outro nó já
+# estiver a aceitar escritas (ex.: a réplica foi promovida e este é o antigo primário a voltar,
+# mesmo por reinício automático). Sem isto, haveria dois primários e o backend, que liga aos
+# dois hosts, podia voltar a escrever no antigo.
+if [ "$PG_NODE_ROLE" = "primary" ] && [ -s "$PGDATA/PG_VERSION" ] && [ ! -f "$PGDATA/standby.signal" ] \
+   && [ -n "${PG_UPSTREAM_HOST:-}" ]; then
+    export PGPASSWORD="$REPLICATION_PASSWORD" PGCONNECT_TIMEOUT=3
+    em_recuperacao=$(psql -h "$PG_UPSTREAM_HOST" -U "$REPLICATION_USER" -d postgres -qAt \
+                     -c "SELECT pg_is_in_recovery()" 2>/dev/null || true)
+    unset PGPASSWORD
+    if [ "$em_recuperacao" = "f" ]; then
+        echo "[pg-entrypoint] RECUSADO: $PG_UPSTREAM_HOST já é primário (a réplica foi promovida)." >&2
+        echo "[pg-entrypoint] Reconstrua este nó como réplica (README > Restabelecer a replicação)." >&2
+        exit 1
+    fi
+fi
+
 exec docker-entrypoint.sh "$@"
