@@ -1,9 +1,9 @@
-/* View · área do eleitor, separadores "Recibos" e "Definições" */
+/* View · área do eleitor, separador "Recibos" */
 (function () {
   "use strict";
 
   const TV = window.TrustVote;
-  const { escapeHtml, dateTime, time, voterNumber } = TV.format;
+  const { escapeHtml, dateTime } = TV.format;
   const { head } = TV.blocks;
   const v = (TV.voterView = TV.voterView || {});
 
@@ -48,29 +48,5 @@
       r.hash ? `Hash: ${r.hash}` : "",
     ].filter(Boolean).join("\n");
 
-  // ===== Definições (acrescenta-se ao cartão de acessibilidade que já está no HTML) =====
-  const settingsIntro = () => '<p class="muted" data-settings-extra>Gere os teus dados de contacto e preferências de segurança.</p>';
-
-  const settingsCards = (user, claims) => `
-    <div class="dash-grid grid-cols-1 lg:grid-cols-2" data-settings-extra>
-      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-        <p class="eyebrow">PERFIL ELEITORAL</p>
-        <h2>Informação da conta</h2>
-        <label class="field-label">Nome completo<input value="${escapeHtml(user.nome)}" readonly></label>
-        <label class="field-label">E-mail da conta<input value="${escapeHtml(user.email)}" readonly></label>
-        <label class="field-label">Número de eleitor<input value="${escapeHtml(voterNumber(user))}" readonly></label>
-        <p class="muted" style="font-size:11px">Os dados eleitorais são geridos pela instituição.</p>
-      </article>
-      <div>
-        ${TV.twoFactor.card(user)}
-        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-          <p class="eyebrow">SESSÃO ATUAL</p>
-          <h2>Sessão verificada</h2>
-          <p>Iniciada às ${claims.iat ? time(new Date(claims.iat * 1000).toISOString()) : "—"} · termina às ${claims.exp ? time(new Date(claims.exp * 1000).toISOString()) : "—"}.</p>
-          <button class="button rounded-xl button-outline" type="button" data-logout-settings>Terminar sessão →</button>
-        </article>
-      </div>
-    </div>`;
-
-  Object.assign(v, { receiptsPage, noReceipts, localNotice, receiptCard, verifyPill, verifyChecks, receiptText, settingsIntro, settingsCards });
+  Object.assign(v, { receiptsPage, noReceipts, localNotice, receiptCard, verifyPill, verifyChecks, receiptText });
 })();

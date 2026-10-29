@@ -45,6 +45,30 @@
       setTimeout(() => item.remove(), 4200);
     },
 
+    // Janela de confirmação (substitui window.confirm): devolve true em "Confirmar", false em "Cancelar" ou Esc
+    confirm({ title, text = "", ok = "Confirmar", danger = false }) {
+      return new Promise((resolve) => {
+        const dialog = document.createElement("dialog");
+        dialog.className = "confirm-dialog rounded-2xl";
+        dialog.innerHTML = `
+          <form method="dialog">
+            <h2>${escapeHtml(title)}</h2>
+            ${text ? `<p class="muted">${escapeHtml(text)}</p>` : ""}
+            <div class="form-actions">
+              <button class="button rounded-xl button-light" value="cancelar">Cancelar</button>
+              <button class="button rounded-xl ${danger ? "button-danger" : "button-primary"}" value="ok">${escapeHtml(ok)}</button>
+            </div>
+          </form>`;
+        document.body.appendChild(dialog);
+        dialog.addEventListener("close", () => {
+          resolve(dialog.returnValue === "ok");
+          dialog.remove();
+        });
+        dialog.showModal();
+        dialog.querySelector('[value="cancelar"]').focus();
+      });
+    },
+
     // Bloqueia o botão enquanto o pedido corre
     async busy(button, label, fn) {
       const original = button ? button.innerHTML : "";
