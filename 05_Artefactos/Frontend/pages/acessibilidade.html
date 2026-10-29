@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Acessibilidade | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-atual="Acessibilidade"></div>
+
+  <main class="container content-page">
+
+    <p class="eyebrow">VOTO ACESSÍVEL</p>
+
+    <h1>Acessibilidade</h1>
+
+    <p class="lead">
+      O TrustVote foi pensado para que todos possam votar com autonomia.
+    </p>
+
+    <!-- Preferências -->
+    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+      <h2>Ajustar a página</h2>
+      <p>As preferências ficam guardadas neste navegador e aplicam-se a todas as páginas.</p>
+      <div class="hero-actions">
+        <button class="button rounded-xl button-outline" type="button" data-font-toggle aria-pressed="false">A+ Texto
+          maior</button>
+        <button class="button rounded-xl button-outline" type="button" data-contrast-toggle aria-pressed="false">◐
+          Contraste elevado</button>
+      </div>
+    </article>
+
+    <div class="info-list">
+
+      <article>
+        <span>01</span>
+        <div>
+          <h2>Leitores de ecrã</h2>
+          <p>As páginas usam títulos, rótulos e regiões que os leitores de ecrã conseguem anunciar.</p>
+        </div>
+      </article>
+
+      <article>
+        <span>02</span>
+        <div>
+          <h2>Navegação por teclado</h2>
+          <p>Todos os botões, menus e o boletim de voto podem ser usados só com o teclado (Tab, Enter e setas).</p>
+        </div>
+      </article>
+
+      <article>
+        <span>03</span>
+        <div>
+          <h2>Acompanhamento</h2>
+          <p>Estudantes com necessidades específicas podem pedir apoio ao Gabinete de Apoio ao Estudante.</p>
+          <a href="ajuda.html#contactos">Pedir acompanhamento →</a>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

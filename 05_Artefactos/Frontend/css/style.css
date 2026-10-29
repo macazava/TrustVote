@@ -1,0 +1,49 @@
+/* TrustVote · índice dos estilos
+   A ordem conta: cada ficheiro pode afinar o que vem antes dele.
+   base/        cores, letra e regras gerais
+   componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
+   paginas/     estilos próprios de cada página ou área
+   base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra) */
+@import url("base/variaveis.css");
+@import url("base/base.css");
+
+@import url("componentes/botoes.css");
+@import url("componentes/cabecalho.css");
+@import url("componentes/rodape.css");
+@import url("componentes/cartoes.css");
+@import url("componentes/formularios.css");
+@import url("componentes/tabelas.css");
+@import url("componentes/estados.css");
+@import url("componentes/animacoes.css");
+
+/* Página inicial */
+@import url("paginas/inicio/topo.css");
+@import url("paginas/inicio/atalhos-e-numeros.css");
+@import url("paginas/inicio/eleicoes-e-seguranca.css");
+@import url("paginas/inicio/plataforma-e-avisos.css");
+@import url("paginas/inicio/ecras-pequenos.css");
+@import url("paginas/inicio/perguntas-frequentes.css");
+
+/* Páginas com menu lateral (Eleições, Listas, Ajuda…) */
+@import url("paginas/seccoes/menu-lateral.css");
+@import url("paginas/seccoes/conteudos.css");
+@import url("paginas/seccoes/ecras-pequenos.css");
+@import url("paginas/seccoes/perguntas-frequentes.css");
+
+@import url("paginas/comunicacao.css");
+@import url("paginas/historico.css");
+@import url("paginas/login.css");
+
+/* Áreas do eleitor e da equipa */
+@import url("paginas/paineis/cabecalho.css");
+@import url("paginas/paineis/conteudo.css");
+@import url("paginas/paineis/boletim.css");
+@import url("paginas/paineis/recibos-e-sondagem.css");
+@import url("paginas/paineis/perfil.css");
+@import url("paginas/paineis/equipa.css");
+@import url("paginas/paineis/ecras-pequenos.css");
+
+/* Tamanho do ecrã e impressão */
+@import url("base/ecras/monitor-e-tablet.css");
+@import url("base/ecras/telemovel.css");
+@import url("base/ecras/impressao.css");

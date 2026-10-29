@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Momentos que marcaram as eleições académicas na plataforma TrustVote.">
+
+  <title>Histórico eleitoral | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Histórico eleitoral" data-seccao-link="historico.html"
+    data-atual="Eleições académicas"></div>
+
+  <main>
+
+    <section class="history-hero" style="background-image:url('../assets/01_iade_campus_patio_exterior.png')">
+      <div class="container">
+        <h1>Histórico Eleitoral</h1>
+      </div>
+    </section>
+
+    <section class="history-intro">
+      <div class="container">
+        <p>Momentos que marcaram as eleições académicas da Universidade desde que passaram a ser digitais.</p>
+        <p>Cada etapa apresenta o contexto e a decisão tomada pela comissão eleitoral académica. Conteúdo demonstrativo,
+          criado para efeitos académicos.</p>
+      </div>
+    </section>
+
+    <!-- Etapas -->
+    <div class="container history-list">
+
+      <article class="history-period">
+        <header><span>▣</span><time>2019 – 2020</time></header>
+        <h2>Primeiras eleições online</h2>
+        <div class="history-columns grid-cols-1 md:grid-cols-2">
+          <div>
+            <h3>Antecedentes</h3>
+            <p>A votação em papel obrigava a montar mesas de voto em cada faculdade e a participação dos estudantes era
+              baixa.</p>
+          </div>
+          <div>
+            <h3>A decisão</h3>
+            <p>A comissão eleitoral aprovou um piloto de votação online para a eleição dos representantes de turma.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="history-period">
+        <header><span>▣</span><time>2021</time></header>
+        <h2>Voto digital na Associação de Estudantes</h2>
+        <div class="history-columns grid-cols-1 md:grid-cols-2">
+          <div>
+            <h3>Antecedentes</h3>
+            <p>O piloto teve boa adesão, mas os estudantes pediram garantias de que o voto continuava secreto.</p>
+          </div>
+          <div>
+            <h3>A decisão</h3>
+            <p>Passou a ser emitido um recibo anónimo e a identidade do estudante ficou separada do voto.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="history-period">
+        <header><span>▣</span><time>2022</time></header>
+        <h2>Segunda volta entre listas</h2>
+        <div class="history-columns grid-cols-1 md:grid-cols-2">
+          <div>
+            <h3>Antecedentes</h3>
+            <p>Numa eleição com três listas candidatas, nenhuma obteve mais de metade dos votos.</p>
+          </div>
+          <div>
+            <h3>A decisão</h3>
+            <p>As regras passaram a prever uma segunda volta entre as duas listas mais votadas.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="history-period">
+        <header><span>▣</span><time>2023</time></header>
+        <h2>Núcleos e representantes de curso</h2>
+        <div class="history-columns grid-cols-1 md:grid-cols-2">
+          <div>
+            <h3>Antecedentes</h3>
+            <p>Cada núcleo académico organizava a sua eleição com ferramentas e regras diferentes.</p>
+          </div>
+          <div>
+            <h3>A decisão</h3>
+            <p>Todas as eleições académicas passaram para a mesma plataforma, com regras comuns.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="history-period">
+        <header><span>▣</span><time>2024 – 2025</time></header>
+        <h2>Votação sem interrupções</h2>
+        <div class="history-columns grid-cols-1 md:grid-cols-2">
+          <div>
+            <h3>Antecedentes</h3>
+            <p>Uma falha de servidor interrompeu a votação durante alguns minutos e gerou dúvidas sobre a contagem.</p>
+          </div>
+          <div>
+            <h3>A decisão</h3>
+            <p>A plataforma foi melhorada para continuar a funcionar mesmo quando um servidor falha, e a comissão
+              eleitoral passou a confirmar a contagem no fim.</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

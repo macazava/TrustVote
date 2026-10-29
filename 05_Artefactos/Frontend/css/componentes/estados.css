@@ -1,0 +1,118 @@
+/* Estados dos dados: a carregar, erro, vazio e avisos rápidos */
+.state-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.state-box h3 {
+    margin: 6px 0 0;
+    color: var(--ink);
+    font-size: 18px;
+}
+
+.state-box p {
+    max-width: 460px;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.state-box .button {
+    margin-top: 10px;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--line);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: tv-spin 0.8s linear infinite;
+}
+
+@keyframes tv-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.toast-host {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 50;
+    display: grid;
+    gap: 8px;
+    max-width: min(380px, calc(100vw - 32px));
+}
+
+.toast {
+    margin: 0;
+    padding: 12px 16px;
+    border: 1.5px solid var(--ink);
+    border-left: 4px solid var(--accent);
+    background: var(--paper);
+    font-size: 13px;
+    box-shadow: 3px 3px 0 var(--ink);
+}
+
+.toast-error {
+    border-left-color: var(--danger);
+}
+
+.server-status {
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.server-status.is-ok {
+    color: var(--accent);
+}
+
+.server-status.is-down {
+    color: var(--warn);
+}
+
+/* Janela de confirmação (TrustVote.ui.confirm) */
+.confirm-dialog {
+    width: min(440px, calc(100vw - 32px));
+    padding: 24px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+}
+
+.confirm-dialog::backdrop {
+    background: rgb(23 63 50 / 45%);
+}
+
+.confirm-dialog h2 {
+    margin: 0 0 8px;
+    color: var(--title);
+    font-size: 20px;
+}
+
+.confirm-dialog p {
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+.confirm-dialog .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button-danger {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+}

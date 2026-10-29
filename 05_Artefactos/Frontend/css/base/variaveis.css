@@ -1,0 +1,25 @@
+/* Cores, tipografia e medidas usadas em todo o site */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --accent: #1F5A45;
+    --accent-strong: #2d6a4f;
+    --ink: #252824;
+    --ivory: #f4f0e4;
+    --paper: #fffdf6;
+    --sand: #ebe7dd;
+    --beige: #e8e5d7;
+    --mint: #e7f1ec;
+    --line: #d8d1c2;
+    --muted: #505650;
+    --green: #1F5A45;
+    --dark: #173f32;
+    --title: #1b4332;
+    --warn: #9a4a12;
+    --danger: #b3261e;
+    --shadow: 5px 5px 0 #111827;
+    --container: 1200px;
+    font-family: Poppins, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--ivory);
+}

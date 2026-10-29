@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sala de imprensa do TrustVote: notícias e avisos das eleições académicas.">
+
+  <title>Comunicação | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Comunicação" data-seccao-link="comunicacao.html"
+    data-atual="Sala de imprensa"></div>
+
+  <main class="container press-page">
+
+    <!-- Sala de imprensa -->
+    <section class="press-bar shadow-soft grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_repeat(4,1fr)]">
+      <div>
+        <h1>Sala de imprensa</h1>
+      </div>
+      <div>
+        <b>Contactos</b>
+        <p>213 000 025 / 213 000 026<br>comunicacao@trustvote.pt</p>
+      </div>
+      <div>
+        <b>Quem somos</b>
+        <a href="ajuda.html#quem-somos">Equipa TrustVote</a>
+      </div>
+      <div>
+        <b>Feed de notícias · RSS</b>
+        <a href="#noticias">Aceder</a>
+      </div>
+      <div>
+        <b>Glossário eleitoral académico</b>
+        <a href="calendario.html#como-votar">Aceder</a>
+      </div>
+    </section>
+
+    <!-- Destaques -->
+    <div class="press-featured grid-cols-1 md:grid-cols-2">
+      <article class="press-hero shadow-soft">
+        <img src="../assets/04_estudantes_votar_telemovel.png" alt="Dois estudantes a votar a partir do telemóvel">
+        <div>
+          <span class="news-tag">GUIA</span>
+          <h2><a href="calendario.html#como-votar">Como votar online, passo a passo</a></h2>
+        </div>
+      </article>
+      <article class="press-hero shadow-soft">
+        <img src="../assets/03_debate_entre_candidatas.png" alt="Duas candidatas em conversa no campus">
+        <div>
+          <span class="news-tag">ENTREVISTA</span>
+          <h2><a href="listas.html">À conversa com as candidatas: o que querem mudar na Associação de Estudantes</a>
+          </h2>
+        </div>
+      </article>
+    </div>
+
+    <!-- Guias e explicações -->
+    <div class="press-news grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" id="noticias">
+      <article>
+        <img src="../assets/06_votar_online_de_casa.png" alt="Estudante a votar em casa no portátil">
+        <div>
+          <small>GUIA</small>
+          <h3>Antes de votar: o que precisa de ter à mão</h3>
+          <p>O e-mail e a palavra-passe da conta de estudante e o telemóvel para receber o código de verificação.</p>
+          <a href="calendario.html#como-votar" aria-label="Abrir o guia do eleitor">↗</a>
+        </div>
+      </article>
+      <article>
+        <img src="../assets/09_estudante_no_campus.png" alt="Estudante com cadernos na rua">
+        <div>
+          <small>PERGUNTAS E RESPOSTAS</small>
+          <h3>O meu voto é mesmo secreto?</h3>
+          <p>O voto fica separado do nome do estudante. O comprovativo mostra que o voto foi registado, não em quem
+            votou.</p>
+          <a href="privacidade.html" aria-label="Saber mais sobre a privacidade do voto">↗</a>
+        </div>
+      </article>
+      <article>
+        <img src="../assets/02_assembleia_estudantes_debate.png" alt="Estudantes numa assembleia a debater">
+        <div>
+          <small>EXPLICADOR</small>
+          <h3>O que faz a Associação de Estudantes</h3>
+          <p>Representa os estudantes junto da universidade e organiza atividades ao longo do ano. O mandato dura
+            dois anos.</p>
+          <a href="listas.html" aria-label="Conhecer as listas candidatas">↗</a>
+        </div>
+      </article>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

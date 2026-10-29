@@ -1,0 +1,275 @@
+/* Barra do topo, cabeçalho do portal e faixa de navegação */
+.topbar {
+    background: var(--dark);
+    color: #e8efe9;
+    font-size: 14px;
+}
+
+.topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: min(var(--container), calc(100% - 48px));
+    min-height: 48px;
+    margin: auto;
+}
+
+.topbar a,
+.topbar button {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 18px;
+    border: 1px solid #ffffff33;
+    border-radius: 8px;
+    background: none;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.topbar a:hover,
+.topbar button:hover,
+.topbar button[aria-pressed="true"] {
+    background: #ffffff14;
+    color: white;
+}
+
+.site-header {
+    position: relative;
+    z-index: 5;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.site-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    width: min(var(--container), calc(100% - 48px));
+    height: 94px;
+    margin: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: max-content;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    background: var(--accent);
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.brand > span:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand b {
+    font-size: 19px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+}
+
+.brand small {
+    margin-top: 6px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+}
+
+.main-nav {
+    display: flex;
+    align-self: stretch;
+    align-items: stretch;
+    gap: 24px;
+}
+
+.main-nav a {
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.main-nav a:hover {
+    color: var(--accent);
+}
+
+.main-nav a[aria-current="page"] {
+    border-bottom-color: #6f9c84;
+    color: var(--title);
+    font-weight: 700;
+}
+
+.header-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 18px;
+}
+
+.header-actions .button {
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+.menu-toggle {
+    display: none;
+    padding: 8px 11px;
+    border: 1px solid var(--line);
+    background: transparent;
+}
+
+/* Faixa "⌂ / Secção / Página" */
+.breadcrumb-bar {
+    border-bottom: 1px solid var(--line);
+    background: var(--sand);
+}
+
+.breadcrumb-bar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+    list-style: none;
+}
+
+.breadcrumb li + li::before {
+    margin-right: 10px;
+    content: "/";
+}
+
+.breadcrumb a {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--accent);
+}
+
+.breadcrumb-tools {
+    display: flex;
+    gap: 6px;
+}
+
+.breadcrumb-tools button {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: none;
+    color: var(--muted);
+}
+
+.breadcrumb-tools button:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 1320px) {
+    .site-header-inner {
+        gap: 18px;
+    }
+
+    .main-nav {
+        gap: 16px;
+    }
+
+    .main-nav a {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1120px) {
+    .main-nav {
+        gap: 12px;
+    }
+
+    .main-nav a {
+        font-size: 12px;
+    }
+
+    .header-actions .button {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 960px) {
+    .site-header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 72px;
+        padding: 14px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+        margin-left: auto;
+    }
+
+    .main-nav {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .main-nav a {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 15px;
+    }
+
+    .header-actions {
+        display: none;
+        width: 100%;
+    }
+
+    .main-nav.open + .header-actions {
+        display: flex;
+    }
+
+    .topbar-inner {
+        overflow-x: auto;
+    }
+
+    .topbar a,
+    .topbar button {
+        min-width: max-content;
+        padding: 0 14px;
+    }
+}

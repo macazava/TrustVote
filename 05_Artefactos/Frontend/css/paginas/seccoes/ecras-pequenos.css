@@ -1,0 +1,41 @@
+/* Páginas das secções: tablet e telemóvel */
+
+@media (max-width: 960px) {
+    .section-page {
+        grid-template-columns: 1fr;
+    }
+
+    .section-content {
+        padding: 28px 22px;
+    }
+
+    .section-item-head {
+        flex-direction: column;
+    }
+
+    .candidate-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline article {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 760px) {
+    .result-row,
+    .result-row:not(:has(.avatar)) {
+        grid-template-columns: 1fr 70px;
+    }
+
+    .result-row .bar {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+
+    .result-row .avatar {
+        display: none;
+    }
+}
+

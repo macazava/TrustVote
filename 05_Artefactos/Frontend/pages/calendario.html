@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calendário, eleições académicas, estatísticas e resultados.">
+
+  <title>Eleições | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Eleições" data-seccao-link="calendario.html" data-atual="Calendário eleitoral"
+    data-atual-muda></div>
+
+  <main
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
+        <h2>Eleições</h2>
+        <nav aria-label="Eleições">
+          <a href="#calendario-eleitoral">Calendário eleitoral</a>
+          <a href="#como-votar">Como votar</a>
+          <a href="#resultados-das-eleicoes">Resultados das eleições</a>
+        </nav>
+      </div>
+      <div class="manager-card rounded-2xl shadow-soft">
+        <h2>Gestor responsável</h2>
+        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo: um tema de cada vez -->
+    <div class="section-content rounded-2xl shadow-soft">
+      <article class="section-item" id="calendario-eleitoral" data-item>
+        <div class="section-item-head">
+          <h1>Calendário eleitoral</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p class="lead">
+          Etapas das eleições académicas da Universidade Exemplo, com as datas obtidas a partir da plataforma.
+        </p>
+
+        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift"
+          data-calendar-live></article>
+
+        <!-- Etapas do processo eleitoral -->
+        <div class="timeline">
+
+          <article data-phase="preparacao">
+            <time>FASE 01</time>
+            <div>
+              <h2>Apresentação das listas</h2>
+              <p>
+                Entrega das listas candidatas à comissão eleitoral académica
+                e publicação dos cadernos eleitorais.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
+            </div>
+          </article>
+
+          <article data-phase="votacao">
+            <time>FASE 02</time>
+            <div>
+              <h2>Período de votação</h2>
+              <p>
+                Os estudantes elegíveis votam online, a partir de qualquer
+                dispositivo, durante o período definido.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
+            </div>
+          </article>
+
+          <article data-phase="apuramento">
+            <time>FASE 03</time>
+            <div>
+              <h2>Apuramento e resultados</h2>
+              <p>
+                Contagem verificada e publicação dos resultados
+                pela comissão eleitoral académica.
+              </p>
+              <span class="status-pill rounded-full">A CARREGAR</span>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="notice rounded-xl">
+          As datas são definidas pela comissão eleitoral académica e atualizadas automaticamente a partir da plataforma.
+        </p>
+      </article>
+
+      <article class="section-item" id="como-votar" data-item>
+        <div class="section-item-head">
+          <h1>Como votar</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p class="lead">Votar demora poucos minutos e pode ser feito no computador ou no telemóvel.</p>
+        <div class="info-list">
+          <article>
+            <span>01</span>
+            <div>
+              <h2>Entre na Área do Eleitor</h2>
+              <p>Use o e-mail e a palavra-passe da sua conta de estudante.</p>
+              <a href="login.html?area=eleitor" data-voter-link>Ir para a Área do Eleitor →</a>
+            </div>
+          </article>
+          <article>
+            <span>02</span>
+            <div>
+              <h2>Escolha a eleição</h2>
+              <p>Aparecem só as eleições em que pode votar, como a da Associação de Estudantes.</p>
+            </div>
+          </article>
+          <article>
+            <span>03</span>
+            <div>
+              <h2>Conheça as listas</h2>
+              <p>Veja os candidatos e as propostas principais de cada lista antes de decidir.</p>
+              <a href="listas.html">Ver listas académicas →</a>
+            </div>
+          </article>
+          <article>
+            <span>04</span>
+            <div>
+              <h2>Vote e confirme</h2>
+              <p>Escolha a lista e confirme o voto. Depois de confirmado, o voto já não pode ser alterado.</p>
+            </div>
+          </article>
+          <article>
+            <span>05</span>
+            <div>
+              <h2>Guarde o comprovativo</h2>
+              <p>No fim recebe um recibo que mostra que o seu voto foi registado, sem revelar em quem votou.</p>
+            </div>
+          </article>
+        </div>
+      </article>
+
+      <article class="section-item" id="resultados-das-eleicoes" data-item>
+        <div class="section-item-head">
+          <h1>Resultados das eleições</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p>Os resultados são publicados quando a votação termina e a comissão eleitoral académica conclui a contagem.
+        </p>
+        <p>Durante a votação pode acompanhar a participação dos estudantes.</p>
+        <ul class="section-links">
+          <li><a href="resultados.html">Consultar resultados</a></li>
+        </ul>
+      </article>
+
+      <div class="visit-also" data-visit-also></div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

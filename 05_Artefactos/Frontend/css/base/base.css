@@ -1,0 +1,111 @@
+/* Regras gerais: reset, contentor, textos e preferências de acessibilidade */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    margin: 0;
+    background: var(--ivory);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.container {
+    width: min(var(--container), calc(100% - 48px));
+    margin-inline: auto;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 14px;
+    color: var(--title);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.eyebrow i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px #1F5A451c;
+}
+
+.lead {
+    max-width: 620px;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.75;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+code {
+    font-family: ui-monospace, Consolas, monospace;
+}
+
+/* Preferências de acessibilidade (A+ e Contraste) */
+.large-text {
+    zoom: 1.12;
+}
+
+.high-contrast {
+    --ivory: #fff;
+    --paper: #fff;
+    --sand: #f2f2f2;
+    --ink: #000;
+    --muted: #222;
+    --line: #555;
+    --accent: #0f3d2c;
+    --title: #0f3d2c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

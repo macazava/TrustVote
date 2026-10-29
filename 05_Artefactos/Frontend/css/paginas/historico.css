@@ -1,0 +1,120 @@
+/* Histórico eleitoral */
+.history-hero {
+    position: relative;
+    min-height: 230px;
+    background: #2f2b24 center / cover no-repeat;
+}
+
+.history-hero::after {
+    position: absolute;
+    inset: 0;
+    background: #2a241c99;
+    content: "";
+}
+
+.history-hero .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: 230px;
+}
+
+.history-hero h1 {
+    margin: 0;
+    color: white;
+    font-size: clamp(34px, 3.5vw, 44px);
+    font-weight: 500;
+}
+
+.history-intro {
+    padding: 34px 0;
+    background: #57544f;
+    color: white;
+}
+
+.history-intro p {
+    margin: 0 0 12px;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.history-list {
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.history-period {
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--line);
+}
+
+.history-period>header {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.history-period>header span {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: white;
+    color: var(--accent);
+    font-size: 12px;
+}
+
+.history-period time {
+    color: var(--title);
+    font-size: 42px;
+    font-weight: 400;
+}
+
+.history-period h2 {
+    margin: 20px 0 18px 12px;
+    color: var(--title);
+    font-size: 21px;
+}
+
+.history-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    margin-left: 12px;
+}
+
+.history-columns>div+div {
+    padding-left: 26px;
+    border-left: 1px solid var(--line);
+}
+
+.history-columns h3 {
+    margin: 0 0 10px;
+    color: var(--title);
+    font-size: 21px;
+    font-weight: 400;
+}
+
+.history-columns p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+@media (max-width: 760px) {
+    .history-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .history-columns>div+div {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .history-period time {
+        font-size: 32px;
+    }
+}

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acesso | TrustVote</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/login/formulario.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/login/autenticacao.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body data-page="login">
+
+  <header class="auth-header">
+    <a class="brand" href="inicio.html">
+      <span class="brand-mark">✓</span>
+      <span>
+        <b>TRUSTVOTE</b>
+        <small>ELEIÇÕES ACADÉMICAS</small>
+      </span>
+    </a>
+
+    <a class="text-link" href="inicio.html">
+      ← Voltar ao portal público
+    </a>
+  </header>
+
+  <main class="auth-layout grid-cols-1 lg:grid-cols-[1fr_minmax(360px,530px)]">
+
+    <section class="auth-intro">
+      <p class="eyebrow">ACESSO RESERVADO E PROTEGIDO</p>
+
+      <h1 id="auth-heading">Entre para exercer o seu voto.</h1>
+
+      <p id="auth-description">
+        Inicie sessão para consultar eleições, acompanhar o processo
+        de votação e consultar os seus recibos.
+      </p>
+
+      <div class="assurances">
+        <div>
+          <span>◇</span>
+          <div>
+            <b>Ligação protegida</b>
+            <small>As credenciais são enviadas apenas ao servidor TrustVote.</small>
+          </div>
+        </div>
+
+        <div>
+          <span>◎</span>
+          <div>
+            <b>Identidade separada do voto</b>
+            <small>A sua conta nunca fica ligada à escolha depositada.</small>
+          </div>
+        </div>
+
+        <div>
+          <span>▤</span>
+          <div>
+            <b>Acesso registado</b>
+            <small>Cada acesso fica no registo de auditoria.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card rounded-2xl shadow-lift">
+
+      <div class="role-switch rounded-xl overflow-hidden">
+        <button type="button" data-role="eleitor" class="active">
+          Eleitor
+        </button>
+        <button type="button" data-role="equipa">
+          Equipa
+        </button>
+      </div>
+
+      <div class="mode-switch">
+        <button type="button" data-mode="login" class="active">
+          Iniciar sessão
+        </button>
+        <button type="button" data-mode="register">
+          Criar conta
+        </button>
+      </div>
+
+      <form id="auth-form">
+        <p class="eyebrow" id="form-kicker">INÍCIO DE SESSÃO</p>
+
+        <h2 id="form-title">Aceder à área do eleitor</h2>
+
+        <p id="form-help">
+          Use o e-mail associado à sua credencial eleitoral.
+        </p>
+
+        <label id="name-field" hidden>
+          Nome completo
+          <input name="name" autocomplete="name" placeholder="Nome completo">
+        </label>
+
+        <label>
+          E-mail
+          <input name="email" type="email" autocomplete="username" required placeholder="nome@exemplo.pt">
+        </label>
+
+        <label>
+          Palavra-passe
+          <input name="password" type="password" autocomplete="current-password" required minlength="8"
+            placeholder="Introduza a sua palavra-passe">
+        </label>
+
+        <label id="confirm-field" hidden>
+          Confirmar palavra-passe
+          <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
+        </label>
+
+        <label id="totp-field" hidden>
+          Código de autenticação
+          <input name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"
+            placeholder="000000">
+        </label>
+
+        <label class="check-label" id="terms-field" hidden>
+          <input type="checkbox" name="terms">
+          Li e aceito os termos de utilização e a política de privacidade.
+        </label>
+
+        <div class="form-options">
+          <label class="check-label">
+            <input type="checkbox" name="remember">
+            Manter o identificador neste dispositivo
+          </label>
+
+          <button type="button" class="link-button" data-action="recover">
+            Recuperar acesso
+          </button>
+        </div>
+
+        <p class="form-message" role="status" aria-live="polite"></p>
+
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift full-button" type="submit"
+          id="submit-label">
+          Iniciar sessão →
+        </button>
+
+        <button class="link-button register-link" type="button" data-mode="register">
+          Ainda não tenho conta · Criar conta
+        </button>
+
+        <button class="link-button register-link" type="button" data-login-link hidden>
+          Já tenho conta · Iniciar sessão
+        </button>
+
+        <p class="server-status" data-server-status>● A verificar o servidor…</p>
+      </form>
+
+      <div class="auth-footer">
+        ⓘ
+        <span>
+          <b>Precisa de ajuda?</b>
+          Consulte a página de <a href="ajuda.html#contactos">apoio</a>.
+        </span>
+      </div>
+
+    </section>
+  </main>
+
+</body>
+
+</html>

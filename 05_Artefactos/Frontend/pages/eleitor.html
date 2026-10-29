@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Área do eleitor | TrustVote</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tailwind.css">
+    <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+    <script defer src="../js/models/servidor.js"></script>
+    <script defer src="../js/models/demo/dados-exemplo.js"></script>
+    <script defer src="../js/models/demo/servidor-simulado.js"></script>
+    <script defer src="../js/models/api.js"></script>
+    <script defer src="../js/models/sessao.js"></script>
+    <script defer src="../js/views/formatar.js"></script>
+    <script defer src="../js/models/eleicoes.js"></script>
+    <script defer src="../js/views/componentes.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <!-- View: desenho do HTML -->
+    <script defer src="../js/views/dois-fatores.js"></script>
+    <script defer src="../js/views/graficos.js"></script>
+    <script defer src="../js/views/eleitor/eleicoes.js"></script>
+    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js"></script>
+    <script defer src="../js/views/eleitor/sondagem-e-resultados.js"></script>
+    <script defer src="../js/views/eleitor/recibos.js"></script>
+    <script defer src="../js/views/eleitor/perfil.js"></script>
+    <!-- Controller: o que acontece em cada página -->
+    <script defer src="../js/controllers/comum/menu.js"></script>
+    <script defer src="../js/controllers/comum/paineis.js"></script>
+    <script defer src="../js/controllers/eleitor/formularios-estaticos.js"></script>
+    <script defer src="../js/controllers/comum/pagina.js"></script>
+    <script defer src="../js/controllers/comum/dois-fatores.js"></script>
+    <script defer src="../js/controllers/comum/descarregar.js"></script>
+    <script defer src="../js/controllers/eleitor/eleicoes.js"></script>
+    <script defer src="../js/controllers/eleitor/boletim.js"></script>
+    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js"></script>
+    <script defer src="../js/controllers/eleitor/arranque.js"></script>
+    <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body class="panel-body" data-page="voter">
+
+    <!-- Cabeçalho com o menu do painel -->
+    <header class="dashboard-header">
+
+        <a class="brand" href="inicio.html">
+            <span class="brand-mark">✓</span>
+            <span>
+                <b>TRUSTVOTE</b>
+                <small>ELEIÇÕES ACADÉMICAS</small>
+            </span>
+        </a>
+
+        <nav class="panel-nav" aria-label="Navegação da área do eleitor">
+            <button class="panel-link rounded-lg transition-colors active" type="button" data-view="overview">Visão
+                geral</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="elections">Eleições</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="poll">Sondagem IA</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="receipts">Recibos</button>
+            <button class="panel-link rounded-lg transition-colors" type="button"
+                data-view="results">Resultados</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="help">Ajuda</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="profile">Perfil</button>
+        </nav>
+
+        <div class="panel-user">
+            <span class="session-chip rounded-lg" data-session-chip>SESSÃO SEGURA</span>
+            <span class="user-chip" data-user-chip></span>
+            <a class="portal-link" href="inicio.html">Portal ↗</a>
+            <button class="logout-button" type="button" data-logout aria-label="Terminar sessão"
+                title="Terminar sessão">↪</button>
+        </div>
+
+    </header>
+
+    <div class="dashboard-wrap">
+
+        <!-- Conteúdo principal -->
+        <main class="dashboard-content">
+
+            <!-- VISÃO GERAL -->
+            <section class="view-panel active" data-panel="overview"></section>
+
+
+            <!-- ELEIÇÕES -->
+            <section class="view-panel" data-panel="elections"></section>
+
+
+            <!-- SONDAGENS -->
+            <section class="view-panel" data-panel="poll"></section>
+
+
+            <!-- RESULTADOS -->
+            <section class="view-panel" data-panel="results"></section>
+
+
+            <!-- RECIBOS -->
+            <section class="view-panel" data-panel="receipts"></section>
+
+
+            <!-- AJUDA -->
+            <section class="view-panel" data-panel="help">
+
+                <p class="eyebrow">APOIO AO ELEITOR</p>
+
+                <h1>Como podemos ajudar?</h1>
+
+                <p class="muted">
+                    Utilize o formulário para preparar uma mensagem
+                    com a sua dúvida ou dificuldade.
+                </p>
+
+                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+
+                    <h2>Contactar a equipa</h2>
+
+                    <p>
+                        Descreva a questão para que possa ser analisada
+                        pela equipa responsável pelo projeto.
+                    </p>
+
+                    <form id="support-form">
+
+                        <label class="field-label" for="support-email">
+                            E-mail
+
+                            <input id="support-email" name="email" type="email" autocomplete="email"
+                                placeholder="nome@exemplo.pt" required>
+                        </label>
+
+                        <label class="field-label" for="support-subject">
+                            Assunto
+
+                            <select id="support-subject" name="subject" required>
+                                <option value="">Selecione um assunto</option>
+                                <option value="Acesso à conta">Acesso à conta</option>
+                                <option value="Eleição">Eleição</option>
+                                <option value="Recibos">Recibos</option>
+                                <option value="Sondagens e resultados">Sondagens e resultados</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </label>
+
+                        <label class="field-label" for="support-message">
+                            Mensagem
+
+                            <textarea id="support-message" name="message" rows="5"
+                                placeholder="Descreva a sua dúvida..." required></textarea>
+                        </label>
+
+                        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">
+                            Preparar mensagem →
+                        </button>
+
+                        <p class="form-message" role="status">
+                            Formulário demonstrativo. As mensagens não são enviadas.
+                        </p>
+
+                    </form>
+
+                </article>
+
+            </section>
+
+
+            <!-- PERFIL (preenchido por controllers/eleitor/perfil.js) -->
+            <section class="view-panel" data-panel="profile"></section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

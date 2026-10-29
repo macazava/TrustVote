@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Listas candidatas, propostas e regras de apresentação das candidaturas.">
+
+  <title>Listas académicas | TrustVote</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Listas académicas" data-seccao-link="listas.html" data-atual="Listas candidatas" data-atual-muda></div>
+
+  <main
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu rounded-2xl overflow-hidden shadow-soft">
+        <h2>Listas académicas</h2>
+        <nav aria-label="Listas académicas">
+          <a href="#listas-candidatas">Listas candidatas</a>
+        </nav>
+      </div>
+      <div class="manager-card rounded-2xl shadow-soft">
+        <h2>Gestor responsável</h2>
+        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo: um tema de cada vez -->
+    <div class="section-content rounded-2xl shadow-soft">
+      <article class="section-item" id="listas-candidatas" data-item>
+        <div class="section-item-head">
+          <h1>Listas candidatas</h1>
+          <div class="section-item-tools">
+            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
+            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+          </div>
+        </div>
+        <p class="lead">Listas candidatas à Associação de Estudantes: quem são e o que propõem.</p>
+
+        <!-- Cartões das listas A, B e C -->
+        <div class="candidate-grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" data-candidates>
+          <article>
+            <span class="candidate-badge">A</span>
+            <h2>Lista A</h2>
+            <p><b>Candidatos:</b> Marta Oliveira, Rui Matos</p>
+            <ul class="candidate-proposals">
+              <li>Salas de estudo abertas até mais tarde</li>
+              <li>Apoio a estudantes deslocados</li>
+              <li>Mais atividades na semana académica</li>
+            </ul>
+            <span class="status-pill rounded-full">EXEMPLO</span>
+          </article>
+          <article>
+            <span class="candidate-badge">B</span>
+            <h2>Lista B</h2>
+            <p><b>Candidatos:</b> Tiago Ramos, Sara Nunes</p>
+            <ul class="candidate-proposals">
+              <li>Mais modalidades no desporto universitário</li>
+              <li>Mais opções na cantina</li>
+              <li>Reuniões abertas com os estudantes</li>
+            </ul>
+            <span class="status-pill rounded-full">EXEMPLO</span>
+          </article>
+          <article>
+            <span class="candidate-badge">C</span>
+            <h2>Lista C</h2>
+            <p><b>Candidatos:</b> Beatriz Lopes, Duarte Faria</p>
+            <ul class="candidate-proposals">
+              <li>Partilha de apontamentos e material</li>
+              <li>Ajuda na procura de estágios</li>
+              <li>Campus mais sustentável</li>
+            </ul>
+            <span class="status-pill rounded-full">EXEMPLO</span>
+          </article>
+        </div>
+
+        <p class="notice rounded-xl">Listas e estudantes fictícios, apenas para demonstração.</p>
+      </article>
+
+      <div class="visit-also" data-visit-also></div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

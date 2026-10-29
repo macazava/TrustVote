@@ -1,0 +1,72 @@
+/* Área do eleitor: recibos e sondagem */
+
+/* ===== Recibos ===== */
+.receipt-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 26px;
+    padding: 40px 30px;
+    border-color: var(--ink);
+}
+
+.receipt-card .seal-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0;
+}
+
+.receipt-card h2 {
+    font-size: 28px;
+}
+
+.receipt-card .receipt-code {
+    max-width: 480px;
+}
+
+.receipt-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    color: var(--accent);
+    font-size: 10px;
+}
+
+.receipt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ===== Sondagem ===== */
+.poll-grid {
+    display: grid;
+    grid-template-columns: 1.95fr 1fr;
+    gap: 22px;
+}
+
+.poll-grid .dash-card {
+    display: flex;
+    flex-direction: column;
+    margin-top: 34px;
+}
+
+.poll-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.poll-form .button {
+    width: 100%;
+    margin-top: auto;
+}
+
+.model-tag {
+    padding: 10px 14px;
+    border: 1px solid #c9cde8;
+    background: #f1f4ff;
+    color: var(--muted);
+    font-size: 9px;
+}
+

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Como funcionam as eleições académicas e a votação online no TrustVote.">
+  <title>Como funciona | TrustVote</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+  <div data-layout="cabecalho"></div>
+
+  <div data-layout="caminho" data-atual="Como funciona"></div>
+
+  <!-- Segunda metade da antiga página inicial: eleições, segurança e áreas da plataforma -->
+  <main id="como-funciona-pagina">
+    <section class="election-info grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 container" id="eleicoes">
+      <figure class="photo-panel">
+        <img src="../assets/05_iade_novo_campus_edificio.png" alt="Estudantes no pátio do novo campus do IADE">
+        <figcaption>IADE · Campus da Universidade Europeia</figcaption>
+      </figure>
+      <div class="election-copy">
+        <p class="eyebrow">ELEIÇÕES ACADÉMICAS</p>
+        <h2>Como os estudantes escolhem os seus representantes.</h2>
+        <p>A Associação de Estudantes, os representantes de turma e de curso e os núcleos académicos são eleitos pelos
+          estudantes inscritos. Se nenhuma lista conseguir mais de metade dos votos, pode realizar-se uma segunda volta
+          entre as duas mais votadas.</p>
+        <div class="facts grid-cols-2 sm:grid-cols-3">
+          <div><b>Matrícula ativa</b><small>condição para votar</small></div>
+          <div><b>2 anos</b><small>duração do mandato da Associação de Estudantes</small></div>
+          <div><b>2 voltas</b><small>quando nenhuma lista tem maioria</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="security-section" id="como-funciona">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">COMO FUNCIONA</p>
+            <h2>Simples para quem vota.<br>Claro para todos.</h2>
+          </div>
+          <p>Votar online é tão fácil como entrar no portal do estudante. O voto é secreto e os resultados são públicos.
+          </p>
+        </div>
+        <div class="security-grid grid-cols-1 md:grid-cols-2">
+          <article class="security-card rounded-2xl identity-card">
+            <div class="card-meta"><span class="round-icon">♙</span><small>01 / QUEM VOTA</small></div>
+            <h3>Só votam os estudantes inscritos.<br>Ninguém sabe em quem votou.</h3>
+            <p>Entra com a sua conta de estudante e o seu voto fica separado do seu nome.</p>
+            <div class="credential">
+              <span class="credential-symbol">✓</span>
+              <small>INSCRIÇÃO CONFIRMADA</small>
+              <b>Estudante com matrícula ativa</b>
+              <i>✓</i>
+            </div>
+          </article>
+          <article class="security-card rounded-2xl">
+            <div class="card-meta"><span class="round-icon">⌁</span><small>02 / CONTAGEM</small></div>
+            <h3>Cada voto conta uma vez.</h3>
+            <p>Os votos são contados no fim da votação, sem papel e sem filas.</p>
+            <div class="hash-chain"><span>VOTO</span><i>→</i><span>CONTAGEM</span><i>→</i><span>RESULTADO</span></div>
+          </article>
+          <article class="security-card rounded-2xl dark-card">
+            <div class="card-meta"><span class="round-icon">▤</span><small>03 / RESULTADOS</small></div>
+            <h3>Resultados publicados<br>no fim da votação.</h3>
+            <p>Publicados pela comissão eleitoral académica.</p>
+            <div class="audit-log">
+              <span>● 18:00 · Votação encerrada</span>
+              <span>● 18:05 · Contagem concluída</span>
+              <span>● 18:30 · Resultados publicados</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="platform-section">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ÁREAS DA PLATAFORMA</p>
+            <h2>Uma área para o eleitor.<br>Outra para a equipa.</h2>
+          </div>
+          <p>Os estudantes votam na Área do Eleitor. A comissão eleitoral organiza as eleições na Área da Equipa.</p>
+        </div>
+        <div class="platform-grid grid-cols-1 md:grid-cols-2">
+          <article>
+            <small>ÁREA DO ELEITOR <b>01</b></small>
+            <h3>Votar sem dúvidas.</h3>
+            <p>Veja as suas eleições, consulte as listas, vote e guarde o comprovativo.</p>
+            <a class="button rounded-xl button-outline" href="login.html?area=eleitor">Entrar na Área do Eleitor
+              →</a>
+          </article>
+          <article>
+            <small>ÁREA DA EQUIPA <b>02</b></small>
+            <h3>Organizar as eleições.</h3>
+            <p>Área reservada à comissão eleitoral para gerir eleições, listas e estudantes inscritos.</p>
+            <a class="button rounded-xl button-outline" href="login.html?area=equipa">Entrar na Área da Equipa
+              →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-layout="rodape"></div>
+</body>
+
+</html>

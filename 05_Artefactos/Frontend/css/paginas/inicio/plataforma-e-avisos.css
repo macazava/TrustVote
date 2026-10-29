@@ -1,0 +1,114 @@
+/* Página inicial: áreas da plataforma e avisos */
+
+/* ===== Áreas da plataforma ===== */
+.platform-section {
+    padding: 100px 0;
+    background: var(--sand);
+}
+
+.platform-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.platform-grid article {
+    padding: 28px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.platform-grid article > small {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+}
+
+.platform-grid article > small b {
+    color: var(--accent);
+}
+
+.platform-grid h3 {
+    margin: 30px 0 8px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.platform-grid p {
+    max-width: 470px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.platform-grid .button {
+    margin-top: 13px;
+}
+
+/* ===== Informação para eleitores ===== */
+.news-section {
+    padding-top: 100px;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 18px;
+}
+
+.news-grid .dash-card {
+    margin-top: 0;
+}
+
+.news-photo {
+    margin: -28px -28px 24px;
+}
+
+.news-photo img {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+}
+
+.news-grid h3 {
+    color: var(--title);
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.news-list {
+    display: grid;
+    margin: 10px 0 20px;
+}
+
+.news-list a {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+}
+
+.news-list time {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.news-list b {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.news-list i {
+    font-style: normal;
+}
+
+.news-list a:hover b {
+    color: var(--accent);
+}
+

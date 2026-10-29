@@ -1,0 +1,207 @@
+/* Adaptação a todos os tipos de ecrã (as grelhas usam os breakpoints do Tailwind no HTML) */
+
+/* ===== Cantos arredondados nos elementos que não têm classe própria ===== */
+.field-label input,
+.field-label select,
+.field-label textarea,
+.auth-card input:not([type="checkbox"]),
+.row-actions button {
+    border-radius: 10px;
+}
+
+.candidate-list label,
+.candidate-grid article,
+.platform-grid article,
+.history-rows .year,
+.timeline article:first-child,
+.photo-panel img,
+.news-photo img {
+    border-radius: 14px;
+}
+
+.news-photo {
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+
+.press-news article,
+.press-hero {
+    border-radius: 14px;
+}
+
+.timeline {
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.timeline article:first-child {
+    border-radius: 0;
+}
+
+.button:focus-visible,
+.panel-link:focus-visible,
+.main-nav a:focus-visible,
+.side-menu a:focus-visible {
+    outline: 3px solid #6f9c84;
+    outline-offset: 2px;
+}
+
+/* ===== Ecrãs grandes (monitores 1800px+) ===== */
+@media (min-width: 1800px) {
+    :root {
+        --container: 1360px;
+    }
+
+    .dashboard-content {
+        width: min(1360px, calc(100% - 96px));
+    }
+
+    body[data-page="admin"] .dashboard-content {
+        width: min(1560px, calc(100% - 96px));
+    }
+
+    .hero h1 {
+        font-size: 78px;
+    }
+
+    .lead {
+        font-size: 19px;
+    }
+}
+
+/* ===== Portátil pequeno e tablet deitado (até 1100px): menu "☰" ===== */
+@media (max-width: 1100px) {
+    .site-header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 72px;
+        padding: 12px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+        min-width: 44px;
+        min-height: 44px;
+        margin-left: auto;
+        border-radius: 10px;
+        font-size: 18px;
+    }
+
+    .main-nav {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .main-nav a {
+        min-height: 48px;
+        padding: 0 4px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px;
+    }
+
+    .main-nav a[aria-current="page"] {
+        border-bottom-color: var(--line);
+        border-left: 3px solid #6f9c84;
+        padding-left: 12px;
+    }
+
+    .header-actions {
+        display: none;
+        order: 5;
+        width: 100%;
+        padding-top: 12px;
+    }
+
+    .main-nav.open + .header-actions {
+        display: flex;
+    }
+
+    .header-actions .button {
+        width: 100%;
+    }
+
+    .hero {
+        padding-top: 44px;
+    }
+
+    .steps-card {
+        max-width: 640px;
+    }
+}
+
+/* ===== Tablet (até 1023px): secções com menu em botões deslizantes ===== */
+@media (max-width: 1023px) {
+    .section-page {
+        gap: 16px;
+        padding-top: 20px;
+    }
+
+    .side-menu h2,
+    .manager-card {
+        display: none;
+    }
+
+    .side-menu {
+        background: transparent;
+        border: 0;
+        box-shadow: none !important;
+    }
+
+    .side-menu nav {
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+        scrollbar-width: thin;
+    }
+
+    .side-menu a {
+        flex: none;
+        padding: 10px 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        font-size: 14px;
+        white-space: nowrap;
+        scroll-snap-align: start;
+    }
+
+    .side-menu a[aria-current="page"] {
+        border-color: var(--title);
+        background: var(--title);
+        color: white;
+    }
+
+    .section-content {
+        min-height: 0;
+    }
+
+    .dashboard-content {
+        padding-top: 32px;
+    }
+
+    .panel-nav {
+        scrollbar-width: none;
+    }
+
+    .panel-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .security-grid {
+        grid-template-rows: auto;
+    }
+
+    .identity-card {
+        grid-row: auto;
+    }
+}
+

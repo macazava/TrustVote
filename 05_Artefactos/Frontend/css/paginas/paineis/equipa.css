@@ -1,0 +1,267 @@
+/* Área da equipa: métricas, gráficos, eleições e resultados */
+
+/* ===== Equipa: métricas e gráfico ===== */
+.admin-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.metric-card {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 4px 14px;
+    padding: 22px 20px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.metric-card .check-box {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: center;
+}
+
+.metric-card>small {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--muted);
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.metric-card b small {
+    color: var(--muted);
+}
+
+.metric-card em {
+    grid-column: 3;
+    grid-row: 1;
+    color: var(--accent);
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.metric-card b {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    font-size: 22px;
+}
+
+.metric-card>span:not(.check-box) {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.metric-card .bar {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    align-self: center;
+    height: 3px;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 2.1fr 1fr;
+    gap: 18px;
+}
+
+.overview-grid>.dash-card {
+    margin-top: 18px;
+    background: white;
+}
+
+.line-chart {
+    width: 100%;
+    height: 260px;
+    margin-top: 18px;
+}
+
+.line-chart line {
+    stroke: #eeeeea;
+}
+
+.line-chart text {
+    fill: #9aa09a;
+    font-size: 9px;
+}
+
+.line-chart path {
+    fill: none;
+    stroke: var(--title);
+    stroke-width: 2.5;
+}
+
+/* ===== Equipa: eleições ===== */
+.election-rows {
+    display: grid;
+    gap: 22px;
+}
+
+.election-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 28px 22px;
+    border: 1px solid var(--line);
+    background: white;
+}
+
+.election-row.is-muted h3 {
+    color: var(--muted);
+}
+
+.election-row>div:nth-child(2) {
+    flex: 1;
+}
+
+.election-row h3 {
+    margin: 6px 0;
+    font-size: 21px;
+}
+
+.election-row small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.election-row .turnout {
+    padding-right: 20px;
+    border-right: 1px solid var(--line);
+    text-align: center;
+}
+
+.election-row .turnout b {
+    display: block;
+    font-size: 22px;
+}
+
+.election-row .turnout small {
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+/* ===== Equipa: resultados ===== */
+.results-section-title {
+    margin: 34px 0 14px;
+    font-size: 20px;
+}
+
+.results-split {
+    display: grid;
+    gap: 18px 40px;
+}
+
+.results-split h3 {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Barras horizontais: nome · barra · valor */
+.bar-chart {
+    display: grid;
+    gap: 4px;
+    margin: 6px 0 18px;
+}
+
+.bar-chart-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.9fr) 2fr 84px;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 6px;
+    border-radius: 8px;
+}
+
+.bar-chart-row:hover {
+    background: var(--mint);
+}
+
+.bar-chart-label b,
+.bar-chart-value b {
+    display: block;
+    font-size: 13px;
+}
+
+.bar-chart-label small,
+.bar-chart-value small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.bar-chart-value {
+    text-align: right;
+}
+
+.bar-chart-track {
+    height: 14px;
+}
+
+.bar-chart-track i {
+    display: block;
+    min-width: 4px;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    background: var(--accent);
+}
+
+/* Colunas: participação por eleição (escala fixa de 0 a 100%) */
+.column-chart {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    height: 240px;
+    margin: 18px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+}
+
+.column-chart-item {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    max-width: 160px;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.column-chart-item:hover {
+    background: var(--mint);
+}
+
+.column-chart-item b {
+    font-size: 14px;
+}
+
+.column-chart-track {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    width: 56px;
+}
+
+.column-chart-track i {
+    display: block;
+    width: 100%;
+    min-height: 4px;
+    border-radius: 4px 4px 0 0;
+    background: var(--accent);
+}
+
+.column-chart-item small {
+    min-height: 2.6em;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
+}
+

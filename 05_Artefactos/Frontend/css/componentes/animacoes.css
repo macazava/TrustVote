@@ -1,0 +1,15 @@
+/* Animações: só ficam ativas quando o JavaScript corre (sem JS tudo aparece normalmente) */
+.tv-hidden {
+    opacity: 0;
+}
+
+/* Barra de participação da página inicial cresce até ao valor real */
+.tv-anim [data-hub-bar] {
+    transition: width 1.1s cubic-bezier(.2, .8, .2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tv-hidden {
+        opacity: 1 !important;
+    }
+}

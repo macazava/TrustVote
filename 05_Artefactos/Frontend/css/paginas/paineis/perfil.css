@@ -1,0 +1,272 @@
+/* Área do eleitor, separador "Perfil": identidade, números, participação e privacidade */
+
+/* ===== Cartão de identidade ===== */
+.profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin-top: 24px;
+    padding: 30px 32px;
+    background: linear-gradient(135deg, var(--dark), var(--accent));
+    color: #fff;
+}
+
+.profile-avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border: 3px solid rgb(255 255 255 / 35%);
+    border-radius: 50%;
+    background: var(--mint);
+    color: var(--title);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.profile-id {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-id small {
+    color: #cbd8d0;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+}
+
+.profile-id h2 {
+    margin: 4px 0 2px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.profile-id p {
+    margin: 0;
+    color: #e3ece7;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.profile-tags span {
+    padding: 5px 12px;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 10%);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.profile-tags .is-off {
+    border-color: #f2c39b;
+    color: #fde3cc;
+}
+
+.profile-hero .button {
+    flex: none;
+    margin: 0;
+}
+
+/* ===== Números ===== */
+.profile-stats {
+    display: grid;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.profile-stat {
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.profile-stat b {
+    display: block;
+    color: var(--title);
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.profile-stat small {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* ===== Grelha de cartões ===== */
+.profile-grid {
+    display: grid;
+    gap: 0 22px;
+    align-items: start;
+}
+
+.profile-grid .muted {
+    font-size: 14px;
+}
+
+/* ===== Linha do tempo da participação ===== */
+.profile-timeline {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.profile-timeline li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0 14px 4px;
+    border-top: 1px solid var(--line);
+}
+
+.profile-timeline li:first-child {
+    border-top: 0;
+}
+
+.profile-timeline li > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-timeline b {
+    display: block;
+    color: var(--ink);
+    font-size: 15px;
+}
+
+.profile-timeline small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.profile-timeline .button {
+    flex: none;
+    margin: 0;
+}
+
+.profile-dot {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: var(--paper);
+}
+
+.profile-timeline .is-done .profile-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+}
+
+.profile-timeline .is-open .profile-dot {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--mint);
+}
+
+/* ===== Sessão ===== */
+.profile-session {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0 6px;
+}
+
+.profile-session div {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--mint);
+}
+
+.profile-session small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+}
+
+.profile-session b {
+    color: var(--title);
+    font-size: 22px;
+}
+
+/* ===== Privacidade ===== */
+.profile-list {
+    display: grid;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+
+.profile-list li {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-list li::before {
+    flex: none;
+    font-weight: 700;
+}
+
+.profile-list .is-yes::before {
+    content: "✓";
+    color: var(--accent);
+}
+
+.profile-list .is-no::before {
+    content: "✕";
+    color: var(--danger);
+}
+
+/* ===== Telemóvel ===== */
+@media (max-width: 640px) {
+    .profile-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+        padding: 24px 20px;
+    }
+
+    .profile-avatar {
+        width: 68px;
+        height: 68px;
+        font-size: 24px;
+    }
+
+    .profile-id h2 {
+        font-size: 23px;
+    }
+
+    .profile-hero .button {
+        width: 100%;
+    }
+
+    .profile-stat b {
+        font-size: 28px;
+    }
+
+    .profile-timeline li {
+        flex-wrap: wrap;
+    }
+
+    .profile-timeline li > div {
+        flex-basis: calc(100% - 40px);
+    }
+
+    .profile-timeline .button,
+    .profile-timeline .ok-label {
+        margin-left: 28px;
+    }
+}
