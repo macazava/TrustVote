@@ -101,6 +101,15 @@
 
     el.querySelectorAll("[data-round]").forEach((b) =>
       b.addEventListener("click", safely(async () => {
+        const abrir = b.dataset.roundAction === "abrir";
+        const volta = b.dataset.round === "2" ? "2.ª volta" : "1.ª volta";
+        const ok = await ui.confirm({
+          title: `${abrir ? "Abrir" : "Encerrar"} a ${volta}?`,
+          text: abrir ? "Os eleitores habilitados passam a poder votar nesta volta." : "A votação desta volta fecha e já não é possível votar.",
+          ok: abrir ? "Abrir volta" : "Encerrar volta",
+          danger: !abrir,
+        });
+        if (!ok) return;
         await api.eleicoes.acaoRonda(e.id, b.dataset.round, b.dataset.roundAction);
         team.renderElectionForm(e.id);
       }))

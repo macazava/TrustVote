@@ -67,66 +67,65 @@ document.addEventListener("DOMContentLoaded", () => {
     ui.message(message, "Login desativado temporariamente: clique em Entrar para aceder sem credenciais.");
   }
 
-  // ===== Envio do formulário =====
-  // Fase de captura: corre antes da validação local de formulario.js
-  document.addEventListener(
-    "submit",
-    async (event) => {
-      if (event.target !== form) return;
-      event.preventDefault();
-      event.stopPropagation();
-      if (window.TrustVote.LOGIN_DESATIVADO) {
-        window.location.href = role() === "equipa" ? "equipa.html" : "eleitor.html";
-        return;
+  // ===== Envio do formulário (único sítio com validação e pedido ao servidor) =====
+  let aEnviar = false;
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (aEnviar) return; // evita dois pedidos com duplo clique ou Enter repetido
+    if (window.TrustVote.LOGIN_DESATIVADO) {
+      window.location.href = role() === "equipa" ? "equipa.html" : "eleitor.html";
+      return;
+    }
+    ui.message(message, "");
+    if (!form.reportValidity()) return;
+
+    const email = form.elements.email.value.trim();
+    const password = form.elements.password.value;
+    const remember = form.elements.remember.checked;
+    const submit = form.querySelector('[type="submit"]');
+
+    if (isRegister()) {
+      if (role() === "equipa") return ui.message(message, "As contas da equipa são criadas por um administrador.");
+      if (password !== form.elements.confirm.value) return ui.message(message, "As palavras-passe não coincidem.");
+      if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        return ui.message(message, "A palavra-passe tem de ter pelo menos 8 caracteres, com letras e números.");
       }
-      ui.message(message, "");
-      if (!form.reportValidity()) return;
+      if (!form.elements.terms.checked) return ui.message(message, "É necessário aceitar os termos de utilização.");
+    }
 
-      const email = form.elements.email.value.trim();
-      const password = form.elements.password.value;
-      const remember = form.elements.remember.checked;
-      const submit = form.querySelector('[type="submit"]');
-
-      if (isRegister()) {
-        if (role() === "equipa") return ui.message(message, "As contas da equipa são criadas por um administrador.");
-        if (password !== form.elements.confirm.value) return ui.message(message, "As palavras-passe não coincidem.");
-        if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
-          return ui.message(message, "A palavra-passe tem de ter pelo menos 8 caracteres, com letras e números.");
+    aEnviar = true;
+    try {
+      await ui.busy(submit, isRegister() ? "A criar conta…" : "A entrar…", async () => {
+        if (isRegister()) {
+          await api.auth.registo({ nome: form.elements.name.value.trim(), email, password });
         }
-        if (!form.elements.terms.checked) return ui.message(message, "É necessário aceitar os termos de utilização.");
+        const dados = { email, password };
+        if (!totpField.hidden) dados.codigo_totp = form.elements.totp.value.trim();
+        session.save(await api.auth.login(dados), remember);
+      });
+    } catch (error) {
+      aEnviar = false;
+      if (/TOTP necess/i.test(error.message)) {
+        showTotp(true);
+        form.elements.totp.focus();
+        return ui.message(message, "Introduza o código da sua aplicação autenticadora.");
       }
+      return ui.message(message, error.message);
+    }
 
-      try {
-        await ui.busy(submit, isRegister() ? "A criar conta…" : "A entrar…", async () => {
-          if (isRegister()) {
-            await api.auth.registo({ nome: form.elements.name.value.trim(), email, password });
-          }
-          const dados = { email, password };
-          if (!totpField.hidden) dados.codigo_totp = form.elements.totp.value.trim();
-          session.save(await api.auth.login(dados), remember);
-        });
-      } catch (error) {
-        if (/TOTP necess/i.test(error.message)) {
-          showTotp(true);
-          form.elements.totp.focus();
-          return ui.message(message, "Introduza o código da sua aplicação autenticadora.");
-        }
-        return ui.message(message, error.message);
+    try {
+      const user = await session.refresh();
+      if (role() === "equipa" && !session.isAdmin(user)) {
+        session.clear();
+        return ui.message(message, "Esta conta não tem acesso à área da equipa.");
       }
-
-      try {
-        const user = await session.refresh();
-        if (role() === "equipa" && !session.isAdmin(user)) {
-          session.clear();
-          return ui.message(message, "Esta conta não tem acesso à área da equipa.");
-        }
-        window.location.href = session.isAdmin(user) ? "equipa.html" : "eleitor.html";
-      } catch (error) {
-        ui.message(message, error.message);
-      }
-    },
-    true
-  );
+      window.location.href = session.isAdmin(user) ? "equipa.html" : "eleitor.html";
+    } catch (error) {
+      ui.message(message, error.message);
+    } finally {
+      aEnviar = false;
+    }
+  });
 
   sync();
 });

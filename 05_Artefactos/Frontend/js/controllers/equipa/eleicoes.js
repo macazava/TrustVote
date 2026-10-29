@@ -13,6 +13,11 @@
     agendada: ["iniciar", "Em curso"],
     em_curso: ["encerrar", "Encerrada"],
   };
+  const avisos = {
+    agendar: "Os eleitores passam a ver a eleição e as datas. Os candidatos deixam de poder ser adicionados ou removidos.",
+    iniciar: "A votação abre para os eleitores habilitados.",
+    encerrar: "A votação fecha e já não é possível votar. Os resultados passam a ser finais.",
+  };
 
   team.renderElectionList = async function renderElectionList() {
     const el = panel("elections");
@@ -45,6 +50,9 @@
       const dados = { titulo: form.titulo.value.trim(), descricao: form.descricao.value.trim() || null };
       const datas = { data_inicio: elections.fromLocalInput(form.inicio.value), data_fim: elections.fromLocalInput(form.fim.value) };
       if (editavel && Date.parse(datas.data_fim) <= Date.parse(datas.data_inicio)) return ui.message(message, "O fim tem de ser depois do início.");
+      // Mudar o estado (agendar, iniciar, encerrar) pede confirmação antes de gravar
+      const mudanca = e && form.estado.value && transitions[e.estado];
+      if (mudanca && !(await ui.confirm({ title: `Passar a eleição para "${mudanca[1]}"?`, text: avisos[mudanca[0]], ok: `Sim, ${mudanca[0]}` }))) return;
       try {
         await ui.busy(form.querySelector('[type="submit"]'), "A guardar…", async () => {
           if (!e) {
@@ -68,7 +76,7 @@
     });
 
     el.querySelector("[data-remove]")?.addEventListener("click", async () => {
-      if (!window.confirm("Apagar esta eleição? Esta ação não pode ser desfeita.")) return;
+      if (!(await ui.confirm({ title: "Apagar esta eleição?", text: "A eleição em rascunho e os seus candidatos são apagados. Esta ação não pode ser desfeita.", ok: "Apagar", danger: true }))) return;
       try {
         await api.eleicoes.apagar(e.id);
         ui.toast("Eleição apagada.");
