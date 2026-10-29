@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }, 30000);
 
   // ===== Separadores =====
-  voter.renderSettings();
+  voter.renderProfile();
   voter.loadReceipts();
   wrap.classList.add("is-ready");
 
@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     voter.renderElections();
     voter.renderPoll();
     voter.renderResults();
+    voter.renderProfile();
   }
 
   panel("overview").innerHTML = ui.loading("A carregar as tuas eleições…");

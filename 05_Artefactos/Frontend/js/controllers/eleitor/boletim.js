@@ -7,6 +7,31 @@
   const { panel } = TV.panels;
   const voter = TV.voter;
 
+  // ===== Rascunho do voto =====
+  // A escolha marcada fica neste separador do navegador (sessionStorage) até depositar ou sair.
+  // Se a sessão expirar a meio, ao voltar a entrar o boletim abre com a mesma opção marcada.
+  const RASCUNHO = "trustvote:rascunho-voto";
+  const rascunho = {
+    ler(eleicaoId) {
+      try {
+        const r = JSON.parse(sessionStorage.getItem(RASCUNHO) || "null");
+        return r && r.eleicao === eleicaoId ? r.candidato : null;
+      } catch {
+        return null;
+      }
+    },
+    guardar(eleicaoId, candidatoId) {
+      try {
+        sessionStorage.setItem(RASCUNHO, JSON.stringify({ eleicao: eleicaoId, candidato: candidatoId }));
+      } catch { }
+    },
+    apagar() {
+      try {
+        sessionStorage.removeItem(RASCUNHO);
+      } catch { }
+    },
+  };
+
   // Passo 1: escolher (escolhidoId mantém a opção marcada ao voltar de "Alterar escolha")
   voter.openBallot = function openBallot(id, escolhidoId = null) {
     const e = voter.state.lista.find((x) => x.id === id);
@@ -14,9 +39,15 @@
     if (!e || !e.aberta) return voter.renderElections();
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    el.innerHTML = TV.voterView.ballotPage(e, escolhidoId);
+    const guardado = rascunho.ler(e.id);
+    const recuperado = escolhidoId === null ? e.candidatosRonda.find((c) => String(c.id) === String(guardado)) : null;
+    el.innerHTML = TV.voterView.ballotPage(e, recuperado ? recuperado.id : escolhidoId);
+    if (recuperado) ui.message(el.querySelector("[data-ballot] .form-message"), "Recuperámos a opção que tinhas marcado antes de a sessão terminar.", true);
 
     el.querySelector("[data-back]").addEventListener("click", voter.renderElections);
+    el.querySelector("[data-ballot]").addEventListener("change", (event) => {
+      if (event.target.name === "candidate") rascunho.guardar(e.id, event.target.value);
+    });
     el.querySelector("[data-ballot]").addEventListener("submit", (event) => {
       event.preventDefault();
       const escolhido = event.currentTarget.candidate.value;
@@ -53,7 +84,9 @@
 
   // Passo 3: voto depositado
   function done(recibo) {
+    rascunho.apagar();
     panel("elections").innerHTML = TV.voterView.donePage(recibo);
     voter.loadReceipts();
+    voter.renderProfile();
   }
 })();
