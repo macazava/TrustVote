@@ -28,8 +28,7 @@
     }
 
     .lead,
-    .section-item > p,
-    .section-body > p {
+    .section-item > p {
         font-size: 15px;
     }
 

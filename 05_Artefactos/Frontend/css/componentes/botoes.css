@@ -52,8 +52,7 @@
     font-size: 13px;
 }
 
-.text-link,
-.quiet-link {
+.text-link {
     border-bottom: 1px solid var(--ink);
     padding: 8px 0 5px;
     font-size: 14px;
@@ -61,8 +60,7 @@
     text-decoration: none;
 }
 
-.text-link:hover,
-.quiet-link:hover {
+.text-link:hover {
     color: var(--accent);
 }
 

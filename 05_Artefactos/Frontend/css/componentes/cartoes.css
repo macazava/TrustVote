@@ -1,6 +1,5 @@
 /* Cartões, etiquetas de estado e pequenos blocos reutilizados */
-.dash-card,
-.election-status-card {
+.dash-card {
     margin-top: 24px;
     padding: 28px;
     border: 1px solid var(--line);
@@ -266,12 +265,6 @@
     margin-right: 9px;
     color: var(--green);
     font-style: normal;
-}
-
-.audit-list .state-warn,
-.audit-list .state-down,
-.audit-list .state-pending {
-    color: var(--warn);
 }
 
 @media (max-width: 760px) {
