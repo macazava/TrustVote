@@ -109,6 +109,9 @@
 
     logout() {
       session.clear();
+      try {
+        sessionStorage.removeItem("trustvote:rascunho-voto");
+      } catch { }
       window.location.href = pageUrl("inicio.html");
     },
   };

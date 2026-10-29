@@ -87,42 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateForm();
   });
 
-  // Validação local (o envio verdadeiro está em autenticacao.js, que corre primeiro e pára este)
-  authForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    message.textContent = "";
-
-    if (!authForm.reportValidity()) return;
-
-    if (selectedMode === "register") {
-      if (selectedRole === "equipa") {
-        message.textContent = "A criação de contas da equipa não está disponível nesta demonstração.";
-        return;
-      }
-
-      if (password.value !== confirmPassword.value) {
-        message.textContent = "As palavras-passe não coincidem.";
-        confirmPassword.focus();
-        return;
-      }
-
-      if (!terms.checked) {
-        message.textContent = "É necessário aceitar os termos de utilização.";
-        terms.focus();
-        return;
-      }
-
-      message.textContent = "O registo real estará disponível após a integração com o backend.";
-      return;
-    }
-
-    window.location.href = selectedRole === "equipa" ? "equipa.html" : "eleitor.html";
-  });
-
-  document.querySelector('[data-action="recover"]')?.addEventListener("click", () => {
-    message.textContent = "A recuperação de acesso estará disponível após a integração com o backend.";
-  });
-
+  // A validação e o envio do formulário estão só em autenticacao.js
   updateForm();
 });
