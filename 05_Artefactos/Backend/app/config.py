@@ -15,9 +15,30 @@ def _ler_ficheiro_ou_env(nome: str) -> str | None:
     return os.getenv(nome)
 
 
+def url_bd(hosts: str, papel: str) -> URL:
+    """URL do PostgreSQL para um ou mais hosts separados por vírgulas (libpq tenta-os por ordem).
+
+    papel = target_session_attrs do libpq:
+      - "read-write": só aceita o nó que está a aceitar escritas (o primário). Depois de promover a
+        réplica, as ligações novas vão sozinhas para ela, sem mudar a configuração.
+      - "prefer-standby": prefere a réplica; se não houver réplica disponível, usa o primário.
+    """
+    return URL.create(
+        "postgresql+psycopg2",
+        username=os.getenv("DATABASE_USER", "trustvote"),
+        password=os.getenv("DATABASE_PASSWORD", ""),
+        port=int(os.getenv("DATABASE_PORT", "5432")),
+        database=os.getenv("DATABASE_NAME", "trustvote"),
+        # dict.fromkeys: tira repetidos mantendo a ordem
+        query={"host": ",".join(dict.fromkeys(h.strip() for h in hosts.split(",") if h.strip())),
+               "target_session_attrs": papel},
+    )
+
+
 @dataclass(frozen=True)
 class Settings:
     database_url: URL | str
+    database_read_url: URL | str
     database_schema: str | None
     jwt_private_key: str
     jwt_public_key: str
@@ -38,14 +59,13 @@ class Settings:
 
 @lru_cache
 def get_settings() -> Settings:
-    database_url = os.getenv("DATABASE_URL") or URL.create(
-        "postgresql+psycopg2",
-        username=os.getenv("DATABASE_USER", "trustvote"),
-        password=os.getenv("DATABASE_PASSWORD", ""),
-        host=os.getenv("DATABASE_HOST", "127.0.0.1"),
-        port=int(os.getenv("DATABASE_PORT", "5432")),
-        database=os.getenv("DATABASE_NAME", "trustvote"),
-    )
+    # Escritas: DATABASE_HOST (pode ter vários hosts; só o primário é aceite).
+    # Leituras que toleram atraso: DATABASE_READ_HOST (réplica; se falhar, o primário).
+    # DATABASE_URL (testes) substitui as duas.
+    escrita_hosts = os.getenv("DATABASE_HOST", "127.0.0.1")
+    leitura_hosts = os.getenv("DATABASE_READ_HOST") or escrita_hosts
+    database_url = os.getenv("DATABASE_URL") or url_bd(escrita_hosts, "read-write")
+    database_read_url = os.getenv("DATABASE_URL") or url_bd(f"{leitura_hosts},{escrita_hosts}", "prefer-standby")
     private_key = _ler_ficheiro_ou_env("JWT_PRIVATE_KEY")
     public_key = _ler_ficheiro_ou_env("JWT_PUBLIC_KEY")
     totp_key = _ler_ficheiro_ou_env("TOTP_ENCRYPTION_KEY")
@@ -58,6 +78,7 @@ def get_settings() -> Settings:
         )
     return Settings(
         database_url=database_url,
+        database_read_url=database_read_url,
         database_schema=os.getenv("DATABASE_SCHEMA") or None,
         jwt_private_key=private_key,
         jwt_public_key=public_key,

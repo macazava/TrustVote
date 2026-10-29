@@ -7,7 +7,7 @@ from app.schemas.votacao import (ApuramentoOut, AuditoriaOut, EstatisticasOut, P
                                  ParticipacaoRondaOut, ReciboOut, ResultadoRondaOut, ResumoPublicoOut,
                                  SondagemOut, SondagemRespostaIn, SondagemRespostaOut, VerificacaoAuditoriaOut,
                                  VerificacaoReciboFrontOut, VerificacaoReciboOut, VotoIn)
-from app.security.dependencias import Admin, DbSession, UtilizadorAtual
+from app.security.dependencias import Admin, DbLeitura, DbSession, UtilizadorAtual
 from app.services import apuramento, auditoria, publico, sondagem, votacao
 from app.services.erros import Proibido
 
@@ -70,7 +70,7 @@ def resultados(eleicao_id: int, utilizador: UtilizadorAtual, db: DbSession):
 
 
 @router.get("/eleicoes/{eleicao_id}/estatisticas", response_model=EstatisticasOut)
-def estatisticas(eleicao_id: int, _: Admin, db: DbSession):
+def estatisticas(eleicao_id: int, _: Admin, db: DbLeitura):
     """Participação (quantos votaram, por ronda e por hora), sem revelar em quem."""
     return apuramento.estatisticas_participacao(db, eleicao_id)
 
@@ -92,7 +92,7 @@ def responder_sondagem(eleicao_id: int, dados: SondagemRespostaIn, utilizador: U
 # ------------------------------------------------------------ público (sem login)
 
 @router_publico.get("/resumo", response_model=ResumoPublicoOut)
-def resumo_publico(db: DbSession):
+def resumo_publico(db: DbLeitura):
     """Eleição em destaque (em curso > agendada > última encerrada), candidatos e participação."""
     return publico.resumo(db)
 
@@ -100,7 +100,7 @@ def resumo_publico(db: DbSession):
 # ------------------------------------------------------------ auditoria (admin)
 
 @router_auditoria.get("", response_model=list[AuditoriaOut])
-def listar_auditoria(_: Admin, db: DbSession, acao: str | None = None, utilizador_id: int | None = None,
+def listar_auditoria(_: Admin, db: DbLeitura, acao: str | None = None, utilizador_id: int | None = None,
                      entidade: str | None = None, entidade_id: int | None = None,
                      limite: int = Query(100, ge=1, le=1000), antes_de: int | None = None):
     """Registos mais recentes primeiro. `acao` aceita * (ex.: `auth.*`). Paginação com `antes_de`."""
@@ -109,6 +109,6 @@ def listar_auditoria(_: Admin, db: DbSession, acao: str | None = None, utilizado
 
 
 @router_auditoria.get("/verificar", response_model=VerificacaoAuditoriaOut)
-def verificar_auditoria(_: Admin, db: DbSession):
+def verificar_auditoria(_: Admin, db: DbLeitura):
     """Recalcula a cadeia de hashes e indica o primeiro registo adulterado, se existir."""
     return auditoria.verificar_cadeia(db)

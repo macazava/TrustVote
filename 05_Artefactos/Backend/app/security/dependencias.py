@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import get_db, get_db_leitura
 from app.models import Utilizador
 from app.security.estado_partilhado import token_revogado
 from app.security.tokens import TokenInvalido, validar_token
@@ -13,6 +13,8 @@ from app.security.tokens import TokenInvalido, validar_token
 _bearer = HTTPBearer(auto_error=False)
 
 DbSession = Annotated[Session, Depends(get_db)]
+# Réplica: só para rotas que não escrevem e toleram um pequeno atraso (resumo público, auditoria, estatísticas)
+DbLeitura = Annotated[Session, Depends(get_db_leitura)]
 
 
 def utilizador_atual(db: DbSession, request: Request,
