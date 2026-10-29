@@ -1,9 +1,9 @@
-/* Controller · área do eleitor, separadores "Recibos" (verificar e descarregar) e "Definições" */
+/* Controller · área do eleitor, separador "Recibos" (verificar e descarregar) */
 (function () {
   "use strict";
 
   const TV = window.TrustVote;
-  const { api, ui, session, localReceipts, twoFactor, download } = TV;
+  const { api, ui, localReceipts, download } = TV;
   const { panel } = TV.panels;
   const voter = TV.voter;
 
@@ -51,25 +51,6 @@
           download.ficheiro(`recibo-${r.recibo}.txt`, view.receiptText(r), "text/plain");
         })
       );
-    });
-  };
-
-  // ===== Definições =====
-  // O cartão de acessibilidade já vem no HTML: os cartões novos entram antes dele (guardado na primeira vez)
-  let acessibilidade = null;
-
-  voter.renderSettings = function renderSettings() {
-    const settings = panel("settings");
-    if (!acessibilidade) acessibilidade = settings.querySelector(".dash-card");
-    settings.querySelectorAll("[data-settings-extra]").forEach((n) => n.remove());
-
-    settings.querySelector("h1").insertAdjacentHTML("afterend", TV.voterView.settingsIntro());
-    acessibilidade.insertAdjacentHTML("beforebegin", TV.voterView.settingsCards(session.user, session.claims() || {}));
-
-    settings.querySelector("[data-logout-settings]").addEventListener("click", session.logout);
-    twoFactor.wire(settings, () => {
-      renderSettings();
-      voter.renderOverview();
     });
   };
 })();

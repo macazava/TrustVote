@@ -35,15 +35,6 @@
   };
 
   // ===== Configuração =====
-  const PREFS = "trustvote:preferencias";
-  const readPrefs = () => {
-    try {
-      return JSON.parse(localStorage.getItem(PREFS) || "{}");
-    } catch {
-      return {};
-    }
-  };
-
   team.renderSettings = function renderSettings() {
     const el = panel("settings");
     el.innerHTML = TV.teamView.settingsPage({
@@ -54,21 +45,11 @@
       twoFactorCard: twoFactor.card(session.user),
     });
 
-    // Texto maior e contraste: os interruptores mostram o estado guardado
-    const paint = () =>
-      el.querySelectorAll("[data-pref]").forEach((b) => b.setAttribute("aria-pressed", String(!!readPrefs()[b.dataset.pref])));
+    // Texto maior e contraste: guardados por TrustVote.prefs (controllers/comum/pagina.js)
     el.querySelectorAll("[data-pref]").forEach((b) =>
-      b.addEventListener("click", () => {
-        const prefs = { ...readPrefs(), [b.dataset.pref]: !readPrefs()[b.dataset.pref] };
-        try {
-          localStorage.setItem(PREFS, JSON.stringify(prefs));
-        } catch { }
-        document.body.classList.toggle("large-text", !!prefs.largeText);
-        document.body.classList.toggle("high-contrast", !!prefs.contrast);
-        paint();
-      })
+      b.addEventListener("click", () => TV.prefs.save({ [b.dataset.pref]: !TV.prefs.read()[b.dataset.pref] }))
     );
-    paint();
+    TV.prefs.apply();
 
     // Endereço da API: só fica guardado se o servidor responder
     const form = el.querySelector("[data-api-form]");
