@@ -1,0 +1,5 @@
+/* Entrada do Tailwind: "npm run css" lê este ficheiro e gera css/tailwind.css (não editar o gerado à mão).
+   O reset (preflight) está desligado em tailwind.config.js, por isso "base" só traz as variáveis internas do Tailwind. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -60,7 +60,7 @@
     background: var(--ivory);
 }
 
-.side-menu a[aria-current="true"] {
+.side-menu a[aria-current="page"] {
     border-left-color: #6f9c84;
     background: var(--beige);
     font-weight: 700;
@@ -113,8 +113,7 @@
     margin-top: 10px;
 }
 
-.section-item > p,
-.section-body > p {
+.section-item > p {
     max-width: 780px;
     color: #3b403c;
     font-size: 17px;

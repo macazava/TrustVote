@@ -78,3 +78,41 @@
 .server-status.is-down {
     color: var(--warn);
 }
+
+/* Janela de confirmação (TrustVote.ui.confirm) */
+.confirm-dialog {
+    width: min(440px, calc(100vw - 32px));
+    padding: 24px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+}
+
+.confirm-dialog::backdrop {
+    background: rgb(23 63 50 / 45%);
+}
+
+.confirm-dialog h2 {
+    margin: 0 0 8px;
+    color: var(--title);
+    font-size: 20px;
+}
+
+.confirm-dialog p {
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+.confirm-dialog .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button-danger {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+}
