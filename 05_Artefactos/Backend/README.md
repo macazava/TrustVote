@@ -59,7 +59,11 @@ docker compose exec servidor1 python -m app.scripts.criar_admin admin@trustvote.
 ```
 
 - API (via nginx): <http://127.0.0.1:8080>
+- Frontend (servido pelo nginx, mesma origem da API): <http://127.0.0.1:8080/app/>
 - Documentação interativa (Swagger): <http://127.0.0.1:8080/docs>
+
+O frontend também pode ser aberto noutra origem (ex.: Live Server do VS Code em `:5500`): a API
+aceita pedidos de qualquer origem (CORS, configurável com `CORS_ORIGINS`).
 
 Depois de alterar código do backend: `docker compose up -d --build servidor1 servidor2`.
 
@@ -91,6 +95,7 @@ $env:TOTP_ENCRYPTION_KEY_FILE="..\Infraestrutura\secrets\totp_key.txt"
 | `LOGIN_MAX_TENTATIVAS` / `LOGIN_JANELA_SEGUNDOS` | bloqueio após falhas (por omissão 5 em 15 min) |
 | `RESET_CODIGO_MINUTOS` | validade do código de reposição de password (por omissão 30) |
 | `WORKER_INTERVALO` | segundos entre ciclos do worker (por omissão 10) |
+| `CORS_ORIGINS` | origens do frontend autorizadas, separadas por vírgulas (por omissão `*`) |
 
 A app recusa arrancar se faltarem as chaves.
 
@@ -120,12 +125,17 @@ Autenticação: `Authorization: Bearer <access_token>` (obtido em `/auth/login`)
 | POST | `/eleicoes/{id}/rondas/{n}/abrir` · `/encerrar` | admin | abrir 2.ª volta / encerrar ronda |
 | POST · PATCH · DELETE | `/eleicoes/{id}/candidatos[/{cid}]` | admin | gerir candidatos |
 | GET · POST · DELETE | `/eleicoes/{id}/habilitados[/{uid}]` | admin | habilitar eleitores (`{utilizador_ids: [...]}`) |
-| POST | `/eleicoes/{id}/rondas/{n}/votos` | eleitor habilitado | `{candidato_id}` → recibo |
+| POST | `/eleicoes/{id}/rondas/{n}/votos` | eleitor habilitado | `{candidato_id}` → `{recibo, hash, data, eleicao_id, ronda}` |
+| GET | `/eleicoes/{id}/participacao` | autenticado | `{votou, ronda, rondas}`: se já votou na ronda atual |
 | GET | `/eleicoes/{id}/minha-participacao` | eleitor | em que rondas já votou |
 | GET | `/votos/{recibo}` | autenticado | confirma que o voto foi registado e não alterado (sem mostrar o candidato) |
+| GET | `/recibos/{codigo}/verificar` | autenticado | o mesmo, no formato do frontend (`valido`, `incluido`, `ronda`) |
 | POST | `/eleicoes/{id}/rondas/{n}/apurar` | admin | apurar uma ronda encerrada (o worker faz isto sozinho) |
-| GET | `/eleicoes/{id}/resultados` | autenticado | resultados das rondas apuradas (mesma visibilidade da eleição) |
-| GET | `/eleicoes/{id}/estatisticas` | admin | participação por ronda |
+| GET | `/eleicoes/{id}/resultados` | autenticado | lista por ronda `{ronda, apurada, provisorio, total_votos, candidatos[{id, nome, partido, total_votos, percentagem}], decisao}`; eleitores só veem rondas apuradas, admins também a contagem provisória |
+| GET | `/eleicoes/{id}/estatisticas` | admin | `{habilitados, votantes, participacao, serie[{hora, votos}], rondas}` (ronda atual + votos por hora) |
+| GET | `/eleicoes/{id}/sondagem` | autenticado | projeção da sondagem (simulação, não é o voto) |
+| POST | `/eleicoes/{id}/sondagem/respostas` | autenticado | `{candidato_id}`, uma resposta anónima por pessoa |
+| GET | `/publico/resumo` | público | eleição em destaque, candidatos, eleitores, votos e participação |
 | GET | `/auditoria?acao=&utilizador_id=&entidade=&entidade_id=&limite=&antes_de=` | admin | registos, mais recentes primeiro (`acao` aceita `*`) |
 | GET | `/auditoria/verificar` | admin | recalcula a cadeia de hashes e aponta o 1.º registo adulterado |
 
@@ -171,7 +181,10 @@ Erros: `401` não autenticado · `403` sem permissão · `404` não existe (ou n
   confirma que o número de votos é igual ao de participações (`consistente`).
 - Ronda 1: vence quem tiver **mais de 50%**; senão passam os 2 mais votados à 2.ª volta. Ronda 2: vence o
   mais votado. Empates ficam assinalados (`empate`) para decisão do admin.
-- Não há contagens parciais: os resultados só aparecem depois de apurados.
+- Os eleitores só veem resultados depois de apurados. Os administradores veem a contagem provisória
+  (votos válidos) das rondas abertas, para acompanhar a votação na área da equipa.
+- Não existe lista de recibos no servidor: guardar que recibo é de que eleitor quebrava o anonimato.
+  O frontend guarda os recibos no próprio dispositivo e verifica-os em `/recibos/{codigo}/verificar`.
 - O **worker** (`python -m app.worker`, serviço `worker` no Docker) encerra as rondas cujo período acabou
   e apura-as, a cada 10 s. É seguro correr vários: cada ação bloqueia a eleição e volta a confirmar o estado.
 
@@ -213,7 +226,7 @@ Correm contra o PostgreSQL e o Redis da infraestrutura (`compose.debug.yaml`: BD
 16379), num schema isolado `tv_testes` (criado a partir do `trustvote.sql` e apagado no fim) e com chaves
 Redis com o prefixo `tv_testes:`. Os dados da aplicação não são tocados. Outra BD: `TEST_DATABASE_URL`.
 
-56 testes:
+60 testes:
 - **autenticação** (14): registo, login, ataques ao JWT (outra chave, HS256, `none`, expirado), contas
   desativadas, permissões;
 - **TOTP** (6): cifra, reutilização de códigos, fluxo completo;
@@ -222,7 +235,8 @@ Redis com o prefixo `tv_testes:`. Os dados da aplicação não são tocados. Out
   concorrência;
 - **votação** (6): voto anónimo e recibo, duplicado, dois votos simultâneos, quem pode votar, período;
 - **apuramento** (6): vencedor, 2.ª volta, empate/sem votos, voto adulterado, estatísticas, worker;
-- **auditoria** (4): consulta e filtros, adulteração e remoção detetadas, registos antigos.
+- **auditoria** (4): consulta e filtros, adulteração e remoção detetadas, registos antigos;
+- **frontend** (4): participação, recibos, resumo público, sondagem e CORS.
 
 ## Limitações conhecidas
 - A ordem física das linhas na BD pode, em teoria, permitir a quem tenha acesso direto ao PostgreSQL
