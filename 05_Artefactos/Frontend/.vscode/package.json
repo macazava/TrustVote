@@ -1,0 +1,12 @@
+{
+  "name": "trustvote-frontend",
+  "private": true,
+  "description": "Frontend do TrustVote. O CSS do Tailwind é compilado para css/tailwind.css.",
+  "scripts": {
+    "css": "cd .. && tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify",
+    "css:watch": "cd .. && tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.16"
+  }
+}
