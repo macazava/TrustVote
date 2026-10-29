@@ -26,8 +26,10 @@ x-app: &app
     JWT_PUBLIC_KEY_FILE: /run/secrets/jwt_public_key
     TOTP_ENCRYPTION_KEY_FILE: /run/secrets/totp_encryption_key
     APP_PORT: "8080"
-    DATABASE_HOST: ${DB_WRITE_HOST:-db-primary}
-    DATABASE_READ_HOST: ${DB_READ_HOST:-db-replica}
+    # Vários hosts: o backend escreve só no nó que aceita escritas (target_session_attrs=read-write)
+    # e lê da réplica quando possível. Depois de promover a réplica não é preciso mudar isto.
+    DATABASE_HOST: ${DB_WRITE_HOST:-db-primary,db-replica}
+    DATABASE_READ_HOST: ${DB_READ_HOST:-db-replica,db-primary}
     DATABASE_PORT: "5432"
     DATABASE_NAME: trustvote
     DATABASE_USER: trustvote

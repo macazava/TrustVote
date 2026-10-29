@@ -224,9 +224,13 @@ docker compose exec db-replica psql -U postgres -c "select pg_is_in_recovery()" 
   normal do PostgreSQL (cache de sequências); não afeta a integridade.
 
 ### Proteção contra dois primários (split-brain)
-`docker/postgres/pg-entrypoint.sh` recusa arrancar um nó configurado como `replica` cujo volume
-contenha um primário (sem `standby.signal`). Assim o antigo primário, depois de um failover,
-**não volta sozinho a aceitar escritas** — fica em reinício com a mensagem `RECUSADO` no log.
+`docker/postgres/pg-entrypoint.sh` recusa arrancar:
+- um nó configurado como `replica` cujo volume contenha um primário (sem `standby.signal`);
+- um nó configurado como `primary` quando o outro nó (`PG_UPSTREAM_HOST`) já está a aceitar
+  escritas (a réplica foi promovida).
+
+Assim o antigo primário, depois de um failover, **não volta sozinho a aceitar escritas** — fica
+em reinício com a mensagem `RECUSADO` no log até ser reconstruído como réplica.
 
 ### Promover a réplica (primário falhou)
 
@@ -237,15 +241,22 @@ docker compose stop db-primary
 # 2. Promover a réplica
 docker compose exec db-replica psql -U postgres -c "select pg_promote()"
 
-# 3. No .env, trocar os papéis e apontar as aplicações para o novo primário:
+# Pronto: o backend liga aos dois hosts (DATABASE_HOST=db-primary,db-replica) e só aceita o nó
+# que aceita escritas, por isso passa sozinho a escrever na réplica promovida. Não é preciso
+# mudar DB_WRITE_HOST nem reiniciar servidor1/servidor2.
+
+# 3. No .env, trocar os papéis (para o próximo arranque e para a reconstrução abaixo):
 #      DB_REPLICA_NODE_ROLE=primary
 #      DB_PRIMARY_NODE_ROLE=replica
-#      DB_WRITE_HOST=db-replica
-#      DB_READ_HOST=db-replica
-
-# 4. Aplicar (sem --no-deps o compose tentaria arrancar o db-primary)
-docker compose up -d --no-deps db-replica servidor1 servidor2
 ```
+
+Enquanto o primário está em baixo e a réplica ainda não foi promovida: as leituras que
+toleram atraso (resumo público, auditoria, estatísticas) continuam a funcionar pela réplica;
+as escritas e `/health` respondem `503` "Base de dados indisponível" (nunca `500`).
+
+Se o antigo primário voltar a arrancar (mesmo por reinício automático) depois da promoção,
+o `pg-entrypoint.sh` **recusa-o** (`RECUSADO: db-replica já é primário`): nunca há dois primários
+e o backend não volta a escrever nele.
 
 ### Restabelecer a replicação (depois de recuperar)
 
@@ -297,12 +308,24 @@ O backend é construído a partir de `../Backend` (`build:` na âncora `x-app`) 
 5. Escritas sempre em `DATABASE_HOST`. `DATABASE_READ_HOST` (réplica) só para leituras que
    tolerem um pequeno atraso.
 
+Como o backend cumpre os pontos 3 e 5:
+- `DATABASE_HOST=db-primary,db-replica` com `target_session_attrs=read-write`: o libpq tenta os
+  hosts por ordem e só aceita o que está a aceitar escritas. Depois de uma promoção, as ligações
+  novas vão sozinhas para o novo primário (`pool_pre_ping` descarta as ligações mortas).
+- `DATABASE_READ_HOST=db-replica,db-primary` com `target_session_attrs=prefer-standby`: o resumo
+  público, a auditoria e as estatísticas leem da réplica; se ela falhar, do primário.
+- Tudo o resto (escritas e leituras logo a seguir a escritas, ex.: criar e abrir uma eleição)
+  usa o primário, para nunca mostrar dados desatualizados.
+- BD indisponível → `503` "Base de dados indisponível" (o frontend mostra a mensagem).
+
 Depois de alterar o código: `docker compose up -d --build servidor1 servidor2`.
 
-### Frontend
-- Se for estático: servido pelo nginx (montar o `build/` em `/usr/share/nginx/html` e
-  encaminhar `/api/` para o upstream), ou num contentor próprio atrás do nginx.
-- O browser deve chamar sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
+### Frontend — integrado
+- O frontend (`../Frontend`, HTML/CSS/JS estático) é servido pelo **nginx** em
+  **<http://127.0.0.1:8080/app/>**, na mesma origem da API (montado em `/usr/share/nginx/trustvote`).
+- O browser chama sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
+- Também pode ser aberto noutra origem (ex.: Live Server do VS Code): a API envia cabeçalhos CORS
+  (`CORS_ORIGINS`, por omissão `*`; a autenticação é por token Bearer, não por cookies).
 
 ---
 
@@ -347,7 +370,20 @@ Executados neste PC. "Placeholder" = testado com o servidor de substituição, *
 | Recibo do voto e cadeia de auditoria | ✅ voto íntegro; cadeia íntegra (1 registo antigo, anterior ao encadeamento) |
 | Testes automáticos do backend | ✅ 56 passam (PostgreSQL e Redis reais) |
 
+### Frontend, réplica e failover da BD (29/10/2026)
+
+| Teste | Resultado |
+|---|---|
+| Arranque de raiz (volumes vazios) | ✅ 7 contentores `healthy` em ~20 s |
+| Frontend servido pelo nginx | ✅ todas as páginas e os 276 ficheiros que referem (`/app/`) respondem `200` |
+| Percurso do frontend pela API (registo, login, eleição, candidatos, habilitar, agendar, iniciar, votar, recibo, resultados, estatísticas, sondagem, auditoria, encerrar) | ✅ com CORS em todas as respostas |
+| Escritas / leituras | ✅ escritas no primário (`pg_is_in_recovery = f`), leituras na réplica (`t`) |
+| Primário parado | ✅ `/publico/resumo` continua `200` (réplica); escritas e `/health` → `503` (não `500`) |
+| Réplica promovida | ✅ API volta a `200` e a escrever **sem mudar o `.env` nem reiniciar** servidor1/servidor2 |
+| Antigo primário volta a arrancar | ✅ `RECUSADO: db-replica já é primário`; as escritas continuam no novo primário |
+| Reconstrução do antigo primário como réplica | ✅ replicação `streaming`; as leituras passam a ir para ele |
+| Testes automáticos do backend | ✅ 63 passam |
+
 ### Pendentes
-- Comportamento das aplicações durante a promoção da BD (reconexão ao novo `DATABASE_HOST`).
-- Leituras na réplica (`DATABASE_READ_HOST` está definido, mas a API lê tudo do primário).
-- Integração do frontend.
+- Nenhum ponto do contrato por cumprir. Melhorias possíveis: failover **automático** da BD
+  (Patroni/repmgr, ver "Limites") e backups agendados (`pg_dump`).

@@ -86,7 +86,8 @@ $env:TOTP_ENCRYPTION_KEY_FILE="..\Infraestrutura\secrets\totp_key.txt"
 
 | Variável | Descrição |
 |---|---|
-| `DATABASE_HOST/PORT/NAME/USER/PASSWORD` | ligação ao PostgreSQL (ou `DATABASE_URL`) |
+| `DATABASE_HOST/PORT/NAME/USER/PASSWORD` | ligação ao PostgreSQL (ou `DATABASE_URL`). `DATABASE_HOST` aceita vários hosts (`db-primary,db-replica`): só é usado o que aceita escritas, por isso a API segue sozinha o primário depois de um failover |
+| `DATABASE_READ_HOST` | réplica para leituras que toleram atraso (resumo público, auditoria, estatísticas); se falhar, usa o primário |
 | `JWT_PRIVATE_KEY_FILE` / `JWT_PUBLIC_KEY_FILE` | chaves RSA PEM (ou `JWT_PRIVATE_KEY`/`JWT_PUBLIC_KEY` com o conteúdo) |
 | `TOTP_ENCRYPTION_KEY_FILE` | chave AES-256 em base64 que cifra os segredos TOTP (ou `TOTP_ENCRYPTION_KEY`) |
 | `JWT_MINUTOS` | validade do token (por omissão 30) |
@@ -226,7 +227,7 @@ Correm contra o PostgreSQL e o Redis da infraestrutura (`compose.debug.yaml`: BD
 16379), num schema isolado `tv_testes` (criado a partir do `trustvote.sql` e apagado no fim) e com chaves
 Redis com o prefixo `tv_testes:`. Os dados da aplicação não são tocados. Outra BD: `TEST_DATABASE_URL`.
 
-60 testes:
+63 testes:
 - **autenticação** (14): registo, login, ataques ao JWT (outra chave, HS256, `none`, expirado), contas
   desativadas, permissões;
 - **TOTP** (6): cifra, reutilização de códigos, fluxo completo;
@@ -236,7 +237,8 @@ Redis com o prefixo `tv_testes:`. Os dados da aplicação não são tocados. Out
 - **votação** (6): voto anónimo e recibo, duplicado, dois votos simultâneos, quem pode votar, período;
 - **apuramento** (6): vencedor, 2.ª volta, empate/sem votos, voto adulterado, estatísticas, worker;
 - **auditoria** (4): consulta e filtros, adulteração e remoção detetadas, registos antigos;
-- **frontend** (4): participação, recibos, resumo público, sondagem e CORS.
+- **frontend** (4): participação, recibos, resumo público, sondagem e CORS;
+- **base de dados** (3): vários hosts com primário/réplica, sessão de leitura, BD em baixo → `503`.
 
 ## Limitações conhecidas
 - A ordem física das linhas na BD pode, em teoria, permitir a quem tenha acesso direto ao PostgreSQL
