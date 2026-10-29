@@ -1,9 +1,10 @@
 /* Controller · comum a todas as páginas: texto maior e contraste, menu ativo, temas das secções, imprimir/partilhar e links da sessão */
-document.addEventListener("DOMContentLoaded", () => {
-  const PREFS_KEY = "trustvote:preferencias";
-  const { session } = window.TrustVote;
 
-  // ===== Texto maior e contraste (guardados no navegador) =====
+// ===== Texto maior e contraste (guardados no navegador) =====
+// Único sítio que trata estas preferências: as áreas do eleitor e da equipa usam TrustVote.prefs
+(function () {
+  const PREFS_KEY = "trustvote:preferencias";
+
   function readPrefs() {
     try {
       return JSON.parse(localStorage.getItem(PREFS_KEY) || "{}");
@@ -12,11 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function applyPrefs(prefs) {
+  function applyPrefs(prefs = readPrefs()) {
     document.body.classList.toggle("large-text", !!prefs.largeText);
     document.body.classList.toggle("high-contrast", !!prefs.contrast);
     document.querySelectorAll("[data-font-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.largeText)));
     document.querySelectorAll("[data-contrast-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.contrast)));
+    document.querySelectorAll("[data-pref]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs[b.dataset.pref])));
     const large = document.querySelector("#large-text");
     const contrast = document.querySelector("#contrast");
     if (large) large.checked = !!prefs.largeText;
@@ -31,7 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
     applyPrefs(prefs);
   }
 
-  applyPrefs(readPrefs());
+  window.TrustVote.prefs = { read: readPrefs, apply: applyPrefs, save: savePrefs };
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const { session, prefs } = window.TrustVote;
+  const readPrefs = prefs.read;
+  const savePrefs = prefs.save;
+
+  prefs.apply();
 
   document.querySelectorAll("[data-font-toggle]").forEach((button) =>
     button.addEventListener("click", () => savePrefs({ largeText: !readPrefs().largeText }))
@@ -58,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const show = (slug) => {
       const index = Math.max(0, items.findIndex((item) => item.id === slug));
       items.forEach((item, i) => (item.hidden = i !== index));
-      menu.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
+      menu.forEach((link, i) => (i === index ? link.setAttribute("aria-current", "page") : link.removeAttribute("aria-current")));
       if (crumb) crumb.textContent = items[index].querySelector("h1").textContent;
       if (visit) {
         const others = [...new Set([items[(index + 1) % items.length], items[(index + 2) % items.length]])].filter((x) => x !== items[index]);

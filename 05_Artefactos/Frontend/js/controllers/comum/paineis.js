@@ -27,7 +27,8 @@
       document.querySelectorAll("[data-view]").forEach((button) => {
         const active = button.dataset.view === view;
         button.classList.toggle("active", active);
-        button.setAttribute("aria-current", active ? "page" : "false");
+        if (active) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
       });
 
       window.scrollTo({ top: 0, behavior: "smooth" });
