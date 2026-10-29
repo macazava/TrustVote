@@ -1,3 +1,4 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 
@@ -6,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
 
 from app.config import get_settings
 from app.database import get_engine
@@ -38,6 +40,14 @@ app.include_router(votacao.router_publico)
 def erro_negocio(_: Request, erro: ErroNegocio) -> JSONResponse:
     headers = {"WWW-Authenticate": "Bearer"} if erro.status_code == 401 else None
     return JSONResponse({"detail": erro.mensagem}, status_code=erro.status_code, headers=headers)
+
+
+@app.exception_handler(OperationalError)
+def bd_indisponivel(_: Request, erro: OperationalError) -> JSONResponse:
+    """BD em baixo ou a mudar de primário: 503 (tentar de novo), não 500."""
+    logging.getLogger("trustvote.bd").warning("Base de dados indisponível: %s", erro.orig)
+    return JSONResponse({"detail": "Base de dados indisponível. Tente novamente dentro de momentos."},
+                        status_code=503)
 
 
 @app.get("/")
