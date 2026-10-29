@@ -174,7 +174,7 @@
         scroll-snap-align: start;
     }
 
-    .side-menu a[aria-current="true"] {
+    .side-menu a[aria-current="page"] {
         border-color: var(--title);
         background: var(--title);
         color: white;
