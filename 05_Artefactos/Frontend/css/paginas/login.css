@@ -212,3 +212,80 @@
         flex-wrap: wrap;
     }
 }
+
+/* Palavra-passe com botão para mostrar ou esconder */
+.password-field {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.auth-card .password-field input {
+    width: 100%;
+    padding-right: 52px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: #667085;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.password-toggle:hover {
+    background: #1f5a4514;
+    color: var(--accent);
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+.password-toggle[aria-pressed="true"] {
+    background: #1f5a451f;
+    color: var(--accent);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.password-toggle svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* O risco desenha-se por cima do olho quando a palavra-passe está visível */
+.password-toggle .eye-slash {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.22s ease;
+}
+
+.password-toggle[aria-pressed="true"] .eye-slash {
+    stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .password-toggle,
+    .password-toggle .eye-slash {
+        transition: none;
+    }
+}

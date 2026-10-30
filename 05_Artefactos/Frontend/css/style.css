@@ -4,46 +4,46 @@
    componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
    paginas/     estilos próprios de cada página ou área
    base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra) */
-@import url("base/variaveis.css");
-@import url("base/base.css");
+@import url("base/variaveis.css?v=2");
+@import url("base/base.css?v=2");
 
-@import url("componentes/botoes.css");
-@import url("componentes/cabecalho.css");
-@import url("componentes/rodape.css");
-@import url("componentes/cartoes.css");
-@import url("componentes/formularios.css");
-@import url("componentes/tabelas.css");
-@import url("componentes/estados.css");
-@import url("componentes/animacoes.css");
+@import url("componentes/botoes.css?v=2");
+@import url("componentes/cabecalho.css?v=2");
+@import url("componentes/rodape.css?v=2");
+@import url("componentes/cartoes.css?v=2");
+@import url("componentes/formularios.css?v=2");
+@import url("componentes/tabelas.css?v=2");
+@import url("componentes/estados.css?v=2");
+@import url("componentes/animacoes.css?v=2");
 
 /* Página inicial */
-@import url("paginas/inicio/topo.css");
-@import url("paginas/inicio/atalhos-e-numeros.css");
-@import url("paginas/inicio/eleicoes-e-seguranca.css");
-@import url("paginas/inicio/plataforma-e-avisos.css");
-@import url("paginas/inicio/ecras-pequenos.css");
-@import url("paginas/inicio/perguntas-frequentes.css");
+@import url("paginas/inicio/topo.css?v=2");
+@import url("paginas/inicio/atalhos-e-numeros.css?v=2");
+@import url("paginas/inicio/eleicoes-e-seguranca.css?v=2");
+@import url("paginas/inicio/plataforma-e-avisos.css?v=2");
+@import url("paginas/inicio/ecras-pequenos.css?v=2");
+@import url("paginas/inicio/perguntas-frequentes.css?v=2");
 
 /* Páginas com menu lateral (Eleições, Listas, Ajuda…) */
-@import url("paginas/seccoes/menu-lateral.css");
-@import url("paginas/seccoes/conteudos.css");
-@import url("paginas/seccoes/ecras-pequenos.css");
-@import url("paginas/seccoes/perguntas-frequentes.css");
+@import url("paginas/seccoes/menu-lateral.css?v=2");
+@import url("paginas/seccoes/conteudos.css?v=2");
+@import url("paginas/seccoes/ecras-pequenos.css?v=2");
+@import url("paginas/seccoes/perguntas-frequentes.css?v=2");
 
-@import url("paginas/comunicacao.css");
-@import url("paginas/historico.css");
-@import url("paginas/login.css");
+@import url("paginas/comunicacao.css?v=2");
+@import url("paginas/historico.css?v=2");
+@import url("paginas/login.css?v=2");
 
 /* Áreas do eleitor e da equipa */
-@import url("paginas/paineis/cabecalho.css");
-@import url("paginas/paineis/conteudo.css");
-@import url("paginas/paineis/boletim.css");
-@import url("paginas/paineis/recibos-e-sondagem.css");
-@import url("paginas/paineis/perfil.css");
-@import url("paginas/paineis/equipa.css");
-@import url("paginas/paineis/ecras-pequenos.css");
+@import url("paginas/paineis/cabecalho.css?v=2");
+@import url("paginas/paineis/conteudo.css?v=2");
+@import url("paginas/paineis/boletim.css?v=2");
+@import url("paginas/paineis/recibos-e-sondagem.css?v=2");
+@import url("paginas/paineis/perfil.css?v=2");
+@import url("paginas/paineis/equipa.css?v=2");
+@import url("paginas/paineis/ecras-pequenos.css?v=2");
 
 /* Tamanho do ecrã e impressão */
-@import url("base/ecras/monitor-e-tablet.css");
-@import url("base/ecras/telemovel.css");
-@import url("base/ecras/impressao.css");
+@import url("base/ecras/monitor-e-tablet.css?v=2");
+@import url("base/ecras/telemovel.css?v=2");
+@import url("base/ecras/impressao.css?v=2");
