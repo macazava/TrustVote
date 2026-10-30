@@ -1,0 +1,13 @@
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+compose.override.yaml
+
+# Backups / dumps da base de dados
+*.dump
+*.backup
+backups/
+
+# Logs locais
+*.log

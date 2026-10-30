@@ -1,0 +1,46 @@
+RESUMO DA ADAPTAÇÃO: TRUSTVOTE PARA ASSOCIAÇÃO DE ESTUDANTES (AE)
+
+Este documento resume as alterações efetuadas para transformar o sistema de votação genérico num sistema focado em eleições de Associações de Estudantes universitárias, bem como o que ainda falta implementar.
+
+---
+1. O QUE JÁ FOI FEITO (IMPLEMENTADO)
+---
+
+A. BASE DE DADOS E MODELO DE DOMÍNIO (SQL & MODELS)
+- Identidade do Eleitor: Adicionada a coluna 'ut_num_estudante' (único e validado por regex) e 'ut_curso' à tabela de utilizadores.
+- Candidaturas Individuais: A coluna 'cand_partido' foi substituída por 'cand_orgao' (Direção, Assembleia Geral ou Conselho Fiscal).
+- Detalhes Académicos: Adicionadas colunas 'cand_curso' e 'cand_ano' para os candidatos.
+- Integridade: Adicionadas constraints SQL (CHECK) para garantir que os números de estudante e os órgãos seguem o formato correto.
+
+B. AUTENTICAÇÃO E ELEGIBILIDADE (SERVICES & SCHEMAS)
+- Registo Universitário: O endpoint de registo agora exige obrigatoriamente o número de estudante e valida o seu formato.
+- Auto-Habilitação: Ao registar-se, o eleitor é automaticamente habilitado a votar em todas as eleições que não estejam encerradas (Censo Eleitoral Automático).
+- Correção de Erros: Corrigidos problemas críticos no login e na validação de tipos (Literal) dos órgãos sociais.
+
+C. HIGIENE E DOCUMENTAÇÃO
+- Git: Implementado .gitignore centralizado e removidos ficheiros sensíveis (.env) e cache do histórico.
+- Documentação: Todos os READMEs (Raiz, Backend, Infraestrutura) foram reescritos para o novo contexto de AE.
+- Infraestrutura: Base de dados Docker sincronizada com o novo esquema universitário.
+
+---
+2. O QUE SERÁ FEITO (PENDENTE)
+---
+
+A. FLUXO DE VOTO E APURAMENTO
+- Implementação do Voto: Criar a lógica de inserção atómica em 'participacao' (quem votou) e 'voto' (em quem votou) para garantir o anonimato total.
+- Validação de Voto: Garantir que o eleitor só vota se estiver habilitado e se a ronda estiver aberta.
+- Apuramento de Resultados: Desenvolver o worker ou serviço que calcula os vencedores por órgão após o fecho da eleição.
+
+B. SEGURANÇA E AUDITORIA
+- Auditoria de Sistema: Implementar a tabela 'auditoria' para registar todas as ações administrativas e alterações de estado.
+- TOTP (2FA): Implementar a autenticação de dois fatores para administradores da AE.
+- Encadeamento de Hashes: Garantir que a integridade dos votos é verificável através de uma cadeia de hashes.
+
+C. INTEGRAÇÃO E INTERFACE
+- Ligação ao Compose: Mudar os placeholders do Docker pelas imagens reais do Backend.
+- Frontend: Desenvolver a interface onde o estudante insere o seu número e vota de forma simples e intuitiva.
+- Testes de Carga: Simular uma eleição real com milhares de estudantes para garantir a estabilidade do balanceador de carga.
+
+---
+Data: 28 de Outubro de 2026
+Estado: Adaptação de Domínio Concluída | Funcionalidades de Voto Pendentes
