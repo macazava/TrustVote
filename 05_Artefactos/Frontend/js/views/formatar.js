@@ -33,6 +33,7 @@
   }
 
   function voterNumber(user) {
+    if (user && user.num_estudante) return user.num_estudante;
     const year = user && user.data_registo ? new Date(user.data_registo).getFullYear() : new Date().getFullYear();
     return `TV-${year}-${String((user && user.id) || 0).padStart(3, "0")}`;
   }

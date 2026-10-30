@@ -26,20 +26,43 @@
 
     const reload = async () => renderCandidatesCard(elections.view(await api.eleicoes.detalhe(e.id)));
 
-    el.querySelector("[data-cand-form]")?.addEventListener("submit", async (event) => {
+    const form = el.querySelector("[data-cand-form]");
+    form?.addEventListener("submit", async (event) => {
       event.preventDefault();
       const f = event.currentTarget;
+      const dados = {
+        nome: f.nome.value.trim(),
+        partido: f.partido.value.trim() || null,
+        orgao: f.orgao.value,
+        curso: f.curso.value.trim() || null,
+        ano: f.ano.value ? Number(f.ano.value) : null,
+        descricao: f.descricao.value.trim() || null,
+      };
+      const id = f.candidato.value;
       await safely(async () => {
-        await ui.busy(f.querySelector("button"), "A adicionar…", () =>
-          api.eleicoes.criarCandidato(e.id, {
-            nome: f.nome.value.trim(),
-            partido: f.partido.value.trim() || null,
-            descricao: f.descricao.value.trim() || null,
-          })
+        await ui.busy(f.querySelector('[type="submit"]'), id ? "A guardar…" : "A adicionar…", () =>
+          id ? api.eleicoes.atualizarCandidato(e.id, id, dados) : api.eleicoes.criarCandidato(e.id, dados)
         );
         await reload();
       })();
     });
+    // Editar: o formulário passa a mostrar os dados do candidato escolhido
+    el.querySelectorAll("[data-edit-cand]").forEach((b) =>
+      b.addEventListener("click", () => {
+        const c = e.candidatos.find((x) => String(x.id) === b.dataset.editCand);
+        form.candidato.value = c.id;
+        form.nome.value = c.nome;
+        form.partido.value = c.partido || "";
+        form.orgao.value = c.orgao;
+        form.curso.value = c.curso || "";
+        form.ano.value = c.ano || "";
+        form.descricao.value = c.descricao || "";
+        form.querySelector('[type="submit"]').textContent = "Guardar alterações";
+        form.querySelector("[data-cancel-cand]").hidden = false;
+        form.nome.focus();
+      })
+    );
+    el.querySelector("[data-cancel-cand]")?.addEventListener("click", () => renderCandidatesCard(e));
     el.querySelectorAll("[data-toggle]").forEach((b) =>
       b.addEventListener("click", safely(async () => {
         await api.eleicoes.atualizarCandidato(e.id, b.dataset.toggle, { ativo: b.dataset.ativo !== "true" });

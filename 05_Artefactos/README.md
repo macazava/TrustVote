@@ -15,6 +15,7 @@ código pela primeira vez deve começar por aqui.
 ```text
 05_Artefactos/
 ├── Backend/            # API (FastAPI + SQLAlchemy + PostgreSQL)
+├── Frontend/           # páginas HTML/CSS/JS, servidas pelo nginx ou pelo Live Server
 ├── Infraestrutura/     # Docker Compose: nginx, aplicações, PostgreSQL e Redis
 ├── README.md           # este ficheiro — visão geral e como começar
 ├── ApresentaçãoTrustVote_1aEntrega.pdf
@@ -47,9 +48,13 @@ dá o essencial para arrancar.
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
   **`8001`**, ligada ao PostgreSQL da infraestrutura.
 
-> **Importante:** as duas pastas ainda **não estão ligadas**. As instâncias
-> `servidor1`/`servidor2` do Compose correm um *placeholder* (um nginx), não a API.
-> O que falta está descrito em [Integração](#7-o-que-ainda-falta).
+- O **nginx** serve o `Frontend/` e encaminha `/api/` para `servidor1`/`servidor2`, que
+  correm a imagem do `Backend/`. Como a página e a API têm a mesma origem, não há CORS.
+- Com o **Live Server** (portas `55xx`), o frontend chama a API em
+  `http://127.0.0.1:8080/api`; o `CORS_ORIGINS` do backend autoriza as portas `5500` e `5501`.
+  Para usar uma API local na `8001`, abre a página com `?api=http://127.0.0.1:8001`.
+- Para trabalhar sem backend, põe `MODO_ESTATICO` e `LOGIN_DESATIVADO` a `true` em
+  `Frontend/js/models/servidor.js`: os pedidos passam a usar os dados de `models/demo`.
 
 ---
 
@@ -89,7 +94,7 @@ DATABASE_PORT=15432
 DATABASE_NAME=trustvote
 DATABASE_USER=trustvote
 DATABASE_PASSWORD=<o mesmo valor de TRUSTVOTE_DB_PASSWORD do .env da Infraestrutura>
-JWT_SECRET=<uma string longa e aleatória>
+JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
 ```
 
 ### Passo 3 — Instalar dependências e arrancar a API
@@ -117,7 +122,8 @@ servir o código antigo que tem em memória depois de editares um ficheiro.
 
 - API: <http://localhost:8001/> · healthcheck: <http://localhost:8001/health>
 - Documentação interativa (Swagger): <http://localhost:8001/docs>
-- Página através do nginx: <http://localhost:8080/> (placeholder, por agora)
+- Aplicação completa através do nginx: <http://localhost:8080/>
+- API através do nginx: <http://localhost:8080/api/health>
 
 O registo exige o **número de estudante** (identificador do eleitor) e a conta é
 automaticamente habilitada a votar nas eleições ainda não encerradas. Para testar as
@@ -177,13 +183,15 @@ Detalhes em [Backend/README.md](Backend/README.md).
 Estado atual, em resumo:
 
 **Backend** — feito: registo (com nº de estudante), login com JWT, gestão de
-atos eleitorais, órgãos sociais, candidaturas, rondas e habilitações, e
-**auto-habilitação do eleitor no registo**. Falta: **voto** e **apuramento de
-resultados**, **auditoria**, TOTP, worker assíncrono e uso do Redis/réplica.
+eleições, candidaturas, rondas e caderno eleitoral, voto anónimo com recibo,
+contagem de resultados e resumo público. Falta: **auditoria**, **sondagem**, TOTP,
+worker assíncrono e uso do Redis/réplica.
 
-**Infraestrutura** — feito: stack completa a funcionar (balanceamento, replicação,
-failover manual). Falta **ligar o backend ao Compose**: apontar a âncora `x-app` à
-imagem do backend e alinhar as variáveis de ambiente.
+**Frontend** — ligado à API. As áreas que dependem de rotas em falta mostram que a
+funcionalidade ainda não está disponível.
+
+**Infraestrutura** — feito: stack completa a funcionar com a API real (balanceamento,
+replicação, failover manual) e o frontend servido pelo nginx.
 
 Listas completas em [Backend > Próximos passos](Backend/README.md) e
 [Infraestrutura > Integração](Infraestrutura/README.md).

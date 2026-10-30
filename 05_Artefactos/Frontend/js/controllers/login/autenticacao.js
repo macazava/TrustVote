@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!form) return;
 
   const message = form.querySelector(".form-message");
-  const nameField = document.querySelector("#name-field");
+  const confirmField = document.querySelector("#confirm-field");
   const totpField = document.querySelector("#totp-field");
   const registerLink = form.querySelector(".register-link");
   const loginLink = form.querySelector("[data-login-link]");
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
   const role = () => (document.querySelector(".role-switch .active") || {}).dataset?.role || "eleitor";
-  const isRegister = () => !nameField.hidden;
+  const isRegister = () => !confirmField.hidden;
 
   // ===== Links entre "iniciar sessão" e "criar conta" =====
   function sync() {
@@ -97,7 +97,13 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await ui.busy(submit, isRegister() ? "A criar conta…" : "A entrar…", async () => {
         if (isRegister()) {
-          await api.auth.registo({ nome: form.elements.name.value.trim(), email, password });
+          await api.auth.registo({
+            nome_utilizador: form.elements.name.value.trim(),
+            email,
+            num_estudante: form.elements.numero.value.trim(),
+            curso: form.elements.curso.value.trim() || null,
+            password,
+          });
         }
         const dados = { email, password };
         if (!totpField.hidden) dados.codigo_totp = form.elements.totp.value.trim();

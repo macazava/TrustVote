@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const modeButtons = document.querySelectorAll("[data-mode]");
 
   const nameField = document.querySelector("#name-field");
+  const numberField = document.querySelector("#number-field");
+  const courseField = document.querySelector("#course-field");
   const confirmField = document.querySelector("#confirm-field");
   const termsField = document.querySelector("#terms-field");
 
@@ -21,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const password = authForm.elements.password;
   const confirmPassword = authForm.elements.confirm;
   const nameInput = authForm.elements.name;
+  const numberInput = authForm.elements.numero;
   const terms = authForm.elements.terms;
 
   let selectedRole = new URLSearchParams(window.location.search).get("area") === "equipa" ? "equipa" : "eleitor";
@@ -45,10 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (nameField) nameField.hidden = !showRegisterFields;
+    if (numberField) numberField.hidden = !showRegisterFields;
+    if (courseField) courseField.hidden = !showRegisterFields;
     if (confirmField) confirmField.hidden = !showRegisterFields;
     if (termsField) termsField.hidden = !showRegisterFields;
 
     nameInput.required = showRegisterFields;
+    numberInput.required = showRegisterFields;
     confirmPassword.required = showRegisterFields;
     terms.required = showRegisterFields;
 
@@ -85,6 +91,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".register-link")?.addEventListener("click", () => {
     selectedMode = "register";
     updateForm();
+  });
+
+  // Mostrar ou esconder a palavra-passe
+  authForm.querySelectorAll("[data-toggle-password]").forEach((button) => {
+    const input = button.parentElement.querySelector("input");
+    button.addEventListener("click", () => {
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      button.setAttribute("aria-pressed", String(show));
+      button.setAttribute("aria-label", show ? "Esconder palavra-passe" : "Mostrar palavra-passe");
+    });
   });
 
   // A validação e o envio do formulário estão só em autenticacao.js

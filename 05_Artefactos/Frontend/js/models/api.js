@@ -17,12 +17,12 @@
     health: () => request("GET", "/health", { auth: false, raw: true }),
 
     auth: {
-      registo: (dados) => post("/auth/registo", dados, { auth: false }),
+      registo: (dados) => post("/auth/register", dados, { auth: false }),
       login: (dados) => post("/auth/login", dados, { auth: false }),
       eu: () => get("/auth/eu"),
-      totpConfigurar: () => post("/auth/totp/configurar"),
-      totpAtivar: (codigo) => post("/auth/totp/ativar", { codigo }),
-      totpDesativar: (codigo) => post("/auth/totp/desativar", { codigo }),
+      totpConfigurar: () => post("/auth/totp/configurar", undefined, pend),
+      totpAtivar: (codigo) => post("/auth/totp/ativar", { codigo }, pend),
+      totpDesativar: (codigo) => post("/auth/totp/desativar", { codigo }, pend),
     },
 
     utilizadores: {

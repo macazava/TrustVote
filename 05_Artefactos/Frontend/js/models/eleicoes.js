@@ -13,6 +13,18 @@
     encerrada: "ENCERRADA",
   };
 
+  const orgaoLabels = {
+    direcao: "Direção",
+    assembleia: "Assembleia",
+    conselho_fiscal: "Conselho Fiscal",
+  };
+
+  // Órgão, curso e ano do candidato, para mostrar junto ao nome
+  function candidateInfo(c) {
+    const ano = c.ano ? `${c.ano}.º ano` : "";
+    return [orgaoLabels[c.orgao], [c.curso, ano].filter(Boolean).join(", ")].filter(Boolean);
+  }
+
   function currentRound(eleicao) {
     const rondas = [...((eleicao && eleicao.rondas) || [])].sort((a, b) => a.numero - b.numero);
     return (
@@ -96,5 +108,5 @@
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   }
 
-  TV.elections = { statusLabels, currentRound, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput };
+  TV.elections = { statusLabels, orgaoLabels, candidateInfo, currentRound, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput };
 })();
