@@ -2,13 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import obter_sessao
+from app.models.utilizador import Utilizador
 from app.schemas.autenticacao import (
     LoginPedido,
     TokenResposta,
     UtilizadorCriar,
+    UtilizadorDetalhe,
     UtilizadorResposta,
 )
 from app.security import tokens
+from app.security.dependencias import utilizador_atual
 from app.services import autenticacao as servico_autenticacao
 
 auth_routers = APIRouter(prefix="/auth", tags=["auth"])
@@ -29,7 +32,16 @@ async def login(dados: LoginPedido, sessao: Session = Depends(obter_sessao)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail=str(erro)
         )
-    return TokenResposta(access_token=tokens.criar_token(utilizador))
+    return TokenResposta(
+        access_token=tokens.criar_token(utilizador),
+        expires_in=tokens.MINUTOS_VALIDADE * 60,
+    )
+
+
+@auth_routers.get("/eu", response_model=UtilizadorDetalhe)
+async def eu(utilizador: Utilizador = Depends(utilizador_atual)):
+    """Devolve os dados do utilizador autenticado."""
+    return utilizador
 
 
 @auth_routers.post(

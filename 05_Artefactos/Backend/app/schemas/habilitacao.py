@@ -12,6 +12,26 @@ class HabilitacaoCriar(BaseModel):
     utilizador_id: int = Field(gt=0)
 
 
+class HabilitacaoLote(BaseModel):
+    """Dados recebidos em POST /eleicoes/{id}/habilitados."""
+
+    utilizador_ids: list[int]
+
+
+class HabilitacaoLoteResposta(BaseModel):
+    adicionados: int
+    ja_habilitados: int
+
+
+class HabilitadoResposta(BaseModel):
+    """Linha do caderno eleitoral."""
+
+    utilizador_id: int
+    nome: str
+    email: str
+    data: datetime
+
+
 class HabilitacaoResposta(BaseModel):
     """Dados devolvidos pela API."""
 
