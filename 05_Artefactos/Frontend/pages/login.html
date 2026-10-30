@@ -5,23 +5,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acesso | TrustVote</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/tailwind.css">
+  <link rel="stylesheet" href="../css/style.css?v=2">
+  <link rel="stylesheet" href="../css/tailwind.css?v=2">
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js"></script>
-  <script defer src="../js/models/demo/dados-exemplo.js"></script>
-  <script defer src="../js/models/demo/servidor-simulado.js"></script>
-  <script defer src="../js/models/api.js"></script>
-  <script defer src="../js/models/sessao.js"></script>
-  <script defer src="../js/views/formatar.js"></script>
-  <script defer src="../js/models/eleicoes.js"></script>
-  <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/models/servidor.js?v=2"></script>
+  <script defer src="../js/models/demo/dados-exemplo.js?v=2"></script>
+  <script defer src="../js/models/demo/servidor-simulado.js?v=2"></script>
+  <script defer src="../js/models/api.js?v=2"></script>
+  <script defer src="../js/models/sessao.js?v=2"></script>
+  <script defer src="../js/views/formatar.js?v=2"></script>
+  <script defer src="../js/models/eleicoes.js?v=2"></script>
+  <script defer src="../js/views/componentes.js?v=2"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js"></script>
-  <script defer src="../js/controllers/login/formulario.js"></script>
-  <script defer src="../js/controllers/comum/pagina.js"></script>
-  <script defer src="../js/controllers/login/autenticacao.js"></script>
-  <script defer src="../js/views/animacoes.js"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=2"></script>
+  <script defer src="../js/controllers/login/formulario.js?v=2"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=2"></script>
+  <script defer src="../js/controllers/login/autenticacao.js?v=2"></script>
+  <script defer src="../js/views/animacoes.js?v=2"></script>
 </head>
 
 <body data-page="login">
@@ -105,28 +105,50 @@
         <h2 id="form-title">Aceder à área do eleitor</h2>
 
         <p id="form-help">
-          Use o e-mail associado à sua credencial eleitoral.
+          Introduza as suas credenciais para continuar.
         </p>
 
         <label id="name-field" hidden>
-          Nome completo
-          <input name="name" autocomplete="name" placeholder="Nome completo">
+          Nome de utilizador
+          <input name="name" autocomplete="nickname" minlength="3" maxlength="50" pattern="[A-Za-z0-9_.\-]+"
+            title="Letras sem acentos, números, ponto, hífen e sublinhado" placeholder="nome.apelido">
         </label>
 
-        <label>
+        <label id="email-field">
           E-mail
-          <input name="email" type="email" autocomplete="username" required placeholder="nome@exemplo.pt">
+          <input name="email" type="email" autocomplete="username" required maxlength="255" placeholder="nome@exemplo.pt">
+        </label>
+
+        <label id="number-field" hidden>
+          Número de estudante
+          <input name="numero" autocomplete="off" pattern="[A-Za-z0-9]{4,20}" maxlength="20"
+            title="Entre 4 e 20 letras ou números" placeholder="a12345">
+        </label>
+
+        <label id="course-field" hidden>
+          Curso (opcional)
+          <input name="curso" maxlength="150" placeholder="Engenharia Informática">
         </label>
 
         <label>
           Palavra-passe
-          <input name="password" type="password" autocomplete="current-password" required minlength="8"
-            placeholder="Introduza a sua palavra-passe">
+          <span class="password-field">
+            <input name="password" type="password" autocomplete="current-password" required minlength="8"
+              placeholder="Introduza a sua palavra-passe">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/><path class="eye-slash" pathLength="1" d="M4 4l16 16"/></svg>
+            </button>
+          </span>
         </label>
 
         <label id="confirm-field" hidden>
           Confirmar palavra-passe
-          <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
+          <span class="password-field">
+            <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/><path class="eye-slash" pathLength="1" d="M4 4l16 16"/></svg>
+            </button>
+          </span>
         </label>
 
         <label id="totp-field" hidden>
