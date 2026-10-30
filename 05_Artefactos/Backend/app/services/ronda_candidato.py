@@ -2,7 +2,12 @@
 
 from sqlalchemy.orm import Session
 
-from app.erros import DadosInvalidosError, NaoEncontradoError, RegistoDuplicadoError
+from app.erros import (
+    DadosInvalidosError,
+    EstadoInvalidoError,
+    NaoEncontradoError,
+    RegistoDuplicadoError,
+)
 from app.models.ronda_candidato import RondaCandidato
 from app.repositories import candidato as repositorio_candidato
 from app.repositories import ronda as repositorio_ronda
@@ -17,6 +22,9 @@ def criar_ronda_candidato(
     ronda = repositorio_ronda.obter_por_id(sessao, dados.ronda_id)
     if ronda is None:
         raise NaoEncontradoError(f"Não existe a ronda {dados.ronda_id}.")
+
+    if ronda.estado != "agendada":
+        raise EstadoInvalidoError("Os candidatos só mudam antes de a volta abrir.")
 
     candidato = repositorio_candidato.obter_por_id(sessao, dados.candidato_id)
     if candidato is None:
