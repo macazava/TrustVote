@@ -11,3 +11,26 @@ services:
   db-replica:
     ports:
       - "127.0.0.1:${DB_REPLICA_DEBUG_PORT:-15433}:5432"
+
+  # pgAdmin em contentor: http://127.0.0.1:5050 (sem login, só acessível neste PC).
+  # Liga-se às BDs pela rede interna; a password pedida é TRUSTVOTE_DB_PASSWORD.
+  pgadmin:
+    image: dpage/pgadmin4:9
+    container_name: trustvote-pgadmin
+    restart: unless-stopped
+    environment:
+      # Obrigatórios para a imagem, mas não usados: SERVER_MODE=False dispensa o login.
+      PGADMIN_DEFAULT_EMAIL: admin@trustvote.dev
+      PGADMIN_DEFAULT_PASSWORD: nao-usada
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "127.0.0.1:${PGADMIN_DEBUG_PORT:-5050}:80"
+    volumes:
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - trustvote-network
+
+volumes:
+  pgadmin-data:

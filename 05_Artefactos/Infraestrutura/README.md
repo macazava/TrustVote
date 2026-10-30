@@ -7,15 +7,9 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
 > [README da raiz](../README.md). Este documento detalha apenas a infraestrutura.
 
-> **Estado atual:** o frontend e o backend ainda **não** estão integrados neste Compose.
-> As duas instâncias (`servidor1`, `servidor2`) correm um **placeholder** (um nginx) sem
-> lógica de negócio, que só responde a `/health` e identifica a instância — serve para
-> validar o encaminhamento e o balanceamento.
->
-> A API já existe em [`../Backend`](../Backend/README.md), já expõe `GET /health` e a sua
-> imagem já é construível. Falta: (1) apontar a âncora `x-app` do `compose.yaml` para a
-> imagem do backend e (2) alinhar as variáveis de ambiente. Ver
-> [Integração com o backend](#9-integração-com-o-backend-e-o-frontend).
+> **Estado atual:** o Compose corre a aplicação completa. `servidor1` e `servidor2` usam
+> a imagem de [`../Backend`](../Backend/README.md), e o nginx serve o `../Frontend` e
+> encaminha `/api/` para essas instâncias.
 
 ---
 
@@ -47,8 +41,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 | Contentor | Serviço | Imagem | Função |
 |---|---|---|---|
 | `trustvote-nginx` | `nginx` | `nginx:1.28-alpine` | Reverse proxy e balanceador de carga (round-robin); único ponto de entrada |
-| `trustvote-servidor1` | `servidor1` | placeholder `nginx:1.28-alpine` → backend | Instância 1 da aplicação |
-| `trustvote-servidor2` | `servidor2` | placeholder `nginx:1.28-alpine` → backend | Instância 2, independente da 1 |
+| `trustvote-servidor1` | `servidor1` | `trustvote-backend` (de `../Backend`) | Instância 1 da aplicação |
+| `trustvote-servidor2` | `servidor2` | `trustvote-backend` (de `../Backend`) | Instância 2, independente da 1 |
 | `trustvote-db-primary` | `db-primary` | `postgres:16` | PostgreSQL primário (aceita escritas) |
 | `trustvote-db-replica` | `db-replica` | `postgres:16` | Réplica *hot standby* (só leitura), candidata a promoção |
 | `trustvote-redis` | `redis` | `redis:7.4-alpine` | Cache / filas / coordenação. **Não** é fonte de verdade dos dados |
@@ -71,14 +65,14 @@ PC, o mesmo disco e o mesmo motor Docker.
 ```
 05_Artefactos/Infraestrutura/
 ├── compose.yaml                  # definição de todos os serviços
-├── compose.debug.yaml            # OPCIONAL: publica a BD em 127.0.0.1:15432/15433
+├── compose.debug.yaml            # OPCIONAL: publica a BD em 127.0.0.1:15432/15433 e o pgAdmin em :5050
 ├── .env.example                  # variáveis necessárias (valores ilustrativos)
 ├── .gitignore                    # exclui .env e ficheiros locais
 ├── .gitattributes                # força LF nos scripts (correm em Linux)
 ├── README.md
 └── docker/
     ├── nginx/default.conf                  # upstream, deteção de falhas, logs
-    ├── app-placeholder/default.conf.template  # placeholder das instâncias (remover na integração)
+    ├── pgadmin/servers.json                # servidores pré-registados no pgAdmin (modo debug)
     ├── postgres/pg-entrypoint.sh           # entrypoint comum: primário ou réplica (pg_basebackup)
     ├── postgres/initdb/00-replication.sh   # cria utilizador de replicação + pg_hba
     └── redis/redis.conf                    # persistência AOF, limites, comandos perigosos desativados
@@ -98,7 +92,7 @@ O **esquema da base de dados** não é duplicado aqui: é montado diretamente de
 
 - Windows 10/11 com **WSL 2** (`wsl --install` numa consola de administrador + reiniciar)
 - **Docker Desktop** (testado com Docker Engine 29.8 / Compose v5.5)
-- Portas livres no anfitrião: `8080` (nginx). Opcional: `15432`, `15433` (modo debug)
+- Portas livres no anfitrião: `8080` (nginx). Opcional: `15432`, `15433`, `5050` (modo debug)
 
 ## 4. Configurar o `.env`
 
@@ -146,6 +140,11 @@ docker compose -f compose.yaml -f compose.debug.yaml up -d --wait
 
 Usa-se 15432 porque um PostgreSQL instalado diretamente no Windows já pode ocupar a 5432.
 
+O mesmo comando arranca um **pgAdmin em contentor** em <http://127.0.0.1:5050>, sem login e com o
+primário e a réplica já registados no grupo *TrustVote*. A password pedida ao abrir cada servidor é
+`TRUSTVOTE_DB_PASSWORD`. Os servidores só são importados na primeira execução: depois de alterar
+`docker/pgadmin/servers.json`, remover o volume `trustvote_pgadmin-data`.
+
 ### Scripts de inicialização só correm com volume vazio
 
 Os ficheiros `.sql` / `.sh` de `docker-entrypoint-initdb.d` **só são executados quando o
@@ -177,7 +176,7 @@ Configuração em `docker/nginx/default.conf`:
 
 **Verificar que ambos recebem pedidos:**
 ```powershell
-1..10 | % { (Invoke-WebRequest http://127.0.0.1:8080/ -UseBasicParsing).Headers['X-Upstream-Server'] }
+1..10 | % { (Invoke-WebRequest http://127.0.0.1:8080/api/health -UseBasicParsing).Headers['X-Upstream-Server'] }
 docker compose logs nginx      # cada linha mostra upstream=<ip:porta> e upstream_status
 ```
 
@@ -267,6 +266,7 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 | nginx | 80 | `127.0.0.1:8080` (configurável no `.env`) |
 | servidor1 / servidor2 | 8080 | não |
 | db-primary / db-replica | 5432 | não (só com `compose.debug.yaml`: `127.0.0.1:15432/15433`) |
+| pgadmin | 80 | só com `compose.debug.yaml`: `127.0.0.1:5050` |
 | redis | 6379 | não |
 
 - PostgreSQL e Redis só são acessíveis dentro da `trustvote-network`.
@@ -279,46 +279,14 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 
 ## 9. Integração com o backend e o frontend
 
-### Backend (servidor1 / servidor2)
-
-**Ponto de situação.** O backend em [`../Backend`](../Backend/README.md) já tem
-autenticação (registo com número de estudante + login com JWT), a gestão de atos
-eleitorais e a auto-habilitação do eleitor no registo, mas ainda não cumpre
-todos os pontos do contrato abaixo:
-
-| Ponto do contrato | Estado |
-|---|---|
-| Porta **8080** | ✗ — a API escuta na **8001** por omissão; aceita `APP_PORT`, que o Compose pode definir a 8080 |
-| `GET /health` | ✓ — já existe no backend |
-| Variáveis de ambiente | ✗ — usa `DATABASE_*` a partir do `.env`, não do Compose |
-| Imagem construível | ✓ — o `Dockerfile` já copia a pasta `app/` |
-| Stateless (JWT) | ✓ — os tokens são JWT, não há sessão em memória |
-
-Contrato que o backend tem de cumprir para entrar no Compose:
-1. Escutar na porta **8080**.
-2. Expor **`GET /health`** → `200` quando a instância está pronta (usado pelo healthcheck).
-3. Ler a configuração destas variáveis (já definidas no `compose.yaml`):
-   `DATABASE_HOST`, `DATABASE_READ_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`,
-   `DATABASE_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `APP_INSTANCE`.
-4. Ser **stateless**: sessões/tokens não podem ficar em memória de uma instância (usar JWT ou Redis),
-   porque o nginx alterna entre instâncias.
-5. Escritas sempre em `DATABASE_HOST`. `DATABASE_READ_HOST` (réplica) só para leituras que
-   tolerem um pequeno atraso.
-
-Alterações no `compose.yaml`, na âncora `x-app`:
-```yaml
-x-app: &app
-  <<: *restart
-  build: ../Backend            # em vez de: image: nginx:1.28-alpine
-  # remover o bloco "volumes:" do placeholder
-  # ajustar o "healthcheck.test" se a imagem não tiver wget (ex.: curl)
-```
-Depois remover `docker/app-placeholder/`.
-
-### Frontend
-- Se for estático: servido pelo nginx (montar o `build/` em `/usr/share/nginx/html` e
-  encaminhar `/api/` para o upstream), ou num contentor próprio atrás do nginx.
-- O browser deve chamar sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
+- A âncora `x-app` do `compose.yaml` constrói a imagem de `../Backend`; aplica-se com
+  `docker compose up -d --build --wait`.
+- As instâncias recebem as variáveis `DATABASE_*`, `APP_INSTANCE` e `JWT_SECRET`, que tem
+  de ser igual em ambas para um token valer em qualquer uma.
+- O nginx serve as páginas a partir de `../Frontend` e encaminha `/api/` para as instâncias,
+  sem o prefixo: `/api/eleicoes` chega à API como `/eleicoes`.
+- O browser chama sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
+- As instâncias são stateless: os tokens são JWT, não há sessão em memória.
 
 ---
 
@@ -344,4 +312,3 @@ Executados neste PC. "Placeholder" = testado com o servidor de substituição, *
 - Balanceamento e failover **com a aplicação real** (sessões, pedidos longos, `POST` de votos).
 - Comportamento das aplicações durante a promoção da BD (reconexão ao novo `DATABASE_HOST`).
 - Uso real do Redis (filas/cache) e leituras na réplica.
-- Integração do frontend.
