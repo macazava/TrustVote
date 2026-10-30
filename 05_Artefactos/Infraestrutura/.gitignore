@@ -1,0 +1,15 @@
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+compose.override.yaml
+# Chaves JWT e chave TOTP do backend
+secrets/
+
+# Backups / dumps da base de dados
+*.dump
+*.backup
+backups/
+
+# Logs locais
+*.log

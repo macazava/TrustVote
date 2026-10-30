@@ -1,0 +1,21 @@
+# API: framework e servidor ASGI
+fastapi==0.153.0
+uvicorn==0.54.0
+
+# Redis: cliente Python; o servidor Redis é configurado separadamente, por exemplo no Docker Compose
+redis==8.1.0
+
+# Configuração, validação e acesso ao PostgreSQL
+pydantic==2.14.1
+email-validator==2.3.0
+SQLAlchemy==2.1.5
+psycopg2-binary==2.9.13
+python-dotenv==1.2.4
+# Segurança: JWT com suporte a RS256, hashes Argon2 e códigos TOTP
+PyJWT[crypto]==2.7.0
+pwdlib[argon2]==0.3.1
+pyotp==2.9.0
+cryptography==50.0.2
+
+
+

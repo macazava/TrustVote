@@ -8,6 +8,11 @@ CREATE TABLE utilizador (
     ut_perfil VARCHAR(20) NOT NULL DEFAULT 'eleitor',
     ut_ativo BOOLEAN DEFAULT TRUE,
     ut_datareg TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    -- TOTP (2FA): segredo cifrado com AES-GCM pelo backend (nunca em claro)
+    ut_totp_segredo TEXT,
+    ut_totp_ativo BOOLEAN NOT NULL DEFAULT FALSE,
+    -- último passo de 30s aceite: impede reutilizar o mesmo código (replay)
+    ut_totp_ultimo_passo BIGINT,
     CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador'))
 );
 

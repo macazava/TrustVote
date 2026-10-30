@@ -1,0 +1,4 @@
+# Dependências só para desenvolvimento e testes (não entram na imagem Docker)
+-r requirements.txt
+pytest==9.1.1
+httpx==0.28.1

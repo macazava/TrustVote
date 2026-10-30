@@ -13,4 +13,7 @@ SELECT format('ALTER ROLE trustvote WITH LOGIN PASSWORD %L', :'trustvote_passwor
 \gexec
 \o
 
+-- No PostgreSQL 15+ o PUBLIC já não pode criar no schema public.
+-- Tornar o trustvote dono da BD (e portanto do schema public) para o SET ROLE em 01-trustvote.sql funcionar.
+ALTER DATABASE trustvote OWNER TO trustvote;
 

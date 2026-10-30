@@ -1,0 +1,99 @@
+"""Configuração do backend, lida das variáveis de ambiente (definidas no compose.yaml / .env)."""
+import os
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+
+from sqlalchemy.engine import URL
+
+
+def _ler_ficheiro_ou_env(nome: str) -> str | None:
+    """Lê NOME do ambiente ou, se existir NOME_FILE, do ficheiro indicado (Docker secrets)."""
+    caminho = os.getenv(f"{nome}_FILE")
+    if caminho:
+        return Path(caminho).read_text(encoding="utf-8").strip()
+    return os.getenv(nome)
+
+
+def url_bd(hosts: str, papel: str) -> URL:
+    """URL do PostgreSQL para um ou mais hosts separados por vírgulas (libpq tenta-os por ordem).
+
+    papel = target_session_attrs do libpq:
+      - "read-write": só aceita o nó que está a aceitar escritas (o primário). Depois de promover a
+        réplica, as ligações novas vão sozinhas para ela, sem mudar a configuração.
+      - "prefer-standby": prefere a réplica; se não houver réplica disponível, usa o primário.
+    """
+    return URL.create(
+        "postgresql+psycopg2",
+        username=os.getenv("DATABASE_USER", "trustvote"),
+        password=os.getenv("DATABASE_PASSWORD", ""),
+        port=int(os.getenv("DATABASE_PORT", "5432")),
+        database=os.getenv("DATABASE_NAME", "trustvote"),
+        # dict.fromkeys: tira repetidos mantendo a ordem
+        query={"host": ",".join(dict.fromkeys(h.strip() for h in hosts.split(",") if h.strip())),
+               "target_session_attrs": papel},
+    )
+
+
+@dataclass(frozen=True)
+class Settings:
+    database_url: URL | str
+    database_read_url: URL | str
+    database_schema: str | None
+    jwt_private_key: str
+    jwt_public_key: str
+    jwt_issuer: str
+    jwt_minutos: int
+    totp_encryption_key: str
+    totp_issuer: str
+    app_instance: str
+    redis_host: str
+    redis_port: int
+    redis_password: str | None
+    redis_prefixo: str
+    login_max_tentativas: int
+    login_janela_segundos: int
+    reset_codigo_minutos: int
+    cors_origins: list[str]
+
+
+@lru_cache
+def get_settings() -> Settings:
+    # Escritas: DATABASE_HOST (pode ter vários hosts; só o primário é aceite).
+    # Leituras que toleram atraso: DATABASE_READ_HOST (réplica; se falhar, o primário).
+    # DATABASE_URL (testes) substitui as duas.
+    escrita_hosts = os.getenv("DATABASE_HOST", "127.0.0.1")
+    leitura_hosts = os.getenv("DATABASE_READ_HOST") or escrita_hosts
+    database_url = os.getenv("DATABASE_URL") or url_bd(escrita_hosts, "read-write")
+    database_read_url = os.getenv("DATABASE_URL") or url_bd(f"{leitura_hosts},{escrita_hosts}", "prefer-standby")
+    private_key = _ler_ficheiro_ou_env("JWT_PRIVATE_KEY")
+    public_key = _ler_ficheiro_ou_env("JWT_PUBLIC_KEY")
+    totp_key = _ler_ficheiro_ou_env("TOTP_ENCRYPTION_KEY")
+    em_falta = [n for n, v in (("JWT_PRIVATE_KEY", private_key), ("JWT_PUBLIC_KEY", public_key),
+                               ("TOTP_ENCRYPTION_KEY", totp_key)) if not v]
+    if em_falta:
+        raise RuntimeError(
+            f"Configuração em falta: {', '.join(em_falta)} (ou *_FILE). "
+            "Gerar com: python -m app.scripts.gerar_segredos <pasta>"
+        )
+    return Settings(
+        database_url=database_url,
+        database_read_url=database_read_url,
+        database_schema=os.getenv("DATABASE_SCHEMA") or None,
+        jwt_private_key=private_key,
+        jwt_public_key=public_key,
+        jwt_issuer=os.getenv("JWT_ISSUER", "trustvote"),
+        jwt_minutos=int(os.getenv("JWT_MINUTOS", "30")),
+        totp_encryption_key=totp_key,
+        totp_issuer=os.getenv("TOTP_ISSUER", "TrustVote"),
+        app_instance=os.getenv("APP_INSTANCE", "local"),
+        redis_host=os.getenv("REDIS_HOST", "127.0.0.1"),
+        redis_port=int(os.getenv("REDIS_PORT", "6379")),
+        redis_password=os.getenv("REDIS_PASSWORD") or None,
+        redis_prefixo=os.getenv("REDIS_PREFIXO", "tv:"),
+        login_max_tentativas=int(os.getenv("LOGIN_MAX_TENTATIVAS", "5")),
+        login_janela_segundos=int(os.getenv("LOGIN_JANELA_SEGUNDOS", "900")),
+        reset_codigo_minutos=int(os.getenv("RESET_CODIGO_MINUTOS", "30")),
+        # Origens do frontend autorizadas (separadas por vírgulas); "*" aceita qualquer uma
+        cors_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()],
+    )
