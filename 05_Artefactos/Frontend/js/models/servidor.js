@@ -4,14 +4,16 @@
 
   const TV = (window.TrustVote = window.TrustVote || {});
 
-  const DEFAULT_BASE = "http://127.0.0.1:8080";
+  // Live Server (portas 55xx): usa a API do Docker. Atrás do nginx: mesma origem, em /api.
+  const emDesenvolvimento = window.location.protocol === "file:" || /^55\d\d$/.test(window.location.port);
+  const DEFAULT_BASE = emDesenvolvimento ? "http://127.0.0.1:8080/api" : `${window.location.origin}/api`;
   const BASE_KEY = "trustvote:api";
   const TIMEOUT = 12000;
 
-  // Enquanto o backend não estiver ligado: os pedidos são respondidos pelos dados de exemplo (models/demo)
-  const MODO_ESTATICO = true;
-  // Enquanto o backend não estiver ligado: entra nas áreas sem credenciais (pôr a false para voltar a exigir login)
-  const LOGIN_DESATIVADO = true;
+  // Pôr a true para trabalhar sem backend: os pedidos são respondidos pelos dados de exemplo (models/demo)
+  const MODO_ESTATICO = false;
+  // Pôr a true para entrar nas áreas sem credenciais (só faz sentido com MODO_ESTATICO)
+  const LOGIN_DESATIVADO = false;
 
   function readBase() {
     const fromQuery = new URLSearchParams(window.location.search).get("api");

@@ -162,7 +162,7 @@
         return ok(rd);
       }
       if (rest === "/candidatos" && method === "POST") {
-        const c = cand(novoId(), body.nome, body.partido, body.descricao);
+        const c = { ...cand(novoId(), body.nome, body.partido, body.descricao), orgao: body.orgao, curso: body.curso, ano: body.ano };
         e.candidatos.push(c);
         log("Candidato adicionado", "candidato", c.id);
         return [201, c];

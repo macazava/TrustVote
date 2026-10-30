@@ -3,7 +3,7 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { ui } = TV;
+  const { ui, elections } = TV;
   const { escapeHtml, countdown, initials } = TV.format;
   const { head } = TV.blocks;
 
@@ -60,7 +60,7 @@
 
   // Uma opção do boletim (com rádio) ou só a apresentação (na revisão)
   function candidateOption(c, i, selectable = true, checked = false) {
-    const info = [c.partido, c.descricao].filter(Boolean).join(" · ") || "Candidatura registada";
+    const info = [c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "Candidatura registada";
     return `
       <label${selectable ? "" : ' class="is-static"'}>
         <span class="avatar">${escapeHtml(initials(c.nome))}</span>
