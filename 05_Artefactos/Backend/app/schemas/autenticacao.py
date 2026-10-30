@@ -2,7 +2,9 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 # Validação simples, sem dependências extra (o projeto não usa email-validator).
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
@@ -35,10 +37,36 @@ class UtilizadorResposta(BaseModel):
     criado_em: datetime
 
 
+class UtilizadorDetalhe(UtilizadorResposta):
+    """Dados da conta usados pelas áreas reservadas do frontend."""
+
+    perfil: str
+    ativo: bool
+    # A autenticação de dois fatores ainda não está implementada.
+    totp_ativo: bool = False
+
+    @computed_field
+    @property
+    def nome(self) -> str:
+        return self.nome_utilizador
+
+    @computed_field
+    @property
+    def data_registo(self) -> datetime:
+        return self.criado_em
+
+
+class UtilizadorAlterar(BaseModel):
+    """Dados recebidos em PATCH /utilizadores/{id}."""
+
+    ativo: bool | None = None
+    perfil: Literal["eleitor", "administrador"] | None = None
+
+
 class LoginPedido(BaseModel):
     """Dados recebidos em POST /auth/login."""
 
-    nome_utilizador: str = Field(min_length=3, max_length=50)
+    email: str = Field(min_length=5, max_length=255, pattern=EMAIL_PATTERN)
     password: str = Field(min_length=8, max_length=128)
 
 
@@ -47,3 +75,4 @@ class TokenResposta(BaseModel):
 
     access_token: str
     token_type: str = "bearer"
+    expires_in: int

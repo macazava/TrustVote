@@ -58,13 +58,13 @@ def autenticar_utilizador(sessao: Session, dados: LoginPedido) -> Utilizador:
     """Confirma as credenciais e devolve o utilizador correspondente.
 
     A mesma mensagem de erro serve para os três casos, para não revelar se o
-    nome de utilizador existe.
+    email existe.
     """
-    utilizador = repositorio.obter_por_nome_utilizador(sessao, dados.nome_utilizador)
+    utilizador = repositorio.obter_por_email(sessao, dados.email)
     if (
         utilizador is None
         or not utilizador.ativo
         or not _hasher.verify(dados.password, utilizador.password_hash)
     ):
-        raise CredenciaisInvalidasError("Nome de utilizador ou password incorretos.")
+        raise CredenciaisInvalidasError("E-mail ou palavra-passe incorretos.")
     return utilizador
