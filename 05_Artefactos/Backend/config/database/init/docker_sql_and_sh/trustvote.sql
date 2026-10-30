@@ -52,6 +52,7 @@ CREATE TABLE candidato (
     cand_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     cand_ele_id BIGINT NOT NULL,
     cand_nome VARCHAR(255) NOT NULL,
+    cand_partido VARCHAR(200),
     cand_orgao VARCHAR(50) NOT NULL DEFAULT 'direcao',
     cand_curso VARCHAR(150),
     cand_ano SMALLINT,
