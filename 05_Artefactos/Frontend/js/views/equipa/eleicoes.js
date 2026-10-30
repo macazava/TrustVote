@@ -38,7 +38,7 @@
       ${card(`
         ${cardHead("DADOS DA ELEIÇÃO", "Informação principal")}
         <form data-election-form>
-          <label class="field-label">Título<input name="titulo" required maxlength="200" value="${escapeHtml(e ? e.titulo : "")}"${dis}></label>
+          <label class="field-label">Título<input name="titulo" required maxlength="150" value="${escapeHtml(e ? e.titulo : "")}"${dis}></label>
           <label class="field-label">Estado
             <select name="estado"${e ? "" : " disabled"}>
               <option value="">${e ? elections.statusLabels[e.estado] : "Rascunho"} (atual)</option>
@@ -59,36 +59,46 @@
   }
 
   // ===== Cartão dos candidatos da eleição =====
-  const candidateRow = (c, i, rascunho) => `
+  const candidateRow = (c, i, editavel) => `
     <tr>
       <td class="mono">${String(i + 1).padStart(2, "0")}</td>
-      <td><b>${escapeHtml(c.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml(c.descricao || "")}</small></td>
+      <td><b>${escapeHtml(c.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml([...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · "))}</small></td>
       <td>${escapeHtml(c.partido || "—")}</td>
       <td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td>
-      <td><div class="row-actions">
-        <button type="button" data-toggle="${c.id}" data-ativo="${c.ativo}">${c.ativo ? "Desativar" : "Ativar"}</button>
-        ${rascunho ? `<button type="button" data-remove-cand="${c.id}">Remover</button>` : ""}
-      </div></td>
+      <td>${editavel
+        ? `<div class="row-actions">
+            <button type="button" data-edit-cand="${c.id}">Editar</button>
+            <button type="button" data-toggle="${c.id}" data-ativo="${c.ativo}">${c.ativo ? "Desativar" : "Ativar"}</button>
+            <button type="button" data-remove-cand="${c.id}">Remover</button>
+          </div>`
+        : "—"}</td>
     </tr>`;
 
   function candidatesCard(e) {
-    const rascunho = e.estado === "rascunho";
+    const editavel = ["rascunho", "agendada"].includes(e.estado);
     const lista = e.candidatos || [];
     return card(`
       ${cardHead("CANDIDATURAS", `Candidatos · ${lista.length}`)}
       ${lista.length
         ? `<div class="table-scroll rounded-xl"><table>
             <thead><tr><th>Opção</th><th>Candidato</th><th>Lista</th><th>Estado</th><th>Ações</th></tr></thead>
-            <tbody>${lista.map((c, i) => candidateRow(c, i, rascunho)).join("")}</tbody></table></div>`
+            <tbody>${lista.map((c, i) => candidateRow(c, i, editavel)).join("")}</tbody></table></div>`
         : '<p class="muted">Ainda não existem candidatos. São precisos pelo menos 2 para agendar.</p>'}
-      ${rascunho
+      ${editavel
         ? `<form class="inline-form" data-cand-form>
-            <label class="field-label">Nome<input name="nome" required maxlength="200"></label>
+            <input type="hidden" name="candidato">
+            <label class="field-label">Nome<input name="nome" required maxlength="255"></label>
             <label class="field-label">Lista<input name="partido" maxlength="200"></label>
-            <label class="field-label">Descrição<input name="descricao" maxlength="500"></label>
+            <label class="field-label">Órgão
+              <select name="orgao">${Object.entries(elections.orgaoLabels).map(([valor, nome]) => `<option value="${valor}">${nome}</option>`).join("")}</select>
+            </label>
+            <label class="field-label">Curso<input name="curso" maxlength="150"></label>
+            <label class="field-label">Ano<input name="ano" type="number" min="1" max="6"></label>
+            <label class="field-label">Descrição<input name="descricao" maxlength="5000"></label>
             <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar →</button>
+            <button class="button rounded-xl button-light" type="button" data-cancel-cand hidden>Cancelar</button>
           </form>`
-        : '<p class="muted">Só é possível adicionar ou remover candidatos em rascunho.</p>'}`);
+        : '<p class="muted">Só é possível alterar os candidatos antes de a votação começar.</p>'}`);
   }
 
   // ===== Cartão do caderno eleitoral (quem pode votar) =====

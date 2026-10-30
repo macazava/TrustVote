@@ -17,7 +17,7 @@
       ? `<div class="table-scroll rounded-xl"><table>
           <thead><tr><th>Opção</th><th>Candidato</th><th>Descrição</th><th>Estado</th></tr></thead>
           <tbody>${e.candidatos
-        .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
+        .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
         .join("")}</tbody></table></div>
          <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição →</button>`
       : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos →</button></div>`;
@@ -44,13 +44,14 @@
   const usersTable = (lista, eu) =>
     lista.length
       ? `<div class="table-scroll rounded-xl"><table>
-          <thead><tr><th>Número</th><th>Eleitor</th><th>Tipo</th><th>2FA</th><th>Estado</th><th>Ações</th></tr></thead>
+          <thead><tr><th>Número</th><th>Eleitor</th><th>Curso</th><th>Tipo</th><th>2FA</th><th>Estado</th><th>Ações</th></tr></thead>
           <tbody>${lista
         .map(
           (u) => `
               <tr>
                 <td class="mono">${escapeHtml(voterNumber(u))}</td>
                 <td><b>${escapeHtml(u.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml(u.email)}</small></td>
+                <td>${escapeHtml(u.curso || "—")}</td>
                 <td>${u.perfil === "administrador" ? "Administrador" : "Credencial individual"}</td>
                 <td>${u.totp_ativo ? "Ativa" : "—"}</td>
                 <td>${okLabel(u.ativo ? "ATIVO" : "SUSPENSO", u.ativo)}</td>

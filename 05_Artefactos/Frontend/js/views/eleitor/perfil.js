@@ -23,6 +23,7 @@
           <div class="profile-tags">
             <span class="${user.ativo === false ? "is-off" : ""}">${user.ativo === false ? "! Conta suspensa" : "✓ Conta ativa"}</span>
             <span>Nº ${escapeHtml(voterNumber(user))}</span>
+            ${user.curso ? `<span>${escapeHtml(user.curso)}</span>` : ""}
             ${desde ? `<span>Registado desde ${desde}</span>` : ""}
           </div>
         </div>
@@ -84,7 +85,7 @@
       <p class="eyebrow">PRIVACIDADE</p>
       <h2>O que fica guardado</h2>
       <ul class="profile-list">
-        <li class="is-yes">Nome, e-mail e número de eleitor</li>
+        <li class="is-yes">Nome, e-mail, curso e número de eleitor</li>
         <li class="is-yes">Se já votaste em cada eleição, para impedir votos repetidos</li>
         <li class="is-no">Em quem votaste: o voto é separado da tua identidade</li>
       </ul>
