@@ -15,7 +15,7 @@ código pela primeira vez deve começar por aqui.
 ```text
 05_Artefactos/
 ├── Backend/            # API (FastAPI + SQLAlchemy + PostgreSQL)
-├── Frontend/           # páginas HTML/CSS/JS, servidas pelo nginx ou pelo Live Server
+├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Live Server
 ├── Infraestrutura/     # Docker Compose: nginx, aplicações, PostgreSQL e Redis
 ├── README.md           # este ficheiro — visão geral e como começar
 ├── ApresentaçãoTrustVote_1aEntrega.pdf
@@ -35,7 +35,7 @@ dá o essencial para arrancar.
 ## 2. Arquitetura em duas linhas
 
 ```text
-   browser
+   browser (Live Server, 127.0.0.1:5500)
       │
       ▼
    nginx :8080 ──► servidor1 ─┐
@@ -52,13 +52,13 @@ guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
   **`8001`**, ligada ao PostgreSQL da infraestrutura.
 
-- O **nginx** serve o `Frontend/` e encaminha `/api/` para `servidor1`/`servidor2`, que
-  correm a imagem do `Backend/`. Como a página e a API têm a mesma origem, não há CORS.
-- Com o **Live Server** (portas `55xx`), o frontend chama a API em
-  `http://127.0.0.1:8080/api`; o `CORS_ORIGINS` do backend autoriza as portas `5500` e `5501`.
-  Para usar uma API local na `8001`, abre a página com `?api=http://127.0.0.1:8001`.
-- Para trabalhar sem backend, põe `MODO_ESTATICO` e `LOGIN_DESATIVADO` a `true` em
-  `Frontend/js/models/servidor.js`: os pedidos passam a usar os dados de `models/demo`.
+- O **frontend** tem um único endereço: abre `Frontend/pages/inicio.html` com o **Live Server**
+  na raiz do projeto, em <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
+- O frontend chama sempre a API em `http://127.0.0.1:8080/api` (definida em
+  `Frontend/js/models/servidor.js`), e o `CORS_ORIGINS` do backend autoriza só esse endereço.
+- O **nginx** encaminha `/api/` para `servidor1`/`servidor2`, que correm a imagem do
+  `Backend/`. Quem abrir `http://127.0.0.1:8080/` é reencaminhado para o Live Server.
+- O frontend não tem dados próprios: tudo o que mostra vem da API.
 
 ---
 
@@ -126,7 +126,7 @@ servir o código antigo que tem em memória depois de editares um ficheiro.
 
 - API: <http://localhost:8001/> · healthcheck: <http://localhost:8001/health>
 - Documentação interativa (Swagger): <http://localhost:8001/docs>
-- Aplicação completa através do nginx: <http://localhost:8080/>
+- Aplicação completa: <http://127.0.0.1:5500/Frontend/pages/inicio.html> (Live Server)
 - API através do nginx: <http://localhost:8080/api/health>
 
 O registo exige o **número de estudante** (identificador do eleitor) e a conta é
@@ -195,7 +195,7 @@ worker assíncrono e uso do Redis/réplica.
 funcionalidade ainda não está disponível.
 
 **Infraestrutura** — feito: stack completa a funcionar com a API real (balanceamento,
-replicação síncrona, failover automático da BD, backups) e o frontend servido pelo nginx.
+replicação síncrona, failover automático da BD, backups), com o frontend no Live Server.
 Limitações em [Infraestrutura > Limitações conhecidas](Infraestrutura/README.md).
 
 Listas completas em [Backend > Próximos passos](Backend/README.md) e

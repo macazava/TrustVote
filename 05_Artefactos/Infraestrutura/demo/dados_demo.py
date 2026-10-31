@@ -66,7 +66,7 @@ def tornar_administrador(nome):
 
 
 def main():
-    registar("equipa.demo", ADMIN, "ADMIN0001", None)
+    registar("equipa.demo", ADMIN, "ADMIN0001", "Comissão Eleitoral")
     tornar_administrador("equipa.demo")
     token = pedido("POST", "/auth/login", {"email": ADMIN, "password": PASSWORD})["access_token"]
 

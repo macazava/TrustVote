@@ -252,6 +252,7 @@ o código antigo que tem em memória depois de editares um ficheiro.
 | `POST` | `/auth/verify-password` | *Stub* |
 | `GET` | `/pedidos/lista` | *Stub* |
 | `GET` | `/publico/resumo` | Eleição em destaque, participação e candidaturas (sem votos por candidato) |
+| `GET` | `/publico/historico` | Eleições encerradas, com datas e participação |
 
 `POST /auth/register`:
 

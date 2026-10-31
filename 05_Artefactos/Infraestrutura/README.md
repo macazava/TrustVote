@@ -8,8 +8,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 > [README da raiz](../README.md). Este documento detalha apenas a infraestrutura.
 
 > **Estado atual:** o Compose corre a aplicação completa. `servidor1` e `servidor2` usam
-> a imagem de [`../Backend`](../Backend/README.md), e o nginx serve o `../Frontend` e
-> encaminha `/api/` para essas instâncias.
+> a imagem de [`../Backend`](../Backend/README.md), e o nginx encaminha `/api/` para
+> essas instâncias. O `../Frontend` corre no Live Server, em `127.0.0.1:5500`.
 
 ---
 
@@ -282,8 +282,8 @@ replicação não substitui backups, porque os erros lógicos também são repli
   `docker compose up -d --build --wait`.
 - As instâncias recebem as variáveis `DATABASE_*`, `APP_INSTANCE` e `JWT_SECRET`, que tem
   de ser igual em ambas para um token valer em qualquer uma.
-- O nginx serve as páginas a partir de `../Frontend` e encaminha `/api/` para as instâncias,
-  sem o prefixo: `/api/eleicoes` chega à API como `/eleicoes`.
+- O nginx encaminha `/api/` para as instâncias, sem o prefixo: `/api/eleicoes` chega à API
+  como `/eleicoes`. As páginas são servidas pelo Live Server.
 - O browser chama sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
 - As instâncias são stateless: os tokens são JWT, não há sessão em memória.
 

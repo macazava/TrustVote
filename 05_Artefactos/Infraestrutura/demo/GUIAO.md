@@ -22,7 +22,8 @@ Os comandos correm em PowerShell, a partir de `05_Artefactos`.
 
    Se `trustvote-db-primary` for a réplica, usar `trustvote-db-replica` no primeiro comando.
 
-3. Abrir dois terminais e o browser em <http://localhost:8080>:
+3. Iniciar o Live Server, abrir dois terminais e o browser em
+   <http://127.0.0.1:5500/Frontend/pages/inicio.html>:
 
    ```powershell
    # Terminal 1: estado em direto
