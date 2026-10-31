@@ -8,26 +8,24 @@
 
   <title>Listas académicas | TrustVote</title>
 
-  <link rel="stylesheet" href="../css/style.css?v=2">
-  <link rel="stylesheet" href="../css/tailwind.css?v=2">
-  <script defer src="../js/views/layout.js?v=2"></script>
+  <link rel="stylesheet" href="../css/style.css?v=6">
+  <link rel="stylesheet" href="../css/tailwind.css?v=6">
+  <script defer src="../js/views/layout.js?v=6"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=2"></script>
-  <script defer src="../js/models/demo/dados-exemplo.js?v=2"></script>
-  <script defer src="../js/models/demo/servidor-simulado.js?v=2"></script>
-  <script defer src="../js/models/api.js?v=2"></script>
-  <script defer src="../js/models/sessao.js?v=2"></script>
-  <script defer src="../js/views/formatar.js?v=2"></script>
-  <script defer src="../js/models/eleicoes.js?v=2"></script>
-  <script defer src="../js/views/componentes.js?v=2"></script>
+  <script defer src="../js/models/servidor.js?v=6"></script>
+  <script defer src="../js/models/api.js?v=6"></script>
+  <script defer src="../js/models/sessao.js?v=6"></script>
+  <script defer src="../js/views/formatar.js?v=6"></script>
+  <script defer src="../js/models/eleicoes.js?v=6"></script>
+  <script defer src="../js/views/componentes.js?v=6"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=2"></script>
-  <script defer src="../js/views/publico.js?v=2"></script>
+  <script defer src="../js/views/graficos.js?v=6"></script>
+  <script defer src="../js/views/publico.js?v=6"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=2"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=2"></script>
-  <script defer src="../js/controllers/publico/paginas.js?v=2"></script>
-  <script defer src="../js/views/animacoes.js?v=2"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=6"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
+  <script defer src="../js/controllers/publico/paginas.js?v=6"></script>
+  <script defer src="../js/views/animacoes.js?v=6"></script>
 </head>
 
 <body>
@@ -67,44 +65,9 @@
         </div>
         <p class="lead">Listas candidatas à Associação de Estudantes: quem são e o que propõem.</p>
 
-        <!-- Cartões das listas A, B e C -->
-        <div class="candidate-grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" data-candidates>
-          <article>
-            <span class="candidate-badge">A</span>
-            <h2>Lista A</h2>
-            <p><b>Candidatos:</b> Marta Oliveira, Rui Matos</p>
-            <ul class="candidate-proposals">
-              <li>Salas de estudo abertas até mais tarde</li>
-              <li>Apoio a estudantes deslocados</li>
-              <li>Mais atividades na semana académica</li>
-            </ul>
-            <span class="status-pill rounded-full">EXEMPLO</span>
-          </article>
-          <article>
-            <span class="candidate-badge">B</span>
-            <h2>Lista B</h2>
-            <p><b>Candidatos:</b> Tiago Ramos, Sara Nunes</p>
-            <ul class="candidate-proposals">
-              <li>Mais modalidades no desporto universitário</li>
-              <li>Mais opções na cantina</li>
-              <li>Reuniões abertas com os estudantes</li>
-            </ul>
-            <span class="status-pill rounded-full">EXEMPLO</span>
-          </article>
-          <article>
-            <span class="candidate-badge">C</span>
-            <h2>Lista C</h2>
-            <p><b>Candidatos:</b> Beatriz Lopes, Duarte Faria</p>
-            <ul class="candidate-proposals">
-              <li>Partilha de apontamentos e material</li>
-              <li>Ajuda na procura de estágios</li>
-              <li>Campus mais sustentável</li>
-            </ul>
-            <span class="status-pill rounded-full">EXEMPLO</span>
-          </article>
-        </div>
+        <div class="candidate-grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" data-candidates></div>
 
-        <p class="notice rounded-xl">Listas e estudantes fictícios, apenas para demonstração.</p>
+        <p class="notice rounded-xl">A obter as listas a partir da plataforma…</p>
       </article>
 
       <div class="visit-also" data-visit-also></div>

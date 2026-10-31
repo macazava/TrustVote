@@ -5,41 +5,39 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Centro de operações | TrustVote</title>
-    <link rel="stylesheet" href="../css/style.css?v=2">
-    <link rel="stylesheet" href="../css/tailwind.css?v=2">
+    <link rel="stylesheet" href="../css/style.css?v=6">
+    <link rel="stylesheet" href="../css/tailwind.css?v=6">
     <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-    <script defer src="../js/models/servidor.js?v=2"></script>
-    <script defer src="../js/models/demo/dados-exemplo.js?v=2"></script>
-    <script defer src="../js/models/demo/servidor-simulado.js?v=2"></script>
-    <script defer src="../js/models/api.js?v=2"></script>
-    <script defer src="../js/models/sessao.js?v=2"></script>
-    <script defer src="../js/views/formatar.js?v=2"></script>
-    <script defer src="../js/models/eleicoes.js?v=2"></script>
-    <script defer src="../js/views/componentes.js?v=2"></script>
-    <script defer src="../js/models/resultados.js?v=2"></script>
+    <script defer src="../js/models/servidor.js?v=6"></script>
+    <script defer src="../js/models/api.js?v=6"></script>
+    <script defer src="../js/models/sessao.js?v=6"></script>
+    <script defer src="../js/views/formatar.js?v=6"></script>
+    <script defer src="../js/models/eleicoes.js?v=6"></script>
+    <script defer src="../js/views/componentes.js?v=6"></script>
+    <script defer src="../js/models/resultados.js?v=6"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <!-- View: desenho do HTML -->
-    <script defer src="../js/views/dois-fatores.js?v=2"></script>
-    <script defer src="../js/views/graficos.js?v=2"></script>
-    <script defer src="../js/views/equipa/visao-geral.js?v=2"></script>
-    <script defer src="../js/views/equipa/eleicoes.js?v=2"></script>
-    <script defer src="../js/views/equipa/candidatos-e-eleitores.js?v=2"></script>
-    <script defer src="../js/views/equipa/resultados.js?v=2"></script>
-    <script defer src="../js/views/equipa/auditoria-e-configuracao.js?v=2"></script>
+    <script defer src="../js/views/dois-fatores.js?v=6"></script>
+    <script defer src="../js/views/graficos.js?v=6"></script>
+    <script defer src="../js/views/equipa/visao-geral.js?v=6"></script>
+    <script defer src="../js/views/equipa/eleicoes.js?v=6"></script>
+    <script defer src="../js/views/equipa/candidatos-e-eleitores.js?v=6"></script>
+    <script defer src="../js/views/equipa/resultados.js?v=6"></script>
+    <script defer src="../js/views/equipa/auditoria-e-configuracao.js?v=6"></script>
     <!-- Controller: o que acontece em cada página -->
-    <script defer src="../js/controllers/comum/menu.js?v=2"></script>
-    <script defer src="../js/controllers/comum/paineis.js?v=2"></script>
-    <script defer src="../js/controllers/comum/pagina.js?v=2"></script>
-    <script defer src="../js/controllers/comum/dois-fatores.js?v=2"></script>
-    <script defer src="../js/controllers/comum/descarregar.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/visao-geral.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/eleicoes.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/eleicao-detalhes.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/candidatos-e-eleitores.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/resultados.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/auditoria-e-configuracao.js?v=2"></script>
-    <script defer src="../js/controllers/equipa/arranque.js?v=2"></script>
-    <script defer src="../js/views/animacoes.js?v=2"></script>
+    <script defer src="../js/controllers/comum/menu.js?v=6"></script>
+    <script defer src="../js/controllers/comum/paineis.js?v=6"></script>
+    <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
+    <script defer src="../js/controllers/comum/dois-fatores.js?v=6"></script>
+    <script defer src="../js/controllers/comum/descarregar.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/visao-geral.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/eleicoes.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/eleicao-detalhes.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/candidatos-e-eleitores.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/resultados.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/auditoria-e-configuracao.js?v=6"></script>
+    <script defer src="../js/controllers/equipa/arranque.js?v=6"></script>
+    <script defer src="../js/views/animacoes.js?v=6"></script>
 </head>
 
 <body class="panel-body" data-page="admin">
@@ -86,180 +84,25 @@
         <main class="dashboard-content">
 
             <!-- VISÃO OPERACIONAL -->
-            <section class="view-panel active" data-panel="overview">
-                <p class="eyebrow">CENTRO DE OPERAÇÕES</p>
-
-                <div class="heading-row">
-                    <div>
-                        <h1>Visão geral</h1>
-                        <p class="muted">
-                            Acompanhe a participação e os resultados das eleições.
-                        </p>
-                    </div>
-
-                    <span class="status-pill rounded-full">
-                        <i></i> ESTADO SIMULADO
-                    </span>
-                </div>
-
-                <div class="admin-metrics grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4">
-                    <article>
-                        <small>PARTICIPAÇÃO (EXEMPLO)</small>
-                        <b>58,3%</b>
-                        <div class="bar">
-                            <i style="width:58.3%"></i>
-                        </div>
-                        <span>7 482 / 12 840</span>
-                    </article>
-
-                    <article>
-                        <small>VOTOS REGISTADOS (EXEMPLO)</small>
-                        <b>7 482</b>
-                        <span>Valor estático da maquete</span>
-                    </article>
-
-                    <article>
-                        <small>TEMPO RESTANTE</small>
-                        <b>—</b>
-                        <span>Até ao fecho da votação</span>
-                    </article>
-
-                    <article>
-                        <small>ELEIÇÕES</small>
-                        <b>—</b>
-                        <span>Em curso, encerradas e em preparação</span>
-                    </article>
-                </div>
-
-                <div class="dash-grid grid-cols-1 lg:grid-cols-2">
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">ELEIÇÃO</p>
-                        <h3>Associação de Estudantes 2026</h3>
-                        <p>
-                            Os indicadores desta página são ilustrativos.
-                            Não representam uma eleição real.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="elections">
-                            Gerir eleição →
-                        </button>
-                    </article>
-
-                    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                        <p class="eyebrow">AUDITORIA</p>
-                        <h3>Registos de exemplo</h3>
-                        <p>
-                            Consulte os eventos fictícios preparados para
-                            testar o aspeto do painel.
-                        </p>
-
-                        <button class="button rounded-xl button-outline" type="button" data-view-go="audit">
-                            Consultar registos →
-                        </button>
-                    </article>
-                </div>
-            </section>
+            <section class="view-panel active" data-panel="overview"></section>
 
             <!-- ELEIÇÕES -->
-            <section class="view-panel" data-panel="elections">
-                <p class="eyebrow">GESTÃO ELEITORAL</p>
-                <h1>Eleições</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                    <div class="heading-row">
-                        <div>
-                            <h2>Associação de Estudantes 2026</h2>
-                            <p class="muted">
-                                Estado ilustrativo · configuração não persistida
-                            </p>
-                        </div>
-
-                        <span class="status-pill rounded-full">RASCUNHO DEMO</span>
-                    </div>
-
-                    <label class="field-label">
-                        Nome da eleição
-                        <input type="text" name="election-name" value="Eleição da Associação de Estudantes">
-                    </label>
-
-                    <label class="field-label">
-                        Estado
-                        <select name="election-status">
-                            <option>Preparação</option>
-                            <option>Aberta (demonstração)</option>
-                            <option>Encerrada</option>
-                        </select>
-                    </label>
-
-                    <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
-                        data-action="demo-save">
-                        Guardar configuração local →
-                    </button>
-
-                    <p class="form-message" role="status" aria-live="polite"></p>
-                </article>
-            </section>
+            <section class="view-panel" data-panel="elections"></section>
 
             <!-- CANDIDATOS -->
-            <section class="view-panel" data-panel="candidates">
-                <p class="eyebrow">CANDIDATURAS</p>
-                <h1>Candidatos</h1>
-            </section>
+            <section class="view-panel" data-panel="candidates"></section>
 
             <!-- ELEITORES -->
-            <section class="view-panel" data-panel="voters">
-                <p class="eyebrow">CONTAS</p>
-                <h1>Eleitores</h1>
-            </section>
+            <section class="view-panel" data-panel="voters"></section>
 
             <!-- RESULTADOS -->
-            <section class="view-panel" data-panel="results">
-                <p class="eyebrow">APURAMENTO</p>
-                <h1>Resultados</h1>
-                <p class="muted">
-                    Votos por candidato e por lista, na eleição a decorrer e nas eleições anteriores.
-                </p>
-            </section>
+            <section class="view-panel" data-panel="results"></section>
 
             <!-- AUDITORIA -->
-            <section class="view-panel" data-panel="audit">
-                <p class="eyebrow">REGISTO DE ATIVIDADE</p>
-                <h1>Auditoria</h1>
-                <p class="muted">
-                    Cada alteração feita na área da equipa fica registada: o que foi feito, sobre o quê, por quem e
-                    quando.
-                </p>
-            </section>
+            <section class="view-panel" data-panel="audit"></section>
 
             <!-- CONFIGURAÇÃO -->
-            <section class="view-panel" data-panel="settings">
-                <p class="eyebrow">SISTEMA</p>
-                <h1>Configuração</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                    <h2>Configuração da interface</h2>
-
-                    <label class="field-label">
-                        Nome da plataforma
-                        <input type="text" name="platform-name" value="TrustVote">
-                    </label>
-
-                    <label class="field-label">
-                        Ambiente
-                        <select name="environment">
-                            <option>Demonstração local</option>
-                            <option>Desenvolvimento</option>
-                        </select>
-                    </label>
-
-                    <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button"
-                        data-action="demo-save">
-                        Guardar localmente →
-                    </button>
-
-                    <p class="form-message" role="status" aria-live="polite"></p>
-                </article>
-            </section>
+            <section class="view-panel" data-panel="settings"></section>
 
         </main>
     </div>

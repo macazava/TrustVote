@@ -7,40 +7,37 @@
 
     <title>Área do eleitor | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css?v=2">
-    <link rel="stylesheet" href="../css/tailwind.css?v=2">
+    <link rel="stylesheet" href="../css/style.css?v=6">
+    <link rel="stylesheet" href="../css/tailwind.css?v=6">
     <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-    <script defer src="../js/models/servidor.js?v=2"></script>
-    <script defer src="../js/models/demo/dados-exemplo.js?v=2"></script>
-    <script defer src="../js/models/demo/servidor-simulado.js?v=2"></script>
-    <script defer src="../js/models/api.js?v=2"></script>
-    <script defer src="../js/models/sessao.js?v=2"></script>
-    <script defer src="../js/views/formatar.js?v=2"></script>
-    <script defer src="../js/models/eleicoes.js?v=2"></script>
-    <script defer src="../js/views/componentes.js?v=2"></script>
+    <script defer src="../js/models/servidor.js?v=6"></script>
+    <script defer src="../js/models/api.js?v=6"></script>
+    <script defer src="../js/models/sessao.js?v=6"></script>
+    <script defer src="../js/views/formatar.js?v=6"></script>
+    <script defer src="../js/models/eleicoes.js?v=6"></script>
+    <script defer src="../js/views/componentes.js?v=6"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <!-- View: desenho do HTML -->
-    <script defer src="../js/views/dois-fatores.js?v=2"></script>
-    <script defer src="../js/views/graficos.js?v=2"></script>
-    <script defer src="../js/views/eleitor/eleicoes.js?v=2"></script>
-    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=2"></script>
-    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=2"></script>
-    <script defer src="../js/views/eleitor/recibos.js?v=2"></script>
-    <script defer src="../js/views/eleitor/perfil.js?v=2"></script>
+    <script defer src="../js/views/dois-fatores.js?v=6"></script>
+    <script defer src="../js/views/graficos.js?v=6"></script>
+    <script defer src="../js/views/eleitor/eleicoes.js?v=6"></script>
+    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=6"></script>
+    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=6"></script>
+    <script defer src="../js/views/eleitor/recibos.js?v=6"></script>
+    <script defer src="../js/views/eleitor/perfil.js?v=6"></script>
     <!-- Controller: o que acontece em cada página -->
-    <script defer src="../js/controllers/comum/menu.js?v=2"></script>
-    <script defer src="../js/controllers/comum/paineis.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/formularios-estaticos.js?v=2"></script>
-    <script defer src="../js/controllers/comum/pagina.js?v=2"></script>
-    <script defer src="../js/controllers/comum/dois-fatores.js?v=2"></script>
-    <script defer src="../js/controllers/comum/descarregar.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/eleicoes.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/boletim.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/recibos.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/perfil.js?v=2"></script>
-    <script defer src="../js/controllers/eleitor/arranque.js?v=2"></script>
-    <script defer src="../js/views/animacoes.js?v=2"></script>
+    <script defer src="../js/controllers/comum/menu.js?v=6"></script>
+    <script defer src="../js/controllers/comum/paineis.js?v=6"></script>
+    <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
+    <script defer src="../js/controllers/comum/dois-fatores.js?v=6"></script>
+    <script defer src="../js/controllers/comum/descarregar.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/eleicoes.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/boletim.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js?v=6"></script>
+    <script defer src="../js/controllers/eleitor/arranque.js?v=6"></script>
+    <script defer src="../js/views/animacoes.js?v=6"></script>
 </head>
 
 <body class="panel-body" data-page="voter">
@@ -111,59 +108,10 @@
 
                 <h1>Como podemos ajudar?</h1>
 
-                <p class="muted">
-                    Utilize o formulário para preparar uma mensagem
-                    com a sua dúvida ou dificuldade.
-                </p>
-
                 <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-
-                    <h2>Contactar a equipa</h2>
-
-                    <p>
-                        Descreva a questão para que possa ser analisada
-                        pela equipa responsável pelo projeto.
-                    </p>
-
-                    <form id="support-form">
-
-                        <label class="field-label" for="support-email">
-                            E-mail
-
-                            <input id="support-email" name="email" type="email" autocomplete="email"
-                                placeholder="nome@exemplo.pt" required>
-                        </label>
-
-                        <label class="field-label" for="support-subject">
-                            Assunto
-
-                            <select id="support-subject" name="subject" required>
-                                <option value="">Selecione um assunto</option>
-                                <option value="Acesso à conta">Acesso à conta</option>
-                                <option value="Eleição">Eleição</option>
-                                <option value="Recibos">Recibos</option>
-                                <option value="Sondagens e resultados">Sondagens e resultados</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </label>
-
-                        <label class="field-label" for="support-message">
-                            Mensagem
-
-                            <textarea id="support-message" name="message" rows="5"
-                                placeholder="Descreva a sua dúvida..." required></textarea>
-                        </label>
-
-                        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">
-                            Preparar mensagem →
-                        </button>
-
-                        <p class="form-message" role="status">
-                            Formulário demonstrativo. As mensagens não são enviadas.
-                        </p>
-
-                    </form>
-
+                    <h2>Dúvidas sobre a votação</h2>
+                    <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
+                    <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes →</a>
                 </article>
 
             </section>
