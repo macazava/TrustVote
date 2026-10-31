@@ -28,6 +28,15 @@ def obter_por_num_estudante(
     )
 
 
+def listar(
+    sessao: Session, perfil: str | None = None, limite: int = 1000
+) -> list[Utilizador]:
+    consulta = select(Utilizador)
+    if perfil is not None:
+        consulta = consulta.where(Utilizador.perfil == perfil)
+    return list(sessao.scalars(consulta.order_by(Utilizador.id).limit(limite)))
+
+
 def criar(
     sessao: Session,
     nome_utilizador: str,
