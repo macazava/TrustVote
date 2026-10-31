@@ -166,9 +166,10 @@ Configuração em `docker/nginx/default.conf`:
 - **Round-robin** entre `servidor1:8080` e `servidor2:8080`.
 - **Deteção passiva:** 2 falhas em 10 s (`max_fails=2 fail_timeout=10s`) retiram a instância
   durante 10 s; depois volta a ser experimentada automaticamente.
-- **Reencaminhamento:** em erro de ligação, timeout (2 s) ou 502/503/504, o pedido é repetido
-  na outra instância (`proxy_next_upstream`). Pedidos **não idempotentes** (ex.: `POST` de um voto)
-  que já chegaram a uma instância **não** são repetidos, para evitar votos duplicados.
+- **Reencaminhamento:** em erro de ligação, timeout (2 s a ligar, 4 s a responder) ou 502/503/504,
+  o pedido é repetido na outra instância (`proxy_next_upstream`). Pedidos **não idempotentes**
+  (ex.: `POST` de um voto) que já chegaram a uma instância **não** são repetidos, para evitar
+  votos duplicados.
 - **Resolução DNS dinâmica** (`resolver 127.0.0.11` + `resolve`): uma instância recriada com
   IP novo volta a receber pedidos sem reiniciar o nginx.
 - O nginx arranca mesmo com uma instância em baixo (depende só de `service_started`).
@@ -293,6 +294,19 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 ## 10. Resultados dos testes (18/10/2026, Docker Engine 29.8.2)
 
 Executados neste PC. "Placeholder" = testado com o servidor de substituição, **não** com o backend.
+
+**Falha de uma instância com a API real (31/10/2026):** votação em paralelo e falha provocada a meio.
+
+| Falha | Eleitores | Resultado |
+|---|---|---|
+| `docker kill` do `servidor1` | 80 | 80 votos, nenhum erro; atraso máximo de ~2 s |
+| `docker kill` do `servidor2` | 120 | 120 votos, nenhum erro; atraso máximo de ~2,4 s |
+| `docker pause` do `servidor1` | 120 | 120 votos; 4 eleitores receberam `504` ao fim de 4 s e repetiram |
+
+Em todos os casos, `voto` = `participacao` = votos confirmados. A repetição de um pedido é segura,
+porque a restrição única recusa o segundo voto com `409`. Se a instância falhar depois de gravar e
+antes de responder, o voto conta, mas o eleitor fica sem recibo: aconteceu 1 vez no teste de
+`docker pause`. O recibo não é guardado no servidor, por isso não pode ser recuperado.
 
 | # | Teste | Resultado |
 |---|---|---|
