@@ -22,21 +22,13 @@
     </article>`;
 
   // ===== Configuração: servidor, dois fatores e acessibilidade =====
-  const settingsPage = ({ base, defaultBase, zona, offset, twoFactorCard }) => `
-    ${head("CENTRO DE OPERAÇÕES", "Configuração", "Ligação ao servidor, verificação em dois passos e preferências deste navegador.")}
+  const settingsPage = ({ base, zona, offset, twoFactorCard }) => `
+    ${head("CENTRO DE OPERAÇÕES", "Configuração", "Servidor, verificação em dois passos e preferências deste navegador.")}
     <div class="dash-grid grid-cols-1 lg:grid-cols-2">
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         ${cardHead("CONFIGURAÇÃO ELEITORAL", "Parâmetros globais")}
-        <form data-api-form>
-          <label class="field-label">Endereço da API<input name="base" type="url" required value="${escapeHtml(base)}"></label>
-          <label class="field-label">Fuso horário<input value="${escapeHtml(zona)} · UTC${offset >= 0 ? "+" : ""}${offset}:00" readonly></label>
-          <label class="field-label">Algoritmo de assinatura dos tokens<input value="RS256 · sessão de 30 minutos" readonly></label>
-          <p class="form-message" role="status"></p>
-          <div class="form-actions" style="justify-content:flex-start">
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Testar e guardar</button>
-            <button class="link-button" type="button" data-default>Repor ${escapeHtml(defaultBase)}</button>
-          </div>
-        </form>
+        <label class="field-label">Endereço da API<input value="${escapeHtml(base)}" readonly></label>
+        <label class="field-label">Fuso horário<input value="${escapeHtml(zona)} · UTC${offset >= 0 ? "+" : ""}${offset}:00" readonly></label>
       </article>
       <div>
         ${twoFactorCard}

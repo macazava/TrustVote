@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPassword = authForm.elements.confirm;
   const nameInput = authForm.elements.name;
   const numberInput = authForm.elements.numero;
+  const courseInput = authForm.elements.curso;
   const terms = authForm.elements.terms;
 
   let selectedRole = new URLSearchParams(window.location.search).get("area") === "equipa" ? "equipa" : "eleitor";
@@ -55,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nameInput.required = showRegisterFields;
     numberInput.required = showRegisterFields;
+    courseInput.required = showRegisterFields;
     confirmPassword.required = showRegisterFields;
     terms.required = showRegisterFields;
 

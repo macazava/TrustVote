@@ -39,7 +39,6 @@
     const el = panel("settings");
     el.innerHTML = TV.teamView.settingsPage({
       base: TV.base,
-      defaultBase: TV.DEFAULT_BASE,
       zona: Intl.DateTimeFormat().resolvedOptions().timeZone,
       offset: -new Date().getTimezoneOffset() / 60,
       twoFactorCard: twoFactor.card(session.user),
@@ -51,25 +50,6 @@
     );
     TV.prefs.apply();
 
-    // Endereço da API: só fica guardado se o servidor responder
-    const form = el.querySelector("[data-api-form]");
-    const message = form.querySelector(".form-message");
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const anterior = TV.base;
-      TV.setBase(form.base.value);
-      try {
-        const res = await ui.busy(form.querySelector('[type="submit"]'), "A testar…", () => api.health());
-        if (!res.ok) throw new Error(`O servidor respondeu com erro ${res.status}.`);
-        ui.message(message, `Ligação guardada · ${res.latency} ms.`, true);
-      } catch (error) {
-        TV.setBase(anterior);
-        ui.message(message, error.message);
-      }
-    });
-    el.querySelector("[data-default]").addEventListener("click", () => {
-      form.base.value = TV.DEFAULT_BASE;
-    });
     twoFactor.wire(el, renderSettings);
   };
 })();

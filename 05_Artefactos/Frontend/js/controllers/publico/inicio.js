@@ -1,11 +1,12 @@
 /* Controller · página inicial: estado da eleição, números e eleição em tempo real */
 document.addEventListener("DOMContentLoaded", () => {
-  const { api, format, elections, publicView } = window.TrustVote;
+  const { api, format, elections, publicView, ui } = window.TrustVote;
   const { number, percent, dateTime, escapeHtml } = format;
 
   const alert = document.querySelector(".election-alert");
   const metrics = document.querySelector(".metrics");
   const hub = document.querySelector("[data-hub-election]");
+  const news = document.querySelector("[data-news]");
 
   // ===== Aviso no topo: o estado da eleição fica visível logo à entrada =====
   function showAlert(eleicao, online) {
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showAlert(resumo && resumo.eleicao, online);
     showHub(resumo, online);
+    if (news) news.innerHTML = resumo ? publicView.notices(resumo) : ui.empty("Sem avisos de momento");
 
     if (metrics) {
       metrics.innerHTML = publicView.metrics(resumo, online);

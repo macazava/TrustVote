@@ -68,6 +68,7 @@
 
     publico: {
       resumo: () => get("/publico/resumo", { ...pend, auth: false }),
+      historico: () => get("/publico/historico", { auth: false }),
     },
   };
 })();

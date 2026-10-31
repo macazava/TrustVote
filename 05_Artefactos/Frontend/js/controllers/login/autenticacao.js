@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelector('[data-action="recover"]')?.addEventListener("click", () => {
-    ui.message(message, "Para recuperar o acesso contacte a equipa: apoio@trustvote.pt · 800 200 300.");
+    ui.message(message, "Para recuperar o acesso, contacte a comissão eleitoral académica.");
   });
 
   if (params.get("motivo") === "expirada") ui.message(message, "A sessão terminou. Inicie sessão novamente.");
@@ -61,21 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
     message.innerHTML = `Já tem sessão iniciada. <a href="${panel}">Continuar para a sua área →</a>`;
   }
 
-  // ===== Login desativado: o botão entra diretamente na área escolhida =====
-  if (window.TrustVote.LOGIN_DESATIVADO) {
-    form.noValidate = true;
-    ui.message(message, "Login desativado temporariamente: clique em Entrar para aceder sem credenciais.");
-  }
-
   // ===== Envio do formulário (único sítio com validação e pedido ao servidor) =====
   let aEnviar = false;
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (aEnviar) return; // evita dois pedidos com duplo clique ou Enter repetido
-    if (window.TrustVote.LOGIN_DESATIVADO) {
-      window.location.href = role() === "equipa" ? "equipa.html" : "eleitor.html";
-      return;
-    }
     ui.message(message, "");
     if (!form.reportValidity()) return;
 
@@ -101,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             nome_utilizador: form.elements.name.value.trim(),
             email,
             num_estudante: form.elements.numero.value.trim(),
-            curso: form.elements.curso.value.trim() || null,
+            curso: form.elements.curso.value.trim(),
             password,
           });
         }

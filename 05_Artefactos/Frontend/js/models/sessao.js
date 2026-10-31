@@ -7,12 +7,6 @@
 
   const SESSION_KEY = "trustvote:sessao";
 
-  // Utilizadores usados enquanto o login está desativado (ver models/servidor.js)
-  const demoUsers = {
-    eleitor: { id: 2, nome: "Estudante Demonstração", email: "estudante@trustvote.pt", perfil: "eleitor", ativo: true, totp_ativo: false, data_registo: null },
-    equipa: { id: 1, nome: "Equipa Demonstração", email: "equipa@trustvote.pt", perfil: "administrador", ativo: true, totp_ativo: false, data_registo: null },
-  };
-
   function readSession() {
     try {
       const value = JSON.parse(sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY) || "null");
@@ -75,10 +69,6 @@
 
     // Protege as áreas reservadas: sem sessão volta ao login
     async require(area) {
-      if (TV.LOGIN_DESATIVADO) {
-        currentUser = demoUsers[area];
-        return currentUser;
-      }
       if (!session.token()) {
         window.location.href = pageUrl(`login.html?area=${area}`);
         return new Promise(() => { });

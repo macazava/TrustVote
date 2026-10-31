@@ -10,7 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const live = document.querySelector("[data-calendar-live]");
   if (live) {
     ui.mount(live, async () => {
-      const dados = await resumo();
+      const dados = await resumo().catch(() => null);
+      if (!dados) {
+        live.innerHTML = ui.empty("Sem eleições agendadas", "As datas aparecem quando a comissão eleitoral agendar uma eleição.");
+        document.querySelectorAll("[data-phase] .status-pill").forEach((pill) => (pill.textContent = "POR DEFINIR"));
+        return;
+      }
       const e = dados.eleicao;
       const now = Date.now();
       const inicio = Date.parse(e.data_inicio);
@@ -64,8 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const notice = grid.parentElement.querySelector(".notice");
         if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
       })
-      // Sem dados do servidor ficam os exemplos da página
-      .catch(() => { });
+      .catch(() => {
+        grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.");
+      });
   }
 
   // ===== Resultados =====
@@ -97,6 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       );
       results.innerHTML = blocos.join("");
+    });
+  }
+
+  // ===== Histórico =====
+  const history = document.querySelector("[data-history]");
+  if (history) {
+    ui.mount(history, async () => {
+      const lista = await api.publico.historico();
+      history.innerHTML = lista.length
+        ? lista.map(view.historyPeriod).join("")
+        : ui.empty("Ainda não há eleições encerradas", "As eleições aparecem aqui depois de terminarem.");
     });
   }
 
