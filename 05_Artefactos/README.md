@@ -40,9 +40,13 @@ dá o essencial para arrancar.
       ▼
    nginx :8080 ──► servidor1 ─┐
    (balanceador) ► servidor2 ─┤
-                              ├──► db-primary ◄──(streaming)── db-replica
-                              └──► redis
+                              ├──► db-primary ──(síncrona)──► db-replica
+                              └──► redis            ▲              ▲
+                                                    └── monitor ───┘
 ```
+
+Se a BD primária falhar, o monitor promove a réplica e a API passa a usá-la sem reiniciar. O
+guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/demo/GUIAO.md).
 
 - **`Infraestrutura/`** sobe toda esta stack com Docker, num único PC.
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
@@ -191,7 +195,8 @@ worker assíncrono e uso do Redis/réplica.
 funcionalidade ainda não está disponível.
 
 **Infraestrutura** — feito: stack completa a funcionar com a API real (balanceamento,
-replicação, failover manual) e o frontend servido pelo nginx.
+replicação síncrona, failover automático da BD, backups) e o frontend servido pelo nginx.
+Limitações em [Infraestrutura > Limitações conhecidas](Infraestrutura/README.md).
 
 Listas completas em [Backend > Próximos passos](Backend/README.md) e
 [Infraestrutura > Integração](Infraestrutura/README.md).

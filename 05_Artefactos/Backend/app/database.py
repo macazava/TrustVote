@@ -3,13 +3,16 @@
 
 Lê a configuração das variáveis de ambiente definidas pelo compose
 (DATABASE_HOST, DATABASE_PORT, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD).
+
+DATABASE_HOST aceita vários nós separados por vírgulas, com porta opcional
+(`db-primary,db-replica`). A ligação procura o nó que aceita escritas, por isso
+depois de um failover basta voltar a ligar, sem reiniciar a API.
 """
 
 import os
-from urllib.parse import quote_plus
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import URL, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 load_dotenv()
@@ -20,12 +23,30 @@ DATABASE_NAME = os.getenv("DATABASE_NAME", "trustvote")
 DATABASE_USER = os.getenv("DATABASE_USER", "trustvote")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "")
 
-DATABASE_URL = (
-    f"postgresql+psycopg2://{DATABASE_USER}:{quote_plus(DATABASE_PASSWORD)}"
-    f"@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
+NOS = tuple(
+    no.strip() if ":" in no else f"{no.strip()}:{DATABASE_PORT}"
+    for no in DATABASE_HOST.split(",")
+    if no.strip()
 )
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+DATABASE_URL = URL.create(
+    "postgresql+psycopg2",
+    username=DATABASE_USER,
+    password=DATABASE_PASSWORD,
+    database=DATABASE_NAME,
+    query={"host": NOS},
+)
+
+# tcp_user_timeout desiste de uma ligação cujo nó desapareceu, em vez de ficar à espera.
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    connect_args={
+        "target_session_attrs": "read-write",
+        "connect_timeout": 2,
+        "tcp_user_timeout": 2000,
+    },
+)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 

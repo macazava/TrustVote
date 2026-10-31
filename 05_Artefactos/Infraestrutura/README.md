@@ -43,6 +43,7 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 | `trustvote-nginx` | `nginx` | `nginx:1.28-alpine` | Reverse proxy e balanceador de carga (round-robin); único ponto de entrada |
 | `trustvote-servidor1` | `servidor1` | `trustvote-backend` (de `../Backend`) | Instância 1 da aplicação |
 | `trustvote-servidor2` | `servidor2` | `trustvote-backend` (de `../Backend`) | Instância 2, independente da 1 |
+| `trustvote-monitor` | `monitor` | `trustvote-backend` | Failover automático da BD |
 | `trustvote-db-primary` | `db-primary` | `postgres:16` | PostgreSQL primário (aceita escritas) |
 | `trustvote-db-replica` | `db-replica` | `postgres:16` | Réplica *hot standby* (só leitura), candidata a promoção |
 | `trustvote-redis` | `redis` | `redis:7.4-alpine` | Cache / filas / coordenação. **Não** é fonte de verdade dos dados |
@@ -164,9 +165,9 @@ Com dados que interessam, aplicar a alteração por migração (`ALTER TABLE ...
 Configuração em `docker/nginx/default.conf`:
 
 - **Round-robin** entre `servidor1:8080` e `servidor2:8080`.
-- **Deteção passiva:** 2 falhas em 10 s (`max_fails=2 fail_timeout=10s`) retiram a instância
-  durante 10 s; depois volta a ser experimentada automaticamente.
-- **Reencaminhamento:** em erro de ligação, timeout (2 s a ligar, 4 s a responder) ou 502/503/504,
+- **Deteção passiva:** 2 falhas em 5 s (`max_fails=2 fail_timeout=5s`) retiram a instância
+  durante 5 s; depois volta a ser experimentada automaticamente.
+- **Reencaminhamento:** em erro de ligação, timeout (2 s a ligar, 4 s a responder) ou 502,
   o pedido é repetido na outra instância (`proxy_next_upstream`). Pedidos **não idempotentes**
   (ex.: `POST` de um voto) que já chegaram a uma instância **não** são repetidos, para evitar
   votos duplicados.
@@ -190,73 +191,70 @@ docker compose up -d --no-deps --force-recreate servidor2      # substituir cont
 
 ---
 
-## 7. Replicação PostgreSQL
+## 7. Replicação e failover do PostgreSQL
 
 ### Como funciona
-- Replicação **física em streaming, assíncrona** (`wal_level=replica`).
-- No primeiro arranque, `db-replica` encontra o volume vazio e clona o primário com
-  `pg_basebackup -R` (cria `standby.signal` + `primary_conninfo`). Depois recebe o WAL continuamente.
-- Um **slot de replicação** (`db_replica_slot`) impede o primário de apagar WAL que a réplica
-  ainda não recebeu; limitado a 1 GB (`max_slot_wal_keep_size`) para não encher o disco.
-- A réplica é **só de leitura** (`hot_standby`): qualquer escrita falha com
-  `cannot execute INSERT in a read-only transaction`. Só existe **um** nó a aceitar escritas.
-- Volumes separados: `pg-primary-data` e `pg-replica-data`.
+- Replicação **física em streaming** (`wal_level=replica`), **síncrona enquanto a réplica estiver
+  ativa**: um voto só é confirmado depois de estar nos dois nós.
+- A réplica é **só de leitura** (`hot_standby`). Só existe um nó a aceitar escritas.
+- A API recebe os dois nós em `DATABASE_HOST` e usa o que aceita escritas
+  (`target_session_attrs=read-write`), por isso não precisa de reiniciar depois de um failover.
+- Um **slot de replicação** impede o primário de apagar WAL que a réplica ainda não recebeu,
+  até 1 GB (`max_slot_wal_keep_size`). Volumes separados: `pg-primary-data` e `pg-replica-data`.
+
+### Monitor de failover (`docker/monitor/monitor.py`)
+Verifica os dois nós pela rede de segundo a segundo, sem depender do Docker:
+
+| Situação | Ação |
+|---|---|
+| Réplica ativa | Mantém a replicação síncrona |
+| Réplica em baixo há ~2 verificações | Passa a assíncrona, para as escritas não bloquearem |
+| Primário em baixo há 3 verificações e réplica síncrona | **Promove a réplica** |
+| Primário em baixo e réplica não síncrona | **Recusa promover**: a votação para, sem perder votos |
+| Dois primários | Cerca e para o da linha temporal mais antiga |
+
+O monitor guarda o estado em memória. Se reiniciar com o primário em baixo, não promove, porque
+não sabe se a réplica estava síncrona.
+
+### Antigo primário
+`docker/postgres/pg-entrypoint.sh` compara o nó com o outro antes de arrancar. Se este tiver dados
+de primário e o outro já for primário numa linha temporal mais recente, os dados locais são
+**apagados** e o nó é clonado como réplica. Se não houver linha temporal mais recente, recusa
+arrancar (mensagem `RECUSADO` no log).
 
 **Verificar:**
 ```powershell
-docker compose exec db-primary psql -U postgres -c "select application_name,state,sync_state,replay_lag from pg_stat_replication"
-docker compose exec db-replica psql -U postgres -c "select pg_is_in_recovery()"   # t = réplica
+.\.venv\Scripts\python.exe Infraestrutura\demo\estado.py   # papel, votos e replicação de cada nó
+docker logs -f trustvote-monitor
 ```
 
-### Limites (importante)
-- **Não há failover automático.** A promoção é manual (abaixo). Um gestor de failover
-  (Patroni + etcd, repmgr, pg_auto_failover) exigiria mais componentes e um quórum que, num
-  único PC, não traz proteção real; por isso não foi incluído.
-- **Assíncrona ⇒ pode haver perda de dados:** transações confirmadas no primário mas ainda não
-  enviadas à réplica no momento da falha perdem-se. A replicação **não substitui backups**
-  (`pg_dump`), porque erros lógicos também são replicados.
-- Após a promoção, as colunas `IDENTITY` podem saltar valores (ex.: de 1 para 34) — comportamento
-  normal do PostgreSQL (cache de sequências); não afeta a integridade.
-
-### Proteção contra dois primários (split-brain)
-`docker/postgres/pg-entrypoint.sh` recusa arrancar um nó configurado como `replica` cujo volume
-contenha um primário (sem `standby.signal`). Assim o antigo primário, depois de um failover,
-**não volta sozinho a aceitar escritas** — fica em reinício com a mensagem `RECUSADO` no log.
-
-### Promover a réplica (primário falhou)
-
+### Testes de falha
+Com a stack e os dados de demonstração a correr:
 ```powershell
-# 1. Garantir que o primário está mesmo parado (nunca promover com os dois a aceitar escritas)
-docker compose stop db-primary
-
-# 2. Promover a réplica
-docker compose exec db-replica psql -U postgres -c "select pg_promote()"
-
-# 3. No .env, trocar os papéis e apontar as aplicações para o novo primário:
-#      DB_REPLICA_NODE_ROLE=primary
-#      DB_PRIMARY_NODE_ROLE=replica
-#      DB_WRITE_HOST=db-replica
-#      DB_READ_HOST=db-replica
-
-# 4. Aplicar (sem --no-deps o compose tentaria arrancar o db-primary)
-docker compose up -d --no-deps db-replica servidor1 servidor2
+.\.venv\Scripts\python.exe Infraestrutura\testes\teste_falhas.py bd-kill 300
 ```
+Cenários: `api-kill`, `api-pause`, `bd-kill`, `bd-pause` e `replica-kill`. O teste falha se os votos
+guardados não coincidirem com os confirmados nos dois nós. Cria dados de teste.
 
-### Restabelecer a replicação (depois de recuperar)
-
-O antigo primário é **reconstruído como réplica** do novo primário (os dados dele podem ter
-divergido, por isso são descartados):
-
+### Backups
 ```powershell
-docker compose down db-primary
-docker volume remove trustvote_pg-primary-data
-docker compose up -d --no-deps --wait db-primary     # clona db-replica com pg_basebackup
-docker compose exec db-replica psql -U postgres -c "select state from pg_stat_replication"   # streaming
+.\.venv\Scripts\python.exe Infraestrutura\demo\backup.py
 ```
+Faz uma cópia com `pg_dump` para `Infraestrutura/backups/` e confirma-a numa BD temporária. A
+replicação não substitui backups, porque os erros lógicos também são replicados.
 
-Fica: `db-replica` = primário, `db-primary` = réplica. Para voltar aos papéis originais, repetir
-o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicações, promover
-`db-primary`, repor os valores por defeito do `.env`, reconstruir `db-replica`).
+### Limitações conhecidas
+- **Registo aberto:** qualquer pessoa pode criar conta e fica habilitada a votar.
+- **Um único PC:** todos os servidores são contentores na mesma máquina.
+- **O nginx é um ponto único de falha.** O monitor também: sem ele, a votação continua, mas não há
+  novos failovers nem mudança para replicação assíncrona.
+- **Sem réplica, os votos não têm proteção síncrona:** se o primário perder o disco nesse período,
+  os votos gravados depois da queda da réplica perdem-se.
+- **Recibo perdido:** se a falha ocorrer depois de gravar e antes de responder, o voto conta, mas o
+  recibo não pode ser recuperado.
+- **Escritas durante a falha:** a API responde `503` até haver novo primário e o eleitor tem de
+  repetir o voto. Durante a passagem para assíncrona, uma escrita pode terminar em `504` e o voto
+  contar na mesma.
 
 ---
 
@@ -295,18 +293,23 @@ o mesmo procedimento no sentido inverso numa janela planeada (parar as aplicaç�
 
 Executados neste PC. "Placeholder" = testado com o servidor de substituição, **não** com o backend.
 
-**Falha de uma instância com a API real (31/10/2026):** votação em paralelo e falha provocada a meio.
+**Falhas com a aplicação real (31/10/2026):** 300 eleitores a votar e falha provocada a meio, com
+`Infraestrutura/testes/teste_falhas.py`.
 
-| Falha | Eleitores | Resultado |
+| Cenário | Votos guardados | Efeito nos eleitores |
 |---|---|---|
-| `docker kill` do `servidor1` | 80 | 80 votos, nenhum erro; atraso máximo de ~2 s |
-| `docker kill` do `servidor2` | 120 | 120 votos, nenhum erro; atraso máximo de ~2,4 s |
-| `docker pause` do `servidor1` | 120 | 120 votos; 4 eleitores receberam `504` ao fim de 4 s e repetiram |
+| `bd-kill` (primária morta) | 300/300 nos dois nós | 7,6 s com `503`; 6 eleitores repetiram |
+| `bd-pause` (primária congelada) | 300/300 nos dois nós | 9,8 s com `504`/`502`; 6 eleitores repetiram |
+| `replica-kill` | 300/300 nos dois nós | Sem erros |
+| `api-kill` | 300/300 nos dois nós | Sem erros |
+| `api-pause` | 300/300 nos dois nós | 7 eleitores receberam `504` ao fim de 4 s e repetiram |
 
-Em todos os casos, `voto` = `participacao` = votos confirmados. A repetição de um pedido é segura,
-porque a restrição única recusa o segundo voto com `409`. Se a instância falhar depois de gravar e
-antes de responder, o voto conta, mas o eleitor fica sem recibo: aconteceu 1 vez no teste de
-`docker pause`. O recibo não é guardado no servidor, por isso não pode ser recuperado.
+Casos-limite verificados: primária morta com a réplica desatualizada (promoção recusada, API a
+responder `503`); congelada que acorda como segundo primário (cercada e reconstruída); reinício
+completo com papéis trocados; instalação nova com volumes vazios.
+
+A repetição de um voto é segura, porque a restrição única recusa o segundo voto com `409`. Num
+teste anterior, um eleitor ficou com o voto contado mas sem recibo.
 
 | # | Teste | Resultado |
 |---|---|---|

@@ -1,29 +1,32 @@
 #!/bin/sh
-# Entrypoint comum aos dois nós PostgreSQL.
+# Entrypoint comum aos dois nós PostgreSQL. O papel de cada nó depende dos dados e do
+# outro nó, porque o monitor de failover pode trocá-los com o sistema a correr:
 #
-#   PG_NODE_ROLE=primary -> comportamento normal da imagem oficial
-#                           (initdb + scripts de /docker-entrypoint-initdb.d se o volume estiver vazio)
-#   PG_NODE_ROLE=replica -> se o volume estiver vazio, clona o nó PG_UPSTREAM_HOST com
-#                           pg_basebackup (-R cria standby.signal + primary_conninfo) e
-#                           arranca como réplica só de leitura (hot standby).
-#
-# Um volume que já tem dados nunca é reinicializado nem reclonado: para mudar o papel
-# de um nó que já tem dados é preciso apagar o volume dele (ver README).
+#   volume vazio            -> clona o outro nó se ele for primário (ou se PG_NODE_ROLE=replica,
+#                              caso em que espera por ele); senão, cria a base de dados
+#   volume de réplica       -> arranca como réplica
+#   volume de primário      -> arranca como primário, exceto se o outro nó já for primário
+#                              numa linha temporal mais recente: nesse caso, este nó é o
+#                              antigo primário e os dados são reconstruídos a partir do outro
 set -eu
 
 : "${PGDATA:=/var/lib/postgresql/data}"
 : "${PG_NODE_ROLE:=primary}"
+: "${PG_UPSTREAM_HOST:?PG_UPSTREAM_HOST obrigatório}"
+: "${PG_SLOT_NAME:?PG_SLOT_NAME obrigatório}"
 
-if [ "$PG_NODE_ROLE" = "replica" ] && [ ! -s "$PGDATA/PG_VERSION" ]; then
-    : "${PG_UPSTREAM_HOST:?PG_UPSTREAM_HOST obrigatório para uma réplica}"
-    : "${PG_SLOT_NAME:?PG_SLOT_NAME obrigatório para uma réplica}"
-    export PGPASSWORD="$REPLICATION_PASSWORD"
+export PGPASSWORD="$REPLICATION_PASSWORD"
+export PGCONNECT_TIMEOUT=2
 
-    echo "[pg-entrypoint] réplica sem dados: a aguardar por $PG_UPSTREAM_HOST..."
-    until pg_isready -q -h "$PG_UPSTREAM_HOST" -p 5432 -U "$REPLICATION_USER" -d postgres; do
-        sleep 2
-    done
+consultar_outro_no() {
+    psql -h "$PG_UPSTREAM_HOST" -U "$REPLICATION_USER" -d postgres -qAt -c "$1" 2>/dev/null || true
+}
 
+outro_no_e_primario() {
+    [ "$(consultar_outro_no 'SELECT pg_is_in_recovery()')" = "f" ]
+}
+
+clonar_outro_no() {
     # Slot de replicação no nó de origem: impede que apague WAL que a réplica ainda não recebeu
     # (limitado por max_slot_wal_keep_size para não encher o disco se a réplica ficar parada).
     psql -v ON_ERROR_STOP=1 -h "$PG_UPSTREAM_HOST" -U "$REPLICATION_USER" -d postgres -qAt -c \
@@ -39,16 +42,30 @@ if [ "$PG_NODE_ROLE" = "replica" ] && [ ! -s "$PGDATA/PG_VERSION" ]; then
         -h "$PG_UPSTREAM_HOST" -p 5432 -U "$REPLICATION_USER" \
         -D "$PGDATA" -X stream -R -S "$PG_SLOT_NAME" --checkpoint=fast
     echo "[pg-entrypoint] clone concluído; a arrancar como réplica."
+}
+
+if [ ! -s "$PGDATA/PG_VERSION" ]; then
+    if [ "$PG_NODE_ROLE" = "replica" ]; then
+        echo "[pg-entrypoint] sem dados: a aguardar por $PG_UPSTREAM_HOST..."
+        until pg_isready -q -h "$PG_UPSTREAM_HOST" -p 5432 -U "$REPLICATION_USER" -d postgres; do
+            sleep 2
+        done
+        clonar_outro_no
+    elif outro_no_e_primario; then
+        clonar_outro_no
+    fi
+elif [ ! -f "$PGDATA/standby.signal" ] && outro_no_e_primario; then
+    # Proteção contra dois primários (split-brain).
+    local_tl=$(gosu postgres pg_controldata -D "$PGDATA" | sed -n "s/^Latest checkpoint's TimeLineID: *//p")
+    outro_tl=$(consultar_outro_no "SELECT timeline_id FROM pg_control_checkpoint()")
+    if [ "${outro_tl:-0}" -le "${local_tl:-0}" ]; then
+        echo "[pg-entrypoint] RECUSADO: $PG_UPSTREAM_HOST é primário, sem linha temporal mais recente." >&2
+        exit 1
+    fi
+    echo "[pg-entrypoint] este nó é um antigo primário: a reconstruir a partir de $PG_UPSTREAM_HOST."
+    find "$PGDATA" -mindepth 1 -delete
+    clonar_outro_no
 fi
 
-# Proteção contra dois primários (split-brain): um nó configurado como réplica que tem
-# dados mas não está em modo standby (ex.: o antigo primário depois de um failover)
-# NÃO arranca, para não aceitar escritas independentes. Ver README > Recuperação.
-if [ "$PG_NODE_ROLE" = "replica" ] && [ -s "$PGDATA/PG_VERSION" ] && [ ! -f "$PGDATA/standby.signal" ]; then
-    echo "[pg-entrypoint] RECUSADO: PG_NODE_ROLE=replica mas o volume contém um primário." >&2
-    echo "[pg-entrypoint] Apague o volume deste nó para o reclonar de $PG_UPSTREAM_HOST," >&2
-    echo "[pg-entrypoint] ou defina PG_NODE_ROLE=primary se este for o primário em uso." >&2
-    exit 1
-fi
-
+unset PGPASSWORD PGCONNECT_TIMEOUT
 exec docker-entrypoint.sh "$@"

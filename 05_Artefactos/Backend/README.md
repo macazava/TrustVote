@@ -28,7 +28,8 @@ instâncias de aplicação definidas na infraestrutura Docker
 | Autorização | Dependências `utilizador_atual` (401) e `exigir_administrador` (403) |
 | Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos |
 | Erros | Exceções de negócio traduzidas automaticamente em `404` / `409` / `400` |
-| Healthcheck | `GET /health` — usado pelo healthcheck do Compose e pelo balanceador |
+| Healthcheck | `GET /health` — devolve `503` sem acesso à BD; usado pelo Compose |
+| Failover | `DATABASE_HOST` aceita vários nós e usa o que aceita escritas; BD indisponível dá `503` |
 
 ### Ainda não implementado
 

@@ -7,17 +7,24 @@ name: trustvote
 x-restart: &restart
   restart: unless-stopped
 
+# Um nó morto deixa de ter nome no DNS: desiste depressa em vez de atrasar o failover.
+x-dns-rapido: &dns-rapido
+  dns_opt:
+    - timeout:1
+    - attempts:1
+
 # ---------------------------------------------------------------------------
 # Servidores de aplicação: duas instâncias da API (imagem de ../Backend).
 # Partilham o JWT_SECRET, para um token valer em qualquer uma delas.
 # ---------------------------------------------------------------------------
 x-app: &app
-  <<: *restart
+  <<: [ *restart, *dns-rapido ]
   image: trustvote-backend
   build: ../Backend
   environment: &app-env
     APP_PORT: "8080"
-    DATABASE_HOST: ${DB_WRITE_HOST:-db-primary}
+    # A API procura o nó que aceita escritas, por isso sobrevive a um failover.
+    DATABASE_HOST: ${DB_HOSTS:-db-primary,db-replica}
     DATABASE_READ_HOST: ${DB_READ_HOST:-db-replica}
     DATABASE_PORT: "5432"
     DATABASE_NAME: trustvote
@@ -78,6 +85,24 @@ x-postgres: &postgres
   networks:
     - trustvote-network
 
+# ---------------------------------------------------------------------------
+# Monitor de failover. Usa a imagem do backend, que já tem o psycopg2.
+# ---------------------------------------------------------------------------
+x-monitor: &monitor
+  <<: [ *restart, *dns-rapido ]
+  image: trustvote-backend
+  container_name: trustvote-monitor
+  command: [ "python", "-u", "/monitor/monitor.py" ]
+  environment:
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+    MONITOR_NOS: ${DB_HOSTS:-db-primary,db-replica}
+  volumes:
+    - ./docker/monitor/monitor.py:/monitor/monitor.py:ro
+  depends_on:
+    - servidor1
+  networks:
+    - trustvote-network
+
 # Os dois nós montam os mesmos scripts: qualquer um pode vir a ser primário.
 # Esquema da BD: mantido pela equipa no Backend (fonte única, não duplicado aqui).
 # Os scripts de initdb só correm quando o volume de dados está vazio.
@@ -122,6 +147,8 @@ services:
     environment:
       <<: *app-env
       APP_INSTANCE: servidor2
+
+  monitor: *monitor
 
   db-primary:
     <<: *postgres

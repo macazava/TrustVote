@@ -1,8 +1,9 @@
 import os
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -55,19 +56,26 @@ def oi_trustvote() -> dict:
 
 
 @app.get("/health")
-def health() -> dict:
-    """Healthcheck da infraestrutura: devolve 200 quando a instância está pronta."""
+def health() -> JSONResponse:
+    """Healthcheck da infraestrutura: devolve 503 sem acesso à base de dados."""
     try:
         with engine.connect() as ligacao:
             ligacao.execute(text("SELECT 1"))
         base_dados = "ok"
     except SQLAlchemyError:
         base_dados = "erro"
-    return {
-        "status": "ok",
-        "instance": os.getenv("APP_INSTANCE", "local"),
-        "database": base_dados,
-    }
+    return JSONResponse(
+        status_code=(
+            status.HTTP_200_OK
+            if base_dados == "ok"
+            else status.HTTP_503_SERVICE_UNAVAILABLE
+        ),
+        content={
+            "status": "ok" if base_dados == "ok" else "degradado",
+            "instance": os.getenv("APP_INSTANCE", "local"),
+            "database": base_dados,
+        },
+    )
 
 
 if __name__ == "__main__":
