@@ -28,6 +28,7 @@ from app.repositories import ronda_candidato as repositorio_ronda_candidato
 from app.repositories import votacao as repositorio
 from app.schemas.votacao import (
     Estatisticas,
+    HistoricoEleicao,
     PontoSerie,
     ReciboVerificacao,
     ResultadoCandidato,
@@ -184,6 +185,28 @@ def obter_estatisticas(sessao: Session, eleicao_id: int) -> Estatisticas:
         participacao=_percentagem(votantes, habilitados),
         serie=[PontoSerie(hora=hora, votos=total) for hora, total in contagem.items()],
     )
+
+
+def obter_historico_publico(sessao: Session) -> list[HistoricoEleicao]:
+    """Eleições encerradas, da mais recente para a mais antiga."""
+    historico = []
+    for eleicao in reversed(repositorio_eleicao.listar(sessao, estado="encerrada")):
+        rondas = repositorio_ronda.listar(sessao, eleicao_id=eleicao.id)
+        eleitores = repositorio_habilitacao.contar(sessao, eleicao.id)
+        votos = repositorio.contar_votantes(sessao, eleicao.id)
+        historico.append(
+            HistoricoEleicao(
+                id=eleicao.id,
+                titulo=eleicao.titulo,
+                descricao=eleicao.descricao,
+                data_inicio=min((r.data_inicio for r in rondas), default=None),
+                data_fim=max((r.data_fim for r in rondas), default=None),
+                eleitores=eleitores,
+                votos=votos,
+                participacao=_percentagem(votos, eleitores),
+            )
+        )
+    return historico
 
 
 def obter_resumo_publico(sessao: Session) -> ResumoPublico:

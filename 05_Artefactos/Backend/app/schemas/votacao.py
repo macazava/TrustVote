@@ -68,6 +68,19 @@ class ResumoCandidato(BaseModel):
     descricao: str | None
 
 
+class HistoricoEleicao(BaseModel):
+    """Eleição encerrada, para a página pública do histórico."""
+
+    id: int
+    titulo: str
+    descricao: str | None
+    data_inicio: datetime | None
+    data_fim: datetime | None
+    eleitores: int
+    votos: int
+    participacao: float
+
+
 class ResumoPublico(BaseModel):
     """Dados mostrados sem sessão: nunca inclui votos por candidato."""
 

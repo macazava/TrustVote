@@ -7,6 +7,7 @@ from app.database import obter_sessao
 from app.models.utilizador import Utilizador
 from app.schemas.votacao import (
     Estatisticas,
+    HistoricoEleicao,
     ParticipacaoResposta,
     ReciboVerificacao,
     ResultadoRonda,
@@ -80,6 +81,12 @@ def obter_estatisticas(eleicao_id: int, sessao: Session = Depends(obter_sessao))
 def verificar_recibo(codigo: str, sessao: Session = Depends(obter_sessao)):
     """Confirma que o voto de um recibo foi contado, sem revelar em quem foi."""
     return servico.verificar_recibo(sessao, codigo)
+
+
+@votacao_routers.get("/publico/historico", response_model=list[HistoricoEleicao])
+def obter_historico_publico(sessao: Session = Depends(obter_sessao)):
+    """Eleições encerradas, sem votos por candidato."""
+    return servico.obter_historico_publico(sessao)
 
 
 @votacao_routers.get("/publico/resumo", response_model=ResumoPublico)

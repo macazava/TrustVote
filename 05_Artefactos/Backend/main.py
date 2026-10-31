@@ -21,13 +21,8 @@ from app.routers.votacao_routers import votacao_routers
 
 app = FastAPI()
 
-# Origens do frontend em desenvolvimento (Live Server). Atrás do nginx, a página e
-# a API partilham a mesma origem e o CORS não é usado.
-CORS_ORIGINS = os.getenv(
-    "CORS_ORIGINS",
-    "http://127.0.0.1:5500,http://localhost:5500,"
-    "http://127.0.0.1:5501,http://localhost:5501",
-).split(",")
+# Único endereço do frontend: o Live Server.
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://127.0.0.1:5500").split(",")
 
 app.add_middleware(
     CORSMiddleware,

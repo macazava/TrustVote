@@ -20,7 +20,7 @@ class UtilizadorCriar(BaseModel):
     )
     email: str = Field(min_length=5, max_length=255, pattern=EMAIL_PATTERN)
     num_estudante: str = Field(pattern=NUM_ESTUDANTE_PATTERN)
-    curso: str | None = Field(default=None, max_length=150)
+    curso: str = Field(min_length=1, max_length=150, pattern=r"\S")
     password: str = Field(min_length=8, max_length=128)
 
 
