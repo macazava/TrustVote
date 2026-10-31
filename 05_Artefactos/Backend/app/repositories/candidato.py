@@ -10,6 +10,7 @@ def criar(
     sessao: Session,
     eleicao_id: int,
     nome: str,
+    partido: str | None,
     orgao: str,
     curso: str | None,
     ano: int | None,
@@ -18,6 +19,7 @@ def criar(
     candidato = Candidato(
         eleicao_id=eleicao_id,
         nome=nome,
+        partido=partido,
         orgao=orgao,
         curso=curso,
         ano=ano,

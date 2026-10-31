@@ -33,6 +33,18 @@ class Base(DeclarativeBase):
     """Base declarativa dos modelos."""
 
 
+def gravar(sessao, objeto):
+    """Grava as alterações pendentes e devolve o objeto atualizado."""
+    sessao.commit()
+    sessao.refresh(objeto)
+    return objeto
+
+
+def apagar(sessao, objeto) -> None:
+    sessao.delete(objeto)
+    sessao.commit()
+
+
 def obter_sessao():
     """Dependência do FastAPI: abre uma sessão por pedido e fecha-a no fim."""
     sessao = SessionLocal()

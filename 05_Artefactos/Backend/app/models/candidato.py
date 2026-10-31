@@ -12,6 +12,8 @@ class Candidato(Base):
     id: Mapped[int] = mapped_column("cand_id", BigInteger, primary_key=True)
     eleicao_id: Mapped[int] = mapped_column("cand_ele_id", BigInteger)
     nome: Mapped[str] = mapped_column("cand_nome", String(255))
+    # Lista a que o candidato pertence.
+    partido: Mapped[str | None] = mapped_column("cand_partido", String(200))
     orgao: Mapped[str] = mapped_column(
         "cand_orgao", String(50), server_default="direcao"
     )

@@ -22,7 +22,9 @@ instâncias de aplicação definidas na infraestrutura Docker
 |---|---|
 | Autenticação | Registo de utilizadores (com **número de estudante**) e login real com **JWT (HS256)** e passwords em **Argon2** |
 | Elegibilidade | **Auto-habilitação**: ao registar-se, o eleitor fica habilitado nas eleições ainda não encerradas (tabela `habilitacao`) |
-| Gestão de eleições | CRUD de `eleicao`, `candidato` (por **órgão social**), `ronda`, `ronda_candidato` e `habilitacao` |
+| Gestão de eleições | `eleicao`, `candidato` (por **órgão social** e **lista**), `ronda`, `ronda_candidato` e `habilitacao`, com o ciclo rascunho → agendada → em curso → encerrada |
+| Voto | Transação única em `participacao` + `voto`, um voto por volta, recibo verificável |
+| Resultados | Contagem direta dos votos; o eleitor só vê voltas encerradas |
 | Autorização | Dependências `utilizador_atual` (401) e `exigir_administrador` (403) |
 | Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos |
 | Erros | Exceções de negócio traduzidas automaticamente em `404` / `409` / `400` |
@@ -30,7 +32,8 @@ instâncias de aplicação definidas na infraestrutura Docker
 
 ### Ainda não implementado
 
-- **Voto** (`participacao`, `voto`) e **apuramento de resultados** (`resultado`) — RF06/RF07/RF09/RF10.
+- Gravação do apuramento na tabela `resultado`: os resultados são contados a cada pedido.
+- **Sondagem** (`/eleicoes/{id}/sondagem`).
 - **Auditoria** (`auditoria`) — RF11.
 - **TOTP** (`app/security/totp.py` está vazio) e as rotas `reset-password`/`verify-password` (stubs).
 - **Worker** de tarefas assíncronas (a pasta ainda não existe).
@@ -183,8 +186,8 @@ que o PostgreSQL monta no volume de inicialização. A criação automática de 
 | `candidato` | sim (por `cand_orgao`: `direcao` / `assembleia` / `conselho_fiscal`) |
 | `ronda_candidato` | sim |
 | `habilitacao` | sim |
-| `participacao` | não (voto por implementar) |
-| `voto` | não (voto por implementar) |
+| `participacao` | sim |
+| `voto` | sim (`vot_hash` guarda o SHA-256 do recibo) |
 | `resultado` | não (apuramento por implementar) |
 | `auditoria` | não (RF11 por implementar) |
 
@@ -247,6 +250,7 @@ o código antigo que tem em memória depois de editares um ficheiro.
 | `POST` | `/auth/reset-password` | *Stub* |
 | `POST` | `/auth/verify-password` | *Stub* |
 | `GET` | `/pedidos/lista` | *Stub* |
+| `GET` | `/publico/resumo` | Eleição em destaque, participação e candidaturas (sem votos por candidato) |
 
 `POST /auth/register`:
 
@@ -254,9 +258,24 @@ o código antigo que tem em memória depois de editares um ficheiro.
 { "nome_utilizador": "ana_silva", "email": "ana@exemplo.pt", "num_estudante": "20241234", "curso": "Engenharia Informática", "password": "Password123" }
 ```
 
-`POST /auth/login` → `{"access_token": "<jwt>", "token_type": "bearer"}`
+`POST /auth/login` com `{"email": "ana@exemplo.pt", "password": "Password123"}` → `{"access_token": "<jwt>", "token_type": "bearer", "expires_in": 3600}`
 
 Nas rotas protegidas envia-se `Authorization: Bearer <jwt>`.
+
+### Para utilizadores autenticados
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/auth/eu` | Dados da conta |
+| `GET` | `/eleicoes?estado=` | Eleições visíveis: o eleitor só vê as publicadas em que está habilitado |
+| `GET` | `/eleicoes/{id}` | Eleição com candidatos e rondas |
+| `POST` | `/eleicoes/{id}/rondas/{numero}/votos` | Vota e devolve o recibo · `409` se já votou |
+| `GET` | `/eleicoes/{id}/participacao` | Diz se já votou na volta atual |
+| `GET` | `/eleicoes/{id}/resultados` | Votos por candidato · `409` para o eleitor antes de a volta encerrar |
+| `GET` | `/recibos/{codigo}/verificar` | Confirma que o voto foi contado, sem revelar a escolha |
+
+O recibo não fica guardado no servidor nem ligado ao eleitor, por isso não existe
+`GET /recibos`: o frontend guarda a cópia no dispositivo.
 
 ### Só para administradores
 
@@ -266,8 +285,14 @@ sem token → `401`; com perfil `eleitor` → `403`.
 | Método | Rota | Descrição |
 |---|---|---|
 | `POST` | `/eleicoes` | Cria uma eleição (nasce em `rascunho`) |
-| `GET` | `/eleicoes` | Lista as eleições |
-| `GET` | `/eleicoes/{eleicao_id}` | Obtém uma eleição |
+| `PATCH`, `DELETE` | `/eleicoes/{id}` | Altera antes de a votação começar · apaga em `rascunho` |
+| `POST` | `/eleicoes/{id}/agendar`, `/iniciar`, `/encerrar` | Muda o estado da eleição |
+| `POST`, `PATCH` | `/eleicoes/{id}/rondas`, `/rondas/{numero}` | Cria a volta seguinte · altera as datas |
+| `POST` | `/eleicoes/{id}/rondas/{numero}/abrir`, `/encerrar` | Abre ou encerra uma volta |
+| `POST`, `PATCH`, `DELETE` | `/eleicoes/{id}/candidatos`, `/candidatos/{cid}` | Gere os candidatos |
+| `GET`, `POST`, `DELETE` | `/eleicoes/{id}/habilitados`, `/habilitados/{uid}` | Gere o caderno eleitoral |
+| `GET` | `/eleicoes/{id}/estatisticas` | Participação e votos por hora |
+| `GET`, `PATCH` | `/utilizadores`, `/utilizadores/{id}` | Lista, suspende ou muda o perfil |
 | `POST` | `/candidatos` | Cria uma candidatura a um órgão (`direcao` / `assembleia` / `conselho_fiscal`) |
 | `GET` | `/candidatos?eleicao_id=` | Lista candidatos (filtro opcional) |
 | `GET` | `/candidatos/{candidato_id}` | Obtém um candidato |
@@ -343,11 +368,10 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 ## 13. Próximos passos
 
-1. Fluxo de **voto** (`participacao` + `voto`) com transação atómica e anonimato.
-2. **Auditoria** (RF11) e **apuramento de resultados** (RF09/RF10).
-3. Ligar o backend ao Compose da infraestrutura (ver o [README da Infraestrutura](../Infraestrutura/README.md), secção 9).
-4. Retirar o `.env` do git e acrescentar `.gitignore` + `.env.example`.
-5. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
+1. **Auditoria** (RF11) e gravação do **apuramento** na tabela `resultado` (RF09/RF10).
+2. **TOTP** e **sondagem**.
+3. Acrescentar um `.env.example` ao backend.
+4. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
 
 Antes de usar o sistema numa votação real, é necessário completar estas funcionalidades,
 definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.

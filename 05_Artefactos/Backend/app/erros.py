@@ -20,6 +20,14 @@ class DadosInvalidosError(Exception):
     """Os dados recebidos violam uma regra de negócio."""
 
 
+class EstadoInvalidoError(Exception):
+    """A operação não é compatível com o estado atual do recurso."""
+
+
+class SemPermissaoError(Exception):
+    """O utilizador não pode fazer esta operação."""
+
+
 def registar_tratadores(app: FastAPI) -> None:
     """Liga cada erro de negócio ao código HTTP correspondente."""
 
@@ -33,6 +41,18 @@ def registar_tratadores(app: FastAPI) -> None:
     async def _duplicado(_pedido: Request, erro: RegistoDuplicadoError):
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT, content={"detail": str(erro)}
+        )
+
+    @app.exception_handler(EstadoInvalidoError)
+    async def _estado_invalido(_pedido: Request, erro: EstadoInvalidoError):
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT, content={"detail": str(erro)}
+        )
+
+    @app.exception_handler(SemPermissaoError)
+    async def _sem_permissao(_pedido: Request, erro: SemPermissaoError):
+        return JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN, content={"detail": str(erro)}
         )
 
     @app.exception_handler(DadosInvalidosError)
