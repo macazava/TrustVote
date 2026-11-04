@@ -1,0 +1,4 @@
+# Só para desenvolvimento: testes automáticos (python -m pytest, a partir de Backend/)
+-r requirements.txt
+pytest==8.4.2
+httpx==0.28.1

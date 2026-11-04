@@ -26,6 +26,15 @@ outro_no_e_primario() {
     [ "$(consultar_outro_no 'SELECT pg_is_in_recovery()')" = "f" ]
 }
 
+linha_temporal_do_outro_no() {
+    # A linha temporal atual são os 8 primeiros dígitos (hex) do ficheiro de WAL em uso.
+    # Muda logo na promoção; a do último checkpoint só muda no checkpoint seguinte.
+    wal=$(consultar_outro_no "SELECT pg_walfile_name(pg_current_wal_lsn())")
+    if [ -n "$wal" ]; then
+        echo $((0x$(echo "$wal" | cut -c1-8)))
+    fi
+}
+
 clonar_outro_no() {
     # Slot de replicação no nó de origem: impede que apague WAL que a réplica ainda não recebeu
     # (limitado por max_slot_wal_keep_size para não encher o disco se a réplica ficar parada).
@@ -57,7 +66,7 @@ if [ ! -s "$PGDATA/PG_VERSION" ]; then
 elif [ ! -f "$PGDATA/standby.signal" ] && outro_no_e_primario; then
     # Proteção contra dois primários (split-brain).
     local_tl=$(gosu postgres pg_controldata -D "$PGDATA" | sed -n "s/^Latest checkpoint's TimeLineID: *//p")
-    outro_tl=$(consultar_outro_no "SELECT timeline_id FROM pg_control_checkpoint()")
+    outro_tl=$(linha_temporal_do_outro_no)
     if [ "${outro_tl:-0}" -le "${local_tl:-0}" ]; then
         echo "[pg-entrypoint] RECUSADO: $PG_UPSTREAM_HOST é primário, sem linha temporal mais recente." >&2
         exit 1

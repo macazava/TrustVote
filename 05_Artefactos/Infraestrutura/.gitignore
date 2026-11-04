@@ -1,13 +1,7 @@
-# Segredos e configuração local
+# Segredos e configuração local (o stack.ps1 cria o .env na primeira vez)
 .env
 .env.*
 !.env.example
-compose.override.yaml
 
-# Backups / dumps da base de dados
-*.dump
-*.backup
+# Cópias da base de dados (demo/backup.py)
 backups/
-
-# Logs locais
-*.log

@@ -2,7 +2,7 @@
 
 API REST do TrustVote, construída com **FastAPI**, **SQLAlchemy** e **PostgreSQL**.
 Serve as votações da **Associação de Estudantes de uma universidade europeia** e as
-instâncias de aplicação definidas na infraestrutura Docker
+instâncias de aplicação e os workers definidos na infraestrutura Docker
 ([`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml)).
 
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
@@ -23,25 +23,21 @@ instâncias de aplicação definidas na infraestrutura Docker
 | Autenticação | Registo de utilizadores (com **número de estudante**) e login real com **JWT (HS256)** e passwords em **Argon2** |
 | Elegibilidade | **Auto-habilitação**: ao registar-se, o eleitor fica habilitado nas eleições ainda não encerradas (tabela `habilitacao`) |
 | Gestão de eleições | `eleicao`, `candidato` (por **órgão social** e **lista**), `ronda`, `ronda_candidato` e `habilitacao`, com o ciclo rascunho → agendada → em curso → encerrada |
-| Voto | Transação única em `participacao` + `voto`, um voto por volta, recibo verificável |
-| Resultados | Contagem direta dos votos; o eleitor só vê voltas encerradas |
+| Voto | Transação única em `participacao` + `voto`, um voto por volta, **voto em branco**, recibo verificável |
+| Integridade | Cada voto leva um **selo HMAC-SHA256**; um voto alterado ou inserido fora da API não conta. `GET /eleicoes/{id}/integridade` compara também a urna com as participações |
+| Apuramento | Ao encerrar uma volta, a contagem é gravada em `resultado` e a volta passa a `apurada`; com **quórum** configurável por eleição |
+| Tarefas automáticas | [`app/tarefas.py`](app/tarefas.py): inicia eleições agendadas, abre a 2.ª volta e fecha/apura as voltas na hora de fim |
+| Worker | [`app/worker.py`](app/worker.py) (`python -m app.worker`): no Docker, apura as voltas pedidas na fila do Redis e corre as tarefas automáticas; um worker principal e um de reserva, com liderança por advisory lock |
+| Auditoria (RF11) | Todas as ações da equipa, logins e alterações de conta ficam em `auditoria`, numa **cadeia de hashes** verificável. Os votos nunca passam pela auditoria |
+| Contas | Mudança de palavra-passe, reposição pelo administrador, **logout real** (token revogado no Redis) e limite de tentativas de login |
+| Registo | Aberto por omissão; com `REGISTO_RESTRITO=true`, só os números da **lista oficial de inscritos** |
+| Sondagem | Intenção de voto anónima (quem respondeu e o que respondeu em tabelas separadas), com projeção bayesiana |
 | Autorização | Dependências `utilizador_atual` (401) e `exigir_administrador` (403) |
-| Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos |
-| Erros | Exceções de negócio traduzidas automaticamente em `404` / `409` / `400` |
+| Base de dados | Ligação ao PostgreSQL via SQLAlchemy; esquema aplicado pelos scripts SQL canónicos; leituras públicas na réplica |
+| Erros | Exceções de negócio traduzidas automaticamente em `400` / `403` / `404` / `409` / `429` |
 | Healthcheck | `GET /health` — devolve `503` sem acesso à BD; usado pelo Compose |
 | Failover | `DATABASE_HOST` aceita vários nós e usa o que aceita escritas; BD indisponível dá `503` |
-
-### Ainda não implementado
-
-- Gravação do apuramento na tabela `resultado`: os resultados são contados a cada pedido.
-- **Sondagem** (`/eleicoes/{id}/sondagem`).
-- **Auditoria** (`auditoria`) — RF11.
-- **TOTP** (`app/security/totp.py` está vazio) e as rotas `reset-password`/`verify-password` (stubs).
-- **Worker** de tarefas assíncronas (a pasta ainda não existe).
-- Leitura a partir da réplica (`DATABASE_READ_HOST`) e uso do Redis.
-
-> As pastas em `app/` existem, mas a sua presença não significa que todas as
-> funcionalidades estejam prontas. O que está confirmado está na tabela acima.
+| Testes | `pytest` em [`app/testes/`](app/testes), num esquema isolado da BD de desenvolvimento |
 
 ---
 
@@ -96,9 +92,12 @@ Cada domínio atravessa quatro camadas, sempre pela mesma ordem:
 
 Componentes transversais:
 
-- [`app/database.py`](app/database.py) — ligação ao PostgreSQL e sessão por pedido.
+- [`app/database.py`](app/database.py) — ligação ao PostgreSQL (escrita e réplica de leitura) e sessão por pedido.
+- [`app/cache.py`](app/cache.py) — Redis: tokens revogados, tentativas de login e fila de apuramento. Sem Redis, a API continua a funcionar (e deixa de o tentar até ele voltar).
+- [`app/tarefas.py`](app/tarefas.py) — tarefas automáticas (no worker, ou em segundo plano na API).
+- [`app/worker.py`](app/worker.py) — worker de apuramento (contentores `worker` e `worker-reserva`).
 - [`app/erros.py`](app/erros.py) — exceções de negócio e a sua tradução para HTTP.
-- [`app/security/`](app/security) — tokens JWT e dependências de autorização.
+- [`app/security/`](app/security) — tokens JWT, selo dos votos e dependências de autorização (incluindo o `Auditor`).
 
 ---
 
@@ -107,23 +106,26 @@ Componentes transversais:
 ```text
 Backend/
 ├── app/
-│   ├── models/          # tabelas SQLAlchemy (ut_*, ele_*, cand_*, ron_*, rc_*, hab_*)
+│   ├── models/          # tabelas SQLAlchemy (ut_*, ele_*, cand_*, ron_*, vot_*, res_*, aud_*, ...)
 │   ├── schemas/         # validação Pydantic (entrada e resposta)
 │   ├── repositories/    # acesso à base de dados
-│   ├── services/        # regras de negócio
+│   ├── services/        # regras de negócio (apuramento.py, auditoria.py, sondagem.py, ...)
 │   ├── routers/         # rotas HTTP, agrupadas por prefixo
-│   ├── security/        # tokens.py (JWT), dependencias.py, totp.py (por implementar)
-│   ├── testes/          # espaço para testes (teste_top.py ainda vazio)
-│   ├── database.py      # engine, sessão e Base declarativa
+│   ├── security/        # tokens.py (JWT), integridade.py (selo dos votos), dependencias.py
+│   ├── testes/          # testes pytest (conftest.py prepara um esquema isolado)
+│   ├── cache.py         # Redis
+│   ├── tarefas.py       # tarefas automáticas
+│   ├── worker.py        # worker de apuramento (python -m app.worker)
+│   ├── database.py      # engines, sessões e Base declarativa
 │   └── erros.py         # erros de negócio -> respostas HTTP
-├── config/
-│   └── database/init/docker_sql_and_sh/
-│       ├── 00-trustvote-user.sql   # cria o utilizador trustvote e torna-o dono da BD
-│       └── trustvote.sql           # tabelas, executadas como trustvote (SET ROLE)
-├── .env                 # configuração local (ver aviso na secção 5)
+├── basedados/
+│   └── trustvote.sql    # criação da BD num só ficheiro: contas, replicação e tabelas
+├── .env.example         # modelo do .env (o .env não vai para o git)
 ├── Dockerfile
-├── main.py              # cria a app FastAPI e regista routers e tratadores
-└── requirements.txt
+├── main.py              # cria a app FastAPI, regista routers e arranca as tarefas
+├── pytest.ini
+├── requirements.txt
+└── requirements-dev.txt # + pytest e httpx
 ```
 
 ---
@@ -138,63 +140,73 @@ Backend/
 
 ## 6. Configuração (`.env`)
 
-O `app/database.py` lê a configuração de um ficheiro `.env` na pasta `Backend`:
+A API lê a configuração de um ficheiro `.env` na pasta `Backend` (copia o
+[`.env.example`](.env.example); o `.env` está no `.gitignore`):
 
 | Variável | Por omissão | Uso |
 |---|---|---|
-| `DATABASE_HOST` | `localhost` | Anfitrião do PostgreSQL |
+| `DATABASE_HOST` | `localhost` | Anfitrião do PostgreSQL (aceita vários nós separados por vírgulas) |
 | `DATABASE_PORT` | `5432` | Porta do PostgreSQL (a infraestrutura publica a `15432` em modo debug) |
 | `DATABASE_NAME` | `trustvote` | Nome da base de dados |
 | `DATABASE_USER` | `trustvote` | Utilizador da aplicação |
 | `DATABASE_PASSWORD` | *(vazio)* | Password de `trustvote` (igual a `TRUSTVOTE_DB_PASSWORD` da infraestrutura) |
-| `JWT_SECRET` | valor de desenvolvimento | Chave de assinatura dos tokens — **definir em qualquer ambiente a sério** |
+| `DATABASE_READ_HOST` | *(vazio)* | Réplica para as leituras públicas; sem ela, usa os nós de escrita |
+| `JWT_SECRET` | **obrigatório** | Chave dos tokens (16+ caracteres). Sem ela a API não arranca |
 | `JWT_MINUTOS_VALIDADE` | `60` | Validade dos tokens, em minutos |
-
-Exemplo de `.env` para desenvolvimento local:
-
-```dotenv
-DATABASE_HOST=127.0.0.1
-DATABASE_PORT=15432
-DATABASE_NAME=trustvote
-DATABASE_USER=trustvote
-DATABASE_PASSWORD=<a mesma de TRUSTVOTE_DB_PASSWORD>
-JWT_SECRET=<uma string longa e aleatória>
-```
-
-> **Aviso de segurança:** o `Backend/.env` está atualmente versionado no git, o que
-> expõe a password da base de dados no histórico. Devia ser retirado do controlo de
-> versões (com um `.gitignore` e um `.env.example` com valores fictícios). Sem
-> `JWT_SECRET` definido, é usado um segredo de desenvolvimento conhecido, que
-> permite forjar tokens — **não usar assim em produção.**
+| `VOTO_HMAC_SECRET` | derivado do `JWT_SECRET` | Segredo do selo dos votos. **Não mudar depois de haver votos** |
+| `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` | *(desligado)* | Logout imediato e limite de tentativas de login (um Redis só) |
+| `REDIS_SENTINELS`, `REDIS_GRUPO` | *(desligado)*, `trustvote` | Em vez de `REDIS_HOST`: lista `IP:porta` dos Sentinels, que indicam o Redis principal e seguem o failover (é o que o Docker usa) |
+| `LOGIN_TENTATIVAS`, `LOGIN_JANELA_SEGUNDOS` | `5`, `900` | Falhas seguidas até bloquear o email, e por quanto tempo |
+| `REGISTO_RESTRITO` | `false` | `true` = só a lista oficial de inscritos pode criar conta |
+| `TAREFAS_INTERVALO` | `30` | Segundos entre ciclos das tarefas automáticas; `0` desliga (na API; o worker usa 30) |
+| `APURAMENTO` | `imediato` | `worker` = encerrar uma volta só fecha a votação e pede o apuramento ao worker pela fila do Redis (é o que as instâncias usam no Docker) |
+| `WORKER_NOME`, `WORKER_PAPEL` | `worker`, `principal` | Só no worker: nome nos logs e `reserva` para o que só apura sem o principal |
+| `CORS_ORIGINS` | a entrada (8080) e os dois nginx (8081/8082), por `127.0.0.1` e `localhost` | Origens autorizadas a chamar a API |
 
 ---
 
 ## 7. Base de dados
 
-O esquema **não é criado pelo Python**: as tabelas vêm dos scripts SQL canónicos
-em [`config/database/init/docker_sql_and_sh/`](config/database/init/docker_sql_and_sh),
-que o PostgreSQL monta no volume de inicialização. A criação automática de tabelas
-(`Base.metadata.create_all`) foi removida de propósito — o SQL é a fonte única do esquema.
+O esquema **não é criado pelo Python**: vem de um único ficheiro,
+[`basedados/trustvote.sql`](basedados/trustvote.sql), que o Docker corre ao criar a base de
+dados. A criação automática de tabelas (`Base.metadata.create_all`) foi removida de
+propósito — o SQL é a fonte única do esquema. O ficheiro tem três partes:
 
-- `00-trustvote-user.sql` — cria o utilizador `trustvote` e torna-o dono da base de dados.
-- `trustvote.sql` — as 10 tabelas, executadas como `trustvote` (`SET ROLE`).
+1. **Contas:** `trustvote` (usada pela API e dona das tabelas) e o utilizador de replicação,
+   com as passwords do `.env`.
+2. **Replicação:** autoriza a réplica a ligar-se a partir da rede Docker (`pg_hba.conf`).
+3. **Tabelas:** as 13 tabelas, criadas já como `trustvote` (`SET ROLE`). Os testes usam só esta parte.
 
-| Tabela | Mapeada no Python? |
+| Tabela | Conteúdo |
 |---|---|
-| `utilizador` | sim (com `ut_num_estudante` e `ut_curso`) |
-| `eleicao` | sim |
-| `ronda` | sim |
-| `candidato` | sim (por `cand_orgao`: `direcao` / `assembleia` / `conselho_fiscal`) |
-| `ronda_candidato` | sim |
-| `habilitacao` | sim |
-| `participacao` | sim |
-| `voto` | sim (`vot_hash` guarda o SHA-256 do recibo) |
-| `resultado` | não (apuramento por implementar) |
-| `auditoria` | não (RF11 por implementar) |
+| `utilizador` | conta, `ut_num_estudante`, `ut_curso`, perfil e estado |
+| `eleicao` | ato eleitoral, estado e `ele_quorum` |
+| `ronda` | 1.ª/2.ª volta: `agendada` → `aberta` → `encerrada` → `apurada` |
+| `candidato`, `ronda_candidato` | candidaturas (por `cand_orgao`) e quem concorre em cada volta |
+| `habilitacao` | caderno eleitoral |
+| `participacao` | **quem** votou (com data) |
+| `voto` | **em quem** se votou (sem utilizador nem data); `vot_cand_id` a `NULL` = branco; `vot_hash` = SHA-256 do recibo; `vot_integridade` = selo HMAC |
+| `resultado` | apuramento de cada volta (a linha com `res_cand_id` a `NULL` são os brancos) |
+| `auditoria` | registo de ações, com `aud_hash_anterior`/`aud_hash_atual` encadeados |
+| `sondagem_participacao`, `sondagem_resposta` | quem respondeu à sondagem / o que respondeu, sem ligação entre si |
+| `estudante_inscrito` | lista oficial de números de estudante |
 
-**Importante:** o PostgreSQL só executa estes scripts **na primeira inicialização**,
-quando o volume de dados está vazio. Se alterares o esquema depois de já existirem
-dados, aplica a alteração por migração (`ALTER TABLE ...`) em vez de apagar o volume.
+**Importante:** o PostgreSQL só executa este ficheiro **na primeira inicialização**, quando
+o volume de dados está vazio. Para recriar a base de dados do zero (apaga os dados):
+`.\stack.cmd down`, apagar os volumes `trustvote_pg-primary-data` e `trustvote_pg-replica-data`,
+e `.\stack.cmd up`. Uma alteração ao esquema numa base já criada faz-se com `ALTER TABLE` à mão,
+e tem de ser acrescentada também a este ficheiro.
+
+### Testes
+
+```powershell
+cd Backend
+..\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+..\.venv\Scripts\python.exe -m pytest
+```
+
+Usam a BD do `.env` (com a stack arrancada com `.\stack.cmd up -Dev`), mas num esquema próprio
+(`teste_pytest`) criado e apagado pelos testes; sem BD, são saltados.
 
 ---
 
@@ -226,7 +238,6 @@ python -m venv .venv
 
 Mantém o terminal aberto enquanto usas a API:
 
-- API: <http://localhost:8001/>
 - Documentação interativa: <http://localhost:8001/docs>
 
 `0.0.0.0` é o endereço de escuta do servidor; no navegador usa `localhost`.
@@ -241,18 +252,13 @@ o código antigo que tem em memória depois de editares um ficheiro.
 
 | Método | Rota | Descrição |
 |---|---|---|
-| `GET` | `/` | Estado da API |
 | `GET` | `/health` | Estado da instância (`{"status":"ok","instance":...}`) — healthcheck da infraestrutura |
 | `GET` | `/docs`, `/openapi.json` | Documentação interativa e esquema OpenAPI |
-| `GET` | `/auth/` | Mensagem de boas-vindas |
-| `POST` | `/auth/register` | Cria uma conta (exige **nº de estudante**) → `201` · `409` se o nome/email/nº já existem · `422` se os dados são inválidos |
-| `POST` | `/auth/login` | Devolve um token de acesso → `200` · `401` se as credenciais estão erradas |
-| `POST` | `/auth/logout` | *Stub* |
-| `POST` | `/auth/reset-password` | *Stub* |
-| `POST` | `/auth/verify-password` | *Stub* |
-| `GET` | `/pedidos/lista` | *Stub* |
-| `GET` | `/publico/resumo` | Eleição em destaque, participação e candidaturas (sem votos por candidato) |
-| `GET` | `/publico/historico` | Eleições encerradas, com datas e participação |
+| `POST` | `/auth/register` | Cria uma conta (exige **nº de estudante**) → `201` · `409` se o nome/email/nº já existem · `403` se o registo está restrito e o nº não está na lista · `422` se os dados são inválidos |
+| `POST` | `/auth/login` | Devolve um token de acesso → `200` · `401` se as credenciais estão erradas · `429` depois de 5 falhas seguidas |
+| `GET` | `/publico/resumo` | Eleição em destaque, participação e candidaturas (sem votos por candidato) — lido na réplica |
+| `GET` | `/publico/historico` | Eleições encerradas, com datas, participação e hora do apuramento — lido na réplica |
+| `GET` | `/publico/configuracao` | Regras reais da plataforma: duração da sessão, limite de tentativas de login e modo de apuramento |
 
 `POST /auth/register`:
 
@@ -269,12 +275,16 @@ Nas rotas protegidas envia-se `Authorization: Bearer <jwt>`.
 | Método | Rota | Descrição |
 |---|---|---|
 | `GET` | `/auth/eu` | Dados da conta |
+| `POST` | `/auth/logout` | Termina a sessão: o token deixa de ser aceite (`204`) |
+| `POST` | `/auth/password` | Muda a palavra-passe: `{"atual": "...", "nova": "..."}` |
 | `GET` | `/eleicoes?estado=` | Eleições visíveis: o eleitor só vê as publicadas em que está habilitado |
 | `GET` | `/eleicoes/{id}` | Eleição com candidatos e rondas |
-| `POST` | `/eleicoes/{id}/rondas/{numero}/votos` | Vota e devolve o recibo · `409` se já votou |
+| `POST` | `/eleicoes/{id}/rondas/{numero}/votos` | `{"candidato_id": 3}` ou `{"branco": true}` → recibo · `409` se já votou |
 | `GET` | `/eleicoes/{id}/participacao` | Diz se já votou na volta atual |
-| `GET` | `/eleicoes/{id}/resultados` | Votos por candidato · `409` para o eleitor antes de a volta encerrar |
-| `GET` | `/recibos/{codigo}/verificar` | Confirma que o voto foi contado, sem revelar a escolha |
+| `GET` | `/eleicoes/{id}/resultados` | Votos por candidato, brancos, inválidos, participação e quórum · `409` para o eleitor antes de a volta encerrar |
+| `GET` | `/recibos/{codigo}/verificar` | Confirma que o voto foi contado (e que o selo está intacto), sem revelar a escolha |
+| `GET` | `/eleicoes/{id}/sondagem` | Projeção da sondagem e se o utilizador já respondeu |
+| `POST` | `/eleicoes/{id}/sondagem/respostas` | `{"candidato_id": 3}` · uma resposta por eleitor (`409` à segunda) |
 
 O recibo não fica guardado no servidor nem ligado ao eleitor, por isso não existe
 `GET /recibos`: o frontend guarda a cópia no dispositivo.
@@ -294,38 +304,51 @@ sem token → `401`; com perfil `eleitor` → `403`.
 | `POST`, `PATCH`, `DELETE` | `/eleicoes/{id}/candidatos`, `/candidatos/{cid}` | Gere os candidatos |
 | `GET`, `POST`, `DELETE` | `/eleicoes/{id}/habilitados`, `/habilitados/{uid}` | Gere o caderno eleitoral |
 | `GET` | `/eleicoes/{id}/estatisticas` | Participação e votos por hora |
+| `GET` | `/eleicoes/{id}/integridade` | Selos dos votos e urna contra participações, por volta |
 | `GET`, `PATCH` | `/utilizadores`, `/utilizadores/{id}` | Lista, suspende ou muda o perfil |
-| `POST` | `/candidatos` | Cria uma candidatura a um órgão (`direcao` / `assembleia` / `conselho_fiscal`) |
-| `GET` | `/candidatos?eleicao_id=` | Lista candidatos (filtro opcional) |
-| `GET` | `/candidatos/{candidato_id}` | Obtém um candidato |
-| `POST` | `/rondas` | Cria uma ronda (1.ª ou 2.ª volta) |
-| `GET` | `/rondas?eleicao_id=` | Lista rondas (filtro opcional) |
-| `GET` | `/rondas/{ronda_id}` | Obtém uma ronda |
-| `POST` | `/rondas-candidatos` | Põe um candidato a concorrer numa ronda |
-| `GET` | `/rondas-candidatos?ronda_id=` | Lista inscrições (filtro opcional) |
-| `POST` | `/habilitacoes` | Habilita um utilizador a votar numa eleição (o registo já o faz automaticamente nas eleições abertas) |
-| `GET` | `/habilitacoes?eleicao_id=` | Lista habilitações (filtro opcional) |
+| `POST` | `/utilizadores/{id}/repor-password` | Gera uma palavra-passe temporária |
+| `GET` | `/auditoria?limite=200` | Registos de auditoria, mais recentes primeiro |
+| `GET` | `/auditoria/verificar` | Recalcula a cadeia de hashes e indica o primeiro registo adulterado |
+| `GET`, `POST`, `DELETE` | `/estudantes-inscritos`, `/estudantes-inscritos/{num}` | Lista oficial de inscritos (`{"estudantes": [{"num_estudante": "20260001", "nome": "...", "curso": "..."}]}`) |
+
+Candidatos, voltas e caderno eleitoral geridos só dentro de `/eleicoes/{id}`, onde as
+regras de estado e a auditoria se aplicam (as rotas soltas `/candidatos`, `/rondas`,
+`/rondas-candidatos` e `/habilitacoes` foram retiradas).
 
 ### Códigos de erro
 
 | Código | Quando |
 |---|---|
 | `400` | Violação de uma regra de negócio (ex.: `data_fim` não é posterior a `data_inicio`) |
-| `401` | Falta o token, ou é inválido/expirado |
+| `401` | Falta o token, ou é inválido/expirado/terminado |
 | `403` | Autenticado, mas sem permissão (perfil não é administrador) |
 | `404` | O recurso indicado não existe |
-| `409` | Registo duplicado (ex.: volta repetida, candidato já inscrito) |
+| `409` | Registo duplicado ou estado incompatível (ex.: já votou, volta já encerrada) |
 | `422` | Dados inválidos à entrada (validação do Pydantic) |
+| `429` | Demasiadas tentativas de login falhadas |
+| `503` | Base de dados indisponível (ex.: durante um failover) |
 
 ---
 
 ## 10. Segurança
 
 - Passwords guardadas em **Argon2** (`pwdlib[argon2]`); nunca são devolvidas pela API.
-- Tokens **JWT HS256** com as claims `sub`, `nome_utilizador`, `perfil` e `exp`.
+- Tokens **JWT HS256** com `sub`, `nome_utilizador`, `perfil`, `iat`, `exp` e `jti`; o logout
+  guarda o `jti` no Redis até o token expirar.
+- `JWT_SECRET` é obrigatório: sem ele a API recusa arrancar.
 - A verificação de credenciais devolve sempre a **mesma mensagem**, para não revelar
-  se um nome de utilizador existe.
+  se um email existe; 5 falhas seguidas bloqueiam o email durante 15 minutos.
 - O token é validado em cada pedido; um utilizador inativo perde o acesso (`401`).
+- **Anonimato:** `participacao` (quem) e `voto` (em quem) não têm ligação; o voto não tem data
+  e o id é um UUID aleatório; a auditoria nunca regista votos; o recibo só existe no dispositivo
+  do eleitor (o servidor guarda o hash). Ao apurar, os votos são regravados por ordem
+  aleatória, para a ordem de chegada não ficar na tabela (ver Próximos passos).
+- **Administradores:** entram só com e-mail e palavra-passe (não há dois fatores); o limite
+  de tentativas de login protege contra palavras-passe adivinhadas.
+- **Integridade:** selo HMAC em cada voto; o apuramento só conta votos com selo válido.
+  Encerrar uma volta bloqueia-a e espera pelos votos em curso, para nenhum ficar de fora.
+- **Auditoria:** cadeia de hashes com `pg_advisory_xact_lock`, para as duas instâncias
+  escreverem pela ordem certa.
 
 ---
 
@@ -344,9 +367,10 @@ e abre <http://localhost:8002/>.
 > configurável por `APP_PORT` (por omissão `8001`), para poder entrar no Compose
 > da infraestrutura sem alterações ao código.
 
-Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
-[`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml) — ver o
-[README da Infraestrutura](../Infraestrutura/README.md).
+Para a stack completa (dois servidores com nginx, API e worker, PostgreSQL com
+réplica, Redis e monitor), usa o `stack.cmd` de
+[`../Infraestrutura`](../Infraestrutura/README.md). A mesma imagem corre a API, os workers
+(`python -m app.worker`) e o monitor.
 
 ---
 
@@ -370,10 +394,12 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 ## 13. Próximos passos
 
-1. **Auditoria** (RF11) e gravação do **apuramento** na tabela `resultado` (RF09/RF10).
-2. **TOTP** e **sondagem**.
-3. Acrescentar um `.env.example` ao backend.
-4. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
+1. **Anonimato com a volta aberta:** o voto e a participação são gravados na mesma
+   transação (para nenhum ficar sem o outro), por isso partilham o `xmin` até a volta ser
+   apurada; o apuramento regrava os votos por ordem aleatória e desfaz essa ligação. Quem
+   tiver acesso à BD (ou ao WAL e aos backups) durante a votação ainda pode cruzá-los.
+   Eliminar isto exige outro desenho (ex.: assinaturas cegas ou mistura de votos).
+2. Autenticação de dois fatores para os administradores (foi retirada para simplificar a demonstração).
 
-Antes de usar o sistema numa votação real, é necessário completar estas funcionalidades,
-definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.
+Antes de usar o sistema numa votação real, é necessário definir o modelo de ameaça e
+rever especificamente as garantias de anonimato do voto.
