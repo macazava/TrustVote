@@ -29,6 +29,10 @@ class SemPermissaoError(Exception):
     """O utilizador não pode fazer esta operação."""
 
 
+class MuitasTentativasError(Exception):
+    """Demasiados pedidos falhados seguidos (ex.: palavra-passe errada)."""
+
+
 def registar_tratadores(app: FastAPI) -> None:
     """Liga cada erro de negócio ao código HTTP correspondente."""
 
@@ -66,6 +70,13 @@ def registar_tratadores(app: FastAPI) -> None:
     async def _sem_permissao(_pedido: Request, erro: SemPermissaoError):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN, content={"detail": str(erro)}
+        )
+
+    @app.exception_handler(MuitasTentativasError)
+    async def _muitas_tentativas(_pedido: Request, erro: MuitasTentativasError):
+        return JSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={"detail": str(erro)},
         )
 
     @app.exception_handler(DadosInvalidosError)
