@@ -185,11 +185,12 @@ JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
 > navegador. Por isso a lista inclui as duas — sem isso, abrir a página por um nome e
 > apontar a API para o outro resulta no erro "Não foi possível contactar o servidor".
 
-> **Aviso de segurança:** o `Backend/.env` está atualmente versionado no git, o que
-> expõe a password da base de dados no histórico. Devia ser retirado do controlo de
-> versões (com um `.gitignore` e um `.env.example` com valores fictícios). Sem
-> `JWT_SECRET` definido, é usado um segredo de desenvolvimento conhecido, que
-> permite forjar tokens — **não usar assim em produção.**
+> **Aviso de segurança:** o `Backend/.env` **já não está versionado** (o `.gitignore` da
+> raiz cobre `.env`), mas **continua no histórico do git**: a password da base de dados
+> está exposta nos commits anteriores. Roda a password — ou reescreve o histórico — e
+> acrescenta um `.env.example` com valores fictícios. Sem `JWT_SECRET` definido, é usado
+> um segredo de desenvolvimento conhecido, que permite forjar tokens — **não usar assim
+> em produção.**
 
 ---
 

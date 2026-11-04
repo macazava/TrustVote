@@ -310,11 +310,15 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 ## 9. Convenções
 
 - **Língua:** código, comentários e documentação em português (Portugal).
-- **Segredos:** nunca guardar passwords reais em ficheiros versionados. O
-  `Infraestrutura/.env` está coberto pelo `.gitignore` dessa pasta; o `Backend/.env`
-  **não está ignorado por ninguém** (não existe `.gitignore` na raiz) e continua no
-  controlo de versões. Deve ser retirado do git e substituído por um
-  `.env.example` com valores fictícios.
+- **Segredos:** o `.gitignore` da raiz cobre `.env`, `Backend/.env` e
+  `Infraestrutura/.env`, e de facto **nenhum está versionado**. Ainda assim, o
+  `Backend/.env` **já esteve** — a password da base de dados continua no **histórico**
+  do git. Só sai de lá rodando a password (mais simples) ou reescrevendo o histórico.
+- **Metadados de IDE:** o `.gitignore` ignora `.idea/` e `.trae/`, mas os ficheiros de
+  `.idea/` na **raiz** e em **`Backend/`** continuam **rastreados** — foram adicionados
+  antes da regra existir, e o `.gitignore` não desrastreia nada. Incluem
+  `dataSources.xml` (com a URL JDBC) e `awsToolkit.xml`. Para limpar:
+  `git rm -r --cached .idea 05_Artefactos/Backend/.idea`
 - **Esquema da BD:** altera-se nos scripts SQL em
   `Backend/config/database/init/docker_sql_and_sh/`, nunca com `create_all` do SQLAlchemy.
 - **Finais de linha:** os ficheiros que correm em Linux (`.sh`, `.conf`, `.yaml`) usam
