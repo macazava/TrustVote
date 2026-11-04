@@ -5,7 +5,6 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
-ORGAOS = ("direcao", "assembleia", "conselho_fiscal")
 Orgao = Literal["direcao", "assembleia", "conselho_fiscal"]
 
 

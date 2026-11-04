@@ -6,6 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
+
 # Validação simples, sem dependências extra (o projeto não usa email-validator).
 EMAIL_PATTERN = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 NOME_UTILIZADOR_PATTERN = r"^[A-Za-z0-9_.-]+$"
@@ -42,8 +43,6 @@ class UtilizadorDetalhe(UtilizadorResposta):
 
     perfil: str
     ativo: bool
-    # A autenticação de dois fatores ainda não está implementada.
-    totp_ativo: bool = False
 
     @computed_field
     @property
@@ -76,3 +75,16 @@ class TokenResposta(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: int
+
+
+class AlterarPassword(BaseModel):
+    """Dados recebidos em POST /auth/password."""
+
+    atual: str = Field(min_length=8, max_length=128)
+    nova: str = Field(min_length=8, max_length=128)
+
+
+class PasswordTemporaria(BaseModel):
+    """Devolvida uma única vez ao administrador que repôs a palavra-passe."""
+
+    password_temporaria: str

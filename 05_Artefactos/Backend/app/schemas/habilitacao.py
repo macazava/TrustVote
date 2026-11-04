@@ -2,14 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
-
-
-class HabilitacaoCriar(BaseModel):
-    """Dados recebidos em POST /habilitacoes."""
-
-    eleicao_id: int = Field(gt=0)
-    utilizador_id: int = Field(gt=0)
+from pydantic import BaseModel
 
 
 class HabilitacaoLote(BaseModel):
@@ -30,13 +23,3 @@ class HabilitadoResposta(BaseModel):
     nome: str
     email: str
     data: datetime
-
-
-class HabilitacaoResposta(BaseModel):
-    """Dados devolvidos pela API."""
-
-    model_config = ConfigDict(from_attributes=True)
-
-    eleicao_id: int
-    utilizador_id: int
-    registada_em: datetime
