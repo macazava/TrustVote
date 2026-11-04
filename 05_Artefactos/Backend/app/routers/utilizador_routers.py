@@ -7,9 +7,15 @@ from sqlalchemy.orm import Session
 
 from app.database import obter_sessao
 from app.models.utilizador import Utilizador
-from app.schemas.autenticacao import UtilizadorAlterar, UtilizadorDetalhe
-from app.security.dependencias import exigir_administrador
+from app.schemas.autenticacao import (
+    PasswordTemporaria,
+    UtilizadorAlterar,
+    UtilizadorDetalhe,
+)
+from app.security.dependencias import auditor_administrador, exigir_administrador
+from app.services import autenticacao as servico_autenticacao
 from app.services import utilizador as servico
+from app.services.auditoria import Auditor
 
 utilizador_routers = APIRouter(
     prefix="/utilizadores",
@@ -33,6 +39,22 @@ def atualizar_utilizador(
     dados: UtilizadorAlterar,
     sessao: Session = Depends(obter_sessao),
     administrador: Utilizador = Depends(exigir_administrador),
+    auditar: Auditor = Depends(auditor_administrador),
 ):
     """Suspende, reativa ou muda o perfil de uma conta."""
-    return servico.atualizar_utilizador(sessao, utilizador_id, dados, administrador)
+    utilizador = servico.atualizar_utilizador(sessao, utilizador_id, dados, administrador)
+    auditar("Conta alterada", "utilizador", utilizador.id, **dados.model_dump(exclude_unset=True))
+    return utilizador
+
+
+@utilizador_routers.post("/{utilizador_id}/repor-password", response_model=PasswordTemporaria)
+def repor_password(
+    utilizador_id: int,
+    sessao: Session = Depends(obter_sessao),
+    administrador: Utilizador = Depends(exigir_administrador),
+    auditar: Auditor = Depends(auditor_administrador),
+):
+    """Gera uma palavra-passe temporária para a conta."""
+    temporaria = servico_autenticacao.repor_password(sessao, utilizador_id, administrador)
+    auditar("Palavra-passe reposta", "utilizador", utilizador_id)
+    return PasswordTemporaria(password_temporaria=temporaria)

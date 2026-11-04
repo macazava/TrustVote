@@ -3,11 +3,13 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from app.database import obter_sessao
+from app.database import obter_sessao, obter_sessao_leitura
 from app.models.utilizador import Utilizador
 from app.schemas.votacao import (
+    ConfiguracaoPublica,
     Estatisticas,
     HistoricoEleicao,
+    IntegridadeEleicao,
     ParticipacaoResposta,
     ReciboVerificacao,
     ResultadoRonda,
@@ -33,7 +35,7 @@ def votar(
     sessao: Session = Depends(obter_sessao),
     utilizador: Utilizador = Depends(utilizador_atual),
 ):
-    """Deposita o voto do utilizador autenticado e devolve o recibo."""
+    """Deposita o voto (num candidato ou em branco) e devolve o recibo."""
     return servico.votar(sessao, eleicao_id, numero, dados.candidato_id, utilizador)
 
 
@@ -74,6 +76,16 @@ def obter_estatisticas(eleicao_id: int, sessao: Session = Depends(obter_sessao))
 
 
 @votacao_routers.get(
+    "/eleicoes/{eleicao_id}/integridade",
+    response_model=IntegridadeEleicao,
+    dependencies=[Depends(exigir_administrador)],
+)
+def verificar_integridade(eleicao_id: int, sessao: Session = Depends(obter_sessao)):
+    """Confere os selos dos votos e se a urna bate certo com as participações."""
+    return servico.verificar_integridade(sessao, eleicao_id)
+
+
+@votacao_routers.get(
     "/recibos/{codigo}/verificar",
     response_model=ReciboVerificacao,
     dependencies=[Depends(utilizador_atual)],
@@ -84,12 +96,18 @@ def verificar_recibo(codigo: str, sessao: Session = Depends(obter_sessao)):
 
 
 @votacao_routers.get("/publico/historico", response_model=list[HistoricoEleicao])
-def obter_historico_publico(sessao: Session = Depends(obter_sessao)):
+def obter_historico_publico(sessao: Session = Depends(obter_sessao_leitura)):
     """Eleições encerradas, sem votos por candidato."""
     return servico.obter_historico_publico(sessao)
 
 
+@votacao_routers.get("/publico/configuracao", response_model=ConfiguracaoPublica)
+def obter_configuracao_publica():
+    """Duração da sessão, limite de tentativas de login e outras regras da plataforma."""
+    return servico.obter_configuracao_publica()
+
+
 @votacao_routers.get("/publico/resumo", response_model=ResumoPublico)
-def obter_resumo_publico(sessao: Session = Depends(obter_sessao)):
+def obter_resumo_publico(sessao: Session = Depends(obter_sessao_leitura)):
     """Dados da eleição em destaque para as páginas sem sessão."""
     return servico.obter_resumo_publico(sessao)
