@@ -33,12 +33,24 @@ instâncias de aplicação definidas na infraestrutura Docker
 
 ### Ainda não implementado
 
+Rotas que o frontend **já invoca** e que ainda não existem neste backend (o
+`api.js` marca-as com `pending`, convertendo o `404` em "funcionalidade ainda não
+disponível"):
+
+| Rota | Área |
+|---|---|
+| `POST /auth/totp/configurar` · `POST /auth/totp/ativar` · `POST /auth/totp/desativar` | TOTP — `app/security/totp.py` está **vazio**; a dependência `pyotp` já está no `requirements.txt` |
+| `GET /auditoria` | auditoria (RF11) |
+| `GET /eleicoes/{id}/sondagem` · `POST /eleicoes/{id}/sondagem/respostas` | sondagem |
+| `GET /recibos` | listagem de recibos — **não deve ser implementada**: o servidor só guarda o hash, logo não pode listar os recibos de um eleitor (ver secção 9) |
+
+Outros trabalhos em falta, sem rota associada:
+
 - Gravação do apuramento na tabela `resultado`: os resultados são contados a cada pedido.
-- **Sondagem** (`/eleicoes/{id}/sondagem`).
-- **Auditoria** (`auditoria`) — RF11.
-- **TOTP** (`app/security/totp.py` está vazio) e as rotas `reset-password`/`verify-password` (stubs).
+- Fecho automático das rondas por `data_fim` (hoje é sempre por ação de administrador).
 - **Worker** de tarefas assíncronas (a pasta ainda não existe).
-- Leitura a partir da réplica (`DATABASE_READ_HOST`) e uso do Redis.
+- Leitura a partir da réplica (`DATABASE_READ_HOST`) e uso real do Redis.
+- `POST /auth/reset-password` e `POST /auth/verify-password` continuam *stubs*.
 
 > As pastas em `app/` existem, mas a sua presença não significa que todas as
 > funcionalidades estejam prontas. O que está confirmado está na tabela acima.
@@ -142,13 +154,14 @@ O `app/database.py` lê a configuração de um ficheiro `.env` na pasta `Backend
 
 | Variável | Por omissão | Uso |
 |---|---|---|
-| `DATABASE_HOST` | `localhost` | Anfitrião do PostgreSQL |
+| `DATABASE_HOST` | `localhost` | Anfitrião(ões) do PostgreSQL; aceita vários nós separados por vírgula |
 | `DATABASE_PORT` | `5432` | Porta do PostgreSQL (a infraestrutura publica a `15432` em modo debug) |
 | `DATABASE_NAME` | `trustvote` | Nome da base de dados |
 | `DATABASE_USER` | `trustvote` | Utilizador da aplicação |
 | `DATABASE_PASSWORD` | *(vazio)* | Password de `trustvote` (igual a `TRUSTVOTE_DB_PASSWORD` da infraestrutura) |
 | `JWT_SECRET` | valor de desenvolvimento | Chave de assinatura dos tokens — **definir em qualquer ambiente a sério** |
 | `JWT_MINUTOS_VALIDADE` | `60` | Validade dos tokens, em minutos |
+| `CORS_ORIGINS` | `http://127.0.0.1:5500,http://localhost:5500` | Origens autorizadas a chamar a API, separadas por vírgula |
 
 Exemplo de `.env` para desenvolvimento local:
 
@@ -158,8 +171,19 @@ DATABASE_PORT=15432
 DATABASE_NAME=trustvote
 DATABASE_USER=trustvote
 DATABASE_PASSWORD=<a mesma de TRUSTVOTE_DB_PASSWORD>
-JWT_SECRET=<uma string longa e aleatória>
+JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
 ```
+
+> **`JWT_SECRET` tem de ser o mesmo nos dois lados.** As instâncias do Compose recebem
+> o `JWT_SECRET` do `.env` da Infraestrutura. O `Backend/.env` de desenvolvimento
+> **não define** essa variável, pelo que a API local (porta `8001`) usa o segredo de
+> desenvolvimento. Resultado: um token emitido em `localhost:8001` **não é aceite**
+> pelos contentores em `127.0.0.1:8080`, e vice-versa. Define o mesmo valor se
+> precisares de alternar entre os dois.
+
+> **CORS:** `localhost:5500` e `127.0.0.1:5500` são origens **diferentes** para o
+> navegador. Por isso a lista inclui as duas — sem isso, abrir a página por um nome e
+> apontar a API para o outro resulta no erro "Não foi possível contactar o servidor".
 
 > **Aviso de segurança:** o `Backend/.env` está atualmente versionado no git, o que
 > expõe a password da base de dados no histórico. Devia ser retirado do controlo de
@@ -202,6 +226,18 @@ dados, aplica a alteração por migração (`ALTER TABLE ...`) em vez de apagar 
 
 O ambiente virtual do projeto vive na **raiz de `05_Artefactos`**, na pasta `.venv`.
 A API é executada a partir da pasta `Backend`.
+
+**Pré-requisito — a base de dados tem de estar publicada.** Sobe a infraestrutura com
+o ficheiro de debug, que expõe a BD em `127.0.0.1:15432`:
+
+```powershell
+cd "C:\Users\<utilizador>\...\05_Artefactos\Infraestrutura"
+copy .env.example .env      # só na primeira vez; preencher os "mudar_*"
+docker compose -f compose.yaml -f compose.debug.yaml up -d --build --wait
+docker compose ps           # todos `healthy`
+```
+
+Depois arranca a API:
 
 ```powershell
 cd "C:\Users\<utilizador>\...\05_Artefactos\Backend"
@@ -370,10 +406,22 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 ## 13. Próximos passos
 
-1. **Auditoria** (RF11) e gravação do **apuramento** na tabela `resultado` (RF09/RF10).
-2. **TOTP** e **sondagem**.
-3. Acrescentar um `.env.example` ao backend.
-4. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
+Por ordem de prioridade sugerida:
+
+1. **TOTP** — expor `POST /auth/totp/configurar`, `/ativar` e `/desativar` (3 rotas, com
+   o schema e a dependência de administrador). A lógica de TOTP ainda não existe em
+   `app/security/totp.py`, mas `pyotp` já está instalado.
+2. **Auditoria** (RF11) — tabela + `GET /auditoria`. É um requisito de transparência
+   para eleições.
+3. **Integridade do voto** — o `vot_hash` é hoje `SHA-256(recibo)`, o que serve para
+   verificar o recibo mas **não** deteta uma alteração direta na BD. Passar a
+   HMAC-SHA256 com um segredo de servidor acrescenta essa garantia.
+4. Gravação do **apuramento** na tabela `resultado` (RF09/RF10) e **fecho automático**
+   das rondas por `data_fim`.
+5. **Sondagem** e os *stubs* `reset-password` / `verify-password`.
+6. Decidir o destino de `GET /recibos` no frontend — por desenho, não deve existir.
+7. Acrescentar um `.env.example` ao backend (hoje só existe o `.env`).
+8. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
 
 Antes de usar o sistema numa votação real, é necessário completar estas funcionalidades,
 definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.

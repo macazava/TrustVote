@@ -117,13 +117,68 @@ O `docker compose` recusa arrancar se faltar alguma password.
 ## 5. Comandos
 
 ```powershell
-docker compose up -d --wait          # iniciar (espera pelos healthchecks)
-docker compose ps                    # estado + health
-docker compose logs -f nginx         # logs de um serviço (ou sem nome = todos)
-docker compose restart servidor1     # reiniciar só uma instância
-docker compose stop                  # parar (mantém dados)
-docker compose down                  # parar e remover contentores (mantém volumes/dados)
-docker compose down -v               # APAGA TAMBÉM OS DADOS (volumes)
+cd 05_Artefactos\Infraestrutura
+
+# --- Subir ------------------------------------------------------------------
+docker compose up -d --wait                  # 1ª vez, ou depois de alterar o compose.yaml
+docker compose up -d --build --wait          # depois de alterar o Dockerfile/requirements.txt
+
+# --- Ver --------------------------------------------------------------------
+docker compose ps                            # estado + health
+docker compose logs -f nginx                 # logs de um serviço (ou sem nome = todos)
+docker compose logs --tail=60 servidor1 servidor2
+
+# --- Operar -----------------------------------------------------------------
+docker compose restart servidor1             # reiniciar só uma instância
+docker compose start servidor1               # voltar a arrancar (após stop)
+
+# --- Parar ------------------------------------------------------------------
+docker compose stop                          # parar (mantém contentores e dados)
+docker compose down                          # remover contentores (mantém volumes/dados)
+docker compose down --remove-orphans         # idem, e remove contentores órfãos
+docker compose down -v                       # APAGA TAMBÉM OS DADOS (volumes)
+```
+
+### Duas regras que evitam quase todos os problemas
+
+**1. `--build` sempre que mudar o `Dockerfile` ou o `requirements.txt`.**
+O Compose reutiliza a imagem `trustvote-backend` que já existe no cache. Sem `--build`,
+as alterações ao backend não entram nos contentores — já aconteceu a imagem ter ficado
+com uma porta antiga, deixando o nginx a devolver `502` sem razão aparente.
+
+**2. Descer com o mesmo conjunto de ficheiros com que se subiu.**
+O `compose.debug.yaml` acrescenta o `pgadmin`. Se subires com ele e desceres só com o
+`compose.yaml`, o pgAdmin sobrevive e a rede passa a dar `Resource is still in use`:
+
+```powershell
+# com debug
+docker compose -f compose.yaml -f compose.debug.yaml up -d --wait
+docker compose -f compose.yaml -f compose.debug.yaml down --remove-orphans
+```
+
+### Limpeza pontual
+
+```powershell
+docker network rm trustvote-network     # só depois de tudo removido (0 contentores ligados)
+docker network ls                       # confirmar o que resta
+docker rmi trustvote-backend            # forçar reconstrução total na próxima subida
+```
+
+### Portas ocupadas no anfitrião
+
+Libertar a `8001` (API a correr fora do Docker, `Errno 10048`):
+
+```powershell
+Get-NetTCPConnection -LocalPort 8001 -State Listen -ErrorAction SilentlyContinue |
+  Select-Object -ExpandProperty OwningProcess -Unique |
+  ForEach-Object { Stop-Process -Id $_ -Force }
+```
+
+Se o `up` falhar com `port is already allocated`, ver quem detém a porta:
+
+```powershell
+Get-NetTCPConnection -LocalPort 8080 -State Listen |
+  Select-Object LocalAddress, OwningProcess
 ```
 
 ### Ver a base de dados num cliente (IntelliJ Database, DBeaver, pgAdmin)
@@ -279,13 +334,30 @@ replicação não substitui backups, porque os erros lógicos também são repli
 ## 9. Integração com o backend e o frontend
 
 - A âncora `x-app` do `compose.yaml` constrói a imagem de `../Backend`; aplica-se com
-  `docker compose up -d --build --wait`.
+  `docker compose up -d --build --wait` (o `--build` é o que garante que a imagem
+  corresponde ao código atual).
 - As instâncias recebem as variáveis `DATABASE_*`, `APP_INSTANCE` e `JWT_SECRET`, que tem
   de ser igual em ambas para um token valer em qualquer uma.
 - O nginx encaminha `/api/` para as instâncias, sem o prefixo: `/api/eleicoes` chega à API
   como `/eleicoes`. As páginas são servidas pelo Live Server.
 - O browser chama sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
 - As instâncias são stateless: os tokens são JWT, não há sessão em memória.
+
+### CORS: `localhost` e `127.0.0.1` são origens diferentes
+
+O backend autoriza, por omissão, `http://127.0.0.1:5500` **e** `http://localhost:5500`
+(`CORS_ORIGINS`, ver [`../Backend/README.md`](../Backend/README.md)). Sem as duas, abrir
+a aplicação por um dos nomes e apontar a API para o outro dá erro de CORS, e o frontend
+mostra "Não foi possível contactar o servidor" — mesmo com a stack toda saudável.
+
+### `JWT_SECRET`: contentores vs. API local
+
+- Os contentores recebem o `JWT_SECRET` do `.env` **desta** pasta.
+- A API corrida localmente na porta `8001` lê o `Backend/.env`, que não define
+  `JWT_SECRET`, e usa por isso o segredo de desenvolvimento.
+- Consequência prática: **um token obtido em `127.0.0.1:8080` não é aceite em
+  `localhost:8001`**, e vice-versa. Se precisares de alternar, define o mesmo valor nos
+  dois `.env`.
 
 ---
 
@@ -325,7 +397,13 @@ teste anterior, um eleitor ficou com o voto contado mas sem recibo.
 | 9b | Promoção + reconstrução | ✅ réplica promovida aceita escritas; antigo primário **recusado** pela proteção; reconstruído como réplica do novo primário, replicação `streaming` e novas escritas replicadas |
 | 10 | Portas expostas | ✅ só `127.0.0.1:8080` publicado (BD só com `compose.debug.yaml`, em 127.0.0.1) |
 
-### Pendentes (dependem do backend dos colegas)
-- Balanceamento e failover **com a aplicação real** (sessões, pedidos longos, `POST` de votos).
-- Comportamento das aplicações durante a promoção da BD (reconexão ao novo `DATABASE_HOST`).
-- Uso real do Redis (filas/cache) e leituras na réplica.
+### Ainda por exercitar
+
+- **Uso real do Redis** (filas/cache): o backend recebe `REDIS_HOST`/`REDIS_PASSWORD`,
+  mas ainda não os usa.
+- **Leituras na réplica:** o `compose.yaml` passa `DATABASE_READ_HOST=db-replica`, mas o
+  `app/database.py` ainda não o consome — todas as leituras vão ao nó que aceita escritas.
+- **Reconexão das instâncias após promoção da BD** a meio de um pedido longo.
+
+> Os testes 7 e 8 foram inicialmente feitos com um servidor de substituição e **já foram
+> repetidos com a aplicação real** nos testes de falha de 31/10 (tabela acima).

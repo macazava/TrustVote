@@ -55,7 +55,12 @@ guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/
 - O **frontend** tem um único endereço: abre `Frontend/pages/inicio.html` com o **Live Server**
   na raiz do projeto, em <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
 - O frontend chama sempre a API em `http://127.0.0.1:8080/api` (definida em
-  `Frontend/js/models/servidor.js`), e o `CORS_ORIGINS` do backend autoriza só esse endereço.
+  `Frontend/js/models/servidor.js`). O backend aceita como origens **tanto
+  `http://127.0.0.1:5500` como `http://localhost:5500`** (a variável `CORS_ORIGINS`,
+  com esses dois valores por omissão). Isto é necessário porque, para o navegador,
+  `localhost` e `127.0.0.1` são origens **diferentes**: abrir a página por um nome e
+  apontar a API para o outro dá erro de CORS e a mensagem "Não foi possível contactar
+  o servidor".
 - O **nginx** encaminha `/api/` para `servidor1`/`servidor2`, que correm a imagem do
   `Backend/`. Quem abrir `http://127.0.0.1:8080/` é reencaminhado para o Live Server.
 - O frontend não tem dados próprios: tudo o que mostra vem da API.
@@ -64,54 +69,27 @@ guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/
 
 ## 3. Pré-requisitos
 
-- **Docker Desktop** iniciado (Windows 10/11 com WSL 2).
-- **Python 3.12 ou superior**.
-- Portas livres: `8080` (nginx), `8001` (API em desenvolvimento) e `15432`/`15433`
-  (base de dados, apenas em modo debug).
+- **Docker Desktop** iniciado (Windows 10/11 com WSL 2). Confirma com `docker info`.
+- **Python 3.12 ou superior** (só é necessário no modo B).
+- Portas livres:
+  - `8080` — nginx, o único ponto de entrada publicado (sempre);
+  - `8001` — API local (só no modo B);
+  - `15432` / `15433` / `5050` — base de dados e pgAdmin (só com o `compose.debug.yaml`).
 
 ---
 
-## 4. Começar do zero (passo a passo)
+## 4. Comandos para pôr tudo a correr
 
-### Passo 1 — Subir a infraestrutura
+Há **dois modos**, ambos sobre a mesma base de dados e o mesmo frontend:
 
-```powershell
-cd "C:\...\05_Artefactos\Infraestrutura"
-copy .env.example .env
-# Abre o .env e substitui TODOS os valores "mudar_*" por passwords próprias.
-docker compose -f compose.yaml -f compose.debug.yaml up -d --wait
-docker compose ps
-```
+| Modo | Onde corre a API | Para que serve |
+|---|---|---|
+| **A. Tudo em Docker** (recomendado) | contentores `servidor1` / `servidor2` | demonstração completa: balanceamento, replicação e failover |
+| **B. API local + infraestrutura em Docker** | no teu PC, porta `8001` | desenvolvimento, com `--reload` a cada gravação |
 
-O `--wait` só devolve quando todos os contentores estão `healthy`.
-
-Usamos também o `compose.debug.yaml` porque ele **publica a base de dados em
-`127.0.0.1:15432`** — sem isso, o backend a correr fora do Docker não lhe chega.
-
-### Passo 2 — Configurar o backend
-
-O ficheiro `Backend/.env` aponta para a base de dados publicada no passo anterior:
-
-```dotenv
-DATABASE_HOST=127.0.0.1
-DATABASE_PORT=15432
-DATABASE_NAME=trustvote
-DATABASE_USER=trustvote
-DATABASE_PASSWORD=<o mesmo valor de TRUSTVOTE_DB_PASSWORD do .env da Infraestrutura>
-JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
-```
-
-### Passo 3 — Instalar dependências e arrancar a API
+### Passo 0 — Uma só vez: ambiente virtual (só é preciso no modo B)
 
 O ambiente virtual vive na raiz de `05_Artefactos`, em `.venv`.
-
-```powershell
-cd "C:\...\05_Artefactos\Backend"
-..\.venv\Scripts\python.exe -m pip install -r requirements.txt
-..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
-```
-
-Se ainda não existir o ambiente virtual:
 
 ```powershell
 cd "C:\...\05_Artefactos"
@@ -119,15 +97,72 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r Backend\requirements.txt
 ```
 
-Usa sempre `--reload` durante o desenvolvimento: sem ele, o servidor continua a
-servir o código antigo que tem em memória depois de editares um ficheiro.
+### Passo 1 — Criar o `.env` da infraestrutura (só na primeira vez)
 
-### Passo 4 — Confirmar que funciona
+```powershell
+cd "C:\...\05_Artefactos\Infraestrutura"
+copy .env.example .env
+# Abre o .env e substitui TODOS os valores "mudar_*" por passwords próprias.
+```
 
-- API: <http://localhost:8001/> · healthcheck: <http://localhost:8001/health>
-- Documentação interativa (Swagger): <http://localhost:8001/docs>
-- Aplicação completa: <http://127.0.0.1:5500/Frontend/pages/inicio.html> (Live Server)
-- API através do nginx: <http://localhost:8080/api/health>
+### Passo 2 — Subir a infraestrutura
+
+```powershell
+# Modo A — tudo em Docker (nginx + servidor1 + servidor2 + BD + réplica + redis)
+docker compose up -d --build --wait
+
+# Modo B — igual, mas com a BD publicada em 127.0.0.1:15432 (para a API local)
+docker compose -f compose.yaml -f compose.debug.yaml up -d --build --wait
+
+docker compose ps
+```
+
+- `--wait` só devolve quando todos os contentores estão `healthy`.
+- `--build` reconstrói a imagem do backend. **Sem ele, o Compose reutiliza a imagem
+  que já existe** e as alterações ao `Dockerfile` ou ao `requirements.txt` não têm
+  efeito nenhum — foi o que já provocou erros `502` difíceis de explicar.
+- O `compose.debug.yaml` é obrigatório no **modo B**: é ele que **publica a base de
+  dados em `127.0.0.1:15432`**. Também acrescenta o pgAdmin em
+  <http://127.0.0.1:5050>.
+
+### Passo 3 — (Modo B) Configurar e arrancar a API no PC
+
+O `Backend/.env` aponta para a base de dados publicada no passo anterior:
+
+```dotenv
+DATABASE_HOST=127.0.0.1
+DATABASE_PORT=15432
+DATABASE_NAME=trustvote
+DATABASE_USER=trustvote
+DATABASE_PASSWORD=<o mesmo valor de TRUSTVOTE_DB_PASSWORD do .env da Infraestrutura>
+```
+
+```powershell
+cd "C:\...\05_Artefactos\Backend"
+..\.venv\Scripts\python.exe -m pip install -r requirements.txt
+..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
+```
+
+Corre sempre a partir da pasta `Backend`, senão dá
+`ModuleNotFoundError: No module named 'app'`. Usa `--reload` durante o
+desenvolvimento: sem ele, o servidor continua a servir o código que tem em memória.
+
+### Passo 4 — Abrir o frontend
+
+Abre `Frontend/pages/inicio.html` com o **Live Server** (botão direito → *Open with
+Live Server*) → <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
+
+O frontend chama **sempre** a API pelo nginx, em `http://127.0.0.1:8080/api`.
+
+### Passo 5 — Confirmar que funciona
+
+| | Endereço |
+|---|---|
+| API através do nginx | <http://127.0.0.1:8080/api/health> |
+| Documentação interativa | <http://127.0.0.1:8080/docs> |
+| API local (só no modo B) | <http://localhost:8001/docs> |
+| Aplicação | <http://127.0.0.1:5500/Frontend/pages/inicio.html> |
+| pgAdmin (com o ficheiro de debug) | <http://127.0.0.1:5050> |
 
 O registo exige o **número de estudante** (identificador do eleitor) e a conta é
 automaticamente habilitada a votar nas eleições ainda não encerradas. Para testar as
@@ -137,29 +172,60 @@ rotas de administração, cria uma conta e promove-a:
 docker exec trustvote-db-primary psql -U trustvote -d trustvote -c "UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='<o teu nome>';"
 ```
 
-### Passo 5 — Parar
+### Passo 6 — Parar
+
+Desce sempre com o **mesmo conjunto de ficheiros** que usaste para subir:
 
 ```powershell
 cd "C:\...\05_Artefactos\Infraestrutura"
-docker compose down          # para tudo, mantém os dados
-docker compose down -v       # ATENÇÃO: apaga também os dados
+
+docker compose down                      # modo A (mantém os dados)
+docker compose down --remove-orphans     # idem, e remove contentores órfãos
+
+# modo B — tem de incluir o ficheiro de debug, senão o pgadmin sobrevive
+docker compose -f compose.yaml -f compose.debug.yaml down --remove-orphans
+
+docker compose down -v                   # ATENÇÃO: apaga também os dados (volumes)
 ```
+
+> Se usares `docker compose down` sozinho depois de teres subido com o
+> `compose.debug.yaml`, o contentor `pgadmin` não é removido e volta a bloquear a
+> rede no `down` seguinte, com `Resource is still in use`. Inclui sempre
+> `--remove-orphans`.
 
 ---
 
 ## 5. Comandos do dia a dia
 
 ```powershell
-docker compose ps                    # estado + health dos contentores
-docker compose logs -f nginx         # seguir os logs de um serviço
-docker compose restart servidor1     # reiniciar só uma instância
-docker compose up -d --wait          # aplicar alterações ao compose
+cd "C:\...\05_Artefactos\Infraestrutura"
+
+docker compose ps                      # estado + health dos contentores
+docker compose logs -f nginx           # seguir os logs de um serviço
+docker compose restart servidor1       # reiniciar só uma instância
+
+docker compose up -d --wait            # aplicar alterações ao compose.yaml
+docker compose up -d --build --wait    # aplicar alterações ao Dockerfile / requirements.txt
 ```
 
 Ligação à base de dados a partir do terminal:
 
 ```powershell
 docker exec -it trustvote-db-primary psql -U trustvote -d trustvote -c "\dt"
+```
+
+Libertar a porta `8001`, quando a API local não arranca com `Errno 10048`:
+
+```powershell
+Get-NetTCPConnection -LocalPort 8001 -State Listen -ErrorAction SilentlyContinue |
+  Select-Object -ExpandProperty OwningProcess -Unique |
+  ForEach-Object { Stop-Process -Id $_ -Force }
+```
+
+Remover a rede Docker, se o `down` se queixar de `Resource is still in use`:
+
+```powershell
+docker network rm trustvote-network
 ```
 
 ---
@@ -187,12 +253,30 @@ Detalhes em [Backend/README.md](Backend/README.md).
 Estado atual, em resumo:
 
 **Backend** — feito: registo (com nº de estudante), login com JWT, gestão de
-eleições, candidaturas, rondas e caderno eleitoral, voto anónimo com recibo,
-contagem de resultados e resumo público. Falta: **auditoria**, **sondagem**, TOTP,
-worker assíncrono e uso do Redis/réplica.
+eleições, candidaturas, rondas e caderno eleitoral, **voto anónimo com recibo**,
+verificação de recibo, contagem de resultados, estatísticas e resumo público.
 
-**Frontend** — ligado à API. As áreas que dependem de rotas em falta mostram que a
+Falta expor, no backend, as rotas que o frontend já invoca:
+
+| Rota em falta | Área |
+|---|---|
+| `POST /auth/totp/configurar`, `/ativar`, `/desativar` | TOTP (a lógica ainda não existe em `app/security/totp.py`) |
+| `GET /auditoria` | auditoria (RF11) |
+| `GET /eleicoes/{id}/sondagem`, `POST /eleicoes/{id}/sondagem/respostas` | sondagem |
+| `GET /recibos` | listagem de recibos — **não deve existir** por desenho: o servidor só guarda o hash do recibo; a cópia vive no `localStorage` do browser |
+
+Falta ainda: gravação do **apuramento** na tabela `resultado` (hoje é contado a cada
+pedido), **fecho automático** das rondas por `data_fim` (hoje é manual), **worker**
+assíncrono, leitura a partir da réplica (`DATABASE_READ_HOST`) e uso real do Redis.
+
+**Frontend** — ligado à API. As áreas que dependem das rotas acima mostram que a
 funcionalidade ainda não está disponível.
+
+> Nota: no `Frontend/js/models/api.js` as chamadas de voto, participação,
+> resultados, estatísticas e verificação de recibo estão marcadas com a opção `pend`.
+> Isso é resíduo: essas rotas **já existem** no backend. Só o efeito secundário fica
+> estranho — um `404` real (ex.: eleição inexistente) é apresentado como
+> "funcionalidade ainda não disponível".
 
 **Infraestrutura** — feito: stack completa a funcionar com a API real (balanceamento,
 replicação síncrona, failover automático da BD, backups), com o frontend no Live Server.
@@ -209,8 +293,13 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 |---|---|
 | `ModuleNotFoundError: No module named 'app'` | Estás a correr o Uvicorn fora da pasta `Backend`. Corre `python -m uvicorn main:app ...` a partir de `Backend`. |
 | `ERR_CONNECTION_REFUSED` em `localhost:8001` | O Uvicorn não está a correr, ou a porta é outra. Ver Passo 3. |
+| `[Errno 10048]` a ligar à porta `8001` | Já há um Uvicorn a segurar a porta (normalmente um processo órfão do `--reload`). Liberta-a com o comando da [secção 5](#5-comandos-do-dia-a-dia). |
 | O backend não liga à base de dados | Falta o `compose.debug.yaml` (a BD não está publicada em `15432`) ou as credenciais do `Backend/.env` não coincidem com o `.env` da Infraestrutura. |
-| Alterações ao código não aparecem | O servidor não está com `--reload`; para-o e arranca de novo. |
+| Alterações ao código não aparecem | Sem `--reload` (API local) ou sem `--build` (contentores). Ver [secção 5](#5-comandos-do-dia-a-dia). |
+| `502` no nginx, com `no live upstreams` nos logs | As instâncias `servidor1`/`servidor2` estão em baixo, **ou** a imagem do backend está desatualizada (foi construída com outra porta). Sobe com `docker compose up -d --build --wait`. |
+| "Não foi possível contactar o servidor" no browser | CORS: a página está em `localhost:5500` mas o `CORS_ORIGINS` do backend só conhece `127.0.0.1:5500` (ou o contrário). Usa o mesmo nome nos dois lados. |
+| `503` / "Serviço temporariamente indisponível" | A API está viva mas sem acesso à base de dados. Confirma `docker compose ps` e `GET /health`. |
+| `Resource is still in use` no `docker network rm` | Ficou um contentor órfão (tipicamente o `pgadmin`, ao descer sem o `compose.debug.yaml`). Usa `down --remove-orphans`. |
 | `docker compose up` recusa arrancar | Falta uma password no `.env` da Infraestrutura. Copia o `.env.example` e preenche os `mudar_*`. |
 | `port is already allocated` | A porta está ocupada (ex.: outro PostgreSQL na `5432`). Fecha o processo ou muda a porta no `.env`. |
 | Tabelas novas não aparecem na BD | Os scripts SQL só correm com o volume vazio. Ver [Infraestrutura > Scripts de inicialização](Infraestrutura/README.md). |
@@ -222,8 +311,10 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 
 - **Língua:** código, comentários e documentação em português (Portugal).
 - **Segredos:** nunca guardar passwords reais em ficheiros versionados. O
-  `Infraestrutura/.env` está no `.gitignore`; o `Backend/.env` **ainda não** — deve
-  ser retirado do git e substituído por um `.env.example`.
+  `Infraestrutura/.env` está coberto pelo `.gitignore` dessa pasta; o `Backend/.env`
+  **não está ignorado por ninguém** (não existe `.gitignore` na raiz) e continua no
+  controlo de versões. Deve ser retirado do git e substituído por um
+  `.env.example` com valores fictícios.
 - **Esquema da BD:** altera-se nos scripts SQL em
   `Backend/config/database/init/docker_sql_and_sh/`, nunca com `create_all` do SQLAlchemy.
 - **Finais de linha:** os ficheiros que correm em Linux (`.sh`, `.conf`, `.yaml`) usam
