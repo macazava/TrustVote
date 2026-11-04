@@ -21,14 +21,16 @@ from app.routers.votacao_routers import votacao_routers
 
 app = FastAPI()
 
-# Único endereço do frontend: o Live Server.
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://127.0.0.1:5500").split(",")
+# Origens permitidas (CORS)
+CORS_ORIGINS = os.getenv(
+    "CORS_ORIGINS", "http://127.0.0.1:5500,http://localhost:5500"
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origem.strip() for origem in CORS_ORIGINS if origem.strip()],
-    allow_methods=["GET", "POST", "PATCH", "DELETE"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 # Converte os erros de negócio definidos em app/erros.py em respostas HTTP.
