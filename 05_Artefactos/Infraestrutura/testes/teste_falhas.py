@@ -52,6 +52,7 @@ def pedido(metodo, rota, corpo=None, token=None, timeout=12):
         return 0, None
 
 
+
 def docker(*argumentos):
     return subprocess.run(["docker", *argumentos], capture_output=True, text=True).stdout.strip()
 
@@ -83,7 +84,8 @@ def esperar(condicao, limite):
 
 
 def preparar(eleitores):
-    token_equipa = pedido("POST", "/auth/login", {"email": "equipa@trustvote.pt", "password": PASSWORD})[1]["access_token"]
+    credenciais = {"email": "equipa@trustvote.pt", "password": PASSWORD}
+    token_equipa = pedido("POST", "/auth/login", credenciais)[1]["access_token"]
     agora = datetime.now(timezone.utc)
     prefixo = f"f{int(time.time()) % 100000}"
     eleicao = pedido("POST", "/eleicoes", {"titulo": f"Teste de falhas {prefixo}"}, token_equipa)[1]["id"]
@@ -104,7 +106,7 @@ def preparar(eleitores):
         estado = pedido(
             "POST",
             "/auth/register",
-            {"nome_utilizador": nome, "email": f"{nome}@ex.pt", "num_estudante": nome, "password": PASSWORD},
+            {"nome_utilizador": nome, "email": f"{nome}@ex.pt", "num_estudante": nome, "curso": "Teste", "password": PASSWORD},
         )[0]
         assert estado == 201, estado
         tokens[nome] = pedido("POST", "/auth/login", {"email": f"{nome}@ex.pt", "password": PASSWORD})[1]["access_token"]

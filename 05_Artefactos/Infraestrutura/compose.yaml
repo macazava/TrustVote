@@ -1,0 +1,405 @@
+# TrustVote — toda a infraestrutura num só ficheiro: Servidor 1, Servidor 2 e o árbitro.
+#
+#   .\stack.cmd up            arranca tudo (na 1.ª vez cria o .env e os dados de demonstração)
+#   http://127.0.0.1:8080     o site, sempre pelo balanceador de entrada (passa sozinho para
+#                             o servidor que estiver de pé)
+#   .\stack.cmd parar 1       simula a queda do Servidor 1 inteiro (ou 2)
+#   .\stack.cmd ligar 1       e volta a ligá-lo
+#
+# Os "servidores" são grupos de serviços (ver os comentários de cada secção):
+#   Servidor 1: nginx1, servidor1, worker, db-primary, redis, sentinel1
+#   Servidor 2: nginx2, servidor2, worker-reserva, db-replica, redis-replica, sentinel2
+#   Árbitro:    entrada, monitor, sentinel3 (fica fora dos dois, para continuar quando um cai)
+# Credenciais: ficheiro .env (criado pelo stack.cmd a partir do .env.example).
+
+name: trustvote
+
+# ===================== Definições comuns =====================
+x-restart: &restart
+  restart: unless-stopped
+
+# Um nó morto deixa de ter nome no DNS: desiste depressa em vez de atrasar o failover.
+x-dns-rapido: &dns-rapido
+  dns_opt:
+    - timeout:1
+    - attempts:1
+
+# Ligação à BD e ao Redis, igual na API e nos workers.
+x-ligacoes: &ligacoes
+  # A API procura o nó que aceita escritas, por isso sobrevive a um failover.
+  DATABASE_HOST: db-primary,db-replica
+  DATABASE_READ_HOST: db-replica
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: trustvote
+  DATABASE_USER: trustvote
+  DATABASE_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no .env}
+  # O Redis principal é descoberto pelos Sentinels: muda sozinho se um servidor cair.
+  REDIS_SENTINELS: 172.30.0.21:26379,172.30.0.22:26379,172.30.0.23:26379
+  REDIS_PASSWORD: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no .env}
+  JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET no .env}
+  # Selo dos votos; vazio = derivado do JWT_SECRET. Igual em todas as instâncias.
+  VOTO_HMAC_SECRET: ${VOTO_HMAC_SECRET:-}
+
+# Instância da API (imagem construída de ../Backend).
+x-app: &app
+  <<: [ *restart, *dns-rapido ]
+  image: trustvote-backend
+  build: ../Backend
+  healthcheck:
+    test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)" ]
+    interval: 5s
+    timeout: 3s
+    retries: 3
+    start_period: 10s
+  networks: [ trustvote-network ]
+
+x-app-env: &app-env
+  <<: *ligacoes
+  APP_PORT: "8080"
+  # O nginx publica a API em /api (documentação em http://127.0.0.1:8080/api/docs)
+  API_PREFIXO: /api
+  # true = só os números da lista oficial de inscritos podem criar conta.
+  REGISTO_RESTRITO: ${REGISTO_RESTRITO:-false}
+  # O apuramento e as tarefas automáticas são dos workers.
+  APURAMENTO: worker
+  TAREFAS_INTERVALO: "0"
+
+# Worker de apuramento (app/worker.py). Só um trabalha; o outro fica de reserva.
+x-worker: &worker
+  <<: [ *restart, *dns-rapido ]
+  image: trustvote-backend
+  command: [ "python", "-m", "app.worker" ]
+  healthcheck:
+    # Saudável enquanto o ciclo (de líder ou de reserva) atualizar o estado.
+    test: [ "CMD", "python", "-c", "import sys, time; t = int(open('/tmp/worker-estado').read().split()[1]); sys.exit(time.time() - t > 30)" ]
+    interval: 10s
+    timeout: 3s
+    retries: 3
+    start_period: 10s
+  networks: [ trustvote-network ]
+
+x-worker-env: &worker-env
+  <<: *ligacoes
+  # Segundos entre ciclos das tarefas automáticas (iniciar eleições, abrir/fechar voltas).
+  TAREFAS_INTERVALO: ${TAREFAS_INTERVALO:-30}
+
+# PostgreSQL — o mesmo entrypoint serve primário e réplica (PG_NODE_ROLE).
+x-postgres: &postgres
+  <<: *restart
+  image: postgres:16
+  entrypoint: [ "sh", "/opt/trustvote/pg-entrypoint.sh" ]
+  command: [ "postgres", "-c", "wal_level=replica", "-c", "max_wal_senders=10", "-c", "max_replication_slots=10",
+             "-c", "max_slot_wal_keep_size=1GB", "-c", "hot_standby=on", "-c", "wal_log_hints=on" ]
+  # Os dois nós montam os mesmos ficheiros: qualquer um pode vir a ser primário.
+  # A criação da BD é um só ficheiro do Backend; só corre com o volume de dados vazio.
+  healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\"" ]
+    interval: 5s
+    timeout: 5s
+    retries: 20
+    start_period: 20s
+  networks: [ trustvote-network ]
+
+x-postgres-env: &postgres-env
+  POSTGRES_USER: postgres
+  POSTGRES_DB: trustvote
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+  TRUSTVOTE_DB_PASSWORD: ${TRUSTVOTE_DB_PASSWORD:?Defina TRUSTVOTE_DB_PASSWORD no .env}
+  REPLICATION_USER: replicator
+  REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Defina REPLICATION_PASSWORD no .env}
+
+# Nginx: o site (pasta Frontend) e a API em /api (docker/nginx/default.conf.template).
+x-nginx: &nginx
+  <<: *restart
+  image: nginx:1.28-alpine
+  volumes:
+    - ./docker/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    - ../Frontend:/usr/share/nginx/html:ro
+  healthcheck:
+    test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null || exit 1" ]
+    interval: 5s
+    timeout: 3s
+    retries: 3
+    start_period: 5s
+  networks: [ trustvote-network ]
+
+# Redis e Sentinels usam IPs fixos: o Sentinel resolve nomes de forma síncrona e, com um
+# servidor em baixo, cada nome que já não existe bloqueava-o ~1 s, o que o punha em modo
+# TILT (sem failover). Os outros contentores recebem IPs de 172.30.0.128/25.
+x-redis-env: &redis-env
+  # redis-cli lê a password desta variável (healthchecks e arranque.sh)
+  REDISCLI_AUTH: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no .env}
+  REDIS_SENTINELS: 172.30.0.21:26379,172.30.0.22:26379,172.30.0.23:26379
+  # Principal no primeiro arranque (redis); depois manda o que os Sentinels disserem.
+  REDIS_PRINCIPAL_INICIAL: 172.30.0.11
+
+# Nó Redis: principal ou réplica, decidido no arranque (docker/redis/arranque.sh).
+x-redis: &redis
+  <<: [ *restart, *dns-rapido ]
+  image: redis:7.4-alpine
+  command: [ "sh", "/opt/trustvote/arranque.sh", "redis" ]
+  healthcheck:
+    test: [ "CMD-SHELL", "redis-cli ping | grep -q PONG" ]
+    interval: 5s
+    timeout: 3s
+    retries: 10
+    start_period: 5s
+
+# Sentinel: vigia o Redis principal e promove a réplica se ele cair (quórum 2 de 3).
+x-sentinel: &sentinel
+  <<: [ *restart, *dns-rapido ]
+  image: redis:7.4-alpine
+  command: [ "sh", "/opt/trustvote/arranque.sh", "sentinel" ]
+  volumes:
+    - ./docker/redis/arranque.sh:/opt/trustvote/arranque.sh:ro
+  healthcheck:
+    test: [ "CMD-SHELL", "redis-cli -p 26379 ping | grep -q PONG" ]
+    interval: 5s
+    timeout: 3s
+    retries: 10
+    start_period: 5s
+
+services:
+  # ===================== SERVIDOR 1 =====================
+  nginx1:
+    <<: *nginx
+    container_name: trustvote-nginx1
+    ports:
+      # Acesso direto ao Servidor 1 (o site normal é pela entrada, 8080).
+      - "${NGINX_BIND_ADDRESS:-127.0.0.1}:${NGINX1_PORT:-8081}:80"
+    environment:
+      NGINX_NOME: nginx1
+      # Reparte os pedidos pelas duas instâncias (round-robin).
+      UPSTREAM_PRINCIPAL: 172.30.0.41    # servidor1
+      UPSTREAM_SECUNDARIO: 172.30.0.42   # servidor2
+      UPSTREAM_SECUNDARIO_MODO: ""
+    # IP fixo: a entrada (árbitro) envia para este endereço
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.31
+
+  servidor1:
+    <<: *app
+    container_name: trustvote-servidor1
+    environment:
+      <<: *app-env
+      APP_INSTANCE: servidor1
+    # IP fixo: os dois nginx enviam para este endereço
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.41
+
+  worker:
+    <<: *worker
+    container_name: trustvote-worker
+    environment:
+      <<: *worker-env
+      WORKER_NOME: worker
+
+  db-primary:
+    <<: *postgres
+    container_name: trustvote-db-primary
+    environment:
+      <<: *postgres-env
+      PG_NODE_ROLE: primary
+      PG_UPSTREAM_HOST: db-replica
+      PG_SLOT_NAME: db_primary_slot
+    # Só neste PC: para ver a BD num cliente (pgAdmin, DBeaver, IntelliJ).
+    ports: [ "127.0.0.1:15432:5432" ]
+    volumes:
+      - pg-primary-data:/var/lib/postgresql/data
+      - ./docker/postgres/pg-entrypoint.sh:/opt/trustvote/pg-entrypoint.sh:ro
+      - ../Backend/basedados/trustvote.sql:/docker-entrypoint-initdb.d/trustvote.sql:ro
+
+  redis:
+    <<: *redis
+    container_name: trustvote-redis
+    environment:
+      <<: *redis-env
+      REDIS_NOME: redis
+      REDIS_IP: 172.30.0.11
+    volumes:
+      - redis-data:/data
+      - ./docker/redis/arranque.sh:/opt/trustvote/arranque.sh:ro
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.11
+
+  sentinel1:
+    <<: *sentinel
+    container_name: trustvote-sentinel1
+    environment:
+      <<: *redis-env
+      REDIS_NOME: sentinel1
+      REDIS_IP: 172.30.0.21
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.21
+
+  # ===================== SERVIDOR 2 =====================
+  nginx2:
+    <<: *nginx
+    container_name: trustvote-nginx2
+    ports:
+      # Acesso direto ao Servidor 2
+      - "${NGINX_BIND_ADDRESS:-127.0.0.1}:${NGINX2_PORT:-8082}:80"
+    environment:
+      NGINX_NOME: nginx2
+      # Envia para o Backend 2; o Backend 1 só entra se o 2 falhar.
+      UPSTREAM_PRINCIPAL: 172.30.0.42    # servidor2
+      UPSTREAM_SECUNDARIO: 172.30.0.41   # servidor1
+      UPSTREAM_SECUNDARIO_MODO: backup
+    # IP fixo: a entrada (árbitro) envia para este endereço
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.32
+
+  servidor2:
+    <<: *app
+    container_name: trustvote-servidor2
+    environment:
+      <<: *app-env
+      APP_INSTANCE: servidor2
+    # IP fixo: os dois nginx enviam para este endereço
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.42
+
+  worker-reserva:
+    <<: *worker
+    container_name: trustvote-worker-reserva
+    environment:
+      <<: *worker-env
+      WORKER_NOME: worker-reserva
+      # Só apura enquanto o worker do Servidor 1 não estiver a correr.
+      WORKER_PAPEL: reserva
+
+  db-replica:
+    <<: *postgres
+    container_name: trustvote-db-replica
+    environment:
+      <<: *postgres-env
+      PG_NODE_ROLE: replica
+      PG_UPSTREAM_HOST: db-primary
+      PG_SLOT_NAME: db_replica_slot
+    ports: [ "127.0.0.1:15433:5432" ]
+    volumes:
+      - pg-replica-data:/var/lib/postgresql/data
+      - ./docker/postgres/pg-entrypoint.sh:/opt/trustvote/pg-entrypoint.sh:ro
+      - ../Backend/basedados/trustvote.sql:/docker-entrypoint-initdb.d/trustvote.sql:ro
+
+  redis-replica:
+    <<: *redis
+    container_name: trustvote-redis-replica
+    environment:
+      <<: *redis-env
+      REDIS_NOME: redis-replica
+      REDIS_IP: 172.30.0.12
+    volumes:
+      - redis-replica-data:/data
+      - ./docker/redis/arranque.sh:/opt/trustvote/arranque.sh:ro
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.12
+
+  sentinel2:
+    <<: *sentinel
+    container_name: trustvote-sentinel2
+    environment:
+      <<: *redis-env
+      REDIS_NOME: sentinel2
+      REDIS_IP: 172.30.0.22
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.22
+
+  # ===================== ÁRBITRO =====================
+  # Fica fora dos dois servidores de propósito: se estivesse num deles, a queda desse
+  # servidor levava o árbitro com ele.
+
+  # Balanceador de entrada: http://127.0.0.1:8080 -> nginx1 ou nginx2. Com um servidor em
+  # baixo, envia tudo para o outro (docker/nginx/entrada.conf.template).
+  entrada:
+    <<: *restart
+    image: nginx:1.28-alpine
+    container_name: trustvote-entrada
+    ports:
+      - "${NGINX_BIND_ADDRESS:-127.0.0.1}:${ENTRADA_PORT:-8080}:80"
+    volumes:
+      - ./docker/nginx/entrada.conf.template:/etc/nginx/templates/default.conf.template:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks: [ trustvote-network ]
+
+  # Monitor de failover da BD. Se estivesse num servidor, ou não havia failover (Servidor 1)
+  # ou o primário ficava bloqueado à espera da réplica síncrona (Servidor 2).
+  monitor:
+    <<: [ *restart, *dns-rapido ]
+    image: trustvote-backend
+    container_name: trustvote-monitor
+    command: [ "python", "-u", "/monitor/monitor.py" ]
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+      MONITOR_NOS: db-primary,db-replica
+    volumes:
+      - ./docker/monitor/monitor.py:/monitor/monitor.py:ro
+    networks: [ trustvote-network ]
+
+  # Terceiro voto do Redis: com um servidor em baixo, o Sentinel que sobra e este fazem
+  # maioria (2 de 3) e promovem a réplica.
+  sentinel3:
+    <<: *sentinel
+    container_name: trustvote-sentinel3
+    environment:
+      <<: *redis-env
+      REDIS_NOME: sentinel3
+      REDIS_IP: 172.30.0.23
+    networks:
+      trustvote-network:
+        ipv4_address: 172.30.0.23
+
+  # ===================== OPCIONAL (.\stack.cmd up -Dev) =====================
+  # pgAdmin: http://127.0.0.1:5050, sem login, com os dois nós da BD já registados.
+  pgadmin:
+    profiles: [ dev ]
+    image: dpage/pgadmin4:9
+    container_name: trustvote-pgadmin
+    restart: unless-stopped
+    environment:
+      # Obrigatórios para a imagem, mas não usados: SERVER_MODE=False dispensa o login.
+      PGADMIN_DEFAULT_EMAIL: admin@trustvote.dev
+      PGADMIN_DEFAULT_PASSWORD: nao-usada
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports: [ "127.0.0.1:5050:80" ]
+    volumes:
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - pgadmin-data:/var/lib/pgadmin
+    networks: [ trustvote-network ]
+
+networks:
+  trustvote-network:
+    name: trustvote-network
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          ip_range: 172.30.0.128/25
+
+# Nomes fixos, para manter os dados de quem já tinha o projeto a correr.
+volumes:
+  pg-primary-data:
+    name: trustvote_pg-primary-data
+  pg-replica-data:
+    name: trustvote_pg-replica-data
+  redis-data:
+    name: trustvote_redis-data
+  redis-replica-data:
+    name: trustvote_redis-replica-data
+  pgadmin-data:
+    name: trustvote_pgadmin-data

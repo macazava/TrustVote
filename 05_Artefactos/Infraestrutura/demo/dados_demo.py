@@ -1,22 +1,26 @@
-"""Cria os dados da demonstração através da API, com a stack já a correr.
+r"""Cria os dados da demonstração através da API, com a stack já a correr.
 
-Espera uma base de dados vazia. Só usa a biblioteca padrão do Python:
+Corre DENTRO do contentor da API, por isso não precisa de Python no PC:
 
-    python Infraestrutura/demo/dados_demo.py
+    .\stack.cmd demo        (o .\stack.cmd up também o corre)
 
-Variáveis opcionais: DEMO_API (por omissão http://127.0.0.1:8080/api) e
-DEMO_PASSWORD. Estas contas são públicas: servem apenas para demonstração.
+Só cria dados numa base de dados sem contas; se já houver, não faz nada.
+Variáveis opcionais: DEMO_API (por omissão a API local do contentor) e DEMO_PASSWORD.
+Estas contas são públicas: servem apenas para demonstração.
 """
 
 import json
 import os
-import subprocess
 import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
-API = os.getenv("DEMO_API", "http://127.0.0.1:8080/api")
+from sqlalchemy import text
+
+from app.database import engine
+
+API = os.getenv("DEMO_API", "http://127.0.0.1:8080")
 PASSWORD = os.getenv("DEMO_PASSWORD", "Demonstracao2026")
 ADMIN = "equipa@trustvote.pt"
 TOTAL_ELEITORES = 20
@@ -57,18 +61,31 @@ def registar(nome, email, numero, curso):
     )
 
 
+
 def tornar_administrador(nome):
-    consulta = f"UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='{nome}'"
-    subprocess.run(
-        ["docker", "exec", "trustvote-db-primary", "psql", "-q", "-U", "trustvote", "-d", "trustvote", "-c", consulta],
-        check=True,
-    )
+    """Dá à conta o perfil de administrador (a API não tem rota para isso)."""
+    with engine.begin() as ligacao:
+        ligacao.execute(
+            text(
+                "UPDATE utilizador SET ut_perfil = 'administrador' WHERE ut_nome = :nome"
+            ),
+            {"nome": nome},
+        )
 
 
 def main():
+    with engine.connect() as ligacao:
+        contas = ligacao.execute(text("SELECT count(*) FROM utilizador")).scalar()
+    if contas:
+        print(f"A base de dados já tem {contas} conta(s): os dados de demonstração não foram criados de novo.")
+        mostrar_contas()
+        return
+
     registar("equipa.demo", ADMIN, "ADMIN0001", "Comissão Eleitoral")
     tornar_administrador("equipa.demo")
-    token = pedido("POST", "/auth/login", {"email": ADMIN, "password": PASSWORD})["access_token"]
+    token = pedido(
+        "POST", "/auth/login", {"email": ADMIN, "password": PASSWORD}
+    )["access_token"]
 
     agora = datetime.now(timezone.utc)
     eleicao = pedido(
@@ -102,7 +119,11 @@ def main():
     pedido("POST", f"{rota}/agendar", token=token)
     pedido("POST", f"{rota}/iniciar", token=token)
 
-    print("Dados criados: a eleição está aberta.")
+    print("Dados de demonstração criados: a eleição está aberta.")
+    mostrar_contas()
+
+
+def mostrar_contas():
     print(f"  Equipa:  {ADMIN}")
     print(f"  Eleitores: eleitor01@trustvote.pt a eleitor{TOTAL_ELEITORES:02d}@trustvote.pt")
     print(f"  Palavra-passe: {PASSWORD}")
