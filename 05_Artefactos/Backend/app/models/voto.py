@@ -19,6 +19,9 @@ class Voto(Base):
         "vot_id", Uuid, primary_key=True, default=uuid.uuid4
     )
     ronda_id: Mapped[int] = mapped_column("vot_ron_id", BigInteger)
-    candidato_id: Mapped[int] = mapped_column("vot_cand_id", BigInteger)
+    # None = voto em branco.
+    candidato_id: Mapped[int | None] = mapped_column("vot_cand_id", BigInteger)
     # SHA-256 do recibo: permite confirmar o voto sem guardar o recibo.
     hash: Mapped[str] = mapped_column("vot_hash", CHAR(64))
+    # HMAC do voto (ver app/security/integridade.py).
+    integridade: Mapped[str | None] = mapped_column("vot_integridade", CHAR(64))

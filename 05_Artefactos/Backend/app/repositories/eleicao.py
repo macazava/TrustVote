@@ -8,9 +8,15 @@ from app.models.habilitacao import Habilitacao
 
 
 def criar(
-    sessao: Session, titulo: str, descricao: str | None, criador_id: int
+    sessao: Session,
+    titulo: str,
+    descricao: str | None,
+    criador_id: int,
+    quorum: float = 0,
 ) -> Eleicao:
-    eleicao = Eleicao(titulo=titulo, descricao=descricao, criador_id=criador_id)
+    eleicao = Eleicao(
+        titulo=titulo, descricao=descricao, criador_id=criador_id, quorum=quorum
+    )
     sessao.add(eleicao)
     sessao.commit()
     sessao.refresh(eleicao)

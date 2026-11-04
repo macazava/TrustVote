@@ -2,7 +2,9 @@
 
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, String, Text, func
+from decimal import Decimal
+
+from sqlalchemy import BigInteger, DateTime, Numeric, String, Text, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -21,4 +23,8 @@ class Eleicao(Base):
     criador_id: Mapped[int] = mapped_column("ele_ut_id", BigInteger)
     criada_em: Mapped[datetime] = mapped_column(
         "ele_data", DateTime(timezone=True), server_default=func.now()
+    )
+    # Participação mínima (% dos habilitados) para o resultado ser válido.
+    quorum: Mapped[Decimal] = mapped_column(
+        "ele_quorum", Numeric(5, 2), server_default=text("0")
     )

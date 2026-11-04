@@ -1,7 +1,7 @@
 """Modelo SQLAlchemy do utilizador registado.
 
 A tabela é a `utilizador` definida em
-`config/database/init/docker_sql_and_sh/trustvote.sql`, que é a fonte única do
+`basedados/trustvote.sql`, que é a fonte única do
 esquema. Os atributos em Python mantêm nomes legíveis para a API; o mapeamento
 para as colunas `ut_*` é feito aqui.
 """
