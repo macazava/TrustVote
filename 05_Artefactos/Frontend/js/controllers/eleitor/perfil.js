@@ -3,11 +3,11 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { session, localReceipts, twoFactor } = TV;
+  const { session, localReceipts, password } = TV;
   const { panel } = TV.panels;
   const voter = TV.voter;
 
-  // Volta a desenhar quando as eleições chegam, depois de votar e ao mudar os dois fatores
+  // Volta a desenhar quando as eleições chegam e depois de votar
   voter.renderProfile = function renderProfile() {
     const el = panel("profile");
     const lista = voter.state.lista;
@@ -22,9 +22,6 @@
 
     el.querySelector("[data-logout-profile]").addEventListener("click", session.logout);
     voter.bindVoteButtons(el);
-    twoFactor.wire(el, () => {
-      renderProfile();
-      voter.renderOverview();
-    });
+    password.wire(el);
   };
 })();

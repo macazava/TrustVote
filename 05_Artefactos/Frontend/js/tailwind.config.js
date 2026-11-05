@@ -2,7 +2,7 @@
    Depois de mudar classes Tailwind no HTML ou no JS, correr "npm run css" na pasta .vscode para gerar css/tailwind.css */
 module.exports = {
   // Ficheiros onde o Tailwind procura as classes usadas
-  content: ["./index.html", "./pages/**/*.html", "./js/**/*.js"],
+  content: ["./pages/**/*.html", "./js/**/*.js"],
   // Sem o reset nem o .container do Tailwind, para não alterar os estilos que já existem
   corePlugins: { preflight: false, container: false },
   theme: {

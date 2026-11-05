@@ -19,10 +19,6 @@
     document.querySelectorAll("[data-font-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.largeText)));
     document.querySelectorAll("[data-contrast-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.contrast)));
     document.querySelectorAll("[data-pref]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs[b.dataset.pref])));
-    const large = document.querySelector("#large-text");
-    const contrast = document.querySelector("#contrast");
-    if (large) large.checked = !!prefs.largeText;
-    if (contrast) contrast.checked = !!prefs.contrast;
   }
 
   function savePrefs(change) {
@@ -49,11 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-contrast-toggle]").forEach((button) =>
     button.addEventListener("click", () => savePrefs({ contrast: !readPrefs().contrast }))
   );
-  document.querySelector("#large-text")?.addEventListener("change", (e) => savePrefs({ largeText: e.target.checked }));
-  document.querySelector("#contrast")?.addEventListener("change", (e) => savePrefs({ contrast: e.target.checked }));
 
   // ===== Página atual no menu =====
-  const current = window.location.pathname.split("/").pop() || "index.html";
+  const current = window.location.pathname.split("/").pop() || "inicio.html";
   document.querySelectorAll(".main-nav a").forEach((link) => {
     if (link.getAttribute("href") === current) link.setAttribute("aria-current", "page");
   });

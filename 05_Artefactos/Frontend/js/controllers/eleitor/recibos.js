@@ -14,21 +14,14 @@
     el.innerHTML = view.receiptsPage();
     const box = el.querySelector("[data-receipts]");
     ui.mount(box, async () => {
-      // Sem a rota no backend, mostra os recibos guardados neste dispositivo
-      let recibos;
-      let aviso = "";
-      try {
-        recibos = await api.votacao.recibos();
-      } catch (error) {
-        if (!error.pending) throw error;
-        recibos = localReceipts.all();
-        aviso = view.localNotice();
-      }
+      // O servidor não liga recibos a eleitores (é isso que mantém o voto secreto):
+      // os recibos só existem neste dispositivo, guardados no momento do voto.
+      const recibos = localReceipts.all();
       if (!recibos.length) {
         box.innerHTML = view.noReceipts();
         return;
       }
-      box.innerHTML = aviso + recibos.map(view.receiptCard).join("");
+      box.innerHTML = view.localNotice() + recibos.map(view.receiptCard).join("");
 
       box.querySelectorAll("[data-verify]").forEach((b) =>
         b.addEventListener("click", async () => {
@@ -37,8 +30,8 @@
           const checks = box.querySelector(`[data-verify-checks="${b.dataset.verify}"]`);
           try {
             const resposta = await ui.busy(b, "A verificar…", () => api.votacao.verificarRecibo(r.recibo));
-            pill.classList.toggle("status-warn", !resposta.valido);
-            pill.innerHTML = view.verifyPill(resposta.valido);
+            pill.classList.toggle("status-warn", !(resposta.valido && resposta.incluido));
+            pill.innerHTML = view.verifyPill(resposta);
             checks.innerHTML = view.verifyChecks(resposta);
           } catch (error) {
             ui.toast(error.message, true);

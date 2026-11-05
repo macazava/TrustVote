@@ -18,22 +18,27 @@
     }
     el.innerHTML = view.pollHead() + `<div data-poll-body></div>`;
     const body = el.querySelector("[data-poll-body]");
-    ui.mount(body, async () => {
-      const s = await api.sondagem.obter(e.id);
-      el.querySelector(".page-head").insertAdjacentHTML("beforeend", view.modelTag(s));
-      body.innerHTML = view.pollBody(e, s);
-      body.querySelector("[data-poll-form]").addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const message = form.querySelector(".form-message");
-        try {
-          await ui.busy(form.querySelector("button"), "A enviar…", () => api.sondagem.responder(e.id, Number(form.poll.value)));
-          ui.message(message, "Obrigado! A sua resposta foi incluída na simulação.", true);
-        } catch (error) {
-          ui.message(message, error.message);
-        }
+    let marcado = false;
+    const carregar = () =>
+      ui.mount(body, async () => {
+        const s = await api.sondagem.obter(e.id);
+        if (!marcado) el.querySelector(".page-head").insertAdjacentHTML("beforeend", view.modelTag(s));
+        marcado = true;
+        body.innerHTML = view.pollBody(e, s);
+        body.querySelector("[data-poll-form]")?.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const message = form.querySelector(".form-message");
+          try {
+            await ui.busy(form.querySelector("button"), "A enviar…", () => api.sondagem.responder(e.id, Number(form.poll.value)));
+            ui.toast("Obrigado! A tua resposta foi incluída na projeção.");
+            carregar();
+          } catch (error) {
+            ui.message(message, error.message);
+          }
+        });
       });
-    });
+    carregar();
   };
 
   // ===== Resultados: um cartão por eleição em curso ou encerrada =====

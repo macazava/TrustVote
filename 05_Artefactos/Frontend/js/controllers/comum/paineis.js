@@ -1,4 +1,4 @@
-/* Controller · troca de separador nas áreas do eleitor e da equipa (botões data-view / data-view-go) */
+/* Controller · troca de separador nas áreas do eleitor e da equipa (botões data-view) */
 (function () {
   "use strict";
 
@@ -36,10 +36,6 @@
 
     document.querySelectorAll("[data-view]").forEach((button) => {
       button.addEventListener("click", () => activateView(button.dataset.view));
-    });
-
-    document.querySelectorAll("[data-view-go]").forEach((button) => {
-      button.addEventListener("click", () => activateView(button.dataset.viewGo));
     });
   });
 })();

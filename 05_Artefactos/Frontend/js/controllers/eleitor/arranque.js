@@ -50,12 +50,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     voter.renderPoll();
     voter.renderResults();
     voter.renderProfile();
+    renderHelp();
+  }
+
+  // ===== Ajuda: eleição em destaque e regras lidas da API =====
+  const config = TV.api.publico.configuracao().catch(() => null);
+  async function renderHelp() {
+    panel("help").innerHTML = TV.voterView.helpPage({
+      e: voter.featured(),
+      config: await config,
+      fimSessao: exp ? time(new Date(exp * 1000).toISOString()) : null,
+    });
+    voter.bindVoteButtons(panel("help"));
   }
 
   panel("overview").innerHTML = ui.loading("A carregar as tuas eleições…");
+  panel("help").innerHTML = ui.loading();
   try {
     await loadAll();
   } catch (error) {
+    renderHelp();
     panel("overview").innerHTML = ui.error(error);
     panel("overview").querySelector("[data-retry]").addEventListener("click", () => loadAll().catch((e) => ui.toast(e.message, true)));
   }

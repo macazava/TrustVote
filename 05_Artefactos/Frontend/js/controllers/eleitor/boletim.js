@@ -40,7 +40,8 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     const guardado = rascunho.ler(e.id);
-    const recuperado = escolhidoId === null ? e.candidatosRonda.find((c) => String(c.id) === String(guardado)) : null;
+    const recuperado =
+      escolhidoId !== null ? null : guardado === "branco" ? { id: "branco" } : e.candidatosRonda.find((c) => String(c.id) === String(guardado));
     el.innerHTML = TV.voterView.ballotPage(e, recuperado ? recuperado.id : escolhidoId);
     if (recuperado) ui.message(el.querySelector("[data-ballot] .form-message"), "Recuperámos a opção que tinhas marcado antes de a sessão terminar.", true);
 
@@ -51,20 +52,20 @@
     el.querySelector("[data-ballot]").addEventListener("submit", (event) => {
       event.preventDefault();
       const escolhido = event.currentTarget.candidate.value;
-      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Seleciona uma candidatura.");
-      review(e, e.candidatosRonda.find((c) => String(c.id) === escolhido));
+      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Seleciona uma candidatura ou o voto em branco.");
+      review(e, escolhido === "branco" ? null : e.candidatosRonda.find((c) => String(c.id) === escolhido));
     });
   };
 
-  // Passo 2: rever e depositar
+  // Passo 2: rever e depositar (candidato = null é voto em branco)
   function review(e, candidato) {
     const el = panel("elections");
     el.innerHTML = TV.voterView.reviewPage(e, candidato);
 
-    el.querySelector("[data-change]").addEventListener("click", () => voter.openBallot(e.id, candidato.id));
+    el.querySelector("[data-change]").addEventListener("click", () => voter.openBallot(e.id, candidato ? candidato.id : "branco"));
     el.querySelector("[data-deposit]").addEventListener("click", async (event) => {
       try {
-        const res = await ui.busy(event.currentTarget, "A depositar…", () => api.votacao.votar(e.id, e.ronda.numero, candidato.id));
+        const res = await ui.busy(event.currentTarget, "A depositar…", () => api.votacao.votar(e.id, e.ronda.numero, candidato ? candidato.id : null));
         const recibo = { eleicao_id: e.id, eleicao_titulo: e.titulo, ronda: e.ronda.numero, recibo: res.recibo, hash: res.hash, data: res.data };
         localReceipts.save(recibo);
         e.votou = true;
