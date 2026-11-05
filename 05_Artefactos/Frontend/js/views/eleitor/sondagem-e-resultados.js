@@ -5,11 +5,11 @@
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, initials } = TV.format;
   const { head } = TV.blocks;
-  const { resultRow } = TV.charts;
+  const { resultRow, roundSummary } = TV.charts;
 
   // ===== Sondagem =====
   const pollHead = () =>
-    head("MODELO PREDITIVO · SIMULAÇÃO ACADÉMICA", "Sondagem eleitoral com IA", "Projeção experimental baseada em resultados históricos e numa amostra simulada de intenção de voto.");
+    head("MODELO PREDITIVO · SEM VALOR ELEITORAL", "Sondagem de intenção de voto", "Projeção bayesiana feita a partir das intenções de voto declaradas pelos eleitores.");
 
   const modelTag = (s) => `<span class="model-tag rounded-lg">MODELO ${escapeHtml(String(s.modelo || "TRUSTVOTE").toUpperCase())}</span>`;
 
@@ -26,20 +26,22 @@
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <div class="card-head">
           <div><p class="eyebrow">PROJEÇÃO ATUAL</p><h2>Estimativa para ${e.ano}</h2></div>
-          <small class="muted" style="font-size:9px">AMOSTRA SIMULADA · N=${number(s.amostra)}</small>
+          <small class="muted" style="font-size:9px">RESPOSTAS · N=${number(s.amostra)}</small>
         </div>
         ${(s.projecao || []).map(projectionRow).join("")}
-        <p class="notice rounded-xl"><b>Intervalo de confiança estimado: ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Esta projeção não representa uma sondagem oficial nem utiliza dados pessoais reais.</p>
+        <p class="notice rounded-xl"><b>Margem de erro estimada (95%): ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Com poucas respostas a projeção fica perto da igualdade entre candidatos. Não é uma sondagem oficial.</p>
       </article>
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <p class="eyebrow">PARTICIPAÇÃO ANÓNIMA</p>
         <h2>Se a eleição fosse hoje?</h2>
-        <p>A resposta é agregada à demonstração e não afeta o voto.</p>
-        <form class="poll-form" data-poll-form>
+        <p>A resposta é anónima, só conta uma vez e não afeta o voto.</p>
+        ${s.respondeu
+      ? '<p class="notice rounded-xl"><b>Já respondeste a esta sondagem.</b>Obrigado pela participação.</p>'
+      : `<form class="poll-form" data-poll-form>
           ${e.candidatosRonda.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="radio" name="poll" value="${c.id}" required> ${escapeHtml(c.nome)}</label>`).join("")}
           <p class="form-message" role="status"></p>
-          <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Incluir na simulação</button>
-        </form>
+          <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Enviar resposta</button>
+        </form>`}
       </article>
     </div>`;
 
@@ -51,7 +53,7 @@
 
   const resultsCard = (e, rondas) => `
     <div class="card-head"><div><p class="eyebrow">${e.estadoLabel}</p><h2>${escapeHtml(e.titulo)}</h2></div></div>
-    ${rondas.map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}`).join("")}`;
+    ${rondas.map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`).join("")}`;
 
   Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead, resultsSlot, resultsCard });
 })();

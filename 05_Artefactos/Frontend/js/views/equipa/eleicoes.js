@@ -47,6 +47,7 @@
           </label>
           <label class="field-label">Início<input type="datetime-local" name="inicio" required value="${r1 ? elections.toLocalInput(r1.data_inicio) : ""}"${dis}></label>
           <label class="field-label">Fim<input type="datetime-local" name="fim" required value="${r1 ? elections.toLocalInput(r1.data_fim) : ""}"${dis}></label>
+          <label class="field-label">Quórum mínimo (% dos eleitores habilitados; 0 = sem quórum)<input type="number" name="quorum" min="0" max="100" step="0.01" value="${e ? e.quorum || 0 : 0}"${dis}></label>
           <label class="field-label">Descrição<textarea name="descricao" rows="3"${dis}>${escapeHtml(e ? e.descricao || "" : "")}</textarea></label>
           <p class="form-message" role="status"></p>
           <div class="form-actions">
@@ -142,6 +143,7 @@
   const roundsCard = (e, rondas, podeSegunda, ativos) =>
     card(`
       ${cardHead("CALENDÁRIO", "Rondas")}
+      <p class="muted">Uma eleição agendada começa sozinha à hora de início da 1.ª volta. Cada volta fecha sozinha à hora de fim e os votos são logo apurados. Depois da 2.ª volta, a eleição fica encerrada.</p>
       ${rondas.length
         ? `<div class="table-scroll rounded-xl"><table>
             <thead><tr><th>Ronda</th><th>Período</th><th>Estado</th><th>Ações</th></tr></thead>

@@ -14,7 +14,8 @@
   const noReceipts = () =>
     `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${TV.ui.empty("Ainda não existem recibos", "O recibo é emitido quando depositas um voto.")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-go="elections">Ver eleições →</button></div></article>`;
 
-  const localNotice = () => '<p class="notice rounded-xl">A mostrar os recibos guardados neste dispositivo.</p>';
+  const localNotice = () =>
+    '<p class="notice rounded-xl"><b>Recibos guardados neste dispositivo.</b>Para manter o voto secreto, o servidor não sabe que recibo é de quem: descarrega-os para não os perderes.</p>';
 
   const receiptCard = (r, i) => `
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift receipt-card grid-cols-1 md:grid-cols-[auto_1fr_auto]">
@@ -33,9 +34,12 @@
     </article>`;
 
   // Resultado de "Verificar": etiqueta e lista de confirmações
-  const verifyPill = (valido) => `<i></i> ${valido ? "INCLUÍDO E VERIFICADO" : "NÃO ENCONTRADO"}`;
+  const verifyPill = (resposta) =>
+    `<i></i> ${!resposta.valido ? "NÃO ENCONTRADO" : resposta.incluido ? "INCLUÍDO E VERIFICADO" : "VOTO ALTERADO"}`;
   const verifyChecks = (resposta) =>
-    resposta.valido ? `<span>✓ Voto registado</span><span>✓ Incluído na contagem</span><span>✓ ${resposta.ronda === 2 ? "2.ª" : "1.ª"} volta</span>` : "";
+    resposta.valido
+      ? `<span>✓ Voto registado</span><span>${resposta.incluido ? "✓ Incluído na contagem" : "! Selo de integridade inválido — contacte a comissão eleitoral"}</span><span>✓ ${resposta.ronda === 2 ? "2.ª" : "1.ª"} volta</span>`
+      : "";
 
   // Texto do ficheiro "recibo-XXXX.txt"
   const receiptText = (r) =>

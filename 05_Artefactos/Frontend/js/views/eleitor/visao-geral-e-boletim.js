@@ -26,7 +26,6 @@
         <ul class="check-list">
           <li><span class="check-box rounded-lg">✓</span><b>Voto secreto</b><small>Ninguém sabe em quem votaste.</small><i>✓</i></li>
           <li><span class="check-box rounded-lg">✓</span><b>Um voto por eleição</b><small>Depois de confirmado, o voto não pode ser alterado.</small><i>✓</i></li>
-          <li><span class="check-box rounded-lg">${user.totp_ativo ? "✓" : "!"}</span><b>Autenticação de dois fatores</b><small>${user.totp_ativo ? "Ativa nesta conta." : "Desativada — ativa nas Definições."}</small><i>${user.totp_ativo ? "✓" : "→"}</i></li>
         </ul>
       </article>
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
@@ -39,6 +38,18 @@
       </article>
     </div>`;
 
+  // ===== Opção "voto em branco" (value="branco" no formulário) =====
+  const blankOption = (selectable = true, checked = false) => `
+    <label${selectable ? "" : ' class="is-static"'}>
+      <span class="avatar" aria-hidden="true">—</span>
+      <span>
+        <small>OPÇÃO EM BRANCO</small>
+        <b>Voto em branco</b>
+        <small>Não escolhes nenhuma candidatura. Conta para a participação, não para os candidatos.</small>
+      </span>
+      ${selectable ? `<input type="radio" name="candidate" value="branco" required aria-label="Voto em branco"${checked ? " checked" : ""}>` : ""}
+    </label>`;
+
   // ===== Boletim · passo 1: escolher =====
   const ballotPage = (e, escolhidoId) => `
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
@@ -47,7 +58,7 @@
       <p class="muted">Seleciona uma opção. Podes rever a escolha antes de a depositar.</p>
       <p class="notice rounded-xl"><b>${escapeHtml(e.titulo)}</b>${escapeHtml(e.descricao || e.voltaLabel)}</p>
       <form data-ballot>
-        <div class="candidate-list">${e.candidatosRonda.map((c, i) => v.candidateOption(c, i, true, c.id === escolhidoId)).join("")}</div>
+        <div class="candidate-list">${e.candidatosRonda.map((c, i) => v.candidateOption(c, i, true, c.id === escolhidoId)).join("")}${blankOption(true, escolhidoId === "branco")}</div>
         <p class="form-message" role="status"></p>
         <div class="ballot-foot">
           <small>O teu voto é secreto</small>
@@ -57,13 +68,13 @@
       <button class="link-button" type="button" data-back>← Voltar às eleições</button>
     </article>`;
 
-  // ===== Boletim · passo 2: rever =====
+  // ===== Boletim · passo 2: rever (candidato = null é voto em branco) =====
   const reviewPage = (e, candidato) => `
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift ballot">
       <p class="eyebrow">BOLETIM DIGITAL · PASSO 2 DE 3</p>
       <h1>Confirma a tua escolha</h1>
       <p class="muted">Depois de depositado, o voto não pode ser alterado.</p>
-      <div class="candidate-list">${v.candidateOption(candidato, e.candidatosRonda.indexOf(candidato), false)}</div>
+      <div class="candidate-list">${candidato ? v.candidateOption(candidato, e.candidatosRonda.indexOf(candidato), false) : blankOption(false)}</div>
       <p class="form-message" role="status" data-vote-message></p>
       <div class="ballot-foot">
         <button class="link-button" type="button" data-change>← Alterar escolha</button>
