@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.database import apagar, gravar
 from app.erros import EstadoInvalidoError, NaoEncontradoError
 from app.models.eleicao import Eleicao
@@ -22,6 +23,8 @@ from app.schemas.eleicao import (
     EleicaoResposta,
 )
 from app.schemas.ronda import RondaDetalhe, RondaResposta
+from app.services import apuramento
+from app.services.apuramento import apurar_ronda
 
 ESTADOS_EDITAVEIS = ("rascunho", "agendada")
 
@@ -33,6 +36,7 @@ def criar_eleicao(sessao: Session, dados: EleicaoCriar, criador_id: int) -> Elei
         titulo=dados.titulo,
         descricao=dados.descricao,
         criador_id=criador_id,
+        quorum=dados.quorum,
     )
 
 
@@ -172,12 +176,26 @@ def iniciar_eleicao(sessao: Session, eleicao_id: int) -> Eleicao:
     return gravar(sessao, eleicao)
 
 
-def encerrar_eleicao(sessao: Session, eleicao_id: int) -> Eleicao:
+def encerrar_eleicao(sessao: Session, eleicao_id: int) -> tuple[Eleicao, int | None]:
+    """Encerra a eleição e apura as voltas por apurar; devolve também os votos inválidos.
+
+    Com o apuramento no worker, só fecha as voltas e devolve None em vez dos inválidos.
+    """
     eleicao = obter_eleicao(sessao, eleicao_id)
     if eleicao.estado != "em_curso":
         raise EstadoInvalidoError("Só é possível encerrar eleições em curso.")
-    for ronda in repositorio_ronda.listar(sessao, eleicao_id=eleicao.id):
-        if ronda.estado == "aberta":
+    invalidos = 0
+    por_apurar = []
+    # Bloqueia as rondas: espera pelos votos em curso antes de os contar.
+    for ronda in repositorio_ronda.listar(sessao, eleicao_id=eleicao.id, bloquear=True):
+        if ronda.estado in ("aberta", "encerrada"):
             ronda.estado = "encerrada"
+            if apuramento.NO_WORKER:
+                por_apurar.append(ronda.id)
+            else:
+                invalidos += apurar_ronda(sessao, ronda).invalidos
     eleicao.estado = "encerrada"
-    return gravar(sessao, eleicao)
+    gravar(sessao, eleicao)
+    for ronda_id in por_apurar:
+        cache.pedir_apuramento(ronda_id)
+    return eleicao, None if apuramento.NO_WORKER else invalidos

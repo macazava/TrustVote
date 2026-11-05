@@ -2,6 +2,7 @@
 
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.database import gravar
 from app.erros import (
     DadosInvalidosError,
@@ -15,6 +16,8 @@ from app.repositories import eleicao as repositorio_eleicao
 from app.repositories import ronda as repositorio
 from app.repositories import ronda_candidato as repositorio_ronda_candidato
 from app.schemas.ronda import RondaCriar, RondaDatas, RondaNova
+from app.services import apuramento
+from app.services.apuramento import Contagem, apurar_ronda
 
 
 def criar_ronda(sessao: Session, dados: RondaCriar) -> Ronda:
@@ -83,8 +86,10 @@ def criar_ronda_na_eleicao(
     return ronda
 
 
-def _obter_por_numero(sessao: Session, eleicao_id: int, numero: int) -> Ronda:
-    ronda = repositorio.obter_por_eleicao_e_numero(sessao, eleicao_id, numero)
+def _obter_por_numero(
+    sessao: Session, eleicao_id: int, numero: int, bloqueio: str | None = None
+) -> Ronda:
+    ronda = repositorio.obter_por_eleicao_e_numero(sessao, eleicao_id, numero, bloqueio)
     if ronda is None:
         raise NaoEncontradoError(f"Não existe a {numero}.ª volta desta eleição.")
     return ronda
@@ -119,20 +124,30 @@ def abrir_ronda(sessao: Session, eleicao_id: int, numero: int) -> Ronda:
     return gravar(sessao, ronda)
 
 
-def encerrar_ronda(sessao: Session, eleicao_id: int, numero: int) -> Ronda:
-    ronda = _obter_por_numero(sessao, eleicao_id, numero)
-    if ronda.estado != "aberta":
-        raise EstadoInvalidoError("Esta volta não está aberta.")
+def fechar_e_apurar(sessao: Session, ronda: Ronda) -> Contagem:
+    """Fecha a votação da ronda e guarda o apuramento, na mesma transação."""
     ronda.estado = "encerrada"
-    return gravar(sessao, ronda)
+    contagem = apurar_ronda(sessao, ronda)
+    gravar(sessao, ronda)
+    return contagem
 
 
-def obter_ronda(sessao: Session, ronda_id: int) -> Ronda:
-    ronda = repositorio.obter_por_id(sessao, ronda_id)
-    if ronda is None:
-        raise NaoEncontradoError(f"Não existe a ronda {ronda_id}.")
-    return ronda
+def fechar_para_o_worker(sessao: Session, ronda: Ronda) -> None:
+    """Fecha a votação da ronda e pede o apuramento ao worker."""
+    ronda.estado = "encerrada"
+    gravar(sessao, ronda)
+    cache.pedir_apuramento(ronda.id)
 
 
-def listar_rondas(sessao: Session, eleicao_id: int | None = None) -> list[Ronda]:
-    return repositorio.listar(sessao, eleicao_id=eleicao_id)
+def encerrar_ronda(
+    sessao: Session, eleicao_id: int, numero: int
+) -> tuple[Ronda, Contagem | None]:
+    """Devolve a contagem, ou None se o apuramento ficou para o worker."""
+    ronda = _obter_por_numero(sessao, eleicao_id, numero, bloqueio="exclusivo")
+    if ronda.estado != "aberta":
+        sessao.rollback()
+        raise EstadoInvalidoError("Esta volta não está aberta.")
+    if apuramento.NO_WORKER:
+        fechar_para_o_worker(sessao, ronda)
+        return ronda, None
+    return ronda, fechar_e_apurar(sessao, ronda)

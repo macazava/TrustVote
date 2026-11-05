@@ -62,9 +62,3 @@ def obter_candidato(sessao: Session, candidato_id: int) -> Candidato:
     if candidato is None:
         raise NaoEncontradoError(f"Não existe o candidato {candidato_id}.")
     return candidato
-
-
-def listar_candidatos(
-    sessao: Session, eleicao_id: int | None = None
-) -> list[Candidato]:
-    return repositorio.listar(sessao, eleicao_id=eleicao_id)
