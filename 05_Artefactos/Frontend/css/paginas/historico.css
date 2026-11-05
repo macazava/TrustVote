@@ -78,42 +78,7 @@
     font-size: 21px;
 }
 
-.history-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 26px;
-    margin-left: 12px;
-}
-
-.history-columns>div+div {
-    padding-left: 26px;
-    border-left: 1px solid var(--line);
-}
-
-.history-columns h3 {
-    margin: 0 0 10px;
-    color: var(--title);
-    font-size: 21px;
-    font-weight: 400;
-}
-
-.history-columns p {
-    margin: 0;
-    color: var(--ink);
-    font-size: 15px;
-    line-height: 1.7;
-}
-
 @media (max-width: 760px) {
-    .history-columns {
-        grid-template-columns: 1fr;
-    }
-
-    .history-columns>div+div {
-        padding-left: 0;
-        border-left: 0;
-    }
-
     .history-period time {
         font-size: 32px;
     }

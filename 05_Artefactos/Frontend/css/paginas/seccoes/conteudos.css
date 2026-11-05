@@ -114,10 +114,6 @@
     line-height: 1.8;
 }
 
-.support-form {
-    max-width: 650px;
-}
-
 .result-row {
     display: grid;
     grid-template-columns: auto minmax(120px, 1fr) 2fr 70px;

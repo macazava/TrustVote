@@ -7,10 +7,12 @@ não existe nenhuma tabela que associe recibos a utilizadores.
 
 import hashlib
 import secrets
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.erros import (
     DadosInvalidosError,
     EstadoInvalidoError,
@@ -27,8 +29,11 @@ from app.repositories import ronda as repositorio_ronda
 from app.repositories import ronda_candidato as repositorio_ronda_candidato
 from app.repositories import votacao as repositorio
 from app.schemas.votacao import (
+    ConfiguracaoPublica,
     Estatisticas,
     HistoricoEleicao,
+    IntegridadeEleicao,
+    IntegridadeRonda,
     PontoSerie,
     ReciboVerificacao,
     ResultadoCandidato,
@@ -38,17 +43,17 @@ from app.schemas.votacao import (
     ResumoPublico,
     VotoResposta,
 )
+from app.security import tokens
+from app.security.integridade import selo, selo_valido
+from app.services import apuramento
 from app.services import eleicao as servico_eleicao
+from app.services.apuramento import percentagem as _percentagem
 
 HORAS_DA_SERIE = 10
 
 
 def _hash_recibo(recibo: str) -> str:
     return hashlib.sha256(recibo.encode()).hexdigest()
-
-
-def _percentagem(parte: int, total: int) -> float:
-    return round(parte / total * 100, 1) if total else 0.0
 
 
 def _ronda_atual(rondas: list[Ronda]) -> Ronda | None:
@@ -63,12 +68,18 @@ def votar(
     sessao: Session,
     eleicao_id: int,
     numero: int,
-    candidato_id: int,
+    candidato_id: int | None,
     utilizador: Utilizador,
 ) -> VotoResposta:
-    """Regista o voto e devolve o recibo, que não fica guardado no servidor."""
+    """Regista o voto e devolve o recibo, que não fica guardado no servidor.
+
+    `candidato_id` a None é um voto em branco.
+    """
     eleicao = servico_eleicao.obter_eleicao_visivel(sessao, eleicao_id, utilizador)
-    ronda = repositorio_ronda.obter_por_eleicao_e_numero(sessao, eleicao_id, numero)
+    # Segura a ronda até ao commit: quem a encerrar espera por este voto.
+    ronda = repositorio_ronda.obter_por_eleicao_e_numero(
+        sessao, eleicao_id, numero, bloqueio="partilhado"
+    )
     if ronda is None:
         raise NaoEncontradoError(f"Não existe a {numero}.ª volta desta eleição.")
 
@@ -83,19 +94,27 @@ def votar(
     if repositorio_habilitacao.obter(sessao, eleicao_id, utilizador.id) is None:
         raise SemPermissaoError("Não está habilitado a votar nesta eleição.")
 
-    candidato = repositorio_candidato.obter_por_id(sessao, candidato_id)
-    if (
-        candidato is None
-        or not candidato.ativo
-        or repositorio_ronda_candidato.obter(sessao, ronda.id, candidato_id) is None
-    ):
-        raise DadosInvalidosError("Esse candidato não concorre nesta volta.")
+    if candidato_id is not None:
+        candidato = repositorio_candidato.obter_por_id(sessao, candidato_id)
+        if (
+            candidato is None
+            or not candidato.ativo
+            or repositorio_ronda_candidato.obter(sessao, ronda.id, candidato_id) is None
+        ):
+            raise DadosInvalidosError("Esse candidato não concorre nesta volta.")
 
     recibo = f"TV-{secrets.token_hex(12).upper()}"
     hash_voto = _hash_recibo(recibo)
+    voto_id = uuid.uuid4()
     try:
         repositorio.registar_voto(
-            sessao, ronda.id, utilizador.id, candidato_id, hash_voto
+            sessao,
+            voto_id=voto_id,
+            ronda_id=ronda.id,
+            utilizador_id=utilizador.id,
+            candidato_id=candidato_id,
+            hash_voto=hash_voto,
+            integridade=selo(voto_id, ronda.id, candidato_id, hash_voto),
         )
     except repositorio.VotoRepetidoError as erro:
         raise RegistoDuplicadoError("Já votou nesta volta.") from erro
@@ -119,14 +138,50 @@ def verificar_recibo(sessao: Session, codigo: str) -> ReciboVerificacao:
     if voto is None:
         return ReciboVerificacao(valido=False, incluido=False, ronda=None)
     ronda = repositorio_ronda.obter_por_id(sessao, voto.ronda_id)
-    return ReciboVerificacao(valido=True, incluido=True, ronda=ronda.numero)
+    # Um voto com o selo errado foi alterado fora da API e não entra na contagem.
+    return ReciboVerificacao(valido=True, incluido=selo_valido(voto), ronda=ronda.numero)
+
+
+def _resultado_ronda(
+    sessao: Session, ronda: Ronda, habilitados: int, quorum: float
+) -> ResultadoRonda:
+    contagem = apuramento.contagem_da_ronda(sessao, ronda)
+    votantes = repositorio.contar_participacoes(sessao, ronda.id)
+    participacao = _percentagem(votantes, habilitados)
+    return ResultadoRonda(
+        ronda=ronda.numero,
+        estado=ronda.estado,
+        apurada=ronda.estado == "apurada",
+        candidatos=[
+            ResultadoCandidato(
+                id=candidato.id,
+                nome=candidato.nome,
+                total_votos=contagem.por_candidato.get(candidato.id, 0),
+                percentagem=_percentagem(
+                    contagem.por_candidato.get(candidato.id, 0), contagem.em_candidatos
+                ),
+            )
+            for candidato in repositorio_ronda_candidato.listar_candidatos(
+                sessao, ronda.id
+            )
+        ],
+        brancos=contagem.brancos,
+        percentagem_brancos=_percentagem(contagem.brancos, contagem.validos),
+        invalidos=contagem.invalidos,
+        votantes=votantes,
+        habilitados=habilitados,
+        participacao=participacao,
+        quorum=quorum,
+        # Comparado sem arredondar, para 49,96% não passar por 50%.
+        quorum_atingido=habilitados > 0 and votantes * 100 >= quorum * habilitados,
+    )
 
 
 def obter_resultados(
     sessao: Session, eleicao_id: int, utilizador: Utilizador
 ) -> list[ResultadoRonda]:
-    """Conta os votos. Os eleitores só veem voltas encerradas, para não as influenciar."""
-    servico_eleicao.obter_eleicao_visivel(sessao, eleicao_id, utilizador)
+    """Votos em cada volta. Os eleitores só veem voltas encerradas, para não as influenciar."""
+    eleicao = servico_eleicao.obter_eleicao_visivel(sessao, eleicao_id, utilizador)
     rondas = sorted(
         repositorio_ronda.listar(sessao, eleicao_id=eleicao_id),
         key=lambda ronda: ronda.numero,
@@ -140,27 +195,35 @@ def obter_resultados(
             "Os resultados ficam disponíveis quando a votação encerrar."
         )
 
-    resultados = []
-    for ronda in visiveis:
-        votos = repositorio.contar_votos(sessao, ronda.id)
-        total = sum(votos.values())
-        resultados.append(
-            ResultadoRonda(
+    habilitados = repositorio_habilitacao.contar(sessao, eleicao_id)
+    return [
+        _resultado_ronda(sessao, ronda, habilitados, float(eleicao.quorum))
+        for ronda in visiveis
+    ]
+
+
+def verificar_integridade(sessao: Session, eleicao_id: int) -> IntegridadeEleicao:
+    """Confere os selos e se há tantos votos na urna como eleitores que votaram."""
+    servico_eleicao.obter_eleicao(sessao, eleicao_id)
+    rondas = []
+    for ronda in sorted(
+        repositorio_ronda.listar(sessao, eleicao_id=eleicao_id), key=lambda r: r.numero
+    ):
+        contagem = apuramento.contar(sessao, ronda)
+        votos = contagem.validos + contagem.invalidos
+        participacoes = repositorio.contar_participacoes(sessao, ronda.id)
+        rondas.append(
+            IntegridadeRonda(
                 ronda=ronda.numero,
-                candidatos=[
-                    ResultadoCandidato(
-                        id=candidato.id,
-                        nome=candidato.nome,
-                        total_votos=votos.get(candidato.id, 0),
-                        percentagem=_percentagem(votos.get(candidato.id, 0), total),
-                    )
-                    for candidato in repositorio_ronda_candidato.listar_candidatos(
-                        sessao, ronda.id
-                    )
-                ],
+                votos=votos,
+                participacoes=participacoes,
+                selos_invalidos=contagem.invalidos,
+                coincide=votos == participacoes,
             )
         )
-    return resultados
+    return IntegridadeEleicao(
+        valida=all(r.coincide and not r.selos_invalidos for r in rondas), rondas=rondas
+    )
 
 
 def obter_estatisticas(sessao: Session, eleicao_id: int) -> Estatisticas:
@@ -204,9 +267,20 @@ def obter_historico_publico(sessao: Session) -> list[HistoricoEleicao]:
                 eleitores=eleitores,
                 votos=votos,
                 participacao=_percentagem(votos, eleitores),
+                apurada_em=repositorio.ultimo_apuramento(sessao, [r.id for r in rondas]),
             )
         )
     return historico
+
+
+def obter_configuracao_publica() -> ConfiguracaoPublica:
+    """Valores lidos do ambiente da API: as páginas mostram as regras reais."""
+    return ConfiguracaoPublica(
+        sessao_minutos=tokens.MINUTOS_VALIDADE,
+        login_tentativas=cache.TENTATIVAS_LOGIN,
+        login_bloqueio_minutos=cache.JANELA_LOGIN // 60,
+        apuramento="worker" if apuramento.NO_WORKER else "imediato",
+    )
 
 
 def obter_resumo_publico(sessao: Session) -> ResumoPublico:

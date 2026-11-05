@@ -140,12 +140,6 @@
     font-size: 11px;
 }
 
-.toggle-row .toggle-state {
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-}
-
 .switch {
     position: relative;
     flex: none;
@@ -176,58 +170,20 @@
     transform: translateX(16px);
 }
 
-/* Configuração da autenticação de dois fatores */
-.totp-setup {
-    display: flex;
-    gap: 20px;
-    margin-top: 16px;
-    padding: 16px;
-    border: 1px solid var(--line);
-    background: var(--ivory);
-}
-
-.totp-qr {
-    align-self: flex-start;
-    width: 150px;
-    flex: none;
-    background: white;
-}
-
-.totp-setup .muted {
-    margin: 0 0 10px;
-    font-size: 13px;
-}
-
-.totp-qr svg {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.totp-secret {
-    display: block;
-    padding: 8px;
-    background: white;
-    color: var(--accent);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    word-break: break-all;
-}
-
-.totp-form {
+/* Formulário em linha (alterar a palavra-passe) */
+.inline-form {
     display: flex;
     align-items: end;
     gap: 12px;
 }
 
-.totp-form .field-label {
+.inline-form .field-label {
     flex: 1;
     margin-bottom: 0;
 }
 
 @media (max-width: 760px) {
-    .totp-setup,
-    .totp-form {
+    .inline-form {
         flex-direction: column;
         align-items: stretch;
     }

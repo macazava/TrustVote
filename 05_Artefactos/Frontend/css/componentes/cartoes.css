@@ -253,20 +253,6 @@
     background: var(--accent);
 }
 
-.audit-list p {
-    margin: 0;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line);
-    color: var(--ink);
-    font-size: 14px;
-}
-
-.audit-list i {
-    margin-right: 9px;
-    color: var(--green);
-    font-style: normal;
-}
-
 @media (max-width: 760px) {
     .dash-grid {
         grid-template-columns: 1fr;
