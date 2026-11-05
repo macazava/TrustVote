@@ -5,21 +5,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acesso | TrustVote</title>
-  <link rel="stylesheet" href="../css/style.css?v=6">
-  <link rel="stylesheet" href="../css/tailwind.css?v=6">
+  <link rel="stylesheet" href="../css/style.css?v=17">
+  <link rel="stylesheet" href="../css/tailwind.css?v=17">
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=6"></script>
-  <script defer src="../js/models/api.js?v=6"></script>
-  <script defer src="../js/models/sessao.js?v=6"></script>
-  <script defer src="../js/views/formatar.js?v=6"></script>
-  <script defer src="../js/models/eleicoes.js?v=6"></script>
-  <script defer src="../js/views/componentes.js?v=6"></script>
+  <script defer src="../js/models/servidor.js?v=17"></script>
+  <script defer src="../js/models/api.js?v=17"></script>
+  <script defer src="../js/models/sessao.js?v=17"></script>
+  <script defer src="../js/views/formatar.js?v=17"></script>
+  <script defer src="../js/models/eleicoes.js?v=17"></script>
+  <script defer src="../js/views/componentes.js?v=17"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=6"></script>
-  <script defer src="../js/controllers/login/formulario.js?v=6"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
-  <script defer src="../js/controllers/login/autenticacao.js?v=6"></script>
-  <script defer src="../js/views/animacoes.js?v=6"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=17"></script>
+  <script defer src="../js/controllers/login/formulario.js?v=17"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
+  <script defer src="../js/controllers/login/autenticacao.js?v=17"></script>
+  <script defer src="../js/views/animacoes.js?v=17"></script>
 </head>
 
 <body data-page="login">
@@ -147,12 +147,6 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/><path class="eye-slash" pathLength="1" d="M4 4l16 16"/></svg>
             </button>
           </span>
-        </label>
-
-        <label id="totp-field" hidden>
-          Código de autenticação
-          <input name="totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"
-            placeholder="000000">
         </label>
 
         <label class="check-label" id="terms-field" hidden>

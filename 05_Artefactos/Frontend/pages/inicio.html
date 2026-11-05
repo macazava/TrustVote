@@ -6,24 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="TrustVote — votação digital para eleições académicas.">
   <title>TrustVote | Eleições Académicas</title>
-  <link rel="stylesheet" href="../css/style.css?v=6">
-  <link rel="stylesheet" href="../css/tailwind.css?v=6">
-  <script defer src="../js/views/layout.js?v=6"></script>
+  <link rel="stylesheet" href="../css/style.css?v=17">
+  <link rel="stylesheet" href="../css/tailwind.css?v=17">
+  <script defer src="../js/views/layout.js?v=17"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=6"></script>
-  <script defer src="../js/models/api.js?v=6"></script>
-  <script defer src="../js/models/sessao.js?v=6"></script>
-  <script defer src="../js/views/formatar.js?v=6"></script>
-  <script defer src="../js/models/eleicoes.js?v=6"></script>
-  <script defer src="../js/views/componentes.js?v=6"></script>
+  <script defer src="../js/models/servidor.js?v=17"></script>
+  <script defer src="../js/models/api.js?v=17"></script>
+  <script defer src="../js/models/sessao.js?v=17"></script>
+  <script defer src="../js/views/formatar.js?v=17"></script>
+  <script defer src="../js/models/eleicoes.js?v=17"></script>
+  <script defer src="../js/views/componentes.js?v=17"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=6"></script>
-  <script defer src="../js/views/publico.js?v=6"></script>
+  <script defer src="../js/views/graficos.js?v=17"></script>
+  <script defer src="../js/views/publico.js?v=17"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=6"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
-  <script defer src="../js/controllers/publico/inicio.js?v=6"></script>
-  <script defer src="../js/views/animacoes.js?v=6"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=17"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
+  <script defer src="../js/controllers/publico/inicio.js?v=17"></script>
+  <script defer src="../js/views/animacoes.js?v=17"></script>
 </head>
 
 <body data-page="home">
@@ -155,8 +155,8 @@
             <span class="status-pill rounded-full"><i></i> A CARREGAR</span>
             <span>Atualização em tempo real</span>
           </div>
-          <p class="eyebrow">ASSOCIAÇÃO DE ESTUDANTES</p>
-          <h3>Eleição da Associação de Estudantes</h3>
+          <p class="eyebrow">ELEIÇÃO EM DESTAQUE</p>
+          <h3>A carregar…</h3>
           <p data-hub-copy>A obter os dados da eleição…</p>
           <div class="hub-progress">
             <div><small>PARTICIPAÇÃO</small><b data-hub-turnout>—</b></div>
@@ -217,10 +217,11 @@
             <div class="card-meta"><span class="round-icon">▤</span><small>03 / RESULTADOS</small></div>
             <h3>Resultados publicados<br>no fim da votação.</h3>
             <p>Publicados pela comissão eleitoral académica.</p>
-            <div class="audit-log">
-              <span>● 18:00 · Votação encerrada</span>
-              <span>● 18:05 · Contagem concluída</span>
-              <span>● 18:30 · Resultados publicados</span>
+            <!-- Fecho da última eleição encerrada (preenchido com os dados da API) -->
+            <div class="audit-log" data-last-count>
+              <span>● Votação encerrada</span>
+              <span>● Contagem concluída</span>
+              <span>● Resultados publicados</span>
             </div>
           </article>
         </div>
@@ -300,7 +301,7 @@
               alt="Comunidade académica do IADE reunida no campus">
           </figure>
           <p class="eyebrow">PARTICIPAÇÃO</p>
-          <h3>Associação de Estudantes</h3>
+          <h3 data-live-title>A carregar…</h3>
           <p>Números atualizados a partir da plataforma.</p>
           <div class="facts grid-cols-2 sm:grid-cols-3">
             <div><b data-live="eleitores">—</b><small>estudantes elegíveis</small></div>
