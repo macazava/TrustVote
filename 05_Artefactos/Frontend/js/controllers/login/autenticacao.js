@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const message = form.querySelector(".form-message");
   const confirmField = document.querySelector("#confirm-field");
-  const totpField = document.querySelector("#totp-field");
   const registerLink = form.querySelector(".register-link");
   const loginLink = form.querySelector("[data-login-link]");
   const serverStatus = document.querySelector("[data-server-status]");
@@ -20,13 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const team = role() === "equipa";
     registerLink.hidden = isRegister() || team;
     loginLink.hidden = !isRegister();
-    if (isRegister()) showTotp(false);
-  }
-
-  function showTotp(show) {
-    totpField.hidden = !show;
-    form.elements.totp.required = show;
-    if (!show) form.elements.totp.value = "";
   }
 
   document.querySelectorAll("[data-role], [data-mode]").forEach((button) => button.addEventListener("click", sync));
@@ -96,16 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
         const dados = { email, password };
-        if (!totpField.hidden) dados.codigo_totp = form.elements.totp.value.trim();
         session.save(await api.auth.login(dados), remember);
       });
     } catch (error) {
       aEnviar = false;
-      if (/TOTP necess/i.test(error.message)) {
-        showTotp(true);
-        form.elements.totp.focus();
-        return ui.message(message, "Introduza o código da sua aplicação autenticadora.");
-      }
       return ui.message(message, error.message);
     }
 

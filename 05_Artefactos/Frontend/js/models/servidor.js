@@ -4,21 +4,39 @@
 
   const TV = (window.TrustVote = window.TrustVote || {});
 
-  // Único endereço da API: o nginx do Docker, que reparte os pedidos pelos dois servidores
-  const base = "http://127.0.0.1:8080/api";
+  // O site é aberto pela entrada (8080), que já passa sozinha para o servidor que estiver
+  // de pé. Começa sempre pela origem da página; se ela não responder (ex.: página aberta
+  // diretamente no Nginx 1 ou 2 e esse servidor caiu), tenta a entrada e os outros nginx.
+  const anfitriao = window.location.hostname || "127.0.0.1";
+  const bases = [
+    ...new Set([window.location.port || "8080", "8080", "8081", "8082"].map((p) => `http://${anfitriao}:${p}/api`)),
+  ];
   const TIMEOUT = 12000;
+  const CHAVE_BASE = "trustvote.api";
 
-  // As páginas estão em pages/ (o index.html na raiz só reencaminha para pages/inicio.html)
-  const inPages = window.location.pathname.includes("/pages/");
-  const pageUrl = (file) =>
-    file.startsWith("index.html") ? (inPages ? `../${file}` : file) : inPages ? file : `pages/${file}`;
+  let atual = 0;
+  try {
+    atual = Math.max(0, bases.indexOf(sessionStorage.getItem(CHAVE_BASE)));
+  } catch {
+    // sem sessionStorage: começa pelo Servidor 1
+  }
+  function usar(indice) {
+    atual = indice;
+    try {
+      sessionStorage.setItem(CHAVE_BASE, bases[indice]);
+    } catch {
+      // sem sessionStorage: só fica para esta página
+    }
+  }
+
+  // Endereço de uma página do site (estão todas em /pages/, servidas pelo nginx)
+  const pageUrl = (file) => `/pages/${file}`;
 
   // ===== Erros =====
   class ApiError extends Error {
-    constructor(message, status = 0, pending = false) {
+    constructor(message, status = 0) {
       super(message);
       this.status = status;
-      this.pending = pending;
     }
   }
 
@@ -50,11 +68,14 @@
 
   // ===== Pedidos =====
   async function request(method, path, options = {}) {
-    const { body, query, auth = true, pending = false, raw = false } = options;
-    const url = new URL(base + path);
-    Object.entries(query || {}).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, value);
-    });
+    const { body, query, auth = true, raw = false } = options;
+    const urlEm = (indice) => {
+      const url = new URL(bases[indice] + path);
+      Object.entries(query || {}).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, value);
+      });
+      return url;
+    };
 
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
@@ -64,15 +85,35 @@
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT);
     const started = performance.now();
+    // cache "no-store": vai sempre ao servidor, nunca usa respostas (nem redirecionamentos)
+    // guardadas pelo browser, por exemplo de quando a porta 8080 redirecionava para HTTPS
+    const init = {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal: controller.signal,
+      cache: "no-store",
+    };
     let response;
     try {
-      const init = { method, headers, body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal };
-      response = await fetch(url, init);
+      // Só muda de nginx quando a ligação falha (servidor em baixo): um pedido que chegou
+      // a ter resposta, mesmo de erro, nunca é repetido no outro.
+      for (let tentativa = 0; !response; tentativa++) {
+        const indice = (atual + tentativa) % bases.length;
+        try {
+          response = await fetch(urlEm(indice), init);
+          if (indice !== atual) usar(indice);
+        } catch (error) {
+          if (error.name === "AbortError") throw error;
+          if (tentativa === bases.length - 1) throw error;
+        }
+      }
     } catch (error) {
       throw new ApiError(
         error.name === "AbortError"
-          ? `O servidor (${base}) não respondeu a tempo.`
-          : `Não foi possível contactar o servidor (${base}). Confirme que o backend está a correr e que permite pedidos deste endereço (CORS).`
+          ? `O servidor (${bases[atual]}) não respondeu a tempo.`
+          : `Não foi possível contactar o servidor (${bases.join(" nem ")}). Confirme que a stack está a correr ` +
+            "(Infraestrutura: .\\stack.ps1 up)."
       );
     } finally {
       clearTimeout(timer);
@@ -90,14 +131,13 @@
     if (raw) return { ok: response.ok, status: response.status, data, latency };
 
     if (!response.ok) {
-      if (pending && [404, 405, 501].includes(response.status)) {
-        throw new ApiError("Esta funcionalidade ainda não está disponível no backend.", response.status, true);
-      }
       if (response.status === 401 && token) TV.session.expire();
       throw new ApiError(messageFrom(response.status, data), response.status);
     }
     return data;
   }
 
-  Object.assign(TV, { base, pageUrl, ApiError, request });
+  Object.assign(TV, { pageUrl, ApiError, request });
+  // Endereço em uso neste momento (muda se um nginx falhar)
+  Object.defineProperty(TV, "base", { get: () => bases[atual], enumerable: true });
 })();

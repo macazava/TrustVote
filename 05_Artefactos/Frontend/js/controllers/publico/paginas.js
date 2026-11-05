@@ -1,4 +1,4 @@
-/* Controller · páginas públicas: calendário, listas, resultados e transparência com dados da API */
+/* Controller · páginas públicas: calendário, listas, resultados, histórico, comunicação e regras da plataforma */
 document.addEventListener("DOMContentLoaded", () => {
   const { api, session, format, ui, publicView: view } = window.TrustVote;
   const { number, percent, date } = format;
@@ -66,6 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
           listas.get(nome).push(c);
         });
         grid.innerHTML = [...listas].map(([nome, membros]) => view.listCard(nome, membros, dados.eleicao.titulo)).join("");
+        const lead = document.querySelector("[data-listas-lead]");
+        if (lead) lead.textContent = `Listas candidatas a ${dados.eleicao.titulo}: quem são e o que propõem.`;
         const notice = grid.parentElement.querySelector(".notice");
         if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
       })
@@ -106,6 +108,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ===== Comunicação: avisos gerados a partir da eleição em destaque =====
+  const news = document.querySelector("[data-news]");
+  if (news) {
+    resumo()
+      .then((dados) => (news.innerHTML = view.notices(dados)))
+      .catch(() => (news.innerHTML = ui.empty("Sem avisos de momento", "Os avisos aparecem quando houver uma eleição agendada.")));
+  }
+
+  // ===== Como funciona: fecho da última eleição encerrada =====
+  const lastCount = document.querySelector("[data-last-count]");
+  if (lastCount) {
+    api.publico
+      .historico()
+      .then((lista) => (lastCount.innerHTML = view.lastCount(lista[0])))
+      .catch(() => (lastCount.innerHTML = view.lastCount(null)));
+  }
+
+  // ===== Regras da plataforma (duração da sessão, tentativas de login) lidas da API =====
+  const config = document.querySelectorAll("[data-config]");
+  if (config.length) {
+    api.publico
+      .configuracao()
+      .then((c) => config.forEach((el) => (el.textContent = number(c[el.dataset.config]))))
+      .catch(() => { });
+  }
+
   // ===== Histórico =====
   const history = document.querySelector("[data-history]");
   if (history) {
@@ -114,21 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
       history.innerHTML = lista.length
         ? lista.map(view.historyPeriod).join("")
         : ui.empty("Ainda não há eleições encerradas", "As eleições aparecem aqui depois de terminarem.");
-    });
-  }
-
-  // ===== Transparência: estado dos servidores =====
-  const status = document.querySelector("[data-transparency]");
-  if (status) {
-    ui.mount(status, async () => {
-      const amostras = [];
-      for (let i = 0; i < 4; i++) amostras.push(await api.health());
-      status.innerHTML = view.serverStatus({
-        ok: amostras.every((a) => a.ok),
-        media: Math.round(amostras.reduce((s, a) => s + a.latency, 0) / amostras.length),
-        instancias: [...new Set(amostras.map((a) => a.data && a.data.instance).filter(Boolean))],
-        baseDados: amostras.some((a) => a.data && a.data.database === "ok"),
-      });
     });
   }
 });

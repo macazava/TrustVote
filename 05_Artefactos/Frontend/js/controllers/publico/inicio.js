@@ -1,4 +1,4 @@
-/* Controller · página inicial: estado da eleição, números e eleição em tempo real */
+/* Controller · página inicial: estado da eleição, números, eleição em tempo real e fecho da última eleição */
 document.addEventListener("DOMContentLoaded", () => {
   const { api, format, elections, publicView, ui } = window.TrustVote;
   const { number, percent, dateTime, escapeHtml } = format;
@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const metrics = document.querySelector(".metrics");
   const hub = document.querySelector("[data-hub-election]");
   const news = document.querySelector("[data-news]");
+  const lastCount = document.querySelector("[data-last-count]");
+  const liveTitle = document.querySelector("[data-live-title]");
 
   // ===== Aviso no topo: o estado da eleição fica visível logo à entrada =====
   function showAlert(eleicao, online) {
@@ -44,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hub.querySelector("[data-hub-votes]").textContent = `${number(resumo.votos)} votos registados`;
     } else {
       pill.innerHTML = `<i></i> ${online ? "SEM DADOS PÚBLICOS" : "SERVIDOR INDISPONÍVEL"}`;
+      hub.querySelector("h3").textContent = online ? "Sem eleições públicas" : "Eleição indisponível";
       hub.querySelector("[data-hub-copy]").textContent = online
         ? "Inicie sessão para consultar as eleições em que está habilitado."
         : "Não foi possível contactar o servidor TrustVote. Tente novamente dentro de momentos.";
@@ -52,8 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== Pedido à API (repete-se com "Tentar novamente") =====
   async function carregar() {
-    const [resumo, health] = await Promise.all([api.publico.resumo().catch(() => null), api.health().catch(() => null)]);
+    const [resumo, health, historico] = await Promise.all([
+      api.publico.resumo().catch(() => null),
+      api.health().catch(() => null),
+      api.publico.historico().catch(() => []),
+    ]);
     const online = !!(health && health.ok);
+
+    if (lastCount) lastCount.innerHTML = publicView.lastCount(historico[0]);
+    if (liveTitle) liveTitle.textContent = resumo ? resumo.eleicao.titulo : "Sem eleição em destaque";
 
     showAlert(resumo && resumo.eleicao, online);
     showHub(resumo, online);

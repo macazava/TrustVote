@@ -10,24 +10,28 @@
   const patch = (path, body, options) => request("PATCH", path, { ...options, body });
   const del = (path, options) => request("DELETE", path, options);
 
-  // Rotas que o backend ainda não tem: 404 quer dizer "por implementar"
-  const pend = { pending: true };
-
   TV.api = {
     health: () => request("GET", "/health", { auth: false, raw: true }),
 
     auth: {
       registo: (dados) => post("/auth/register", dados, { auth: false }),
       login: (dados) => post("/auth/login", dados, { auth: false }),
+      // raw: um token já expirado não deve levar ao ecrã de "sessão terminou"
+      logout: () => post("/auth/logout", undefined, { raw: true }),
       eu: () => get("/auth/eu"),
-      totpConfigurar: () => post("/auth/totp/configurar", undefined, pend),
-      totpAtivar: (codigo) => post("/auth/totp/ativar", { codigo }, pend),
-      totpDesativar: (codigo) => post("/auth/totp/desativar", { codigo }, pend),
+      alterarPassword: (atual, nova) => post("/auth/password", { atual, nova }),
     },
 
     utilizadores: {
       listar: (perfil) => get("/utilizadores", { query: { perfil } }),
       atualizar: (id, dados) => patch(`/utilizadores/${id}`, dados),
+      reporPassword: (id) => post(`/utilizadores/${id}/repor-password`),
+    },
+
+    inscritos: {
+      listar: () => get("/estudantes-inscritos"),
+      adicionar: (estudantes) => post("/estudantes-inscritos", { estudantes }),
+      remover: (numero) => del(`/estudantes-inscritos/${encodeURIComponent(numero)}`),
     },
 
     eleicoes: {
@@ -49,26 +53,30 @@
     },
 
     votacao: {
-      votar: (id, n, candidatoId) => post(`/eleicoes/${id}/rondas/${n}/votos`, { candidato_id: candidatoId }, pend),
-      participacao: (id) => get(`/eleicoes/${id}/participacao`, pend),
-      recibos: () => get("/recibos", pend),
-      verificarRecibo: (codigo) => get(`/recibos/${encodeURIComponent(codigo)}/verificar`, pend),
-      resultados: (id) => get(`/eleicoes/${id}/resultados`, pend),
-      estatisticas: (id) => get(`/eleicoes/${id}/estatisticas`, pend),
+      // candidatoId a null = voto em branco
+      votar: (id, n, candidatoId) =>
+        post(`/eleicoes/${id}/rondas/${n}/votos`, candidatoId === null ? { branco: true } : { candidato_id: candidatoId }),
+      participacao: (id) => get(`/eleicoes/${id}/participacao`),
+      verificarRecibo: (codigo) => get(`/recibos/${encodeURIComponent(codigo)}/verificar`),
+      resultados: (id) => get(`/eleicoes/${id}/resultados`),
+      estatisticas: (id) => get(`/eleicoes/${id}/estatisticas`),
+      integridade: (id) => get(`/eleicoes/${id}/integridade`),
     },
 
     auditoria: {
-      listar: (limite = 200) => get("/auditoria", { ...pend, query: { limite } }),
+      listar: (limite = 200) => get("/auditoria", { query: { limite } }),
+      verificar: () => get("/auditoria/verificar"),
     },
 
     sondagem: {
-      obter: (id) => get(`/eleicoes/${id}/sondagem`, pend),
-      responder: (id, candidatoId) => post(`/eleicoes/${id}/sondagem/respostas`, { candidato_id: candidatoId }, pend),
+      obter: (id) => get(`/eleicoes/${id}/sondagem`),
+      responder: (id, candidatoId) => post(`/eleicoes/${id}/sondagem/respostas`, { candidato_id: candidatoId }),
     },
 
     publico: {
-      resumo: () => get("/publico/resumo", { ...pend, auth: false }),
+      resumo: () => get("/publico/resumo", { auth: false }),
       historico: () => get("/publico/historico", { auth: false }),
+      configuracao: () => get("/publico/configuracao", { auth: false }),
     },
   };
 })();

@@ -3,7 +3,7 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { api, elections, download } = TV;
+  const { api, ui, elections, download } = TV;
   const { percent, slug } = TV.format;
   const { resultRows } = TV.results;
   const { panel, attempt } = TV.panels;
@@ -27,13 +27,26 @@
 
     el.innerHTML = TV.teamView.resultsPage(atuais, historico);
 
+    el.querySelectorAll("[data-integrity]").forEach((b) =>
+      b.addEventListener("click", async () => {
+        const destino = el.querySelector(`[data-integrity-result="${b.dataset.integrity}"]`);
+        try {
+          const r = await ui.busy(b, "A verificar…", () => api.votacao.integridade(b.dataset.integrity));
+          destino.innerHTML = TV.teamView.integrityResult(r);
+        } catch (error) {
+          ui.toast(error.message, true);
+        }
+      })
+    );
+
     // Relatório de resultados: uma linha por candidato e por volta
     el.querySelectorAll("[data-export]").forEach((b) =>
       b.addEventListener("click", () => {
         const { e, stats, rondas } = dados.find((d) => d.e.id === Number(b.dataset.export));
-        const linhas = rondas.flatMap((r) =>
-          resultRows(r, e.candidatos).map((l) => [e.titulo, `${r.ronda}.ª volta`, l.nome, l.detalhe, l.votos, percent(l.percentagem)])
-        );
+        const linhas = rondas.flatMap((r) => [
+          ...resultRows(r, e.candidatos).map((l) => [e.titulo, `${r.ronda}.ª volta`, l.nome, l.detalhe, l.votos, percent(l.percentagem)]),
+          [e.titulo, `${r.ronda}.ª volta`, "Votos em branco", "", r.brancos, percent(r.percentagem_brancos)],
+        ]);
         if (stats) linhas.push([], ["Participação", "", "", "", `${stats.votantes} de ${stats.habilitados}`, percent(stats.participacao)]);
         download.csv(`resultados-${slug(e.titulo)}`, ["Eleição", "Volta", "Candidato", "Lista", "Votos", "Percentagem"], linhas);
       })

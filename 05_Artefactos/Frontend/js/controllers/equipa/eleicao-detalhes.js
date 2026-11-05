@@ -135,6 +135,8 @@
         if (!ok) return;
         await api.eleicoes.acaoRonda(e.id, b.dataset.round, b.dataset.roundAction);
         team.renderElectionForm(e.id);
+        // O apuramento é feito pelo worker logo a seguir: volta a ler para mostrar "APURADA"
+        if (!abrir) setTimeout(() => team.renderElectionForm(e.id), 2000);
       }))
     );
     el.querySelector("[data-second-round]")?.addEventListener("submit", async (event) => {

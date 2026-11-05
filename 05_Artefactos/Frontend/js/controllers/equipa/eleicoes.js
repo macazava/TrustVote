@@ -16,7 +16,7 @@
   const avisos = {
     agendar: "Os eleitores passam a ver a eleição e as datas. Os candidatos deixam de poder ser adicionados ou removidos.",
     iniciar: "A votação abre para os eleitores habilitados.",
-    encerrar: "A votação fecha e já não é possível votar. Os resultados passam a ser finais.",
+    encerrar: "A votação fecha, já não é possível votar e os votos são apurados. Os resultados passam a ser finais.",
   };
 
   team.renderElectionList = async function renderElectionList() {
@@ -47,7 +47,7 @@
     const message = form.querySelector(".form-message");
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const dados = { titulo: form.titulo.value.trim(), descricao: form.descricao.value.trim() || null };
+      const dados = { titulo: form.titulo.value.trim(), descricao: form.descricao.value.trim() || null, quorum: Number(form.quorum.value || 0) };
       const datas = { data_inicio: elections.fromLocalInput(form.inicio.value), data_fim: elections.fromLocalInput(form.fim.value) };
       if (editavel && Date.parse(datas.data_fim) <= Date.parse(datas.data_inicio)) return ui.message(message, "O fim tem de ser depois do início.");
       // Mudar o estado (agendar, iniciar, encerrar) pede confirmação antes de gravar
