@@ -8,24 +8,24 @@
 
   <title>Comunicação | TrustVote</title>
 
-  <link rel="stylesheet" href="../css/style.css?v=6">
-  <link rel="stylesheet" href="../css/tailwind.css?v=6">
-  <script defer src="../js/views/layout.js?v=6"></script>
+  <link rel="stylesheet" href="../css/style.css?v=17">
+  <link rel="stylesheet" href="../css/tailwind.css?v=17">
+  <script defer src="../js/views/layout.js?v=17"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=6"></script>
-  <script defer src="../js/models/api.js?v=6"></script>
-  <script defer src="../js/models/sessao.js?v=6"></script>
-  <script defer src="../js/views/formatar.js?v=6"></script>
-  <script defer src="../js/models/eleicoes.js?v=6"></script>
-  <script defer src="../js/views/componentes.js?v=6"></script>
+  <script defer src="../js/models/servidor.js?v=17"></script>
+  <script defer src="../js/models/api.js?v=17"></script>
+  <script defer src="../js/models/sessao.js?v=17"></script>
+  <script defer src="../js/views/formatar.js?v=17"></script>
+  <script defer src="../js/models/eleicoes.js?v=17"></script>
+  <script defer src="../js/views/componentes.js?v=17"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=6"></script>
-  <script defer src="../js/views/publico.js?v=6"></script>
+  <script defer src="../js/views/graficos.js?v=17"></script>
+  <script defer src="../js/views/publico.js?v=17"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=6"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
-  <script defer src="../js/controllers/publico/paginas.js?v=6"></script>
-  <script defer src="../js/views/animacoes.js?v=6"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=17"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
+  <script defer src="../js/controllers/publico/paginas.js?v=17"></script>
+  <script defer src="../js/views/animacoes.js?v=17"></script>
 </head>
 
 <body>
@@ -53,8 +53,8 @@
         <a href="ajuda.html#quem-somos">Equipa TrustVote</a>
       </div>
       <div>
-        <b>Feed de notícias · RSS</b>
-        <a href="#noticias">Aceder</a>
+        <b>Avisos eleitorais</b>
+        <a href="#avisos">Aceder</a>
       </div>
       <div>
         <b>Glossário eleitoral académico</b>
@@ -79,6 +79,14 @@
         </div>
       </article>
     </div>
+
+    <!-- Avisos da eleição em destaque (preenchido por controllers/publico/paginas.js) -->
+    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" id="avisos">
+      <p class="eyebrow">AVISOS</p>
+      <h2>Atualidade eleitoral</h2>
+      <div class="news-list" data-news></div>
+      <a class="text-link" href="calendario.html">Ver calendário completo →</a>
+    </article>
 
     <!-- Guias e explicações -->
     <div class="press-news grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" id="noticias">

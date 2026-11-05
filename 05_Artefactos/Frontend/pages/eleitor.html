@@ -7,37 +7,36 @@
 
     <title>Área do eleitor | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css?v=6">
-    <link rel="stylesheet" href="../css/tailwind.css?v=6">
+    <link rel="stylesheet" href="../css/style.css?v=17">
+    <link rel="stylesheet" href="../css/tailwind.css?v=17">
     <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-    <script defer src="../js/models/servidor.js?v=6"></script>
-    <script defer src="../js/models/api.js?v=6"></script>
-    <script defer src="../js/models/sessao.js?v=6"></script>
-    <script defer src="../js/views/formatar.js?v=6"></script>
-    <script defer src="../js/models/eleicoes.js?v=6"></script>
-    <script defer src="../js/views/componentes.js?v=6"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script defer src="../js/models/servidor.js?v=17"></script>
+    <script defer src="../js/models/api.js?v=17"></script>
+    <script defer src="../js/models/sessao.js?v=17"></script>
+    <script defer src="../js/views/formatar.js?v=17"></script>
+    <script defer src="../js/models/eleicoes.js?v=17"></script>
+    <script defer src="../js/views/componentes.js?v=17"></script>
     <!-- View: desenho do HTML -->
-    <script defer src="../js/views/dois-fatores.js?v=6"></script>
-    <script defer src="../js/views/graficos.js?v=6"></script>
-    <script defer src="../js/views/eleitor/eleicoes.js?v=6"></script>
-    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=6"></script>
-    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=6"></script>
-    <script defer src="../js/views/eleitor/recibos.js?v=6"></script>
-    <script defer src="../js/views/eleitor/perfil.js?v=6"></script>
+    <script defer src="../js/views/palavra-passe.js?v=17"></script>
+    <script defer src="../js/views/graficos.js?v=17"></script>
+    <script defer src="../js/views/eleitor/eleicoes.js?v=17"></script>
+    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=17"></script>
+    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=17"></script>
+    <script defer src="../js/views/eleitor/recibos.js?v=17"></script>
+    <script defer src="../js/views/eleitor/perfil.js?v=17"></script>
     <!-- Controller: o que acontece em cada página -->
-    <script defer src="../js/controllers/comum/menu.js?v=6"></script>
-    <script defer src="../js/controllers/comum/paineis.js?v=6"></script>
-    <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
-    <script defer src="../js/controllers/comum/dois-fatores.js?v=6"></script>
-    <script defer src="../js/controllers/comum/descarregar.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/eleicoes.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/boletim.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/recibos.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/perfil.js?v=6"></script>
-    <script defer src="../js/controllers/eleitor/arranque.js?v=6"></script>
-    <script defer src="../js/views/animacoes.js?v=6"></script>
+    <script defer src="../js/controllers/comum/menu.js?v=17"></script>
+    <script defer src="../js/controllers/comum/paineis.js?v=17"></script>
+    <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
+    <script defer src="../js/controllers/comum/palavra-passe.js?v=17"></script>
+    <script defer src="../js/controllers/comum/descarregar.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/eleicoes.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/boletim.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js?v=17"></script>
+    <script defer src="../js/controllers/eleitor/arranque.js?v=17"></script>
+    <script defer src="../js/views/animacoes.js?v=17"></script>
 </head>
 
 <body class="panel-body" data-page="voter">
@@ -58,7 +57,7 @@
                 geral</button>
             <button class="panel-link rounded-lg transition-colors" type="button"
                 data-view="elections">Eleições</button>
-            <button class="panel-link rounded-lg transition-colors" type="button" data-view="poll">Sondagem IA</button>
+            <button class="panel-link rounded-lg transition-colors" type="button" data-view="poll">Sondagem</button>
             <button class="panel-link rounded-lg transition-colors" type="button" data-view="receipts">Recibos</button>
             <button class="panel-link rounded-lg transition-colors" type="button"
                 data-view="results">Resultados</button>
@@ -102,19 +101,7 @@
 
 
             <!-- AJUDA -->
-            <section class="view-panel" data-panel="help">
-
-                <p class="eyebrow">APOIO AO ELEITOR</p>
-
-                <h1>Como podemos ajudar?</h1>
-
-                <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-                    <h2>Dúvidas sobre a votação</h2>
-                    <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
-                    <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes →</a>
-                </article>
-
-            </section>
+            <section class="view-panel" data-panel="help"></section>
 
 
             <!-- PERFIL (preenchido por controllers/eleitor/perfil.js) -->
