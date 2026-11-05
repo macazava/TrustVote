@@ -6,20 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Como funcionam as eleições académicas e a votação online no TrustVote.">
   <title>Como funciona | TrustVote</title>
-  <link rel="stylesheet" href="../css/style.css?v=6">
-  <link rel="stylesheet" href="../css/tailwind.css?v=6">
-  <script defer src="../js/views/layout.js?v=6"></script>
+  <link rel="stylesheet" href="../css/style.css?v=17">
+  <link rel="stylesheet" href="../css/tailwind.css?v=17">
+  <script defer src="../js/views/layout.js?v=17"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=6"></script>
-  <script defer src="../js/models/api.js?v=6"></script>
-  <script defer src="../js/models/sessao.js?v=6"></script>
-  <script defer src="../js/views/formatar.js?v=6"></script>
-  <script defer src="../js/models/eleicoes.js?v=6"></script>
-  <script defer src="../js/views/componentes.js?v=6"></script>
+  <script defer src="../js/models/servidor.js?v=17"></script>
+  <script defer src="../js/models/api.js?v=17"></script>
+  <script defer src="../js/models/sessao.js?v=17"></script>
+  <script defer src="../js/views/formatar.js?v=17"></script>
+  <script defer src="../js/models/eleicoes.js?v=17"></script>
+  <script defer src="../js/views/componentes.js?v=17"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js?v=17"></script>
+  <script defer src="../js/views/publico.js?v=17"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=6"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=6"></script>
-  <script defer src="../js/views/animacoes.js?v=6"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=17"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
+  <script defer src="../js/controllers/publico/paginas.js?v=17"></script>
+  <script defer src="../js/views/animacoes.js?v=17"></script>
 </head>
 
 <body>
@@ -80,10 +84,11 @@
             <div class="card-meta"><span class="round-icon">▤</span><small>03 / RESULTADOS</small></div>
             <h3>Resultados publicados<br>no fim da votação.</h3>
             <p>Publicados pela comissão eleitoral académica.</p>
-            <div class="audit-log">
-              <span>● 18:00 · Votação encerrada</span>
-              <span>● 18:05 · Contagem concluída</span>
-              <span>● 18:30 · Resultados publicados</span>
+            <!-- Fecho da última eleição encerrada (preenchido com os dados da API) -->
+            <div class="audit-log" data-last-count>
+              <span>● Votação encerrada</span>
+              <span>● Contagem concluída</span>
+              <span>● Resultados publicados</span>
             </div>
           </article>
         </div>
