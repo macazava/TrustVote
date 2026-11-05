@@ -66,5 +66,17 @@
       <small>${number(c.total_votos)} votos</small>
     </div>`;
 
-  window.TrustVote.charts = { lineChart, barChart, columnChart, resultRow };
+  // Linha por baixo dos resultados de uma volta: brancos, participação, quórum e votos excluídos
+  const roundSummary = (r) =>
+    `<p class="muted round-summary">${[
+      `Brancos: ${number(r.brancos)} (${percent(r.percentagem_brancos)})`,
+      `Participação ${percent(r.participacao)} · ${number(r.votantes)} de ${number(r.habilitados)}`,
+      r.quorum ? `Quórum de ${percent(r.quorum)}: <b>${r.quorum_atingido ? "atingido" : "não atingido"}</b>` : "",
+      r.invalidos ? `<b>${number(r.invalidos)} voto(s) com selo inválido excluído(s)</b>` : "",
+      r.apurada ? "Apuramento final" : "Contagem provisória",
+    ]
+      .filter(Boolean)
+      .join(" · ")}</p>`;
+
+  window.TrustVote.charts = { lineChart, barChart, columnChart, resultRow, roundSummary };
 })();

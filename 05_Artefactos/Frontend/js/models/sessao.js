@@ -97,12 +97,17 @@
       window.location.href = pageUrl(`login.html?area=${area}&motivo=expirada`);
     },
 
+    // Avisa o servidor (o token deixa de valer já), mas não espera mais de 1,5 s por ele
     logout() {
-      session.clear();
-      try {
-        sessionStorage.removeItem("trustvote:rascunho-voto");
-      } catch { }
-      window.location.href = pageUrl("inicio.html");
+      const sair = () => {
+        session.clear();
+        try {
+          sessionStorage.removeItem("trustvote:rascunho-voto");
+        } catch { }
+        window.location.href = pageUrl("inicio.html");
+      };
+      if (!session.token()) return sair();
+      Promise.race([api.auth.logout().catch(() => { }), new Promise((ok) => setTimeout(ok, 1500))]).then(sair);
     },
   };
 

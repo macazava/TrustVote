@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   register();
 
   // Conteúdo que chega depois da API (resultados, listas, calendário)
-  document.querySelectorAll("[data-results], [data-candidates], [data-calendar-live], [data-transparency]").forEach((box) =>
+  document.querySelectorAll("[data-results], [data-candidates], [data-calendar-live]").forEach((box) =>
     new MutationObserver((mutations) =>
       mutations.forEach((m) =>
         m.addedNodes.forEach((node) => {

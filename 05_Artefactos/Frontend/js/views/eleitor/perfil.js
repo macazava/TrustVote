@@ -99,7 +99,7 @@
     ${stats(d.numeros)}
     <div class="profile-grid grid-cols-1 lg:grid-cols-[1.35fr_1fr]">
       <div>${participation(d.lista)}${privacyCard()}</div>
-      <div>${TV.twoFactor.card(d.user)}${sessionCard(d.claims)}</div>
+      <div>${TV.password.card()}${sessionCard(d.claims)}</div>
     </div>`;
 
   Object.assign(v, { profilePage });

@@ -11,8 +11,8 @@
 
     error: (error, retry = true) => `
       <div class="state-box">
-        <span class="large-icon rounded-xl">${error && error.pending ? "…" : "!"}</span>
-        <h3>${error && error.pending ? "Funcionalidade por disponibilizar" : "Não foi possível carregar"}</h3>
+        <span class="large-icon rounded-xl">!</span>
+        <h3>Não foi possível carregar</h3>
         <p>${escapeHtml((error && error.message) || error)}</p>
         ${retry ? '<button class="button rounded-xl button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
       </div>`,

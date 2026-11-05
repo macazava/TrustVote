@@ -32,11 +32,8 @@
     return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
   }
 
-  function voterNumber(user) {
-    if (user && user.num_estudante) return user.num_estudante;
-    const year = user && user.data_registo ? new Date(user.data_registo).getFullYear() : new Date().getFullYear();
-    return `TV-${year}-${String((user && user.id) || 0).padStart(3, "0")}`;
-  }
+  // Número de estudante da conta (as contas da equipa podem não ter)
+  const voterNumber = (user) => (user && user.num_estudante) || "—";
 
   function countdown(iso) {
     const left = Math.max(0, Date.parse(iso) - Date.now());

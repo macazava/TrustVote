@@ -1,4 +1,4 @@
-/* View · área do eleitor: cartão de cada eleição, passos do voto, lista de eleições e detalhes */
+/* View · área do eleitor: cartão de cada eleição, passos do voto, lista de eleições, detalhes e ajuda */
 (function () {
   "use strict";
 
@@ -109,5 +109,33 @@
       </div>
     </article>`;
 
-  Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage });
+  // ===== Separador "Ajuda": a eleição em destaque e as regras reais da sessão =====
+  // d = { e, config, fimSessao }
+  const helpPage = ({ e, config, fimSessao }) => `
+    ${head("APOIO AO ELEITOR", "Como podemos ajudar?")}
+    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+      <p class="eyebrow">A TUA VOTAÇÃO</p>
+      ${e
+      ? `<h2>${escapeHtml(e.titulo)}</h2>
+         <p>${e.votou ? "Já votaste nesta eleição. O recibo confirma que o voto foi contado." : timeInfo(e)}</p>
+         <div class="form-actions" style="justify-content:flex-start">${voteAction(e)}</div>`
+      : `<h2>Sem eleições ativas</h2>
+         <p>Não estás habilitado em nenhuma eleição a decorrer ou agendada. Se achas que devias estar, fala com a comissão eleitoral académica.</p>`}
+    </article>
+    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+      <p class="eyebrow">SESSÃO E SEGURANÇA</p>
+      <h2>Regras desta plataforma</h2>
+      <ul class="profile-list">
+        ${config ? `<li class="is-yes">Cada sessão dura ${config.sessao_minutos} minutos${fimSessao ? `: a tua termina às ${fimSessao}` : ""}.</li>` : ""}
+        <li class="is-yes">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltares a entrar.</li>
+        ${config ? `<li class="is-no">Depois de ${config.login_tentativas} tentativas de entrada falhadas, a conta fica bloqueada durante ${config.login_bloqueio_minutos} minutos.</li>` : ""}
+      </ul>
+    </article>
+    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+      <h2>Dúvidas sobre a votação</h2>
+      <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
+      <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes →</a>
+    </article>`;
+
+  Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });
 })();

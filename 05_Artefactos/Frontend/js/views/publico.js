@@ -5,7 +5,7 @@
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, date, dateTime, period, time, initials } = TV.format;
   const { statusLabels } = TV.elections;
-  const { resultRow } = TV.charts;
+  const { resultRow, roundSummary } = TV.charts;
 
   // ===== Página inicial: faixa dos números =====
   const metrics = (resumo, online) => `
@@ -19,15 +19,16 @@
     <p>${resumo
       ? `Dados em tempo real · atualizado às ${time(new Date().toISOString())}`
       : online
-        ? "Os números públicos ainda não estão disponíveis no backend."
+        ? "Ainda não há eleições públicas: os números aparecem quando a primeira for agendada."
         : "Servidor indisponível: não foi possível obter os números."
     }</p>`;
 
   // ===== Calendário: próxima eleição =====
+  const electionEyebrow = { em_curso: "VOTAÇÃO A DECORRER", agendada: "PRÓXIMA ELEIÇÃO", encerrada: "ÚLTIMA ELEIÇÃO" };
   const nextElection = (e) => `
     <div class="heading-row">
       <div>
-        <p class="eyebrow">PRÓXIMA ELEIÇÃO</p>
+        <p class="eyebrow">${electionEyebrow[e.estado] || "ELEIÇÃO"}</p>
         <h2>${escapeHtml(e.titulo)}</h2>
         <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
       </div>
@@ -81,6 +82,19 @@
       </div>
     </article>`;
 
+  // ===== "Como funciona": o que aconteceu no fecho da última eleição =====
+  // Sem eleições encerradas mostra só os passos, sem horas
+  // Encerrada antes da hora marcada: o fecho foi no máximo quando ficou apurada
+  const fecho = (e) => (e.apurada_em && Date.parse(e.apurada_em) < Date.parse(e.data_fim) ? e.apurada_em : e.data_fim);
+  const lastCount = (e) =>
+    e
+      ? [
+        `● ${dateTime(fecho(e))} · Votação encerrada`,
+        `● ${e.apurada_em ? dateTime(e.apurada_em) : "por apurar"} · Contagem concluída`,
+        `● ${e.titulo} · ${percent(e.participacao)} de participação`,
+      ].map((linha) => `<span>${escapeHtml(linha)}</span>`).join("")
+      : ["Votação encerrada", "Contagem concluída", "Resultados publicados"].map((t) => `<span>● ${t}</span>`).join("");
+
   // ===== Resultados =====
   const turnoutCard = (dados) => `
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
@@ -104,7 +118,7 @@
     const body = error
       ? `<p class="form-message">${escapeHtml(error.message)}</p>`
       : (rondas || [])
-        .map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}`)
+        .map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`)
         .join("");
     return `
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
@@ -116,13 +130,5 @@
       </article>`;
   }
 
-  // ===== Transparência: estado dos servidores =====
-  const serverStatus = ({ ok, media, instancias, baseDados }) => `
-    <div class="audit-list">
-      <p><i>${ok ? "✓" : "!"}</i> API ${ok ? "disponível" : "com falhas"} · ${media} ms de latência média</p>
-      <p><i>${instancias.length > 1 ? "✓" : "!"}</i> ${instancias.length || "—"} instância(s) a responder: ${escapeHtml(instancias.join(", ") || "—")}</p>
-      <p><i>${baseDados ? "✓" : "!"}</i> Base de dados ${baseDados ? "ligada" : "sem resposta"}</p>
-    </div>`;
-
-  TV.publicView = { metrics, notices, historyPeriod, nextElection, listCard, turnoutCard, loginForResults, resultsCard, serverStatus };
+  TV.publicView = { metrics, notices, historyPeriod, nextElection, lastCount, listCard, turnoutCard, loginForResults, resultsCard };
 })();
