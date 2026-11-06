@@ -33,7 +33,8 @@ Os comandos correm em PowerShell, a partir de `05_Artefactos`.
    docker logs -f trustvote-monitor
    ```
 
-Contas: `equipa@trustvote.pt` e `eleitor01@trustvote.pt` a `eleitor20@trustvote.pt`, com a
+Contas: `taha@trustvote.pt`, `romulo@trustvote.pt`, `feliciano@trustvote.pt` e
+`camila@trustvote.pt` (equipa), e `eleitor01@trustvote.pt` a `eleitor20@trustvote.pt`, com a
 palavra-passe `Demonstracao2026`.
 
 ## Demonstração

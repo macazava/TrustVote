@@ -18,7 +18,12 @@ from datetime import datetime, timedelta, timezone
 
 API = os.getenv("DEMO_API", "http://127.0.0.1:8080/api")
 PASSWORD = os.getenv("DEMO_PASSWORD", "Demonstracao2026")
-ADMIN = "equipa@trustvote.pt"
+ADMINS = (
+    ("Taha", "taha@trustvote.pt", "ADMIN0001"),
+    ("Romulo", "romulo@trustvote.pt", "ADMIN0002"),
+    ("Feliciano", "feliciano@trustvote.pt", "ADMIN0003"),
+    ("Camila", "camila@trustvote.pt", "ADMIN0004"),
+)
 TOTAL_ELEITORES = 20
 DIAS_DE_VOTACAO = 21
 
@@ -66,9 +71,10 @@ def tornar_administrador(nome):
 
 
 def main():
-    registar("equipa.demo", ADMIN, "ADMIN0001", "Comissão Eleitoral")
-    tornar_administrador("equipa.demo")
-    token = pedido("POST", "/auth/login", {"email": ADMIN, "password": PASSWORD})["access_token"]
+    for nome, email, numero in ADMINS:
+        registar(nome, email, numero, "Comissão Eleitoral")
+        tornar_administrador(nome)
+    token = pedido("POST", "/auth/login", {"email": ADMINS[0][1], "password": PASSWORD})["access_token"]
 
     agora = datetime.now(timezone.utc)
     eleicao = pedido(
@@ -103,7 +109,7 @@ def main():
     pedido("POST", f"{rota}/iniciar", token=token)
 
     print("Dados criados: a eleição está aberta.")
-    print(f"  Equipa:  {ADMIN}")
+    print(f"  Equipa:  {', '.join(email for _, email, _ in ADMINS)}")
     print(f"  Eleitores: eleitor01@trustvote.pt a eleitor{TOTAL_ELEITORES:02d}@trustvote.pt")
     print(f"  Palavra-passe: {PASSWORD}")
 

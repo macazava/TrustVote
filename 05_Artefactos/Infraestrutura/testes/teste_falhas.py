@@ -83,7 +83,7 @@ def esperar(condicao, limite):
 
 
 def preparar(eleitores):
-    token_equipa = pedido("POST", "/auth/login", {"email": "equipa@trustvote.pt", "password": PASSWORD})[1]["access_token"]
+    token_equipa = pedido("POST", "/auth/login", {"email": "taha@trustvote.pt", "password": PASSWORD})[1]["access_token"]
     agora = datetime.now(timezone.utc)
     prefixo = f"f{int(time.time()) % 100000}"
     eleicao = pedido("POST", "/eleicoes", {"titulo": f"Teste de falhas {prefixo}"}, token_equipa)[1]["id"]
