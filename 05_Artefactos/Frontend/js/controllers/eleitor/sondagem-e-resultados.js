@@ -54,7 +54,13 @@
     comResultados.forEach((e) => {
       const card = el.querySelector(`[data-result="${e.id}"]`);
       ui.mount(card, async () => {
-        card.innerHTML = view.resultsCard(e, await api.votacao.resultados(e.id));
+        try {
+          card.innerHTML = view.resultsCard(e, await api.votacao.resultados(e.id));
+        } catch (error) {
+          // 409: a votação ainda está aberta (aviso normal); outros erros mostram "Tentar novamente"
+          if (error.status !== 409) throw error;
+          card.innerHTML = view.resultsPending(e, error.message);
+        }
       });
     });
   };

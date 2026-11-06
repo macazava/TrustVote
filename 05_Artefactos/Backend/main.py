@@ -42,9 +42,14 @@ CORS_ORIGINS = os.getenv(
     ",".join(f"http://{anfitriao}:{porta}" for porta in (8080, 8081, 8082) for anfitriao in ("127.0.0.1", "localhost")),
 ).split(",")
 
+# Com ".\stack.cmd up -Rede" o site também é aberto pelo IP do PC na rede local (ex.: num
+# telemóvel): aceitam-se só endereços privados (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
+REDE_LOCAL = r"http://(192\.168|10\.\d+|172\.(1[6-9]|2\d|3[01]))\.\d+\.\d+:808[0-2]"
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origem.strip() for origem in CORS_ORIGINS if origem.strip()],
+    allow_origin_regex=REDE_LOCAL,
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
     allow_headers=["Authorization", "Content-Type"],
 )

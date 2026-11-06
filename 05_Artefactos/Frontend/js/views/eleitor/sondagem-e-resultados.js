@@ -55,5 +55,10 @@
     <div class="card-head"><div><p class="eyebrow">${e.estadoLabel}</p><h2>${escapeHtml(e.titulo)}</h2></div></div>
     ${rondas.map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`).join("")}`;
 
-  Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead, resultsSlot, resultsCard });
+  // Votação ainda aberta: os resultados só são públicos depois de fechar (não é um erro)
+  const resultsPending = (e, mensagem) => `
+    <div class="card-head"><div><p class="eyebrow">${e.estadoLabel}</p><h2>${escapeHtml(e.titulo)}</h2></div></div>
+    ${TV.ui.empty("Resultados ainda não disponíveis", mensagem)}`;
+
+  Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead, resultsSlot, resultsCard, resultsPending });
 })();

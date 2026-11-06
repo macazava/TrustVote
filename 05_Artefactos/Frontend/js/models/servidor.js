@@ -113,7 +113,7 @@
         error.name === "AbortError"
           ? `O servidor (${bases[atual]}) não respondeu a tempo.`
           : `Não foi possível contactar o servidor (${bases.join(" nem ")}). Confirme que a stack está a correr ` +
-            "(Infraestrutura: .\\stack.ps1 up)."
+            "(Infraestrutura: .\\stack.cmd up)."
       );
     } finally {
       clearTimeout(timer);

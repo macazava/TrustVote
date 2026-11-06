@@ -179,6 +179,7 @@ Um `POST` (ex.: um voto) que já chegou a um servidor nunca é repetido no outro
 .\stack.cmd logs worker     # seguir os logs de um contentor
 .\stack.cmd demo            # criar os dados de demonstração (só numa BD vazia)
 .\stack.cmd down            # parar e remover os contentores (mantém os dados)
+.\stack.cmd up -Rede        # abrir o site a um telemóvel na mesma rede Wi-Fi (mostra o endereço)
 .\stack.cmd parar 1         # simular a queda do Servidor 1 inteiro (ou 2)
 .\stack.cmd ligar 1         # voltar a ligá-lo
 ```

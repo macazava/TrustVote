@@ -1,7 +1,7 @@
 ﻿<#
 TrustVote — arranca, para e mostra a infraestrutura (compose.yaml).
 
-  .\stack.cmd up [-Dev] [-Build]   arranca tudo; na 1.ª vez cria o .env e os dados de demonstração
+  .\stack.cmd up [-Dev] [-Build] [-Rede]   arranca tudo; na 1.ª vez cria o .env e os dados de demonstração
   .\stack.cmd down                 para e remove os contentores (mantém os dados)
   .\stack.cmd parar 1|2            simula a queda do Servidor 1 (ou 2) inteiro
   .\stack.cmd ligar 1|2            volta a ligar esse servidor
@@ -12,12 +12,15 @@ TrustVote — arranca, para e mostra a infraestrutura (compose.yaml).
 O stack.cmd corre este script sem depender da política de execução do PowerShell.
 -Dev também arranca o pgAdmin (http://127.0.0.1:5050).
 -Build reconstrói a imagem do backend (depois de mudar código em ../Backend).
+-Rede abre o site aos outros aparelhos da mesma rede Wi-Fi (ex.: testar num telemóvel);
+      um "up" sem -Rede volta a fechá-lo a este PC.
 #>
 param(
     [Parameter(Position = 0)][ValidateSet("up", "down", "parar", "ligar", "ps", "logs", "demo")][string]$Acao = "ps",
     [Parameter(Position = 1)][string]$Servico,
     [switch]$Dev,
-    [switch]$Build
+    [switch]$Build,
+    [switch]$Rede
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,7 +28,7 @@ Set-Location $PSScriptRoot
 # A saída dos contentores vem em UTF-8: sem isto, os acentos aparecem trocados na consola.
 [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
 
-$rede = "trustvote-network"
+$redeDocker = "trustvote-network"
 # Os serviços de cada "servidor" (ver compose.yaml)
 $servidores = @{
     "1" = @("nginx1", "servidor1", "worker", "db-primary", "redis", "sentinel1")
@@ -54,13 +57,13 @@ function Criar-Env {
 # Uma rede trustvote-network de versões antigas (criada à mão, sem o Compose) impede o
 # Compose de criar a sua; sem contentores ligados, pode ser apagada.
 function Limpar-Rede-Antiga {
-    if (-not (docker network ls -q --filter "name=^$rede$")) { return }
+    if (-not (docker network ls -q --filter "name=^$redeDocker$")) { return }
     # Filtro por etiqueta (sem aspas: o PowerShell 5.1 tira-as aos argumentos do docker)
-    if (docker network ls -q --filter "name=^$rede$" --filter "label=com.docker.compose.project=trustvote") { return }
-    if (docker ps -aq --filter "network=$rede") {
-        throw "A rede $rede é de uma versão antiga e ainda tem contentores. Pare-os (docker stop) e repita."
+    if (docker network ls -q --filter "name=^$redeDocker$" --filter "label=com.docker.compose.project=trustvote") { return }
+    if (docker ps -aq --filter "network=$redeDocker") {
+        throw "A rede $redeDocker é de uma versão antiga e ainda tem contentores. Pare-os (docker stop) e repita."
     }
-    docker network rm $rede | Out-Null
+    docker network rm $redeDocker | Out-Null
 }
 
 # Corre demo/dados_demo.py dentro do contentor da API (não precisa de Python no PC).
@@ -87,6 +90,8 @@ switch ($Acao) {
         Confirmar-Docker
         Criar-Env
         Limpar-Rede-Antiga
+        # A variável do ambiente tem prioridade sobre o .env: 0.0.0.0 publica as portas na rede
+        $env:NGINX_BIND_ADDRESS = if ($Rede) { "0.0.0.0" } else { "127.0.0.1" }
         $argumentos = @("up", "-d", "--wait") + $(if ($Build) { @("--build") } else { @() })
         if (-not $Dev) { $argumentos += @("--scale", "pgadmin=0") }
         Compose $argumentos
@@ -98,6 +103,13 @@ switch ($Acao) {
         Write-Host "  Direto: Servidor 1 em http://127.0.0.1:$(Porta 'NGINX1_PORT' 8081), Servidor 2 em http://127.0.0.1:$(Porta 'NGINX2_PORT' 8082)"
         Write-Host "  API:   http://127.0.0.1:$(Porta 'ENTRADA_PORT' 8080)/api/docs"
         if ($Dev) { Write-Host "  pgAdmin: http://127.0.0.1:5050" }
+        if ($Rede) {
+            # IP deste PC na rede local (a interface com gateway, ou seja, a do Wi-Fi/cabo)
+            $ip = (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq "Up" } |
+                Select-Object -First 1).IPv4Address.IPAddress
+            Write-Host "  Telemóvel (mesma rede Wi-Fi): http://$($ip):$(Porta 'ENTRADA_PORT' 8080)" -ForegroundColor Yellow
+            Write-Host "  Se não abrir, permita o Docker Desktop na firewall do Windows."
+        }
     }
     "down" {
         Confirmar-Docker
@@ -118,7 +130,7 @@ switch ($Acao) {
         Compose (@("up", "-d", "--wait") + $lista)
     }
     "ps" {
-        docker ps -a --filter "network=$rede" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+        docker ps -a --filter "network=$redeDocker" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
     }
     "demo" {
         Confirmar-Docker

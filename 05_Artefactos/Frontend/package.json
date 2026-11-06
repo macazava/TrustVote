@@ -1,12 +1,17 @@
 {
   "name": "trustvote-frontend",
   "private": true,
-  "description": "Frontend do TrustVote. O CSS do Tailwind é compilado para css/tailwind.css.",
+  "description": "Frontend do TrustVote: testes e compilação do CSS do Tailwind (o site em si não precisa de Node).",
   "scripts": {
-    "css": "cd .. && tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify",
-    "css:watch": "cd .. && tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --watch"
+    "test": "node --test \"testes/unidade/*.test.mjs\"",
+    "test:navegador": "node testes/navegador/executar.mjs",
+    "css": "tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify",
+    "css:watch": "tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --watch"
   },
   "devDependencies": {
     "tailwindcss": "3.4.16"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

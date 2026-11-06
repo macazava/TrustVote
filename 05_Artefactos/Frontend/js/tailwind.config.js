@@ -1,5 +1,5 @@
 /* Configuração do Tailwind: cores e letra do TrustVote
-   Depois de mudar classes Tailwind no HTML ou no JS, correr "npm run css" na pasta .vscode para gerar css/tailwind.css */
+   Depois de mudar classes Tailwind no HTML ou no JS, correr "npm run css" na pasta Frontend para gerar css/tailwind.css */
 module.exports = {
   // Ficheiros onde o Tailwind procura as classes usadas
   content: ["./pages/**/*.html", "./js/**/*.js"],
