@@ -5,21 +5,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acesso | TrustVote</title>
-  <link rel="stylesheet" href="../css/style.css?v=17">
-  <link rel="stylesheet" href="../css/tailwind.css?v=17">
+  <link rel="stylesheet" href="../css/style.css?v=19">
+  <link rel="stylesheet" href="../css/tailwind.css?v=19">
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=17"></script>
-  <script defer src="../js/models/api.js?v=17"></script>
-  <script defer src="../js/models/sessao.js?v=17"></script>
-  <script defer src="../js/views/formatar.js?v=17"></script>
-  <script defer src="../js/models/eleicoes.js?v=17"></script>
-  <script defer src="../js/views/componentes.js?v=17"></script>
+  <script defer src="../js/models/servidor.js?v=19"></script>
+  <script defer src="../js/models/api.js?v=19"></script>
+  <script defer src="../js/models/sessao.js?v=19"></script>
+  <script defer src="../js/views/formatar.js?v=19"></script>
+  <script defer src="../js/models/eleicoes.js?v=19"></script>
+  <script defer src="../js/views/componentes.js?v=19"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=17"></script>
-  <script defer src="../js/controllers/login/formulario.js?v=17"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=17"></script>
-  <script defer src="../js/controllers/login/autenticacao.js?v=17"></script>
-  <script defer src="../js/views/animacoes.js?v=17"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=19"></script>
+  <script defer src="../js/controllers/login/formulario.js?v=19"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=19"></script>
+  <script defer src="../js/controllers/login/autenticacao.js?v=19"></script>
+  <script defer src="../js/views/animacoes.js?v=19"></script>
 </head>
 
 <body data-page="login">
@@ -114,7 +114,8 @@
 
         <label id="email-field">
           E-mail
-          <input name="email" type="email" autocomplete="username" required maxlength="255" placeholder="nome@exemplo.pt">
+          <input name="email" type="email" autocomplete="username" required maxlength="255"
+            placeholder="nome@exemplo.pt">
         </label>
 
         <label id="number-field" hidden>
@@ -125,7 +126,8 @@
 
         <label id="course-field" hidden>
           Curso
-          <input name="curso" maxlength="150" pattern=".*\S.*" title="Indique o seu curso" placeholder="Engenharia Informática">
+          <input name="curso" maxlength="150" pattern=".*\S.*" title="Indique o seu curso"
+            placeholder="Engenharia Informática">
         </label>
 
         <label>
@@ -133,8 +135,13 @@
           <span class="password-field">
             <input name="password" type="password" autocomplete="current-password" required minlength="8"
               placeholder="Introduza a sua palavra-passe">
-            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe" aria-pressed="false">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/><path class="eye-slash" pathLength="1" d="M4 4l16 16"/></svg>
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe"
+              aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                <circle cx="12" cy="12" r="2.75" />
+                <path class="eye-slash" pathLength="1" d="M4 4l16 16" />
+              </svg>
             </button>
           </span>
         </label>
@@ -143,8 +150,13 @@
           Confirmar palavra-passe
           <span class="password-field">
             <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
-            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe" aria-pressed="false">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/><path class="eye-slash" pathLength="1" d="M4 4l16 16"/></svg>
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe"
+              aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                <circle cx="12" cy="12" r="2.75" />
+                <path class="eye-slash" pathLength="1" d="M4 4l16 16" />
+              </svg>
             </button>
           </span>
         </label>
