@@ -8,6 +8,8 @@ TrustVote — arranca, para e mostra a infraestrutura (compose.yaml).
   .\stack.cmd ps                   estado de todos os contentores
   .\stack.cmd logs <serviço>       segue os logs de um serviço (ex.: worker, nginx2)
   .\stack.cmd demo                 cria os dados de demonstração (só numa base de dados vazia)
+  .\stack.cmd backup               faz já uma cópia da BD (além das automáticas), confirmada
+  .\stack.cmd migrar               aplica migrações novas da BD sem reiniciar nada
 
 O stack.cmd corre este script sem depender da política de execução do PowerShell.
 -Dev também arranca o pgAdmin (http://127.0.0.1:5050).
@@ -16,7 +18,7 @@ O stack.cmd corre este script sem depender da política de execução do PowerSh
       um "up" sem -Rede volta a fechá-lo a este PC.
 #>
 param(
-    [Parameter(Position = 0)][ValidateSet("up", "down", "parar", "ligar", "ps", "logs", "demo")][string]$Acao = "ps",
+    [Parameter(Position = 0)][ValidateSet("up", "down", "parar", "ligar", "ps", "logs", "demo", "backup", "migrar")][string]$Acao = "ps",
     [Parameter(Position = 1)][string]$Servico,
     [switch]$Dev,
     [switch]$Build,
@@ -131,6 +133,16 @@ switch ($Acao) {
     }
     "ps" {
         docker ps -a --filter "network=$redeDocker" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    }
+    "backup" {
+        Confirmar-Docker
+        & docker exec trustvote-backup sh /opt/trustvote/backup.sh agora
+        if ($LASTEXITCODE -ne 0) { throw "A cópia falhou (ver acima)." }
+        Write-Host "Cópias em: $(Join-Path $PSScriptRoot 'backups')" -ForegroundColor Green
+    }
+    "migrar" {
+        Confirmar-Docker
+        Compose @("run", "--rm", "migracoes")
     }
     "demo" {
         Confirmar-Docker

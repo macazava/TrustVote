@@ -9,7 +9,8 @@
 # Os "servidores" são grupos de serviços (ver os comentários de cada secção):
 #   Servidor 1: nginx1, servidor1, worker, db-primary, redis, sentinel1
 #   Servidor 2: nginx2, servidor2, worker-reserva, db-replica, redis-replica, sentinel2
-#   Árbitro:    entrada, monitor, sentinel3 (fica fora dos dois, para continuar quando um cai)
+#   Árbitro:    entrada, monitor, sentinel3, backup (fica fora dos dois, para continuar quando um cai)
+#   Arranque:   migracoes (atualiza o esquema da BD e termina)
 # Credenciais: ficheiro .env (criado pelo stack.cmd a partir do .env.example).
 
 name: trustvote
@@ -45,6 +46,10 @@ x-app: &app
   <<: [ *restart, *dns-rapido ]
   image: trustvote-backend
   build: ../Backend
+  # Só arranca depois de as migrações terem atualizado o esquema da BD
+  depends_on:
+    migracoes:
+      condition: service_completed_successfully
   healthcheck:
     test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)" ]
     interval: 5s
@@ -69,6 +74,10 @@ x-worker: &worker
   <<: [ *restart, *dns-rapido ]
   image: trustvote-backend
   command: [ "python", "-m", "app.worker" ]
+  # Só arranca depois de as migrações terem atualizado o esquema da BD
+  depends_on:
+    migracoes:
+      condition: service_completed_successfully
   healthcheck:
     # Saudável enquanto o ciclo (de líder ou de reserva) atualizar o estado.
     test: [ "CMD", "python", "-c", "import sys, time; t = int(open('/tmp/worker-estado').read().split()[1]); sys.exit(time.time() - t > 30)" ]
@@ -363,6 +372,45 @@ services:
     networks:
       trustvote-network:
         ipv4_address: 172.30.0.23
+
+  # Cópias automáticas da BD (docker/backup/backup.sh): a cada BACKUP_INTERVALO_HORAS faz
+  # uma cópia para Infraestrutura/backups, confirma-a restaurando-a num PostgreSQL temporário
+  # dentro deste contentor (sem tocar nos dados reais) e guarda só as últimas BACKUP_MANTER.
+  backup:
+    <<: [ *restart, *dns-rapido ]
+    image: postgres:16
+    container_name: trustvote-backup
+    entrypoint: [ "sh", "/opt/trustvote/backup.sh", "servico" ]
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+      # A réplica primeiro, para não pesar no primário; se não responder, o outro nó
+      BACKUP_NOS: db-replica db-primary
+      BACKUP_INTERVALO_HORAS: ${BACKUP_INTERVALO_HORAS:-6}
+      BACKUP_MANTER: ${BACKUP_MANTER:-28}
+    volumes:
+      - ./docker/backup/backup.sh:/opt/trustvote/backup.sh:ro
+      - ./backups:/backups
+    healthcheck:
+      # Saudável enquanto a última cópia boa for mais recente do que dois intervalos
+      test: [ "CMD", "sh", "/opt/trustvote/backup.sh", "saude" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 3m
+    networks: [ trustvote-network ]
+
+  # ===================== TAREFAS DE ARRANQUE =====================
+  # Aplica as migrações do esquema (Backend/basedados/migracoes, app/migracoes.py) e
+  # termina. As APIs e os workers só arrancam depois de ela terminar sem erros.
+  migracoes:
+    <<: *dns-rapido
+    image: trustvote-backend
+    container_name: trustvote-migracoes
+    command: [ "python", "-m", "app.migracoes" ]
+    restart: "no"
+    environment:
+      <<: *ligacoes
+    networks: [ trustvote-network ]
 
   # ===================== OPCIONAL (.\stack.cmd up -Dev) =====================
   # pgAdmin: http://127.0.0.1:5050, sem login, com os dois nós da BD já registados.
