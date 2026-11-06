@@ -1,7 +1,0 @@
-# Segredos e configuração local (o stack.ps1 cria o .env na primeira vez)
-.env
-.env.*
-!.env.example
-
-# Cópias da base de dados (demo/backup.py)
-backups/

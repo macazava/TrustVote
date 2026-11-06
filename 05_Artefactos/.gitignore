@@ -1,0 +1,27 @@
+# Ficheiros que não vão para o git em todo o 05_Artefactos (Backend, Frontend e Infraestrutura)
+
+# Segredos e configuração local (o stack.ps1 cria o .env na primeira vez)
+.env
+.env.*
+!.env.example
+
+# Python: ambiente virtual e caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node: pacotes do npm (só servem para compilar o Tailwind)
+node_modules/
+
+# Cópias da base de dados feitas pelo contentor backup
+Infraestrutura/backups/
+
+# Editores e sistema operativo
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+Desktop.ini
+.DS_Store
