@@ -101,17 +101,8 @@
     border-bottom: 1px solid var(--line);
 }
 
-.faq-list summary {
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
 .faq-list details p {
     max-width: 800px;
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.8;
 }
 
 .result-row {

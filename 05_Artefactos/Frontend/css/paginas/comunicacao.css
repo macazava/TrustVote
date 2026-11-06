@@ -56,7 +56,6 @@
 .press-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 6px;
 }
 
 .press-hero img {
@@ -114,7 +113,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 6px;
     background: var(--paper);
 }
 

@@ -16,7 +16,6 @@
     min-height: 46px;
     padding: 12px 14px;
     border: 1px solid #dcdcd6;
-    border-radius: 0;
     background: #f8f8f6;
     color: var(--ink);
     font-size: 14px;
@@ -99,17 +98,13 @@
 }
 
 .inline-form {
-    display: flex;
     flex-wrap: wrap;
-    align-items: end;
-    gap: 12px;
     margin-top: 18px;
     padding-top: 14px;
     border-top: 1px solid var(--line);
 }
 
 .inline-form .field-label {
-    flex: 1;
     min-width: 160px;
     margin: 0;
 }
