@@ -21,6 +21,7 @@ instâncias de aplicação definidas na infraestrutura Docker
 | Área | Descrição |
 |---|---|
 | Autenticação | Registo de utilizadores (com **número de estudante**) e login real com **JWT (HS256)** e passwords em **Argon2** |
+| Dois fatores | **TOTP (RFC 6238)** por utilizador: `POST /auth/totp/configurar`, `/ativar` e `/desativar` (segredo em `ut_totp_secret`, estado em `ut_totp_ativo`; lógica em [`app/security/totp.py`](app/security/totp.py)) |
 | Elegibilidade | **Auto-habilitação**: ao registar-se, o eleitor fica habilitado nas eleições ainda não encerradas (tabela `habilitacao`) |
 | Gestão de eleições | `eleicao`, `candidato` (por **órgão social** e **lista**), `ronda`, `ronda_candidato` e `habilitacao`, com o ciclo rascunho → agendada → em curso → encerrada |
 | Voto | Transação única em `participacao` + `voto`, um voto por volta, recibo verificável |
@@ -39,7 +40,6 @@ disponível"):
 
 | Rota | Área |
 |---|---|
-| `POST /auth/totp/configurar` · `POST /auth/totp/ativar` · `POST /auth/totp/desativar` | TOTP — `app/security/totp.py` está **vazio**; a dependência `pyotp` já está no `requirements.txt` |
 | `GET /auditoria` | auditoria (RF11) |
 | `GET /eleicoes/{id}/sondagem` · `POST /eleicoes/{id}/sondagem/respostas` | sondagem |
 | `GET /recibos` | listagem de recibos — **não deve ser implementada**: o servidor só guarda o hash, logo não pode listar os recibos de um eleitor (ver secção 9) |
@@ -124,7 +124,7 @@ Backend/
 │   ├── repositories/    # acesso à base de dados
 │   ├── services/        # regras de negócio
 │   ├── routers/         # rotas HTTP, agrupadas por prefixo
-│   ├── security/        # tokens.py (JWT), dependencias.py, totp.py (por implementar)
+│   ├── security/        # tokens.py (JWT), dependencias.py, totp.py (códigos TOTP)
 │   ├── testes/          # espaço para testes (teste_top.py ainda vazio)
 │   ├── database.py      # engine, sessão e Base declarativa
 │   └── erros.py         # erros de negócio -> respostas HTTP
@@ -409,20 +409,17 @@ Para a stack completa (nginx, duas instâncias, PostgreSQL e Redis), usa o
 
 Por ordem de prioridade sugerida:
 
-1. **TOTP** — expor `POST /auth/totp/configurar`, `/ativar` e `/desativar` (3 rotas, com
-   o schema e a dependência de administrador). A lógica de TOTP ainda não existe em
-   `app/security/totp.py`, mas `pyotp` já está instalado.
-2. **Auditoria** (RF11) — tabela + `GET /auditoria`. É um requisito de transparência
+1. **Auditoria** (RF11) — tabela + `GET /auditoria`. É um requisito de transparência
    para eleições.
-3. **Integridade do voto** — o `vot_hash` é hoje `SHA-256(recibo)`, o que serve para
+2. **Integridade do voto** — o `vot_hash` é hoje `SHA-256(recibo)`, o que serve para
    verificar o recibo mas **não** deteta uma alteração direta na BD. Passar a
    HMAC-SHA256 com um segredo de servidor acrescenta essa garantia.
-4. Gravação do **apuramento** na tabela `resultado` (RF09/RF10) e **fecho automático**
+3. Gravação do **apuramento** na tabela `resultado` (RF09/RF10) e **fecho automático**
    das rondas por `data_fim`.
-5. **Sondagem** e os *stubs* `reset-password` / `verify-password`.
-6. Decidir o destino de `GET /recibos` no frontend — por desenho, não deve existir.
-7. Acrescentar um `.env.example` ao backend (hoje só existe o `.env`).
-8. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
+4. **Sondagem** e os *stubs* `reset-password` / `verify-password`.
+5. Decidir o destino de `GET /recibos` no frontend — por desenho, não deve existir.
+6. Acrescentar um `.env.example` ao backend (hoje só existe o `.env`).
+7. Testes automatizados com `pytest` (a pasta `app/testes/` está por preencher).
 
 Antes de usar o sistema numa votação real, é necessário completar estas funcionalidades,
 definir o modelo de ameaça e rever especificamente as garantias de anonimato do voto.

@@ -3,11 +3,18 @@
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 
+from app.erros import DadosInvalidosError
 from app.models.utilizador import Utilizador
 from app.repositories import eleicao as repositorio_eleicao
 from app.repositories import habilitacao as repositorio_habilitacao
 from app.repositories import utilizador as repositorio
-from app.schemas.autenticacao import LoginPedido, UtilizadorCriar
+from app.schemas.autenticacao import (
+    LoginPedido,
+    TotpConfiguracaoResposta,
+    TotpEstadoResposta,
+    UtilizadorCriar,
+)
+from app.security import totp as totp_seguranca
 
 # Argon2 é o algoritmo recomendado pelo pwdlib.
 _hasher = PasswordHash.recommended()
@@ -68,3 +75,51 @@ def autenticar_utilizador(sessao: Session, dados: LoginPedido) -> Utilizador:
     ):
         raise CredenciaisInvalidasError("E-mail ou palavra-passe incorretos.")
     return utilizador
+
+
+def configurar_totp(
+    sessao: Session, utilizador: Utilizador
+) -> TotpConfiguracaoResposta:
+    """Gera um segredo novo e devolve o URI para a aplicação autenticadora.
+
+    O segredo fica guardado mas o segundo fator só passa a ser exigido depois de
+    o utilizador confirmar um código em `ativar_totp`.
+    """
+    segredo = totp_seguranca.gerar_segredo()
+    repositorio.guardar_totp(sessao, utilizador, segredo, ativo=False)
+    return TotpConfiguracaoResposta(
+        segredo=segredo,
+        uri=totp_seguranca.montar_uri(segredo, utilizador.email),
+    )
+
+
+def ativar_totp(
+    sessao: Session, utilizador: Utilizador, codigo: str
+) -> TotpEstadoResposta:
+    """Confirma o código da aplicação e passa a exigir o segundo fator."""
+    if not utilizador.totp_secret:
+        raise DadosInvalidosError(
+            "Comece por configurar a autenticação de dois fatores."
+        )
+
+    if not totp_seguranca.verificar_codigo(utilizador.totp_secret, codigo):
+        raise DadosInvalidosError("Código inválido. Tente novamente.")
+
+    repositorio.guardar_totp(sessao, utilizador, utilizador.totp_secret, ativo=True)
+    return TotpEstadoResposta(totp_ativo=True)
+
+
+def desativar_totp(
+    sessao: Session, utilizador: Utilizador, codigo: str
+) -> TotpEstadoResposta:
+    """Confirma o código e deixa de exigir o segundo fator."""
+    if not utilizador.totp_ativo or not utilizador.totp_secret:
+        raise DadosInvalidosError(
+            "A autenticação de dois fatores não está ativa."
+        )
+
+    if not totp_seguranca.verificar_codigo(utilizador.totp_secret, codigo):
+        raise DadosInvalidosError("Código inválido. Tente novamente.")
+
+    repositorio.guardar_totp(sessao, utilizador, None, ativo=False)
+    return TotpEstadoResposta(totp_ativo=False)

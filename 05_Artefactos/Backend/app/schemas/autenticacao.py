@@ -42,8 +42,7 @@ class UtilizadorDetalhe(UtilizadorResposta):
 
     perfil: str
     ativo: bool
-    # A autenticação de dois fatores ainda não está implementada.
-    totp_ativo: bool = False
+    totp_ativo: bool
 
     @computed_field
     @property
@@ -76,3 +75,22 @@ class TokenResposta(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: int
+
+
+class TotpCodigoPedido(BaseModel):
+    """Código de 6 dígitos da aplicação autenticadora."""
+
+    codigo: str = Field(pattern=r"^[0-9]{6}$")
+
+
+class TotpConfiguracaoResposta(BaseModel):
+    """Segredo e URI otpauth:// devolvidos ao iniciar a configuração do TOTP."""
+
+    segredo: str
+    uri: str
+
+
+class TotpEstadoResposta(BaseModel):
+    """Estado da autenticação de dois fatores depois de ativar ou desativar."""
+
+    totp_ativo: bool

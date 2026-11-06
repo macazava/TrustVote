@@ -10,6 +10,8 @@ CREATE TABLE utilizador (
     ut_perfil VARCHAR(20) NOT NULL DEFAULT 'eleitor',
     ut_ativo BOOLEAN DEFAULT TRUE,
     ut_datareg TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    ut_totp_secret VARCHAR(64),
+    ut_totp_ativo BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador')),
     CONSTRAINT ut_ck_num_estudante CHECK (ut_num_estudante ~ '^[A-Za-z0-9]{4,20}$')
 );

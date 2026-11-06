@@ -34,3 +34,9 @@ class Utilizador(Base):
     criado_em: Mapped[datetime] = mapped_column(
         "ut_datareg", DateTime(timezone=True), server_default=func.now()
     )
+    # Segredo da autenticação de dois fatores: só existe depois de o utilizador
+    # começar a configuração e nunca é devolvido pela API.
+    totp_secret: Mapped[str | None] = mapped_column("ut_totp_secret", String(64))
+    totp_ativo: Mapped[bool] = mapped_column(
+        "ut_totp_ativo", Boolean, server_default=text("FALSE")
+    )
