@@ -24,6 +24,7 @@ from sqlalchemy import create_engine, text  # noqa: E402
 from sqlalchemy.exc import OperationalError  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
 
+from app import migracoes  # noqa: E402
 from app.database import DATABASE_URL, obter_sessao, obter_sessao_leitura  # noqa: E402
 from main import app  # noqa: E402
 
@@ -55,6 +56,8 @@ def motor():
         conexao.commit()
     finally:
         conexao.close()
+    # Depois as migrações, como no Docker: os testes correm sobre o esquema real e atual
+    migracoes.aplicar(motor, chave=migracoes.CHAVE_LOCK + 9_000)
     yield motor
     motor.dispose()
     with base.begin() as conexao:
@@ -66,7 +69,7 @@ def motor():
 def Sessao(motor):
     with motor.begin() as conexao:
         tabelas = conexao.scalars(
-            text("SELECT tablename FROM pg_tables WHERE schemaname = :e"), {"e": ESQUEMA}
+            text("SELECT tablename FROM pg_tables WHERE schemaname = :e AND tablename <> 'schema_migracao'"), {"e": ESQUEMA}
         ).all()
         conexao.execute(text(f"TRUNCATE {', '.join(tabelas)} RESTART IDENTITY CASCADE"))
     return sessionmaker(bind=motor, autoflush=False)

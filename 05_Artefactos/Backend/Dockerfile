@@ -11,6 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt \
 
 COPY --chown=appuser:appuser main.py .
 COPY --chown=appuser:appuser app ./app
+# Migrações do esquema (python -m app.migracoes, serviço "migracoes" do compose.yaml)
+COPY --chown=appuser:appuser basedados/migracoes ./basedados/migracoes
 
 USER appuser
 
