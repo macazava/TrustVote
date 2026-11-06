@@ -100,7 +100,7 @@ Servem para mostrar e testar a queda de um servidor inteiro (secção 9).
 ├── compose.yaml                      # toda a infraestrutura: Servidor 1, Servidor 2 e árbitro
 ├── stack.cmd / stack.ps1             # arranca/para tudo pela ordem certa (usar o stack.cmd)
 ├── .env.example                      # variáveis necessárias (valores ilustrativos)
-├── demo/  testes/  backups/          # guião, dados e estado da demo · testes de falha · cópias
+├── demo/  backups/                  # guião, dados e estado da demo · cópias de segurança
 └── docker/
     ├── nginx/default.conf.template         # site, API, upstream, deteção de falhas, logs
     ├── monitor/monitor.py                  # failover da BD
@@ -298,19 +298,11 @@ são **apagados** e o nó é clonado como réplica; senão recusa arrancar (`REC
 linha temporal do outro nó é lida do ficheiro de WAL em uso, que muda logo na promoção (a do
 último checkpoint só mudava no checkpoint seguinte, o que fazia o nó recusar várias vezes).
 
-### Testes de falha
-Com a stack e os dados de demonstração a correr (`.\stack.cmd up`):
-```powershell
-.\.venv\Scripts\python.exe Infraestrutura\testes\teste_falhas.py bd-kill 300
-```
-Cenários: `api-kill`, `api-pause`, `bd-kill`, `bd-pause` e `replica-kill`. O teste falha se os votos
-guardados não coincidirem com os confirmados nos dois nós. Cria dados de teste.
 
 ### Backups
-```powershell
-.\.venv\Scripts\python.exe Infraestrutura\demo\backup.py
-```
-Faz uma cópia com `pg_dump` para `Infraestrutura/backups/` e confirma-a numa BD temporária.
+O contentor `backup` faz uma cópia com `pg_dump` (da réplica; se não houver, do primário) a cada
+`BACKUP_INTERVALO_HORAS` (6 h), confirma-a restaurando-a numa BD temporária e guarda as últimas
+`BACKUP_MANTER` (28) em `Infraestrutura/backups/`. Cópia imediata: `.\stack.cmd backup`.
 
 ### Limitações conhecidas
 - **Um único PC:** os "servidores" são grupos de contentores na mesma máquina.
@@ -359,45 +351,3 @@ Faz uma cópia com `pg_dump` para `Infraestrutura/backups/` e confirma-a numa BD
   de fundo é dos workers.
 - Os nginx encaminham `/api/` sem o prefixo: `/api/eleicoes` chega à API como `/eleicoes`.
 - As instâncias são stateless: os tokens são JWT, não há sessão em memória.
-
----
-
-## 11. Resultados dos testes
-
-**04/11/2026 — queda de um servidor inteiro, como na apresentação** (Redis com Sentinel):
-
-Com o servidor parado (`.\stack.cmd parar N`), tudo feito pelo outro nginx:
-criar conta, login do administrador, habilitar, login e voto de 3 eleitores,
-verificar recibo, voto repetido recusado, logout com o token revogado, bloqueio ao 6.º login
-errado, encerrar a votação e ver os resultados.
-
-| Cenário | Resultado |
-|---|---|
-| Servidor 1 parado (BD primária e Redis principal nele) | ✅ todas as verificações; BD e Redis promovidos; API pronta ~11 s depois; volta apurada pela fila em 0,3 s |
-| Servidor 2 parado (com os nós principais nele) | ✅ idem; volta apurada em 0,2 s |
-| Regresso do servidor | ✅ à primeira; BD volta como réplica síncrona, Redis como réplica, worker principal volta a liderar |
-| Pedido apanhado no instante da queda | ✅ o mais lento demorou 1,5 s (antes do ajuste ao cliente dos Sentinels chegava a ~10 s e o nginx dava `504`) |
-
-**04/11/2026 — dois servidores e worker** (Docker Engine 29.8, neste PC):
-
-| Teste | Resultado |
-|---|---|
-| Fluxo completo pela API (42 verificações), pelo Nginx 1 e pelo Nginx 2 | ✅ sem falhas; volta apurada pelo worker 0,1 s depois de encerrada |
-| Worker principal morto | ✅ reserva assume e apura; devolve a liderança quando o principal volta |
-| Redis parado (antes do Sentinel) | ✅ API responde em centésimas (só o 1.º pedido espera ~1 s); volta apurada na verificação periódica |
-| Servidor 1 inteiro parado | ✅ réplica promovida; votação e apuramento pelo Servidor 2; ao voltar, o antigo primário é reconstruído como réplica síncrona, sem recusas |
-| Servidor 2 inteiro parado (com o primário nele) | ✅ idem, no sentido inverso |
-| `teste_falhas.py api-kill 60` | ✅ 60/60 votos nos dois nós |
-| `teste_falhas.py bd-kill 100` (2×, ida e volta) | ✅ 100/100 nos dois nós; 6–7,6 s com `503`; 6 eleitores repetiram |
-
-**31/10/2026 — falhas com a aplicação real** (300 eleitores, arquitetura anterior):
-
-| Cenário | Votos guardados | Efeito nos eleitores |
-|---|---|---|
-| `bd-kill` | 300/300 nos dois nós | 7,6 s com `503`; 6 eleitores repetiram |
-| `bd-pause` | 300/300 nos dois nós | 9,8 s com `504`/`502`; 6 eleitores repetiram |
-| `replica-kill` | 300/300 nos dois nós | Sem erros |
-| `api-kill` | 300/300 nos dois nós | Sem erros |
-| `api-pause` | 300/300 nos dois nós | 7 eleitores receberam `504` ao fim de 4 s e repetiram |
-
-A repetição de um voto é segura, porque a restrição única recusa o segundo voto com `409`.

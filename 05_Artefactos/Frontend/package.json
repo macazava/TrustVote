@@ -1,10 +1,8 @@
 {
   "name": "trustvote-frontend",
   "private": true,
-  "description": "Frontend do TrustVote: testes e compilação do CSS do Tailwind (o site em si não precisa de Node).",
+  "description": "Frontend do TrustVote: compilação do CSS do Tailwind (o site em si não precisa de Node).",
   "scripts": {
-    "test": "node --test \"testes/unidade/*.test.mjs\"",
-    "test:navegador": "node testes/navegador/executar.mjs",
     "css": "tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify",
     "css:watch": "tailwindcss -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --watch"
   },

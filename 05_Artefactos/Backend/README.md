@@ -37,7 +37,6 @@ instâncias de aplicação e os workers definidos na infraestrutura Docker
 | Erros | Exceções de negócio traduzidas automaticamente em `400` / `403` / `404` / `409` / `429` |
 | Healthcheck | `GET /health` — devolve `503` sem acesso à BD; usado pelo Compose |
 | Failover | `DATABASE_HOST` aceita vários nós e usa o que aceita escritas; BD indisponível dá `503` |
-| Testes | `pytest` em [`app/testes/`](app/testes), num esquema isolado da BD de desenvolvimento |
 
 ---
 
@@ -112,20 +111,19 @@ Backend/
 │   ├── services/        # regras de negócio (apuramento.py, auditoria.py, sondagem.py, ...)
 │   ├── routers/         # rotas HTTP, agrupadas por prefixo
 │   ├── security/        # tokens.py (JWT), integridade.py (selo dos votos), dependencias.py
-│   ├── testes/          # testes pytest (conftest.py prepara um esquema isolado)
 │   ├── cache.py         # Redis
 │   ├── tarefas.py       # tarefas automáticas
 │   ├── worker.py        # worker de apuramento (python -m app.worker)
+│   ├── migracoes.py     # aplica as migrações (python -m app.migracoes)
 │   ├── database.py      # engines, sessões e Base declarativa
 │   └── erros.py         # erros de negócio -> respostas HTTP
 ├── basedados/
-│   └── trustvote.sql    # criação da BD num só ficheiro: contas, replicação e tabelas
+│   ├── trustvote.sql    # criação da BD num só ficheiro: contas, replicação e tabelas
+│   └── migracoes/       # alterações ao esquema numa BD já criada (001_…, 002_…)
 ├── .env.example         # modelo do .env (o .env não vai para o git)
 ├── Dockerfile
 ├── main.py              # cria a app FastAPI, regista routers e arranca as tarefas
-├── pytest.ini
-├── requirements.txt
-└── requirements-dev.txt # + pytest e httpx
+└── requirements.txt
 ```
 
 ---
@@ -175,7 +173,7 @@ propósito — o SQL é a fonte única do esquema. O ficheiro tem três partes:
 1. **Contas:** `trustvote` (usada pela API e dona das tabelas) e o utilizador de replicação,
    com as passwords do `.env`.
 2. **Replicação:** autoriza a réplica a ligar-se a partir da rede Docker (`pg_hba.conf`).
-3. **Tabelas:** as 13 tabelas, criadas já como `trustvote` (`SET ROLE`). Os testes usam só esta parte.
+3. **Tabelas:** as 13 tabelas, criadas já como `trustvote` (`SET ROLE`).
 
 | Tabela | Conteúdo |
 |---|---|
@@ -194,19 +192,13 @@ propósito — o SQL é a fonte única do esquema. O ficheiro tem três partes:
 **Importante:** o PostgreSQL só executa este ficheiro **na primeira inicialização**, quando
 o volume de dados está vazio. Para recriar a base de dados do zero (apaga os dados):
 `.\stack.cmd down`, apagar os volumes `trustvote_pg-primary-data` e `trustvote_pg-replica-data`,
-e `.\stack.cmd up`. Uma alteração ao esquema numa base já criada faz-se com `ALTER TABLE` à mão,
-e tem de ser acrescentada também a este ficheiro.
+e `.\stack.cmd up`.
 
-### Testes
+**Alterações ao esquema** numa base já criada: um ficheiro novo em `basedados/migracoes/`
+(`002_o_que_muda.sql`, …). O contentor `migracoes` aplica-o automaticamente no arranque, antes da
+API, uma só vez e numa transação (registo na tabela `schema_migracao`); à mão:
+`.\stack.cmd migrar`.
 
-```powershell
-cd Backend
-..\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
-..\.venv\Scripts\python.exe -m pytest
-```
-
-Usam a BD do `.env` (com a stack arrancada com `.\stack.cmd up -Dev`), mas num esquema próprio
-(`teste_pytest`) criado e apagado pelos testes; sem BD, são saltados.
 
 ---
 

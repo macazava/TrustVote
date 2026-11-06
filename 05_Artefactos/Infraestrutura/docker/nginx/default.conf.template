@@ -45,7 +45,7 @@ server {
         try_files $uri =404;
     }
     # Ficheiros de desenvolvimento da pasta Frontend: não fazem parte do site
-    location ~ ^/(testes|node_modules)/|^/(package(-lock)?\.json|README\.md)$ {
+    location ~ ^/node_modules/|^/(package(-lock)?\.json|README\.md)$ {
         return 404;
     }
 
@@ -73,7 +73,7 @@ server {
         # Os dados mudam a cada pedido: o browser nunca guarda respostas da API em cache
         add_header Cache-Control "no-store" always;
 
-        # Permite ver que nginx e que instância responderam (testes de balanceamento)
+        # Permite ver que nginx e que instância responderam (balanceamento)
         add_header X-Nginx "${NGINX_NOME}" always;
         add_header X-Upstream-Server $upstream_addr always;
     }
