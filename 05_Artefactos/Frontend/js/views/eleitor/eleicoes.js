@@ -16,13 +16,13 @@
         : escapeHtml(e.periodo);
 
   const statusLine = (e) =>
-    `<span class="status-pill rounded-full status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
+    `<span class="status-pill status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
 
   // Botão principal: votar, ver o recibo ou votação fechada
   function voteAction(e, label = `Iniciar votação ${TV.icon("arrow-right")}`) {
-    if (e.votou) return `<button class="button rounded-xl button-outline" type="button" data-go="receipts">Ver recibo ${TV.icon("arrow-right")}</button>`;
-    if (!e.aberta) return '<button class="button rounded-xl button-outline" type="button" disabled>Votação fechada</button>';
-    return `<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-vote="${e.id}">${label}</button>`;
+    if (e.votou) return `<button class="button button-outline" type="button" data-go="receipts">Ver recibo ${TV.icon("arrow-right")}</button>`;
+    if (!e.aberta) return '<button class="button button-outline" type="button" disabled>Votação fechada</button>';
+    return `<button class="button button-primary" type="button" data-vote="${e.id}">${label}</button>`;
   }
 
   // Identidade → Votação → Recibo
@@ -40,7 +40,7 @@
 
   function electionCard(e, withDetails) {
     return `
-      <article class="election-card rounded-2xl overflow-hidden shadow-soft">
+      <article class="election-card overflow-hidden">
         <div class="election-card-top">${statusLine(e)}<span>${timeInfo(e)}</span></div>
         <div class="election-card-body">
           <span class="round-mark">${TV.icon("vote")}</span>
@@ -50,7 +50,7 @@
             <p>${escapeHtml(e.descricao || `${e.periodo} · ${e.voltaLabel}`)}</p>
           </div>
           <div class="election-card-actions">
-            ${withDetails ? `<button class="button rounded-xl button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
+            ${withDetails ? `<button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
             ${voteAction(e)}
           </div>
         </div>
@@ -74,13 +74,13 @@
   }
 
   const emptyCard = (titulo, texto) =>
-    `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${ui.empty(titulo, texto)}</article>`;
+    `<article class="dash-card">${ui.empty(titulo, texto)}</article>`;
 
   // ===== Separador "Eleições": ativas em cima, concluídas em baixo =====
   const electionsPage = (ativas, concluidas) => `
     ${head("ELEIÇÕES ACADÉMICAS", "As suas eleições", "Consulte as eleições ativas, agendadas e anteriores.")}
     ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : emptyCard("Sem eleições ativas", "Ainda não tem nenhuma eleição a decorrer em que possa votar.")}
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <p class="eyebrow">HISTÓRICO</p>
       <h2>Eleições concluídas</h2>
       ${concluidas.length
@@ -96,13 +96,13 @@
 
   const detailsPage = (e) => `
     ${head(`ELEIÇÃO · ${e.ano}`, escapeHtml(e.titulo), "Informação completa sobre o ato eleitoral.")}
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <p class="eyebrow"><i></i> ${e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</p>
       <h2>Dados da eleição</h2>
       <label class="field-label">Período de votação<input value="${escapeHtml(e.periodo)}" readonly></label>
       <label class="field-label">Ronda<input value="${escapeHtml(e.voltaLabel)}" readonly></label>
       <label class="field-label">Candidaturas<input value="${escapeHtml(e.candidatosRonda.map((c) => c.nome).join(" · ") || "—")}" readonly></label>
-      ${e.descricao ? `<p class="notice rounded-xl"><b>Sobre esta eleição</b>${escapeHtml(e.descricao)}</p>` : ""}
+      ${e.descricao ? `<p class="notice"><b>Sobre esta eleição</b>${escapeHtml(e.descricao)}</p>` : ""}
       <div class="form-actions" style="justify-content:flex-start">
         ${voteAction(e, `Abrir boletim digital ${TV.icon("arrow-right")}`)}
         <button class="link-button" type="button" data-back>${TV.icon("arrow-left")} Voltar às eleições</button>
@@ -113,7 +113,7 @@
   // d = { e, config, fimSessao }
   const helpPage = ({ e, config, fimSessao }) => `
     ${head("APOIO AO ELEITOR", "Como podemos ajudar?")}
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <p class="eyebrow">A SUA VOTAÇÃO</p>
       ${e
       ? `<h2>${escapeHtml(e.titulo)}</h2>
@@ -122,7 +122,7 @@
       : `<h2>Sem eleições ativas</h2>
          <p>Não tem nenhuma eleição a decorrer ou agendada em que possa votar. Se acha que deveria ter, fale com a comissão eleitoral académica.</p>`}
     </article>
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <p class="eyebrow">SESSÃO E SEGURANÇA</p>
       <h2>Regras desta plataforma</h2>
       <ul class="profile-list">
@@ -131,10 +131,10 @@
         ${config ? `<li class="is-no">Depois de ${config.login_tentativas} tentativas de entrada falhadas, a conta fica bloqueada durante ${config.login_bloqueio_minutos} minutos.</li>` : ""}
       </ul>
     </article>
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <h2>Dúvidas sobre a votação</h2>
       <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
-      <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes ${TV.icon("arrow-right")}</a>
+      <a class="button button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes ${TV.icon("arrow-right")}</a>
     </article>`;
 
   Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });

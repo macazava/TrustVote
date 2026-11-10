@@ -7,11 +7,11 @@
   const { escapeHtml, percent, dateTime, period } = TV.format;
   const { head, cardHead, pill, okLabel } = TV.blocks;
 
-  const card = (conteudo) => `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">${conteudo}</article>`;
+  const card = (conteudo) => `<article class="dash-card">${conteudo}</article>`;
 
   // ===== Lista de eleições =====
   const electionRow = (e, stats) => `
-    <div class="election-row rounded-2xl transition hover:shadow-soft${e.estado === "em_curso" ? "" : " is-muted"}">
+    <div class="election-row${e.estado === "em_curso" ? "" : " is-muted"}">
       <span class="round-mark">${TV.icon("vote")}</span>
       <div>
         ${pill(e.estadoLabel, e.estado === "rascunho")}
@@ -19,11 +19,11 @@
         <small>${escapeHtml(e.periodo)} · ${(e.candidatos || []).filter((c) => c.ativo).length} candidatos</small>
       </div>
       <div class="turnout"><b>${stats.data ? percent(stats.data.participacao) : "—"}</b><small>participação</small></div>
-      <button class="button rounded-xl button-outline" type="button" data-edit="${e.id}">${e.estado === "rascunho" ? "Configurar" : "Gerir"}</button>
+      <button class="button button-outline" type="button" data-edit="${e.id}">${e.estado === "rascunho" ? "Configurar" : "Gerir"}</button>
     </div>`;
 
   const electionList = (detalhes, stats) => `
-    ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", `<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-new>Nova eleição ${TV.icon("arrow-right")}</button>`)}
+    ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", `<button class="button button-primary" type="button" data-new>Nova eleição ${TV.icon("arrow-right")}</button>`)}
     ${card(`
       ${cardHead("GESTÃO ELEITORAL", "Eleições configuradas")}
       ${detalhes.length
@@ -51,9 +51,9 @@
           <label class="field-label">Descrição<textarea name="descricao" rows="3"${dis}>${escapeHtml(e ? e.descricao || "" : "")}</textarea></label>
           <p class="form-message" role="status"></p>
           <div class="form-actions">
-            ${e && e.estado === "rascunho" ? '<button class="button rounded-xl button-outline" type="button" data-remove>Apagar eleição</button>' : ""}
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">${e ? "Guardar alterações" : "Guardar eleição"}</button>
-            <button class="button rounded-xl button-light" type="button" data-back>Cancelar</button>
+            ${e && e.estado === "rascunho" ? '<button class="button button-outline" type="button" data-remove>Apagar eleição</button>' : ""}
+            <button class="button button-primary" type="submit">${e ? "Guardar alterações" : "Guardar eleição"}</button>
+            <button class="button button-light" type="button" data-back>Cancelar</button>
           </div>
         </form>`)}
       ${e ? '<div data-candidates-card></div><div data-voters-card></div><div data-rounds-card></div>' : ""}`;
@@ -81,7 +81,7 @@
     return card(`
       ${cardHead("CANDIDATURAS", `Candidatos · ${lista.length}`)}
       ${lista.length
-        ? `<div class="table-scroll rounded-xl"><table>
+        ? `<div class="table-scroll"><table>
             <thead><tr><th>Opção</th><th>Candidato</th><th>Lista</th><th>Estado</th><th>Ações</th></tr></thead>
             <tbody>${lista.map((c, i) => candidateRow(c, i, editavel)).join("")}</tbody></table></div>`
         : '<p class="muted">Ainda não existem candidatos. São precisos pelo menos 2 para agendar.</p>'}
@@ -96,19 +96,19 @@
             <label class="field-label">Curso<input name="curso" maxlength="150"></label>
             <label class="field-label">Ano<input name="ano" type="number" min="1" max="6"></label>
             <label class="field-label">Descrição<input name="descricao" maxlength="5000"></label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar ${TV.icon("arrow-right")}</button>
-            <button class="button rounded-xl button-light" type="button" data-cancel-cand hidden>Cancelar</button>
+            <button class="button button-primary" type="submit">Adicionar ${TV.icon("arrow-right")}</button>
+            <button class="button button-light" type="button" data-cancel-cand hidden>Cancelar</button>
           </form>`
         : '<p class="muted">Só é possível alterar os candidatos antes de a votação começar.</p>'}`);
   }
 
   // ===== Cartão do caderno eleitoral (quem pode votar) =====
   function votersCard(habilitados, livres) {
-    const acoes = `<div class="row-actions">${habilitados.length ? '<button type="button" data-voter-csv>Exportar CSV</button>' : ""}${livres.length ? `<button class="button rounded-xl button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : ""}</div>`;
+    const acoes = `<div class="row-actions">${habilitados.length ? '<button type="button" data-voter-csv>Exportar CSV</button>' : ""}${livres.length ? `<button class="button button-outline" type="button" data-voter-all>Habilitar todos (${livres.length})</button>` : ""}</div>`;
     return card(`
       ${cardHead("CADERNO ELEITORAL", `Eleitores habilitados · ${habilitados.length}`, acoes)}
       ${habilitados.length
-        ? `<div class="table-scroll rounded-xl voter-picker"><table>
+        ? `<div class="table-scroll voter-picker"><table>
             <thead><tr><th>Eleitor</th><th>E-mail</th><th>Habilitado em</th><th></th></tr></thead>
             <tbody>${habilitados
           .map(
@@ -126,7 +126,7 @@
                 ${livres.map((u) => `<option value="${u.id}">${escapeHtml(u.nome)} · ${escapeHtml(u.email)}</option>`).join("")}
               </select>
             </label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Habilitar ${TV.icon("arrow-right")}</button>
+            <button class="button button-primary" type="submit">Habilitar ${TV.icon("arrow-right")}</button>
           </form>`
         : ""}`);
   }
@@ -145,17 +145,17 @@
       ${cardHead("CALENDÁRIO", "Rondas")}
       <p class="muted">Uma eleição agendada começa sozinha à hora de início da 1.ª volta. Cada volta fecha sozinha à hora de fim e os votos são logo apurados. Depois da 2.ª volta, a eleição fica encerrada.</p>
       ${rondas.length
-        ? `<div class="table-scroll rounded-xl"><table>
+        ? `<div class="table-scroll"><table>
             <thead><tr><th>Ronda</th><th>Período</th><th>Estado</th><th>Ações</th></tr></thead>
             <tbody>${rondas.map((r) => roundRow(e, r)).join("")}</tbody></table></div>`
         : '<p class="muted">Guarde as datas da eleição para criar a 1.ª volta.</p>'}
       ${podeSegunda
         ? `<form class="inline-form" data-second-round>
             <p class="muted">Criar 2.ª volta: escolha exatamente 2 candidatos.</p>
-            ${ativos.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
+            ${ativos.map((c) => `<label class="radio-line"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
             <label class="field-label">Início<input type="datetime-local" name="inicio" required></label>
             <label class="field-label">Fim<input type="datetime-local" name="fim" required></label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Criar 2.ª volta ${TV.icon("arrow-right")}</button>
+            <button class="button button-primary" type="submit">Criar 2.ª volta ${TV.icon("arrow-right")}</button>
           </form>`
         : ""}`);
 

@@ -11,15 +11,15 @@
 
     error: (error, retry = true) => `
       <div class="state-box">
-        <span class="large-icon rounded-xl">${TV.icon("circle-alert")}</span>
+        <span class="large-icon">${TV.icon("circle-alert")}</span>
         <h3>Não foi possível carregar</h3>
         <p>${escapeHtml((error && error.message) || error)}</p>
-        ${retry ? '<button class="button rounded-xl button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
+        ${retry ? '<button class="button button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
       </div>`,
 
     empty: (title, text = "") => `
       <div class="state-box">
-        <span class="large-icon rounded-xl">${TV.icon("inbox")}</span>
+        <span class="large-icon">${TV.icon("inbox")}</span>
         <h3>${escapeHtml(title)}</h3>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
       </div>`,
@@ -49,14 +49,14 @@
     confirm({ title, text = "", ok = "Confirmar", danger = false }) {
       return new Promise((resolve) => {
         const dialog = document.createElement("dialog");
-        dialog.className = "confirm-dialog rounded-2xl";
+        dialog.className = "confirm-dialog";
         dialog.innerHTML = `
           <form method="dialog">
             <h2>${escapeHtml(title)}</h2>
             ${text ? `<p class="muted">${escapeHtml(text)}</p>` : ""}
             <div class="form-actions">
-              <button class="button rounded-xl button-light" value="cancelar">Cancelar</button>
-              <button class="button rounded-xl ${danger ? "button-danger" : "button-primary"}" value="ok">${escapeHtml(ok)}</button>
+              <button class="button button-light" value="cancelar">Cancelar</button>
+              <button class="button ${danger ? "button-danger" : "button-primary"}" value="ok">${escapeHtml(ok)}</button>
             </div>
           </form>`;
         document.body.appendChild(dialog);
@@ -112,7 +112,7 @@
   const cardHead = (eyebrow, title, extra = "") =>
     `<div class="card-head"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div>${extra}</div>`;
 
-  const pill = (text, warn = false) => `<span class="status-pill rounded-full${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
+  const pill = (text, warn = false) => `<span class="status-pill${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
 
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${TV.icon(ok ? "check" : "circle-alert")} ${escapeHtml(text)}</span>`;
 

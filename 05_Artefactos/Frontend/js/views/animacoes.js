@@ -121,10 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const y = (event.clientY - box.top) / box.height - 0.5;
       // Cartões grandes inclinam menos
       const max = box.width > 520 ? 2.5 : 5;
-      // Mantém a subida que alguns cartões já têm ao passar o cursor
-      const lift = card.classList.contains("hover:-translate-y-0.5") ? " translateY(-2px)" : "";
       card.style.transition = "transform .2s ease-out, box-shadow .3s";
-      card.style.transform = `perspective(900px)${lift} rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg)`;
+      card.style.transform = `perspective(900px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg)`;
       card.dataset.tilt = "";
     });
     document.addEventListener("pointerout", (event) => {

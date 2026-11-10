@@ -10,8 +10,8 @@
   const { statusLabels } = TV.elections;
 
   const metricCard = (titulo, destaque, valor, extra) => `
-    <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
-      <span class="check-box rounded-lg">${TV.icon("check")}</span>
+    <article class="metric-card">
+      <span class="check-box">${TV.icon("check")}</span>
       <small>${titulo}</small><em>${destaque}</em>
       <b>${valor}</b>
       ${extra}
@@ -50,17 +50,17 @@
     )}
       </div>
       <div class="overview-grid grid-cols-1 xl:grid-cols-[1.6fr_1fr]">
-        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-          ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag rounded-lg">${escapeHtml(eleicao.titulo)}</span>` : "")}
-          ${serie.length ? lineChart(serie) : `<div class="empty-box rounded-xl">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
+        <article class="dash-card">
+          ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag">${escapeHtml(eleicao.titulo)}</span>` : "")}
+          ${serie.length ? lineChart(serie) : `<div class="empty-box">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
         </article>
-        <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+        <article class="dash-card">
           ${cardHead("RESULTADOS PROVISÓRIOS", "Votos por candidato")}
           ${rondaAtual && rondaAtual.candidatos.length
         ? barChart(resultRows(rondaAtual, eleicao.candidatos).slice(0, 5), "Votos por candidato na eleição em curso")
-        : `<div class="empty-box rounded-xl">${escapeHtml(resultados.error ? resultados.error.message : "Sem resultados por enquanto.")}</div>`
+        : `<div class="empty-box">${escapeHtml(resultados.error ? resultados.error.message : "Sem resultados por enquanto.")}</div>`
       }
-          <button class="button rounded-xl button-outline" type="button" data-go="results">Ver todos os resultados ${TV.icon("arrow-right")}</button>
+          <button class="button button-outline" type="button" data-go="results">Ver todos os resultados ${TV.icon("arrow-right")}</button>
         </article>
       </div>`;
   }

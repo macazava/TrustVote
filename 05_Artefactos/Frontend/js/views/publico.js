@@ -32,7 +32,7 @@
         <h2>${escapeHtml(e.titulo)}</h2>
         <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
       </div>
-      <span class="status-pill rounded-full"><i></i> ${statusLabels[e.estado] || e.estado}</span>
+      <span class="status-pill"><i></i> ${statusLabels[e.estado] || e.estado}</span>
     </div>`;
 
   // ===== Listas: um cartão por lista, com candidatos e propostas =====
@@ -44,7 +44,7 @@
         <h2>${escapeHtml(nome)}</h2>
         <p><b>Candidatos:</b> ${escapeHtml(membros.map((c) => c.nome).join(", "))}</p>
         ${propostas.length ? `<ul class="candidate-proposals">${propostas.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>` : ""}
-        <span class="status-pill rounded-full">${escapeHtml(tituloEleicao.toUpperCase())}</span>
+        <span class="status-pill">${escapeHtml(tituloEleicao.toUpperCase())}</span>
       </article>`;
   };
 
@@ -97,7 +97,7 @@
 
   // ===== Resultados =====
   const turnoutCard = (dados) => `
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <p class="eyebrow">PARTICIPAÇÃO EM TEMPO REAL</p>
       <h2>${escapeHtml(dados.eleicao.titulo)}</h2>
       <div class="facts grid-cols-2 sm:grid-cols-3">
@@ -108,10 +108,10 @@
     </article>`;
 
   const loginForResults = () => `
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+    <article class="dash-card">
       <h2>Resultados detalhados</h2>
       <p>Os resultados por candidatura estão disponíveis na área reservada.</p>
-      <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
+      <a class="button button-primary" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
     </article>`;
 
   function resultsCard(eleicao, rondas, error) {
@@ -121,10 +121,10 @@
         .map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`)
         .join("");
     return `
-      <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
+      <article class="dash-card">
         <div class="heading-row">
           <h2>${escapeHtml(eleicao.titulo)}</h2>
-          <span class="status-pill rounded-full"><i></i> ${statusLabels[eleicao.estado] || eleicao.estado}</span>
+          <span class="status-pill"><i></i> ${statusLabels[eleicao.estado] || eleicao.estado}</span>
         </div>
         ${body}
       </article>`;

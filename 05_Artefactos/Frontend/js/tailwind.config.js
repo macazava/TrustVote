@@ -1,5 +1,9 @@
-/* Configuração do Tailwind: cores e letra do TrustVote
-   Depois de mudar classes Tailwind no HTML ou no JS, correr "npm run css" na pasta Frontend para gerar css/tailwind.css */
+/* Configuração do Tailwind: só grelha, espaçamento entre colunas e breakpoints.
+   Cores, letra, cantos e sombras NÃO vivem aqui: estão em css/base/variaveis.css (design tokens)
+   e são aplicados pelos componentes em css/componentes/. Assim há uma única fonte de verdade.
+
+   Depois de mudar classes de grelha no HTML ou no JS, gerar de novo css/tailwind.css (na pasta Frontend):
+     npx tailwindcss@3.4.17 -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify */
 module.exports = {
   // Ficheiros onde o Tailwind procura as classes usadas
   content: ["./pages/**/*.html", "./js/**/*.js"],
@@ -7,32 +11,9 @@ module.exports = {
   corePlugins: { preflight: false, container: false },
   theme: {
     extend: {
-      colors: {
-        tv: {
-          accent: "#1F5A45",
-          strong: "#2d6a4f",
-          dark: "#173f32",
-          title: "#1b4332",
-          ivory: "#f4f0e4",
-          paper: "#fffdf6",
-          sand: "#ebe7dd",
-          beige: "#e8e5d7",
-          mint: "#e7f1ec",
-          line: "#d8d1c2",
-          ink: "#252824",
-          muted: "#505650",
-        },
-      },
-      fontFamily: {
-        sans: ["Poppins", "Arial", "sans-serif"],
-      },
       screens: {
         xs: "420px",
         "3xl": "1800px",
-      },
-      boxShadow: {
-        soft: "0 10px 30px -12px rgba(23, 63, 50, 0.18)",
-        lift: "0 22px 45px -18px rgba(23, 63, 50, 0.28)",
       },
     },
   },

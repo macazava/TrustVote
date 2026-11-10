@@ -10,17 +10,17 @@
   // ===== Candidatos =====
   const candidatesPage = (lista) => `
     ${head("GESTÃO ELEITORAL", "Candidatos", "Listas e candidatos incluídos nas eleições académicas.", lista.length ? `<label class="field-label" style="margin:0;min-width:280px">Eleição<select data-cand-election>${lista.map((e) => `<option value="${e.id}">${escapeHtml(e.titulo)} · ${elections.statusLabels[e.estado]}</option>`).join("")}</select></label>` : "")}
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições")}</article>`;
+    <article class="dash-card" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições")}</article>`;
 
   const candidatesTable = (e) =>
     (e.candidatos || []).length
-      ? `<div class="table-scroll rounded-xl"><table>
+      ? `<div class="table-scroll"><table>
           <thead><tr><th>Opção</th><th>Candidato</th><th>Descrição</th><th>Estado</th></tr></thead>
           <tbody>${e.candidatos
         .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
         .join("")}</tbody></table></div>
-         <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição ${TV.icon("arrow-right")}</button>`
-      : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos ${TV.icon("arrow-right")}</button></div>`;
+         <button class="button button-outline" type="button" data-manage>Gerir na eleição ${TV.icon("arrow-right")}</button>`
+      : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button button-outline" type="button" data-manage>Adicionar candidatos ${TV.icon("arrow-right")}</button></div>`;
 
   // ===== Eleitores =====
   const votersPage = () => `
@@ -32,18 +32,18 @@
           <option value="administrador">Administradores</option>
         </select>
       </label>`)}
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-users></article>
-    <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift" data-enrolled></article>`;
+    <article class="dash-card" data-users></article>
+    <article class="dash-card" data-enrolled></article>`;
 
   // ===== Lista oficial de inscritos (quem pode criar conta quando o registo está restrito) =====
   const enrolledCard = ({ restrito, estudantes }) => `
     <p class="eyebrow">LISTA OFICIAL</p>
     <h2>Estudantes inscritos · ${estudantes.length}</h2>
-    <p class="notice rounded-xl"><b>${restrito ? "Registo restrito a esta lista." : "Registo aberto."}</b>${restrito
+    <p class="notice"><b>${restrito ? "Registo restrito a esta lista." : "Registo aberto."}</b>${restrito
       ? "Só os números desta lista podem criar conta."
       : "Qualquer número pode criar conta. Para restringir, defina REGISTO_RESTRITO=true no servidor."}</p>
     ${estudantes.length
-      ? `<div class="table-scroll rounded-xl"><table>
+      ? `<div class="table-scroll"><table>
           <thead><tr><th>Número</th><th>Nome</th><th>Curso</th><th>Conta</th><th></th></tr></thead>
           <tbody>${estudantes
         .map(
@@ -58,7 +58,7 @@
         <textarea name="linhas" rows="4" required placeholder="20260001;Ana Silva;Design&#10;20260002"></textarea>
       </label>
       <p class="form-message" role="status"></p>
-      <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Acrescentar ${TV.icon("arrow-right")}</button>
+      <button class="button button-primary" type="submit">Acrescentar ${TV.icon("arrow-right")}</button>
     </form>`;
 
   // Botões para suspender/reativar e mudar o perfil (exceto na própria conta)
@@ -71,7 +71,7 @@
 
   const usersTable = (lista, eu) =>
     lista.length
-      ? `<div class="table-scroll rounded-xl"><table>
+      ? `<div class="table-scroll"><table>
           <thead><tr><th>Número</th><th>Eleitor</th><th>Curso</th><th>Tipo</th><th>Estado</th><th>Ações</th></tr></thead>
           <tbody>${lista
         .map(

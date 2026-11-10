@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
+  <header class="site-header sticky top-0 z-40">
     <div class="site-header-inner">
       <a class="brand" href="inicio.html">
         <span class="brand-mark">${icon("check")}</span>
@@ -28,7 +28,7 @@
         <a href="ajuda.html">Ajuda</a>
       </nav>
       <div class="header-actions">
-        <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
+        <a class="button button-primary" href="login.html?area=eleitor"
           data-voter-link>Votar ${icon("arrow-right")}</a>
       </div>
     </div>
@@ -90,7 +90,7 @@
       </div>
     </div>
     <div class="footer-bottom container">
-      <span>Projeto académico · ${new Date().getFullYear()}</span>
+      <span>TrustVote · ${new Date().getFullYear()}</span>
       <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
     </div>
   </footer>`;

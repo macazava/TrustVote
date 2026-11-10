@@ -8,13 +8,13 @@
   const v = (TV.voterView = TV.voterView || {});
 
   const card = (conteudo, extra = "") =>
-    `<article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift${extra}">${conteudo}</article>`;
+    `<article class="dash-card ${extra}">${conteudo}</article>`;
 
   // ===== Cartão de identidade =====
   const identity = (user) => {
     const desde = user.data_registo ? new Date(user.data_registo).getFullYear() : null;
     return `
-      <section class="profile-hero rounded-2xl shadow-soft">
+      <section class="profile-hero">
         <span class="profile-avatar" aria-hidden="true">${escapeHtml(initials(user.nome))}</span>
         <div class="profile-id">
           <small>ELEITOR</small>
@@ -27,12 +27,12 @@
             ${desde ? `<span>Registado desde ${desde}</span>` : ""}
           </div>
         </div>
-        <button class="button rounded-xl button-light" type="button" data-logout-profile>Terminar sessão</button>
+        <button class="button button-light" type="button" data-logout-profile>Terminar sessão</button>
       </section>`;
   };
 
   // ===== Números da participação =====
-  const stat = (valor, texto) => `<div class="profile-stat rounded-2xl"><b>${valor}</b><small>${texto}</small></div>`;
+  const stat = (valor, texto) => `<div class="profile-stat"><b>${valor}</b><small>${texto}</small></div>`;
 
   const stats = ({ habilitado, votadas, porVotar, recibos }) => `
     <div class="profile-stats grid-cols-2 lg:grid-cols-4">
@@ -45,7 +45,7 @@
   // ===== Participação: uma linha por eleição =====
   function estado(e) {
     if (e.votou) return `<span class="ok-label">${TV.icon("check")} VOTOU</span>`;
-    if (e.aberta) return `<button class="button button-small rounded-xl button-primary" type="button" data-vote="${e.id}">Votar agora ${TV.icon("arrow-right")}</button>`;
+    if (e.aberta) return `<button class="button button-small button-primary" type="button" data-vote="${e.id}">Votar agora ${TV.icon("arrow-right")}</button>`;
     if (e.estado === "encerrada") return '<span class="ok-label is-off">ENCERRADA</span>';
     return `<span class="ok-label is-off">${escapeHtml(e.estadoLabel)}</span>`;
   }

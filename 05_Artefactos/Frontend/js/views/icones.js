@@ -52,5 +52,5 @@
   document.body.insertAdjacentHTML("afterbegin", sprite);
 
   // Devolve o HTML de um ícone; "classe" acrescenta classes (ex.: "icon-lg")
-  TV.icon = (nome, classe = "") => `<svg class="icon${classe ? ` ${classe}` : ""}" aria-hidden="true" focusable="false"><use href="#i-${nome}"></use></svg>`;
+  TV.icon = (nome, classe = "") => `<svg class="icon${classe ? ` ${classe}` :""}" aria-hidden="true" focusable="false"><use href="#i-${nome}"></use></svg>`;
 })();
