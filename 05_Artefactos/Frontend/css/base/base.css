@@ -84,6 +84,29 @@ code {
     font-family: var(--font-mono);
 }
 
+/* Títulos em serifa (tom académico); o resto do site fica em Inter */
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    font-optical-sizing: auto;
+}
+
+/* Números com a mesma largura: alinham em métricas, resultados, contadores e tabelas */
+.metrics b,
+.facts b,
+.hub-progress b,
+.metric-card b,
+.turnout b,
+.profile-stat b,
+.profile-session b,
+.result-row b,
+.receipt-code b,
+[data-countdown],
+table {
+    font-variant-numeric: tabular-nums;
+}
+
 /* Ícones SVG (js/views/icones.js): tamanho e cor vêm do elemento que os contém */
 .icon {
     display: inline-block;

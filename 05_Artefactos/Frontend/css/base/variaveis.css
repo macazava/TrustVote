@@ -6,7 +6,6 @@
       Os componentes só usam papéis, por isso mudar o tema (ex.: alto contraste) é mudar só esta camada.
 
    O Tailwind (js/tailwind.config.js) fica apenas com a grelha e os breakpoints: não define cores nem sombras. */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
     /* ===================== 1. PALETA ===================== */
@@ -92,7 +91,10 @@
     --color-overlay: rgb(23 63 50 / 45%);        /* fundo atrás das janelas modais */
 
     /* Tipografia: escala única (todas as medidas de letra do site saem daqui) */
-    --font-sans: Poppins, Arial, sans-serif;
+    /* Fontes carregadas no <head> de cada página (Google Fonts, com preconnect) */
+    --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;  /* texto e interface */
+    --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;           /* títulos */
+    --font-heading: var(--font-serif);
     --font-mono: ui-monospace, Consolas, monospace;
     --text-xs: 12px;    /* mínimo absoluto: etiquetas, legendas */
     --text-sm: 14px;    /* texto secundário, tabelas, ajudas */

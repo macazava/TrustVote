@@ -34,7 +34,7 @@ body[data-page="admin"] .dashboard-content {
 body[data-page="admin"] .dashboard-content h1 {
     color: var(--color-text);
     font-weight: 700;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.02em;
 }
 
 .dashboard-content .muted {
@@ -183,4 +183,3 @@ body[data-page="admin"] .dashboard-content h1 {
     border: 0;
     background: var(--color-border);
 }
-
