@@ -127,7 +127,7 @@
 
 .candidate-list label small:first-child {
     color: var(--accent);
-    font-size: 10px;
+    font-size: var(--text-min);
     font-weight: 700;
     letter-spacing: 0.08em;
 }
@@ -200,7 +200,7 @@
 
 .receipt-code small {
     color: var(--muted);
-    font-size: 9px;
+    font-size: var(--text-min);
     letter-spacing: 0.06em;
 }
 
@@ -212,7 +212,7 @@
 
 .receipt-code code {
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     word-break: break-all;
 }
 

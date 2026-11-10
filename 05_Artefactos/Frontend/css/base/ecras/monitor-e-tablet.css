@@ -6,7 +6,7 @@
 .field-label textarea,
 .auth-card input:not([type="checkbox"]),
 .row-actions button {
-    border-radius: 10px;
+    border-radius: var(--radius-md);
 }
 
 .candidate-list label,
@@ -16,22 +16,22 @@
 .timeline article:first-child,
 .photo-panel img,
 .news-photo img {
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 .news-photo {
     overflow: hidden;
-    border-radius: 16px 16px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .press-news article,
 .press-hero {
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 .timeline {
     overflow: hidden;
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 .timeline article:first-child {
@@ -83,7 +83,7 @@
         min-width: 44px;
         min-height: 44px;
         margin-left: auto;
-        border-radius: 10px;
+        border-radius: var(--radius-md);
         font-size: 18px;
     }
 
@@ -167,7 +167,7 @@
         flex: none;
         padding: 10px 16px;
         border: 1px solid var(--line);
-        border-radius: 999px;
+        border-radius: var(--radius-full);
         background: var(--paper);
         font-size: 14px;
         white-space: nowrap;

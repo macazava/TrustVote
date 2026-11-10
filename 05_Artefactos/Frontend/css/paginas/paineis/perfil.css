@@ -32,7 +32,7 @@
 
 .profile-id small {
     color: #cbd8d0;
-    font-size: 11px;
+    font-size: var(--text-min);
     letter-spacing: 0.12em;
 }
 
@@ -61,7 +61,7 @@
 .profile-tags span {
     padding: 5px 12px;
     border: 1px solid rgb(255 255 255 / 30%);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background: rgb(255 255 255 / 10%);
     font-size: 12px;
     font-weight: 500;
@@ -184,14 +184,14 @@
 
 .profile-session div {
     padding: 14px 16px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: var(--mint);
 }
 
 .profile-session small {
     display: block;
     color: var(--muted);
-    font-size: 11px;
+    font-size: var(--text-min);
     letter-spacing: 0.08em;
 }
 
@@ -215,19 +215,26 @@
     gap: 10px;
 }
 
+/* Visto ou cruz desenhados com os mesmos ícones SVG do resto do site (máscara pintada com a cor) */
 .profile-list li::before {
+    content: "";
     flex: none;
-    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    margin-top: 0.25em;
+    background: currentColor;
+    -webkit-mask: var(--marca) center / contain no-repeat;
+    mask: var(--marca) center / contain no-repeat;
 }
 
 .profile-list .is-yes::before {
-    content: "✓";
-    color: var(--accent);
+    --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20 6 9 17l-5-5%27/%3E%3C/svg%3E");
+    background: var(--accent);
 }
 
 .profile-list .is-no::before {
-    content: "✕";
-    color: var(--danger);
+    --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M18 6 6 18%27/%3E%3Cpath d=%27m6 6 12 12%27/%3E%3C/svg%3E");
+    background: var(--danger);
 }
 
 /* ===== Telemóvel ===== */

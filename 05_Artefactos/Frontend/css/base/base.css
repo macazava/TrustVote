@@ -84,6 +84,32 @@ code {
     font-family: ui-monospace, Consolas, monospace;
 }
 
+/* Ícones SVG (js/views/icones.js): tamanho e cor vêm do elemento que os contém */
+.icon {
+    display: inline-block;
+    flex: none;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Setas no fim dos botões e links: deslizam um pouco ao passar o rato */
+.button .icon,
+.text-link .icon,
+.link-button .icon {
+    transition: transform 0.2s;
+}
+
+.button:hover .icon:last-child,
+.text-link:hover .icon:last-child {
+    transform: translateX(3px);
+}
+
 /* Preferências de acessibilidade (A+ e Contraste) */
 .large-text {
     zoom: 1.12;

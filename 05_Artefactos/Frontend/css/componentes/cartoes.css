@@ -79,7 +79,7 @@
     padding: 6px 10px;
     background: var(--mint);
     color: #24583f;
-    font-size: 11px;
+    font-size: var(--text-min);
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -180,12 +180,13 @@
     border: 1px solid var(--line);
     background: var(--paper);
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .service-card:hover {
+    border-color: var(--accent);
     transform: translateY(-3px);
-    box-shadow: 3px 3px 0 var(--ink);
+    box-shadow: var(--shadow-lg);
 }
 
 .service-card > span {
@@ -195,6 +196,7 @@
     height: 38px;
     margin-bottom: 7px;
     border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
     background: var(--beige);
     color: var(--accent);
     font-size: 18px;
@@ -243,12 +245,15 @@
 }
 
 .bar {
+    overflow: hidden;
     height: 6px;
-    background: #e5e7eb;
+    border-radius: var(--radius-full);
+    background: var(--sand);
 }
 
 .bar i {
     display: block;
+    border-radius: inherit;
     height: 100%;
     background: var(--accent);
 }

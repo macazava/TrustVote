@@ -4,19 +4,18 @@
     min-height: 48px;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     padding: 0 22px;
-    border: 1.5px solid var(--ink);
-    border-radius: 2px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    transition: box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 3px 3px 0 var(--ink);
+    box-shadow: var(--shadow-md);
 }
 
 .button:disabled {
@@ -41,6 +40,13 @@
     color: var(--ink);
 }
 
+.button-outline:hover {
+    border-color: var(--accent);
+    background: var(--mint);
+    color: var(--accent);
+    box-shadow: none;
+}
+
 .button-light {
     background: var(--paper);
     color: var(--ink);
@@ -53,6 +59,9 @@
 }
 
 .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     border-bottom: 1px solid var(--ink);
     padding: 8px 0 5px;
     font-size: 14px;
@@ -65,6 +74,9 @@
 }
 
 .link-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 0;
     border: 0;
     background: none;
@@ -81,7 +93,7 @@
     gap: 6px;
     padding: 8px 15px;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background: var(--sand);
     color: var(--muted);
     font-size: 14px;

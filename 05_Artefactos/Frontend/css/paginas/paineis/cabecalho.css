@@ -88,7 +88,7 @@
     padding: 8px 10px;
     border: 1px solid #ffffff55;
     color: #e8efe9;
-    font-size: 8px;
+    font-size: var(--text-min);
     letter-spacing: 0.05em;
     white-space: nowrap;
 }
@@ -106,7 +106,7 @@
     border-radius: 0;
     background: #2c5e48;
     color: white;
-    font-size: 11px;
+    font-size: var(--text-min);
 }
 
 .user-chip>span:last-child {
@@ -120,7 +120,7 @@
 
 .user-chip small {
     color: #cbd8d0;
-    font-size: 8px;
+    font-size: var(--text-min);
     letter-spacing: 0.05em;
 }
 

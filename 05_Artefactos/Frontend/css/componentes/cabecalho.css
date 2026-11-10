@@ -22,7 +22,7 @@
     min-height: 34px;
     padding: 0 18px;
     border: 1px solid #ffffff33;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: none;
     color: inherit;
     font-size: 14px;
@@ -68,6 +68,7 @@
     place-items: center;
     width: 34px;
     height: 34px;
+    border-radius: var(--radius-sm);
     background: var(--accent);
     color: white;
     font-size: 22px;
@@ -87,7 +88,7 @@
 
 .brand small {
     margin-top: 6px;
-    font-size: 9px;
+    font-size: var(--text-min);
     letter-spacing: 0.08em;
 }
 

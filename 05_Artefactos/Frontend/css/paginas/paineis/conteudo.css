@@ -60,7 +60,7 @@ body[data-page="admin"] .dashboard-content h1 {
 .badge-card small {
     display: block;
     color: var(--muted);
-    font-size: 8px;
+    font-size: var(--text-min);
     letter-spacing: 0.06em;
 }
 
@@ -110,7 +110,7 @@ body[data-page="admin"] .dashboard-content h1 {
 
 .election-card-body small {
     color: var(--muted);
-    font-size: 11px;
+    font-size: var(--text-min);
     letter-spacing: 0.04em;
 }
 
@@ -145,7 +145,7 @@ body[data-page="admin"] .dashboard-content h1 {
     grid-template-columns: 30px auto;
     align-items: center;
     gap: 0 10px;
-    font-size: 11px;
+    font-size: var(--text-min);
 }
 
 .steps-track>span>i {
@@ -157,7 +157,7 @@ body[data-page="admin"] .dashboard-content h1 {
     border: 1px solid var(--line);
     border-radius: 50%;
     background: white;
-    font-size: 11px;
+    font-size: var(--text-min);
     font-style: normal;
 }
 

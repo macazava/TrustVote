@@ -7,7 +7,7 @@
     align-items: center;
     gap: 26px;
     padding: 40px 30px;
-    border-color: var(--ink);
+    border-color: var(--line);
 }
 
 .receipt-card .seal-icon {
@@ -29,7 +29,7 @@
     flex-wrap: wrap;
     gap: 14px;
     color: var(--accent);
-    font-size: 10px;
+    font-size: var(--text-min);
 }
 
 .receipt-actions {
@@ -67,6 +67,6 @@
     border: 1px solid #c9cde8;
     background: #f1f4ff;
     color: var(--muted);
-    font-size: 9px;
+    font-size: var(--text-min);
 }
 

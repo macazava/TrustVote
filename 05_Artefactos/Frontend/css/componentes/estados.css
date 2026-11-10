@@ -54,11 +54,12 @@
 .toast {
     margin: 0;
     padding: 12px 16px;
-    border: 1.5px solid var(--ink);
+    border: 1px solid var(--line);
     border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
     background: var(--paper);
     font-size: 13px;
-    box-shadow: 3px 3px 0 var(--ink);
+    box-shadow: var(--shadow-lg);
 }
 
 .toast-error {
@@ -69,6 +70,17 @@
     margin: 18px 0 0;
     color: var(--muted);
     font-size: 12px;
+}
+
+.server-status::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: 0.05em;
 }
 
 .server-status.is-ok {
@@ -83,10 +95,11 @@
 .confirm-dialog {
     width: min(440px, calc(100vw - 32px));
     padding: 24px;
-    border: 1.5px solid var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
     background: var(--paper);
     color: var(--ink);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-lg);
 }
 
 .confirm-dialog::backdrop {

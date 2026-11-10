@@ -17,8 +17,24 @@
     --title: #1b4332;
     --warn: #9a4a12;
     --danger: #b3261e;
-    --shadow: 5px 5px 0 #111827;
+    --line-strong: #b9b2a3;
     --container: 1200px;
+
+    /* Cantos: os mesmos valores das classes Tailwind usadas no HTML
+       (rounded-lg = sm, rounded-xl = md, rounded-2xl = lg) */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+
+    /* Sombras suaves, tingidas com o verde da marca (as mesmas de shadow-soft/shadow-lift do Tailwind) */
+    --shadow-sm: 0 1px 2px rgb(23 63 50 / 6%);
+    --shadow-md: 0 10px 30px -12px rgb(23 63 50 / 18%);
+    --shadow-lg: 0 22px 45px -18px rgb(23 63 50 / 28%);
+    --shadow: var(--shadow-lg);
+
+    /* Tamanho mínimo de texto em todo o site */
+    --text-min: 12px;
     font-family: Poppins, Arial, sans-serif;
     color: var(--ink);
     background: var(--ivory);

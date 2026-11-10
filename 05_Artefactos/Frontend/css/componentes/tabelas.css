@@ -20,7 +20,7 @@ td {
 th {
     background: #f2f0e9;
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -38,7 +38,7 @@ td code {
 
 .ok-label {
     color: var(--accent);
-    font-size: 10px;
+    font-size: var(--text-min);
     font-weight: 700;
     text-transform: uppercase;
 }

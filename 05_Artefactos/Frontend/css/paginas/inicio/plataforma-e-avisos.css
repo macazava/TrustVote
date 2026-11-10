@@ -22,7 +22,7 @@
     display: flex;
     justify-content: space-between;
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     letter-spacing: 0.1em;
 }
 
@@ -95,7 +95,7 @@
 
 .news-list time {
     color: var(--accent);
-    font-size: 11px;
+    font-size: var(--text-min);
     font-weight: 700;
 }
 

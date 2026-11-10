@@ -103,7 +103,7 @@
 
 .election-alert small {
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     letter-spacing: 0.08em;
 }
 
@@ -134,7 +134,7 @@
 
 .steps-head small {
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     letter-spacing: 0.08em;
 }
 

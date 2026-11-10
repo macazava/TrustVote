@@ -27,7 +27,7 @@
     grid-column: 2;
     grid-row: 1;
     color: var(--muted);
-    font-size: 8px;
+    font-size: var(--text-min);
     text-transform: uppercase;
 }
 
@@ -39,7 +39,7 @@
     grid-column: 3;
     grid-row: 1;
     color: var(--accent);
-    font-size: 9px;
+    font-size: var(--text-min);
     font-style: normal;
     font-weight: 700;
     text-transform: uppercase;
@@ -55,7 +55,7 @@
     grid-column: 2 / 4;
     grid-row: 3;
     color: var(--muted);
-    font-size: 9px;
+    font-size: var(--text-min);
 }
 
 .metric-card .bar {
@@ -88,7 +88,7 @@
 
 .line-chart text {
     fill: #9aa09a;
-    font-size: 9px;
+    font-size: var(--text-min);
 }
 
 .line-chart path {
@@ -142,7 +142,7 @@
 }
 
 .election-row .turnout small {
-    font-size: 8px;
+    font-size: var(--text-min);
     text-transform: uppercase;
 }
 
@@ -177,7 +177,7 @@
     align-items: center;
     gap: 14px;
     padding: 7px 6px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
 .bar-chart-row:hover {
@@ -193,7 +193,7 @@
 .bar-chart-label small,
 .bar-chart-value small {
     color: var(--muted);
-    font-size: 11px;
+    font-size: var(--text-min);
 }
 
 .bar-chart-value {
@@ -208,7 +208,7 @@
     display: block;
     min-width: 4px;
     height: 100%;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     background: var(--accent);
 }
 
@@ -231,7 +231,7 @@
     max-width: 160px;
     gap: 6px;
     padding: 4px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 }
 
 .column-chart-item:hover {
@@ -253,14 +253,14 @@
     display: block;
     width: 100%;
     min-height: 4px;
-    border-radius: 4px 4px 0 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     background: var(--accent);
 }
 
 .column-chart-item small {
     min-height: 2.6em;
     color: var(--muted);
-    font-size: 11px;
+    font-size: var(--text-min);
     line-height: 1.3;
     text-align: center;
 }

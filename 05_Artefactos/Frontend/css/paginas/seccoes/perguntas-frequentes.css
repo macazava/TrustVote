@@ -8,7 +8,7 @@
 
 .faq-list details {
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
     background: var(--paper);
 }
 
@@ -44,7 +44,7 @@
 .faq-list summary:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 .faq-list details p {

@@ -54,7 +54,7 @@
 
 .hub-progress small {
     color: var(--muted);
-    font-size: 11px;
+    font-size: var(--text-min);
     letter-spacing: 0.06em;
 }
 
@@ -108,7 +108,7 @@
 
 .card-meta small {
     color: var(--muted);
-    font-size: 10px;
+    font-size: var(--text-min);
     letter-spacing: 0.1em;
 }
 
@@ -167,7 +167,7 @@
 .credential small {
     margin-top: 12px;
     color: var(--accent);
-    font-size: 10px;
+    font-size: var(--text-min);
     letter-spacing: 0.12em;
 }
 
@@ -197,7 +197,7 @@
     border: 1px solid var(--accent);
     background: var(--ivory);
     color: var(--accent);
-    font-size: 10px;
+    font-size: var(--text-min);
 }
 
 .hash-chain i {
@@ -233,15 +233,23 @@
     flex-direction: column;
     margin-top: auto;
     color: #e1e7f0;
-    font-size: 11px;
+    font-size: var(--text-min);
 }
 
 .audit-log span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 9px 0;
     border-bottom: 1px solid #ffffff19;
 }
 
-.audit-log span::first-letter {
-    color: #4bd59a;
+.audit-log span::before {
+    content: "";
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4bd59a;
 }
 
