@@ -33,9 +33,11 @@ a {
     color: inherit;
 }
 
+/* width/height no HTML reservam o espaço da imagem (sem saltos ao carregar); a altura real segue a proporção */
 img {
     display: block;
     max-width: 100%;
+    height: auto;
 }
 
 [hidden] {

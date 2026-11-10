@@ -1,5 +1,10 @@
-/* Entrada do Tailwind: "npm run css" lê este ficheiro e gera css/tailwind.css (não editar o gerado à mão).
+/* Entrada do build do CSS: junta css/style.css (e todos os ficheiros que ele importa) com as classes
+   de grelha do Tailwind num só ficheiro minificado, css/site.css, que é o único que as páginas carregam.
+   Gerar de novo depois de mudar qualquer CSS (na pasta Frontend):
+     npx tailwindcss@3.4.17 -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/site.css --minify
    O reset (preflight) está desligado em tailwind.config.js, por isso "base" só traz as variáveis internas do Tailwind. */
+@import "../style.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

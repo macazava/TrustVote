@@ -5,30 +5,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="TrustVote — votação digital para eleições académicas.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
   <title>TrustVote | Eleições Académicas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,500..700;1,8..60,500..700&display=swap">
-  <link rel="stylesheet" href="../css/style.css?v=20">
-  <link rel="stylesheet" href="../css/tailwind.css?v=20">
-  <script defer src="../js/views/icones.js?v=20"></script>
-  <script defer src="../js/views/layout.js?v=20"></script>
+  <link rel="stylesheet" href="../css/site.css">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=20"></script>
-  <script defer src="../js/models/api.js?v=20"></script>
-  <script defer src="../js/models/sessao.js?v=20"></script>
-  <script defer src="../js/views/formatar.js?v=20"></script>
-  <script defer src="../js/models/eleicoes.js?v=20"></script>
-  <script defer src="../js/views/componentes.js?v=20"></script>
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=20"></script>
-  <script defer src="../js/views/publico.js?v=20"></script>
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=20"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=20"></script>
-  <script defer src="../js/controllers/publico/inicio.js?v=20"></script>
-  <script defer src="../js/views/animacoes.js?v=20"></script>
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/inicio.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
 </head>
 
 <body data-page="home">
@@ -152,7 +152,7 @@
 
     <section class="election-info grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 container" id="eleicoes">
       <figure class="photo-panel">
-        <img src="../assets/05_iade_novo_campus_edificio.png" alt="Estudantes no pátio do novo campus do IADE">
+        <img src="../assets/05_iade_novo_campus_edificio.webp" width="678" height="678" loading="lazy" decoding="async" alt="Estudantes no pátio do novo campus do IADE">
         <figcaption>IADE · Campus da Universidade Europeia</figcaption>
       </figure>
       <div class="election-copy">
@@ -304,8 +304,7 @@
       <div class="news-grid grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
         <article class="dash-card" data-live-data>
           <figure class="news-photo">
-            <img src="../assets/01_comunidade_academica_eleitores.png"
-              alt="Comunidade académica do IADE reunida no campus">
+            <img src="../assets/01_comunidade_academica_eleitores.webp" width="1122" height="678" loading="lazy" decoding="async" alt="Comunidade académica do IADE reunida no campus">
           </figure>
           <p class="eyebrow">PARTICIPAÇÃO</p>
           <h3 data-live-title data-skeleton>A carregar…</h3>

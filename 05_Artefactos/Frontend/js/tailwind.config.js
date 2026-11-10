@@ -2,8 +2,7 @@
    Cores, letra, cantos e sombras NÃO vivem aqui: estão em css/base/variaveis.css (design tokens)
    e são aplicados pelos componentes em css/componentes/. Assim há uma única fonte de verdade.
 
-   Depois de mudar classes de grelha no HTML ou no JS, gerar de novo css/tailwind.css (na pasta Frontend):
-     npx tailwindcss@3.4.17 -c js/tailwind.config.js -i css/tailwind/entrada.css -o css/tailwind.css --minify */
+   O CSS final (css/site.css) é gerado a partir de css/tailwind/entrada.css; o comando está nesse ficheiro. */
 module.exports = {
   // Ficheiros onde o Tailwind procura as classes usadas
   content: ["./pages/**/*.html", "./js/**/*.js"],
