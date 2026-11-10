@@ -24,7 +24,7 @@
     max-width: 580px;
     margin: 15px 0;
     color: var(--color-heading);
-    font-size: clamp(40px, 4.6vw, 60px);
+    font-size: clamp(2.5rem, 4.6vw, 3.75rem);
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.02em;

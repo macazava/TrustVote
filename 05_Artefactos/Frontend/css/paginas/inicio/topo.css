@@ -11,7 +11,7 @@
 .section-heading h2 {
     margin: 0;
     color: var(--color-heading);
-    font-size: clamp(32px, 4vw, 52px);
+    font-size: clamp(2rem, 4vw, 3.25rem);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.02em;
@@ -42,7 +42,7 @@
 .hero h1 {
     margin: 18px 0;
     color: var(--color-heading);
-    font-size: clamp(46px, 5.4vw, 68px);
+    font-size: clamp(2.875rem, 5.4vw, 4.25rem);
     font-weight: 600;
     line-height: 1.02;
     letter-spacing: -0.02em;

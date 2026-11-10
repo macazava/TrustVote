@@ -6,6 +6,7 @@
 
   // ===== Topo: atalhos, marca, menu principal e botão de votar =====
   const cabecalho = `
+  <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
   <div class="topbar">
     <div class="topbar-inner">
       <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>

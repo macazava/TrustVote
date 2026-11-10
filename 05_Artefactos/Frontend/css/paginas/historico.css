@@ -23,7 +23,7 @@
 .history-hero h1 {
     margin: 0;
     color: var(--color-on-dark);
-    font-size: clamp(34px, 3.5vw, 44px);
+    font-size: clamp(2.125rem, 3.5vw, 2.75rem);
     font-weight: 500;
 }
 
@@ -68,7 +68,7 @@
 
 .history-period time {
     color: var(--color-heading);
-    font-size: 42px;
+    font-size: 2.625rem;
     font-weight: 400;
 }
 

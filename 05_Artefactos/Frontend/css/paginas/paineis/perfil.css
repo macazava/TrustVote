@@ -93,7 +93,7 @@
 .profile-stat b {
     display: block;
     color: var(--color-heading);
-    font-size: 34px;
+    font-size: 2.125rem;
     font-weight: 700;
     line-height: 1.1;
 }

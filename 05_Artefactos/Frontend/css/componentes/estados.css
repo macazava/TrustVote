@@ -10,7 +10,8 @@
     text-align: center;
 }
 
-.state-box h3 {
+/* h2 para não saltar níveis de título; com o tamanho de um subtítulo */
+.state-box h2 {
     margin: 6px 0 0;
     color: var(--color-text);
     font-size: var(--text-lg);

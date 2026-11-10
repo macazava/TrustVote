@@ -29,7 +29,7 @@
     error: (error, retry = true) => `
       <div class="state-box">
         <span class="large-icon">${TV.icon("circle-alert")}</span>
-        <h3>Não foi possível carregar</h3>
+        <h2>Não foi possível carregar</h2>
         <p>${escapeHtml((error && error.message) || error)}</p>
         ${retry ? '<button class="button button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
       </div>`,
@@ -37,7 +37,7 @@
     empty: (title, text = "") => `
       <div class="state-box">
         <span class="large-icon">${TV.icon("inbox")}</span>
-        <h3>${escapeHtml(title)}</h3>
+        <h2>${escapeHtml(title)}</h2>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
       </div>`,
 

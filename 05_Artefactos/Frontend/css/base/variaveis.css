@@ -62,7 +62,7 @@
     --color-brand-muted: var(--green-200);       /* bordas de realce suave */
     --color-action: var(--green-600);            /* botão principal */
     --color-action-hover: var(--green-700);
-    --color-focus: var(--green-400);             /* contorno de foco do teclado */
+    --color-focus: var(--green-600);             /* contorno de foco do teclado (≥ 5:1 nos fundos claros) */
     --color-indicator: var(--green-400);         /* traços decorativos e item atual dos menus */
     --color-focus-ring: color-mix(in srgb, var(--green-700) 14%, transparent);
     --color-brand-tint: color-mix(in srgb, var(--green-700) 8%, transparent);
@@ -90,19 +90,19 @@
     --color-on-dark-warning: var(--amber-200);
     --color-overlay: rgb(23 63 50 / 45%);        /* fundo atrás das janelas modais */
 
-    /* Tipografia: escala única (todas as medidas de letra do site saem daqui) */
+    /* Tipografia: escala única, em rem (16px = 1rem) para crescer com o "Texto maior" e com o zoom do browser */
     /* Fontes carregadas no <head> de cada página (Google Fonts, com preconnect) */
     --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;  /* texto e interface */
     --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;           /* títulos */
     --font-heading: var(--font-serif);
     --font-mono: ui-monospace, Consolas, monospace;
-    --text-xs: 12px;    /* mínimo absoluto: etiquetas, legendas */
-    --text-sm: 14px;    /* texto secundário, tabelas, ajudas */
-    --text-base: 16px;  /* texto corrente, botões, menus */
-    --text-lg: 18px;    /* introduções */
-    --text-xl: 20px;    /* títulos de cartão */
-    --text-2xl: 24px;   /* números de destaque, títulos de secção pequenos */
-    --text-3xl: 30px;   /* títulos de página nos painéis */
+    --text-xs: 0.75rem;    /* mínimo absoluto: etiquetas, legendas */
+    --text-sm: 0.875rem;    /* texto secundário, tabelas, ajudas */
+    --text-base: 1rem;  /* texto corrente, botões, menus */
+    --text-lg: 1.125rem;    /* introduções */
+    --text-xl: 1.25rem;    /* títulos de cartão */
+    --text-2xl: 1.5rem;   /* números de destaque, títulos de secção pequenos */
+    --text-3xl: 1.875rem;   /* títulos de página nos painéis */
     --text-min: var(--text-xs);
 
     /* Espaçamento (múltiplos de 4px) */

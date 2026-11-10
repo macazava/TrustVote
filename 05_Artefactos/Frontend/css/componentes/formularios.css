@@ -142,7 +142,8 @@
     height: 22px;
     border: 0;
     border-radius: var(--radius-full);
-    background: var(--color-border-strong);
+    /* desligado: contraste de 3:1 com o fundo (WCAG 1.4.11) */
+    background: var(--color-text-subtle);
 }
 
 .switch::after {

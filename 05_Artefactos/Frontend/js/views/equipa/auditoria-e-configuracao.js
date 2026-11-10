@@ -42,8 +42,8 @@
         ${passwordCard}
         <article class="dash-card">
           ${cardHead("ACESSIBILIDADE", "Preferências deste navegador")}
-          <div class="toggle-row"><div><b>Texto maior</b><small>Aumenta o tamanho de todas as páginas.</small></div><button class="switch" type="button" data-pref="largeText"></button></div>
-          <div class="toggle-row"><div><b>Contraste elevado</b><small>Cores com mais contraste.</small></div><button class="switch" type="button" data-pref="contrast"></button></div>
+          <div class="toggle-row"><div><b>Texto maior</b><small>Aumenta o tamanho de todas as páginas.</small></div><button class="switch" type="button" data-pref="largeText" aria-label="Texto maior"></button></div>
+          <div class="toggle-row"><div><b>Contraste elevado</b><small>Cores com mais contraste.</small></div><button class="switch" type="button" data-pref="contrast" aria-label="Contraste elevado"></button></div>
         </article>
       </div>
     </div>`;

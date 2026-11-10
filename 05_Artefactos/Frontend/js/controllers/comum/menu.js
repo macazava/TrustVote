@@ -46,7 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (target) {
         event.preventDefault();
         target.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.replaceState(null, "", targetId);
+        // O foco do teclado acompanha o scroll (o próximo Tab continua a partir do destino)
+        if (!target.matches("a, button, input, select, textarea, [tabindex]")) target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+        // "Saltar para o conteúdo" não mexe no endereço (nos painéis o endereço guarda o separador)
+        if (targetId !== "#conteudo") history.replaceState(null, "", targetId);
       }
     });
   });

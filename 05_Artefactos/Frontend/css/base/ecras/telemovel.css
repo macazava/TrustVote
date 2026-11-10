@@ -21,11 +21,11 @@
     }
 
     .hero h1 {
-        font-size: clamp(38px, 11vw, 46px);
+        font-size: clamp(2.375rem, 11vw, 2.875rem);
     }
 
     .section-heading h2 {
-        font-size: clamp(28px, 8vw, 36px);
+        font-size: clamp(1.75rem, 8vw, 2.25rem);
     }
 
     .lead,
@@ -102,7 +102,7 @@
     }
 
     .dashboard-content h1 {
-        font-size: clamp(28px, 8vw, 34px);
+        font-size: clamp(1.75rem, 8vw, 2.125rem);
     }
 
     .dashboard-content .muted {

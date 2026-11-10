@@ -101,7 +101,7 @@
 .section-item h1 {
     margin: 0 0 26px;
     color: var(--color-heading);
-    font-size: clamp(32px, 3.4vw, 42px);
+    font-size: clamp(2rem, 3.4vw, 2.625rem);
     font-weight: 500;
     line-height: 1.15;
 }
@@ -194,7 +194,7 @@
 .content-page > h1 {
     margin: 12px 0 14px;
     color: var(--color-heading);
-    font-size: clamp(40px, 4.6vw, 56px);
+    font-size: clamp(2.5rem, 4.6vw, 3.5rem);
     font-weight: 600;
     letter-spacing: -0.02em;
 }

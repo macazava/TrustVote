@@ -22,7 +22,7 @@
 .dashboard-content h1 {
     margin: 8px 0 10px;
     color: var(--color-heading);
-    font-size: 44px;
+    font-size: 2.75rem;
     font-weight: 600;
     letter-spacing: -0.02em;
 }

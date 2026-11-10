@@ -14,7 +14,7 @@
   }
 
   function applyPrefs(prefs = readPrefs()) {
-    document.body.classList.toggle("large-text", !!prefs.largeText);
+    document.documentElement.classList.toggle("large-text", !!prefs.largeText);
     document.body.classList.toggle("high-contrast", !!prefs.contrast);
     document.querySelectorAll("[data-font-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.largeText)));
     document.querySelectorAll("[data-contrast-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.contrast)));

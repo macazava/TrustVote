@@ -132,9 +132,52 @@ table {
     transform: translateX(3px);
 }
 
+/* Foco do teclado: contorno visível em tudo o que é interativo (WCAG 2.4.7 / 2.4.11) */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* Nas faixas escuras o contorno passa a verde claro, para manter o contraste (≥ 3:1) */
+.skip-link,
+.topbar,
+.dashboard-header,
+.dark-card,
+.steps-help,
+.profile-hero {
+    --color-focus: var(--green-200);
+}
+
+/* Opções escolhidas com rádio (boletim, sondagem): o contorno vai para o cartão inteiro */
+.candidate-list label:has(input:focus-visible),
+.radio-line:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* Saltar para o conteúdo: escondido até receber o foco do teclado */
+.skip-link {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 100;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark);
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(-200%);
+}
+
+.skip-link:focus {
+    transform: none;
+}
+
 /* Preferências de acessibilidade (A+ e Contraste) */
-.large-text {
-    zoom: 1.12;
+/* Texto maior: o tamanho base sobe 12,5% e todas as medidas em rem acompanham */
+html.large-text {
+    font-size: 112.5%;
 }
 
 /* Tema de alto contraste: só troca papéis (os componentes não mudam) */
@@ -165,4 +208,8 @@ table {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
     }
+}
+/* Destinos de âncoras e do "Saltar para o conteúdo" recebem o foco sem mostrar contorno */
+[tabindex="-1"]:focus {
+    outline: none;
 }

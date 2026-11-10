@@ -1,13 +1,5 @@
 /* Adaptação a todos os tipos de ecrã (as grelhas usam os breakpoints do Tailwind no HTML) */
 
-.button:focus-visible,
-.panel-link:focus-visible,
-.main-nav a:focus-visible,
-.side-menu a:focus-visible {
-    outline: 3px solid var(--color-focus);
-    outline-offset: 2px;
-}
-
 /* ===== Ecrãs grandes (monitores 1800px+) ===== */
 @media (min-width: 1800px) {
     :root {
@@ -23,7 +15,7 @@
     }
 
     .hero h1 {
-        font-size: 78px;
+        font-size: 4.875rem;
     }
 
     .lead {
