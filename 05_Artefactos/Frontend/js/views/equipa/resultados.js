@@ -37,7 +37,7 @@
 
   // Resultado de "Verificar integridade": selos dos votos e urna contra participações
   const integrityResult = (r) => `
-    <p class="notice rounded-xl"><b>${r.valida ? "✓ Urna íntegra" : "! Foram encontrados problemas na urna"}</b>${r.rondas
+    <p class="notice rounded-xl"><b>${r.valida ? `${TV.icon("circle-check")} Urna íntegra` : `${TV.icon("circle-alert")} Foram encontrados problemas na urna`}</b>${r.rondas
       .map(
         (v) =>
           `${v.ronda}.ª volta: ${number(v.votos)} votos para ${number(v.participacoes)} participações${v.coincide ? "" : " (não coincide)"}${v.selos_invalidos ? ` · ${number(v.selos_invalidos)} com selo inválido` : ""}`

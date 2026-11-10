@@ -38,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .health()
     .then((res) => {
       serverStatus.classList.add(res.ok ? "is-ok" : "is-down");
-      serverStatus.textContent = res.ok ? `● Servidor disponível (${res.latency} ms)` : "● Servidor com problemas";
+      serverStatus.textContent = res.ok ? `Servidor disponível (${res.latency} ms)` : "Servidor com problemas";
     })
     .catch(() => {
       serverStatus.classList.add("is-down");
-      serverStatus.textContent = "● Servidor indisponível";
+      serverStatus.textContent = "Servidor indisponível";
     });
 
   // ===== Sessão já iniciada =====
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (claims) {
     const panel = claims.perfil === "administrador" ? "equipa.html" : "eleitor.html";
     ui.message(message, "");
-    message.innerHTML = `Já tem sessão iniciada. <a href="${panel}">Continuar para a sua área →</a>`;
+    message.innerHTML = `Já tem sessão iniciada. <a href="${panel}">Continuar para a sua área ${window.TrustVote.icon("arrow-right")}</a>`;
   }
 
   // ===== Envio do formulário (único sítio com validação e pedido ao servidor) =====

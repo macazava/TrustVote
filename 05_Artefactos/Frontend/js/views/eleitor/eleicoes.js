@@ -19,8 +19,8 @@
     `<span class="status-pill rounded-full status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
 
   // Botão principal: votar, ver o recibo ou votação fechada
-  function voteAction(e, label = "Iniciar votação →") {
-    if (e.votou) return '<button class="button rounded-xl button-outline" type="button" data-go="receipts">Ver recibo →</button>';
+  function voteAction(e, label = `Iniciar votação ${TV.icon("arrow-right")}`) {
+    if (e.votou) return `<button class="button rounded-xl button-outline" type="button" data-go="receipts">Ver recibo ${TV.icon("arrow-right")}</button>`;
     if (!e.aberta) return '<button class="button rounded-xl button-outline" type="button" disabled>Votação fechada</button>';
     return `<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-vote="${e.id}">${label}</button>`;
   }
@@ -30,11 +30,11 @@
     const votou = e && e.votou;
     return `
       <div class="steps-track">
-        <span class="is-done"><i>✓</i><b>Identidade</b><small>Confirmada</small></span>
+        <span class="is-done"><i>${TV.icon("check")}</i><b>Identidade</b><small>Confirmada</small></span>
         <hr>
-        <span class="${votou ? "is-done" : "is-current"}"><i>${votou ? "✓" : "2"}</i><b>Votação</b><small>${votou ? "Concluída" : "Por concluir"}</small></span>
+        <span class="${votou ? "is-done" : "is-current"}"><i>${votou ? TV.icon("check") : "2"}</i><b>Votação</b><small>${votou ? "Concluída" : "Por concluir"}</small></span>
         <hr>
-        <span class="${votou ? "is-done" : ""}"><i>${votou ? "✓" : "3"}</i><b>Recibo</b><small>${votou ? "Emitido" : "Após o voto"}</small></span>
+        <span class="${votou ? "is-done" : ""}"><i>${votou ? TV.icon("check") : "3"}</i><b>Recibo</b><small>${votou ? "Emitido" : "Após o voto"}</small></span>
       </div>`;
   }
 
@@ -43,7 +43,7 @@
       <article class="election-card rounded-2xl overflow-hidden shadow-soft">
         <div class="election-card-top">${statusLine(e)}<span>${timeInfo(e)}</span></div>
         <div class="election-card-body">
-          <span class="round-mark">✓</span>
+          <span class="round-mark">${TV.icon("vote")}</span>
           <div>
             <small>ELEIÇÃO · ${e.ano}</small>
             <h2>${escapeHtml(e.titulo)}</h2>
@@ -78,8 +78,8 @@
 
   // ===== Separador "Eleições": ativas em cima, concluídas em baixo =====
   const electionsPage = (ativas, concluidas) => `
-    ${head("ELEIÇÕES ACADÉMICAS", "As tuas eleições", "Consulta eleições ativas, agendadas e anteriores.")}
-    ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : emptyCard("Sem eleições ativas", "Ainda não estás habilitado em nenhuma eleição a decorrer.")}
+    ${head("ELEIÇÕES ACADÉMICAS", "As suas eleições", "Consulte as eleições ativas, agendadas e anteriores.")}
+    ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : emptyCard("Sem eleições ativas", "Ainda não tem nenhuma eleição a decorrer em que possa votar.")}
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
       <p class="eyebrow">HISTÓRICO</p>
       <h2>Eleições concluídas</h2>
@@ -88,7 +88,7 @@
         .map(
           (e) => `
               <div><span class="year">${e.ano}</span><span><b>${escapeHtml(e.titulo)}</b><small>${escapeHtml(e.periodo)}</small></span>
-              <span class="ok-label">✓ ${e.votou ? "VOTOU" : "ENCERRADA"}</span></div>`
+              <span class="ok-label">${TV.icon("check")} ${e.votou ? "VOTOU" : "ENCERRADA"}</span></div>`
         )
         .join("")}</div>`
       : '<p class="muted">Ainda não existem eleições concluídas.</p>'}
@@ -104,8 +104,8 @@
       <label class="field-label">Candidaturas<input value="${escapeHtml(e.candidatosRonda.map((c) => c.nome).join(" · ") || "—")}" readonly></label>
       ${e.descricao ? `<p class="notice rounded-xl"><b>Sobre esta eleição</b>${escapeHtml(e.descricao)}</p>` : ""}
       <div class="form-actions" style="justify-content:flex-start">
-        ${voteAction(e, "Abrir boletim digital →")}
-        <button class="link-button" type="button" data-back>← Voltar às eleições</button>
+        ${voteAction(e, `Abrir boletim digital ${TV.icon("arrow-right")}`)}
+        <button class="link-button" type="button" data-back>${TV.icon("arrow-left")} Voltar às eleições</button>
       </div>
     </article>`;
 
@@ -114,27 +114,27 @@
   const helpPage = ({ e, config, fimSessao }) => `
     ${head("APOIO AO ELEITOR", "Como podemos ajudar?")}
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
-      <p class="eyebrow">A TUA VOTAÇÃO</p>
+      <p class="eyebrow">A SUA VOTAÇÃO</p>
       ${e
       ? `<h2>${escapeHtml(e.titulo)}</h2>
-         <p>${e.votou ? "Já votaste nesta eleição. O recibo confirma que o voto foi contado." : timeInfo(e)}</p>
+         <p>${e.votou ? "Já votou nesta eleição. O recibo confirma que o voto foi contado." : timeInfo(e)}</p>
          <div class="form-actions" style="justify-content:flex-start">${voteAction(e)}</div>`
       : `<h2>Sem eleições ativas</h2>
-         <p>Não estás habilitado em nenhuma eleição a decorrer ou agendada. Se achas que devias estar, fala com a comissão eleitoral académica.</p>`}
+         <p>Não tem nenhuma eleição a decorrer ou agendada em que possa votar. Se acha que deveria ter, fale com a comissão eleitoral académica.</p>`}
     </article>
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
       <p class="eyebrow">SESSÃO E SEGURANÇA</p>
       <h2>Regras desta plataforma</h2>
       <ul class="profile-list">
-        ${config ? `<li class="is-yes">Cada sessão dura ${config.sessao_minutos} minutos${fimSessao ? `: a tua termina às ${fimSessao}` : ""}.</li>` : ""}
-        <li class="is-yes">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltares a entrar.</li>
+        ${config ? `<li class="is-yes">Cada sessão dura ${config.sessao_minutos} minutos${fimSessao ? `: a sua termina às ${fimSessao}` : ""}.</li>` : ""}
+        <li class="is-yes">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</li>
         ${config ? `<li class="is-no">Depois de ${config.login_tentativas} tentativas de entrada falhadas, a conta fica bloqueada durante ${config.login_bloqueio_minutos} minutos.</li>` : ""}
       </ul>
     </article>
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
       <h2>Dúvidas sobre a votação</h2>
       <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
-      <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes →</a>
+      <a class="button rounded-xl button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes ${TV.icon("arrow-right")}</a>
     </article>`;
 
   Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });

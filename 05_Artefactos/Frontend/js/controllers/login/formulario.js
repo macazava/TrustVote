@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formKicker.textContent = isRegister ? "CRIAÇÃO DE CONTA" : "INÍCIO DE SESSÃO";
     formTitle.textContent = isRegister ? "Criar conta" : isTeam ? "Aceder à área da equipa" : "Aceder à área do eleitor";
     formHelp.textContent = isRegister ? "Preencha os campos para criar a sua conta." : "Introduza as suas credenciais para continuar.";
-    submitLabel.textContent = isRegister ? "Criar conta →" : "Iniciar sessão →";
+    submitLabel.innerHTML = `${isRegister ? "Criar conta" : "Iniciar sessão"} ${window.TrustVote.icon("arrow-right")}`;
     heading.textContent = isTeam ? "Acesso reservado à equipa." : "Entre para exercer o seu voto.";
     description.textContent = isTeam
       ? "Aceda à área reservada da equipa do TrustVote."

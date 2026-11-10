@@ -2,6 +2,8 @@
    Cada página só tem os marcadores <div data-layout="..."></div> e esta função preenche-os.
    Corre antes dos outros scripts (scripts "defer" correm pela ordem em que aparecem). */
 (function montarLayout() {
+  const icon = window.TrustVote.icon; // definido em icones.js, que corre antes deste ficheiro
+
   // ===== Topo: atalhos, marca, menu principal e botão de votar =====
   const cabecalho = `
   <div class="topbar">
@@ -14,10 +16,10 @@
   <header class="site-header sticky top-0 z-40 bg-tv-paper/90 backdrop-blur-md">
     <div class="site-header-inner">
       <a class="brand" href="inicio.html">
-        <span class="brand-mark">✓</span>
+        <span class="brand-mark">${icon("check")}</span>
         <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
       </a>
-      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">${icon("menu")}</button>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="calendario.html">Eleições</a>
         <a href="listas.html">Listas académicas</a>
@@ -27,7 +29,7 @@
       </nav>
       <div class="header-actions">
         <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor"
-          data-voter-link>Votar <span>→</span></a>
+          data-voter-link>Votar ${icon("arrow-right")}</a>
       </div>
     </div>
   </header>`;
@@ -42,13 +44,13 @@
   <div class="breadcrumb-bar">
     <div class="container">
       <ol class="breadcrumb">
-        <li><a href="inicio.html" aria-label="Início">⌂</a></li>
+        <li><a href="inicio.html" aria-label="Início">${icon("house")}</a></li>
         ${seccao ? `<li><a href="${seccaoLink}">${seccao}</a></li>` : ""}
         <li${muda}>${atual}</li>
       </ol>
       <div class="breadcrumb-tools">
-        <button type="button" data-share aria-label="Partilhar">↗</button>
-        <button type="button" data-print aria-label="Imprimir">▣</button>
+        <button type="button" data-share aria-label="Partilhar">${icon("share")}</button>
+        <button type="button" data-print aria-label="Imprimir">${icon("printer")}</button>
       </div>
     </div>
   </div>`;
@@ -60,7 +62,7 @@
     <div class="footer-main grid-cols-2 md:grid-cols-4 lg:grid-cols-[1.5fr_repeat(3,1fr)] container">
       <div class="footer-about col-span-2 md:col-span-4 lg:col-span-1">
         <a class="brand" href="inicio.html">
-          <span class="brand-mark">✓</span>
+          <span class="brand-mark">${icon("check")}</span>
           <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Votação online para as eleições académicas da Universidade.</p>

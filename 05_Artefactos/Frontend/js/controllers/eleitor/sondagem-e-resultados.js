@@ -31,7 +31,7 @@
           const message = form.querySelector(".form-message");
           try {
             await ui.busy(form.querySelector("button"), "A enviar…", () => api.sondagem.responder(e.id, Number(form.poll.value)));
-            ui.toast("Obrigado! A tua resposta foi incluída na projeção.");
+            ui.toast("Obrigado! A sua resposta foi incluída na projeção.");
             carregar();
           } catch (error) {
             ui.message(message, error.message);

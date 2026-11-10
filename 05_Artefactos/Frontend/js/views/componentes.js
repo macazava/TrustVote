@@ -11,7 +11,7 @@
 
     error: (error, retry = true) => `
       <div class="state-box">
-        <span class="large-icon rounded-xl">!</span>
+        <span class="large-icon rounded-xl">${TV.icon("circle-alert")}</span>
         <h3>Não foi possível carregar</h3>
         <p>${escapeHtml((error && error.message) || error)}</p>
         ${retry ? '<button class="button rounded-xl button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
@@ -19,7 +19,7 @@
 
     empty: (title, text = "") => `
       <div class="state-box">
-        <span class="large-icon rounded-xl">▤</span>
+        <span class="large-icon rounded-xl">${TV.icon("inbox")}</span>
         <h3>${escapeHtml(title)}</h3>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
       </div>`,
@@ -114,7 +114,7 @@
 
   const pill = (text, warn = false) => `<span class="status-pill rounded-full${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
 
-  const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${ok ? "✓" : "!"} ${escapeHtml(text)}</span>`;
+  const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${TV.icon(ok ? "check" : "circle-alert")} ${escapeHtml(text)}</span>`;
 
   TV.ui = ui;
   TV.blocks = { head, cardHead, pill, okLabel };

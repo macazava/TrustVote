@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     voter.bindVoteButtons(panel("help"));
   }
 
-  panel("overview").innerHTML = ui.loading("A carregar as tuas eleições…");
+  panel("overview").innerHTML = ui.loading("A carregar as suas eleições…");
   panel("help").innerHTML = ui.loading();
   try {
     await loadAll();

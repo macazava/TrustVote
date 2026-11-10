@@ -12,7 +12,7 @@
   // ===== Lista de eleições =====
   const electionRow = (e, stats) => `
     <div class="election-row rounded-2xl transition hover:shadow-soft${e.estado === "em_curso" ? "" : " is-muted"}">
-      <span class="round-mark">✓</span>
+      <span class="round-mark">${TV.icon("vote")}</span>
       <div>
         ${pill(e.estadoLabel, e.estado === "rascunho")}
         <h3>${escapeHtml(e.titulo)}</h3>
@@ -23,7 +23,7 @@
     </div>`;
 
   const electionList = (detalhes, stats) => `
-    ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", '<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-new>Nova eleição →</button>')}
+    ${head("GESTÃO ELEITORAL", "Eleições", "Configure e acompanhe os atos eleitorais da plataforma.", `<button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="button" data-new>Nova eleição ${TV.icon("arrow-right")}</button>`)}
     ${card(`
       ${cardHead("GESTÃO ELEITORAL", "Eleições configuradas")}
       ${detalhes.length
@@ -63,7 +63,7 @@
   const candidateRow = (c, i, editavel) => `
     <tr>
       <td class="mono">${String(i + 1).padStart(2, "0")}</td>
-      <td><b>${escapeHtml(c.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml([...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · "))}</small></td>
+      <td><b>${escapeHtml(c.nome)}</b><br><small class="muted" style="font-size:12px">${escapeHtml([...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · "))}</small></td>
       <td>${escapeHtml(c.partido || "—")}</td>
       <td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td>
       <td>${editavel
@@ -96,7 +96,7 @@
             <label class="field-label">Curso<input name="curso" maxlength="150"></label>
             <label class="field-label">Ano<input name="ano" type="number" min="1" max="6"></label>
             <label class="field-label">Descrição<input name="descricao" maxlength="5000"></label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar →</button>
+            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Adicionar ${TV.icon("arrow-right")}</button>
             <button class="button rounded-xl button-light" type="button" data-cancel-cand hidden>Cancelar</button>
           </form>`
         : '<p class="muted">Só é possível alterar os candidatos antes de a votação começar.</p>'}`);
@@ -126,7 +126,7 @@
                 ${livres.map((u) => `<option value="${u.id}">${escapeHtml(u.nome)} · ${escapeHtml(u.email)}</option>`).join("")}
               </select>
             </label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Habilitar →</button>
+            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Habilitar ${TV.icon("arrow-right")}</button>
           </form>`
         : ""}`);
   }
@@ -155,7 +155,7 @@
             ${ativos.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="checkbox" name="cand" value="${c.id}"> ${escapeHtml(c.nome)}</label>`).join("")}
             <label class="field-label">Início<input type="datetime-local" name="inicio" required></label>
             <label class="field-label">Fim<input type="datetime-local" name="fim" required></label>
-            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Criar 2.ª volta →</button>
+            <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Criar 2.ª volta ${TV.icon("arrow-right")}</button>
           </form>`
         : ""}`);
 

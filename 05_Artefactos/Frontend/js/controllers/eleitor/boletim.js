@@ -43,7 +43,7 @@
     const recuperado =
       escolhidoId !== null ? null : guardado === "branco" ? { id: "branco" } : e.candidatosRonda.find((c) => String(c.id) === String(guardado));
     el.innerHTML = TV.voterView.ballotPage(e, recuperado ? recuperado.id : escolhidoId);
-    if (recuperado) ui.message(el.querySelector("[data-ballot] .form-message"), "Recuperámos a opção que tinhas marcado antes de a sessão terminar.", true);
+    if (recuperado) ui.message(el.querySelector("[data-ballot] .form-message"), "Recuperámos a opção que tinha marcado antes de a sessão terminar.", true);
 
     el.querySelector("[data-back]").addEventListener("click", voter.renderElections);
     el.querySelector("[data-ballot]").addEventListener("change", (event) => {
@@ -52,7 +52,7 @@
     el.querySelector("[data-ballot]").addEventListener("submit", (event) => {
       event.preventDefault();
       const escolhido = event.currentTarget.candidate.value;
-      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Seleciona uma candidatura ou o voto em branco.");
+      if (!escolhido) return ui.message(event.currentTarget.querySelector(".form-message"), "Selecione uma candidatura ou o voto em branco.");
       review(e, escolhido === "branco" ? null : e.candidatosRonda.find((c) => String(c.id) === escolhido));
     });
   };

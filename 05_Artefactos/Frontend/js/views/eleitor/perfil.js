@@ -21,7 +21,7 @@
           <h2>${escapeHtml(user.nome)}</h2>
           <p>${escapeHtml(user.email)}</p>
           <div class="profile-tags">
-            <span class="${user.ativo === false ? "is-off" : ""}">${user.ativo === false ? "! Conta suspensa" : "✓ Conta ativa"}</span>
+            <span class="${user.ativo === false ? "is-off" : ""}">${user.ativo === false ? `${TV.icon("circle-alert")} Conta suspensa` : `${TV.icon("check")} Conta ativa`}</span>
             <span>Nº ${escapeHtml(voterNumber(user))}</span>
             ${user.curso ? `<span>${escapeHtml(user.curso)}</span>` : ""}
             ${desde ? `<span>Registado desde ${desde}</span>` : ""}
@@ -36,7 +36,7 @@
 
   const stats = ({ habilitado, votadas, porVotar, recibos }) => `
     <div class="profile-stats grid-cols-2 lg:grid-cols-4">
-      ${stat(number(habilitado), habilitado === 1 ? "eleição em que estás habilitado" : "eleições em que estás habilitado")}
+      ${stat(number(habilitado), habilitado === 1 ? "eleição em que pode votar" : "eleições em que pode votar")}
       ${stat(number(votadas), votadas === 1 ? "voto depositado" : "votos depositados")}
       ${stat(number(porVotar), porVotar === 1 ? "votação aberta por votar" : "votações abertas por votar")}
       ${stat(number(recibos), recibos === 1 ? "recibo neste dispositivo" : "recibos neste dispositivo")}
@@ -44,8 +44,8 @@
 
   // ===== Participação: uma linha por eleição =====
   function estado(e) {
-    if (e.votou) return '<span class="ok-label">✓ VOTASTE</span>';
-    if (e.aberta) return `<button class="button button-small rounded-xl button-primary" type="button" data-vote="${e.id}">Votar agora →</button>`;
+    if (e.votou) return `<span class="ok-label">${TV.icon("check")} VOTOU</span>`;
+    if (e.aberta) return `<button class="button button-small rounded-xl button-primary" type="button" data-vote="${e.id}">Votar agora ${TV.icon("arrow-right")}</button>`;
     if (e.estado === "encerrada") return '<span class="ok-label is-off">ENCERRADA</span>';
     return `<span class="ok-label is-off">${escapeHtml(e.estadoLabel)}</span>`;
   }
@@ -65,7 +65,7 @@
             </li>`
           )
           .join("")}</ol>`
-        : '<p class="muted">Ainda não estás habilitado em nenhuma eleição.</p>'}`);
+        : '<p class="muted">Ainda não tem eleições em que possa votar.</p>'}`);
 
   // ===== Sessão e privacidade =====
   const sessionCard = (claims) =>
@@ -78,7 +78,7 @@
             <div><small>TERMINA</small><b>${time(new Date(claims.exp * 1000).toISOString())}</b></div>
           </div>`
         : '<p class="muted">Sessão iniciada neste navegador.</p>'}
-      <p class="muted">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltares a entrar.</p>`);
+      <p class="muted">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</p>`);
 
   const privacyCard = () =>
     card(`
@@ -86,15 +86,15 @@
       <h2>O que fica guardado</h2>
       <ul class="profile-list">
         <li class="is-yes">Nome, e-mail, curso e número de eleitor</li>
-        <li class="is-yes">Se já votaste em cada eleição, para impedir votos repetidos</li>
-        <li class="is-no">Em quem votaste: o voto é separado da tua identidade</li>
+        <li class="is-yes">Se já votou em cada eleição, para impedir votos repetidos</li>
+        <li class="is-no">Em quem votou: o voto é separado da sua identidade</li>
       </ul>
-      <p class="muted">Os dados eleitorais são geridos pela instituição. Para corrigir algum dado, contacta a comissão eleitoral.</p>
-      <a class="text-link" href="privacidade.html">Política de privacidade →</a>`);
+      <p class="muted">Os dados eleitorais são geridos pela instituição. Para corrigir algum dado, contacte a comissão eleitoral.</p>
+      <a class="text-link" href="privacidade.html">Política de privacidade ${TV.icon("arrow-right")}</a>`);
 
   // d = { user, claims, lista, numeros }
   const profilePage = (d) => `
-    ${head("A MINHA CONTA", "Perfil", "A tua identidade de eleitor, a participação nas eleições e a segurança da conta.")}
+    ${head("A MINHA CONTA", "Perfil", "A sua identidade de eleitor, a participação nas eleições e a segurança da conta.")}
     ${identity(d.user)}
     ${stats(d.numeros)}
     <div class="profile-grid grid-cols-1 lg:grid-cols-[1.35fr_1fr]">

@@ -30,11 +30,11 @@
     const e = voter.featured();
     const hora = new Date().getHours();
     const subtitulo = !e
-      ? "Não tens eleições ativas de momento."
+      ? "Não tem eleições ativas de momento."
       : e.votou
-        ? "O teu voto já foi registado. Obrigado por participares."
+        ? "O seu voto já foi registado. Obrigado por participar."
         : e.aberta
-          ? "Tens uma eleição académica à espera do teu voto."
+          ? "Tem uma eleição académica à espera do seu voto."
           : `A próxima eleição começa a ${dateTime(e.inicio)}.`;
 
     panel("overview").innerHTML = TV.voterView.overviewPage({

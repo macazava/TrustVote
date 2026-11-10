@@ -19,8 +19,8 @@
           <tbody>${e.candidatos
         .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
         .join("")}</tbody></table></div>
-         <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição →</button>`
-      : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos →</button></div>`;
+         <button class="button rounded-xl button-outline" type="button" data-manage>Gerir na eleição ${TV.icon("arrow-right")}</button>`
+      : `${ui.empty("Sem candidatos nesta eleição")}<div class="state-box"><button class="button rounded-xl button-outline" type="button" data-manage>Adicionar candidatos ${TV.icon("arrow-right")}</button></div>`;
 
   // ===== Eleitores =====
   const votersPage = () => `
@@ -58,13 +58,13 @@
         <textarea name="linhas" rows="4" required placeholder="20260001;Ana Silva;Design&#10;20260002"></textarea>
       </label>
       <p class="form-message" role="status"></p>
-      <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Acrescentar →</button>
+      <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Acrescentar ${TV.icon("arrow-right")}</button>
     </form>`;
 
   // Botões para suspender/reativar e mudar o perfil (exceto na própria conta)
   const userActions = (u, eu) =>
     u.id === eu.id
-      ? '<small class="muted" style="font-size:11px">A sua conta</small>'
+      ? '<small class="muted" style="font-size:12px">A sua conta</small>'
       : `<button type="button" data-user="${u.id}" data-patch='${JSON.stringify({ ativo: !u.ativo })}'>${u.ativo ? "Suspender" : "Reativar"}</button>
          <button type="button" data-user="${u.id}" data-patch='${JSON.stringify({ perfil: u.perfil === "administrador" ? "eleitor" : "administrador" })}'>${u.perfil === "administrador" ? "Tornar eleitor" : "Tornar administrador"}</button>
          <button type="button" data-reset="${u.id}" data-nome="${escapeHtml(u.nome)}">Repor palavra-passe</button>`;
@@ -78,7 +78,7 @@
           (u) => `
               <tr>
                 <td class="mono">${escapeHtml(voterNumber(u))}</td>
-                <td><b>${escapeHtml(u.nome)}</b><br><small class="muted" style="font-size:11px">${escapeHtml(u.email)}</small></td>
+                <td><b>${escapeHtml(u.nome)}</b><br><small class="muted" style="font-size:12px">${escapeHtml(u.email)}</small></td>
                 <td>${escapeHtml(u.curso || "—")}</td>
                 <td>${u.perfil === "administrador" ? "Administrador" : "Credencial individual"}</td>
                 <td>${okLabel(u.ativo ? "ATIVO" : "SUSPENSO", u.ativo)}</td>

@@ -13,7 +13,7 @@
         <label class="field-label">Nova palavra-passe<input type="password" name="nova" autocomplete="new-password" minlength="8" required></label>
         <label class="field-label">Repetir a nova<input type="password" name="repetir" autocomplete="new-password" minlength="8" required></label>
         <p class="form-message" role="status"></p>
-        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Alterar →</button>
+        <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift" type="submit">Alterar ${TV.icon("arrow-right")}</button>
       </form>
     </article>`;
 

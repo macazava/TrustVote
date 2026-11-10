@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     // Mostra que a sessão já está iniciada (ex.: "Entrar para votar" passa a "Continuar na minha área")
     document.querySelectorAll("[data-voter-label]").forEach((link) => {
-      link.innerHTML = `${window.TrustVote.format.escapeHtml(link.dataset.voterLabel)} <span>→</span>`;
+      link.innerHTML = `${window.TrustVote.format.escapeHtml(link.dataset.voterLabel)} ${window.TrustVote.icon("arrow-right")}`;
     });
   }
 });

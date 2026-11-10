@@ -24,7 +24,7 @@
 
   // Resultado de "Verificar cadeia": cada registo guarda o hash do anterior
   const chainResult = (v) =>
-    `<p class="notice rounded-xl"><b>${v.valida ? "✓ Cadeia íntegra" : "! Cadeia quebrada"}</b>${v.valida
+    `<p class="notice rounded-xl"><b>${v.valida ? `${TV.icon("circle-check")} Cadeia íntegra` : `${TV.icon("circle-alert")} Cadeia quebrada`}</b>${v.valida
       ? `Os ${number(v.total)} registos estão completos e não foram alterados.`
       : `O registo #${v.primeiro_invalido} foi alterado, ou um registo anterior foi apagado.`}</p>`;
 
@@ -54,7 +54,7 @@
     ${campo("Servidor que respondeu", saude ? `${saude.instance} · base de dados ${saude.database} · Redis ${saude.redis}` : "Sem resposta")}
     ${c
       ? `${campo("Duração da sessão", `${number(c.sessao_minutos)} minutos`)}
-         ${campo("Limite de tentativas de login", `${number(c.login_tentativas)} falhas → bloqueio de ${number(c.login_bloqueio_minutos)} minutos`)}
+         ${campo("Limite de tentativas de login", `Bloqueio de ${number(c.login_bloqueio_minutos)} minutos após ${number(c.login_tentativas)} falhas`)}
          ${campo("Apuramento", c.apuramento === "worker" ? "Pelo worker, logo após o fecho (fila no Redis)" : "Imediato, no pedido de encerrar")}`
       : '<p class="form-message">Não foi possível ler a configuração do servidor.</p>'}`;
 

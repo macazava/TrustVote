@@ -65,14 +65,14 @@
     ];
     return avisos
       .filter(Boolean)
-      .map(([link, etiqueta, texto]) => `<a href="${link}"><time>${escapeHtml(String(etiqueta).toUpperCase())}</time><b>${texto}</b><i>→</i></a>`)
+      .map(([link, etiqueta, texto]) => `<a href="${link}"><time>${escapeHtml(String(etiqueta).toUpperCase())}</time><b>${texto}</b><i>${TV.icon("arrow-right")}</i></a>`)
       .join("");
   }
 
   // ===== Histórico: uma entrada por eleição encerrada =====
   const historyPeriod = (e) => `
     <article class="history-period">
-      <header><span>▣</span><time>${escapeHtml(period(e.data_inicio, e.data_fim))}</time></header>
+      <header><span>${TV.icon("calendar")}</span><time>${escapeHtml(period(e.data_inicio, e.data_fim))}</time></header>
       <h2>${escapeHtml(e.titulo)}</h2>
       ${e.descricao ? `<p>${escapeHtml(e.descricao)}</p>` : ""}
       <div class="facts grid-cols-2 sm:grid-cols-3">
@@ -89,11 +89,11 @@
   const lastCount = (e) =>
     e
       ? [
-        `● ${dateTime(fecho(e))} · Votação encerrada`,
-        `● ${e.apurada_em ? dateTime(e.apurada_em) : "por apurar"} · Contagem concluída`,
-        `● ${e.titulo} · ${percent(e.participacao)} de participação`,
+        `${dateTime(fecho(e))} · Votação encerrada`,
+        `${e.apurada_em ? dateTime(e.apurada_em) : "por apurar"} · Contagem concluída`,
+        `${e.titulo} · ${percent(e.participacao)} de participação`,
       ].map((linha) => `<span>${escapeHtml(linha)}</span>`).join("")
-      : ["Votação encerrada", "Contagem concluída", "Resultados publicados"].map((t) => `<span>● ${t}</span>`).join("");
+      : ["Votação encerrada", "Contagem concluída", "Resultados publicados"].map((t) => `<span>${t}</span>`).join("");
 
   // ===== Resultados =====
   const turnoutCard = (dados) => `
@@ -111,7 +111,7 @@
     <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
       <h2>Resultados detalhados</h2>
       <p>Os resultados por candidatura estão disponíveis na área reservada.</p>
-      <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor">Iniciar sessão →</a>
+      <a class="button rounded-xl button-primary shadow-sm hover:shadow-lift" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
     </article>`;
 
   function resultsCard(eleicao, rondas, error) {

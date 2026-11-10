@@ -26,7 +26,7 @@
       <article class="dash-card rounded-2xl shadow-soft transition-shadow duration-300 hover:shadow-lift">
         <div class="card-head">
           <div><p class="eyebrow">PROJEÇÃO ATUAL</p><h2>Estimativa para ${e.ano}</h2></div>
-          <small class="muted" style="font-size:9px">RESPOSTAS · N=${number(s.amostra)}</small>
+          <small class="muted">RESPOSTAS · N=${number(s.amostra)}</small>
         </div>
         ${(s.projecao || []).map(projectionRow).join("")}
         <p class="notice rounded-xl"><b>Margem de erro estimada (95%): ±${escapeHtml(String(s.intervalo ?? "—"))} p.p.</b>Com poucas respostas a projeção fica perto da igualdade entre candidatos. Não é uma sondagem oficial.</p>
@@ -36,7 +36,7 @@
         <h2>Se a eleição fosse hoje?</h2>
         <p>A resposta é anónima, só conta uma vez e não afeta o voto.</p>
         ${s.respondeu
-      ? '<p class="notice rounded-xl"><b>Já respondeste a esta sondagem.</b>Obrigado pela participação.</p>'
+      ? '<p class="notice rounded-xl"><b>Já respondeu a esta sondagem.</b>Obrigado pela participação.</p>'
       : `<form class="poll-form" data-poll-form>
           ${e.candidatosRonda.map((c) => `<label class="radio-line rounded-xl transition hover:border-tv-accent"><input type="radio" name="poll" value="${c.id}" required> ${escapeHtml(c.nome)}</label>`).join("")}
           <p class="form-message" role="status"></p>

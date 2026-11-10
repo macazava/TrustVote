@@ -11,7 +11,7 @@
 
   const metricCard = (titulo, destaque, valor, extra) => `
     <article class="metric-card rounded-2xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
-      <span class="check-box rounded-lg">✓</span>
+      <span class="check-box rounded-lg">${TV.icon("check")}</span>
       <small>${titulo}</small><em>${destaque}</em>
       <b>${valor}</b>
       ${extra}
@@ -27,7 +27,7 @@
         ${metricCard(
       "PARTICIPAÇÃO",
       s ? percent(s.participacao) : "",
-      s ? `${number(s.votantes)} <small style="font-size:11px">/ ${number(s.habilitados)}</small>` : "—",
+      s ? `${number(s.votantes)} <small style="font-size:12px">/ ${number(s.habilitados)}</small>` : "—",
       `<div class="bar"><i style="width:${s ? Math.min(100, s.participacao) : 0}%"></i></div>`
     )}
         ${metricCard(
@@ -45,7 +45,7 @@
         ${metricCard(
       "ELEIÇÕES",
       `${number(lista.length)} NO TOTAL`,
-      `${number(emCurso)} <small style="font-size:11px">em curso</small>`,
+      `${number(emCurso)} <small style="font-size:12px">em curso</small>`,
       `<span>${number(encerradas)} encerradas · ${number(lista.length - emCurso - encerradas)} em preparação</span>`
     )}
       </div>
@@ -60,7 +60,7 @@
         ? barChart(resultRows(rondaAtual, eleicao.candidatos).slice(0, 5), "Votos por candidato na eleição em curso")
         : `<div class="empty-box rounded-xl">${escapeHtml(resultados.error ? resultados.error.message : "Sem resultados por enquanto.")}</div>`
       }
-          <button class="button rounded-xl button-outline" type="button" data-go="results">Ver todos os resultados →</button>
+          <button class="button rounded-xl button-outline" type="button" data-go="results">Ver todos os resultados ${TV.icon("arrow-right")}</button>
         </article>
       </div>`;
   }
