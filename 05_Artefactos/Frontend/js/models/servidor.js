@@ -4,8 +4,10 @@
 
   const TV = (window.TrustVote = window.TrustVote || {});
 
-  // Único endereço da API: o nginx do Docker, que reparte os pedidos pelos dois servidores
-  const base = "http://127.0.0.1:8080/api";
+  // O Live Server local usa a API HTTPS do nginx; via nginx, página e API partilham a origem.
+  const base = window.location.port === "5500"
+    ? "https://127.0.0.1:8443/api"
+    : `${window.location.origin}/api`;
   const TIMEOUT = 12000;
 
   // As páginas estão em pages/ (o index.html na raiz só reencaminha para pages/inicio.html)

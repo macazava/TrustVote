@@ -9,7 +9,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 
 > **Estado atual:** o Compose corre a aplicação completa. `servidor1` e `servidor2` usam
 > a imagem de [`../Backend`](../Backend/README.md), e o nginx encaminha `/api/` para
-> essas instâncias. O `../Frontend` corre no Live Server, em `127.0.0.1:5500`.
+> essas instâncias e serve também o `../Frontend`. O Live Server em `127.0.0.1:5500`
+> continua disponível para desenvolvimento local.
 
 ---
 
@@ -19,7 +20,7 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
                   Windows (anfitrião) — um único PC físico
  ┌──────────────────────────────────────────────────────────────────────────┐
  │ browser / cliente                                                        │
- │      │  http://127.0.0.1:8080   (única porta publicada por defeito)      │
+ │      │  http://127.0.0.1:8080 / https://127.0.0.1:8443                   │
  │ ┌────▼──────────────────── rede Docker: trustvote-network ─────────────┐ │
  │ │  ┌────────┐   round-robin  ┌───────────┐                             │ │
  │ │  │ nginx  ├───────────────►│ servidor1 ├──┐                          │ │
@@ -338,17 +339,19 @@ replicação não substitui backups, porque os erros lógicos também são repli
   corresponde ao código atual).
 - As instâncias recebem as variáveis `DATABASE_*`, `APP_INSTANCE` e `JWT_SECRET`, que tem
   de ser igual em ambas para um token valer em qualquer uma.
-- O nginx encaminha `/api/` para as instâncias, sem o prefixo: `/api/eleicoes` chega à API
-  como `/eleicoes`. As páginas são servidas pelo Live Server.
-- O browser chama sempre o nginx (`http://127.0.0.1:8080`), nunca as instâncias diretamente.
+- O nginx serve as páginas do frontend e encaminha `/api/` para as instâncias, sem o
+  prefixo: `/api/eleicoes` chega à API como `/eleicoes`.
+- O browser chama o nginx, nunca as instâncias diretamente. Ao abrir pelo nginx, o frontend
+  usa a API na mesma origem (`/api`); no Live Server local, usa `https://127.0.0.1:8443/api`.
 - As instâncias são stateless: os tokens são JWT, não há sessão em memória.
 
-### CORS: `localhost` e `127.0.0.1` são origens diferentes
+### CORS no Live Server local
 
 O backend autoriza, por omissão, `http://127.0.0.1:5500` **e** `http://localhost:5500`
 (`CORS_ORIGINS`, ver [`../Backend/README.md`](../Backend/README.md)). Sem as duas, abrir
-a aplicação por um dos nomes e apontar a API para o outro dá erro de CORS, e o frontend
-mostra "Não foi possível contactar o servidor" — mesmo com a stack toda saudável.
+a aplicação por um dos nomes e apontar a API para o outro pode dar erro de CORS. Quando
+frontend e API são servidos pelo nginx, ambos partilham a mesma origem e esta configuração
+de CORS não é necessária para o navegador.
 
 ### `JWT_SECRET`: contentores vs. API local
 

@@ -35,7 +35,7 @@ dá o essencial para arrancar.
 ## 2. Arquitetura em duas linhas
 
 ```text
-   browser (Live Server, 127.0.0.1:5500)
+   browser (nginx HTTPS :8443 ou Live Server local :5500)
       │
       ▼
    nginx :8080 ──► servidor1 ─┐
@@ -52,17 +52,17 @@ guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
   **`8001`**, ligada ao PostgreSQL da infraestrutura.
 
-- O **frontend** tem um único endereço: abre `Frontend/pages/inicio.html` com o **Live Server**
-  na raiz do projeto, em <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
-- O frontend chama sempre a API em `http://127.0.0.1:8080/api` (definida em
-  `Frontend/js/models/servidor.js`). O backend aceita como origens **tanto
+- O **frontend** pode ser servido pelo nginx, em <https://127.0.0.1:8443/>, ou pelo **Live Server**
+  para desenvolvimento local, em <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
+- Via nginx, o frontend usa a API na mesma origem (`/api`); no Live Server local, usa
+  `https://127.0.0.1:8443/api` (definido em `Frontend/js/models/servidor.js`). O backend aceita como origens **tanto
   `http://127.0.0.1:5500` como `http://localhost:5500`** (a variável `CORS_ORIGINS`,
   com esses dois valores por omissão). Isto é necessário porque, para o navegador,
   `localhost` e `127.0.0.1` são origens **diferentes**: abrir a página por um nome e
   apontar a API para o outro dá erro de CORS e a mensagem "Não foi possível contactar
   o servidor".
-- O **nginx** encaminha `/api/` para `servidor1`/`servidor2`, que correm a imagem do
-  `Backend/`. Quem abrir `http://127.0.0.1:8080/` é reencaminhado para o Live Server.
+- O **nginx** serve o frontend e encaminha `/api/` para `servidor1`/`servidor2`, que correm a imagem do
+  `Backend/`.
 - O frontend não tem dados próprios: tudo o que mostra vem da API.
 
 ---
