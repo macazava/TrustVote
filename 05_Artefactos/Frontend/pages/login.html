@@ -5,28 +5,31 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acesso | TrustVote</title>
-  <link rel="stylesheet" href="../css/style.css?v=19">
-  <link rel="stylesheet" href="../css/tailwind.css?v=19">
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tailwind.css?v=20">
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=19"></script>
-  <script defer src="../js/models/api.js?v=19"></script>
-  <script defer src="../js/models/sessao.js?v=19"></script>
-  <script defer src="../js/views/formatar.js?v=19"></script>
-  <script defer src="../js/models/eleicoes.js?v=19"></script>
-  <script defer src="../js/views/componentes.js?v=19"></script>
+  <script defer src="../js/views/icones.js?v=20"></script>
+  <script defer src="../js/models/servidor.js?v=20"></script>
+  <script defer src="../js/models/api.js?v=20"></script>
+  <script defer src="../js/models/sessao.js?v=20"></script>
+  <script defer src="../js/views/formatar.js?v=20"></script>
+  <script defer src="../js/models/eleicoes.js?v=20"></script>
+  <script defer src="../js/views/componentes.js?v=20"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=19"></script>
-  <script defer src="../js/controllers/login/formulario.js?v=19"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=19"></script>
-  <script defer src="../js/controllers/login/autenticacao.js?v=19"></script>
-  <script defer src="../js/views/animacoes.js?v=19"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=20"></script>
+  <script defer src="../js/controllers/login/formulario.js?v=20"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=20"></script>
+  <script defer src="../js/controllers/login/autenticacao.js?v=20"></script>
+  <script defer src="../js/views/animacoes.js?v=20"></script>
 </head>
 
 <body data-page="login">
 
   <header class="auth-header">
     <a class="brand" href="inicio.html">
-      <span class="brand-mark">✓</span>
+      <span class="brand-mark"><svg class="icon" aria-hidden="true">
+          <use href="#i-check"></use>
+        </svg></span>
       <span>
         <b>TRUSTVOTE</b>
         <small>ELEIÇÕES ACADÉMICAS</small>
@@ -34,7 +37,9 @@
     </a>
 
     <a class="text-link" href="inicio.html">
-      ← Voltar ao portal público
+      <svg class="icon" aria-hidden="true">
+        <use href="#i-arrow-left"></use>
+      </svg> Voltar ao portal público
     </a>
   </header>
 
@@ -52,7 +57,9 @@
 
       <div class="assurances">
         <div>
-          <span>◇</span>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg></span>
           <div>
             <b>Ligação protegida</b>
             <small>As credenciais são enviadas apenas ao servidor TrustVote.</small>
@@ -60,7 +67,9 @@
         </div>
 
         <div>
-          <span>◎</span>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-lock"></use>
+            </svg></span>
           <div>
             <b>Identidade separada do voto</b>
             <small>A sua conta nunca fica ligada à escolha depositada.</small>
@@ -68,7 +77,9 @@
         </div>
 
         <div>
-          <span>▤</span>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-vote"></use>
+            </svg></span>
           <div>
             <b>Um voto por volta</b>
             <small>Cada eleitor autenticado só pode votar uma vez em cada volta.</small>
@@ -181,7 +192,9 @@
 
         <button class="button rounded-xl button-primary shadow-sm hover:shadow-lift full-button" type="submit"
           id="submit-label">
-          Iniciar sessão →
+          Iniciar sessão <svg class="icon" aria-hidden="true">
+            <use href="#i-arrow-right"></use>
+          </svg>
         </button>
 
         <button class="link-button register-link" type="button" data-mode="register">
@@ -192,11 +205,13 @@
           Já tenho conta · Iniciar sessão
         </button>
 
-        <p class="server-status" data-server-status>● A verificar o servidor…</p>
+        <p class="server-status" data-server-status>A verificar o servidor…</p>
       </form>
 
       <div class="auth-footer">
-        ⓘ
+        <svg class="icon" aria-hidden="true">
+          <use href="#i-info"></use>
+        </svg>
         <span>
           <b>Precisa de ajuda?</b>
           Consulte a página de <a href="ajuda.html#contactos">apoio</a>.

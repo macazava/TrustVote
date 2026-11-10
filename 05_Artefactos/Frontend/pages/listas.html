@@ -8,24 +8,25 @@
 
   <title>Listas académicas | TrustVote</title>
 
-  <link rel="stylesheet" href="../css/style.css?v=19">
-  <link rel="stylesheet" href="../css/tailwind.css?v=19">
-  <script defer src="../js/views/layout.js?v=19"></script>
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tailwind.css?v=20">
+  <script defer src="../js/views/icones.js?v=20"></script>
+  <script defer src="../js/views/layout.js?v=20"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=19"></script>
-  <script defer src="../js/models/api.js?v=19"></script>
-  <script defer src="../js/models/sessao.js?v=19"></script>
-  <script defer src="../js/views/formatar.js?v=19"></script>
-  <script defer src="../js/models/eleicoes.js?v=19"></script>
-  <script defer src="../js/views/componentes.js?v=19"></script>
+  <script defer src="../js/models/servidor.js?v=20"></script>
+  <script defer src="../js/models/api.js?v=20"></script>
+  <script defer src="../js/models/sessao.js?v=20"></script>
+  <script defer src="../js/views/formatar.js?v=20"></script>
+  <script defer src="../js/models/eleicoes.js?v=20"></script>
+  <script defer src="../js/views/componentes.js?v=20"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=19"></script>
-  <script defer src="../js/views/publico.js?v=19"></script>
+  <script defer src="../js/views/graficos.js?v=20"></script>
+  <script defer src="../js/views/publico.js?v=20"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=19"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=19"></script>
-  <script defer src="../js/controllers/publico/paginas.js?v=19"></script>
-  <script defer src="../js/views/animacoes.js?v=19"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=20"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=20"></script>
+  <script defer src="../js/controllers/publico/paginas.js?v=20"></script>
+  <script defer src="../js/views/animacoes.js?v=20"></script>
 </head>
 
 <body>
@@ -34,7 +35,8 @@
   <div data-layout="cabecalho"></div>
 
   <!-- Caminho da página -->
-  <div data-layout="caminho" data-seccao="Listas académicas" data-seccao-link="listas.html" data-atual="Listas candidatas" data-atual-muda></div>
+  <div data-layout="caminho" data-seccao="Listas académicas" data-seccao-link="listas.html"
+    data-atual="Listas candidatas" data-atual-muda></div>
 
   <main
     class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
@@ -49,7 +51,9 @@
       </div>
       <div class="manager-card rounded-2xl shadow-soft">
         <h2>Gestor responsável</h2>
-        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <span>›</span></a>
+        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <svg class="icon" aria-hidden="true">
+            <use href="#i-chevron-right"></use>
+          </svg></a>
       </div>
     </aside>
 
@@ -59,8 +63,12 @@
         <div class="section-item-head">
           <h1>Listas candidatas</h1>
           <div class="section-item-tools">
-            <button class="pill-button" type="button" data-share>↗ Partilhar</button>
-            <button class="pill-button" type="button" data-print>▣ Imprimir</button>
+            <button class="pill-button" type="button" data-share><svg class="icon" aria-hidden="true">
+                <use href="#i-share"></use>
+              </svg> Partilhar</button>
+            <button class="pill-button" type="button" data-print><svg class="icon" aria-hidden="true">
+                <use href="#i-printer"></use>
+              </svg> Imprimir</button>
           </div>
         </div>
         <p class="lead" data-listas-lead>Listas candidatas: quem são e o que propõem.</p>

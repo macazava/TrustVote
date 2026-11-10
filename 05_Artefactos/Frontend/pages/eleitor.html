@@ -7,36 +7,37 @@
 
     <title>Área do eleitor | TrustVote</title>
 
-    <link rel="stylesheet" href="../css/style.css?v=19">
-    <link rel="stylesheet" href="../css/tailwind.css?v=19">
+    <link rel="stylesheet" href="../css/style.css?v=20">
+    <link rel="stylesheet" href="../css/tailwind.css?v=20">
     <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-    <script defer src="../js/models/servidor.js?v=19"></script>
-    <script defer src="../js/models/api.js?v=19"></script>
-    <script defer src="../js/models/sessao.js?v=19"></script>
-    <script defer src="../js/views/formatar.js?v=19"></script>
-    <script defer src="../js/models/eleicoes.js?v=19"></script>
-    <script defer src="../js/views/componentes.js?v=19"></script>
+    <script defer src="../js/views/icones.js?v=20"></script>
+    <script defer src="../js/models/servidor.js?v=20"></script>
+    <script defer src="../js/models/api.js?v=20"></script>
+    <script defer src="../js/models/sessao.js?v=20"></script>
+    <script defer src="../js/views/formatar.js?v=20"></script>
+    <script defer src="../js/models/eleicoes.js?v=20"></script>
+    <script defer src="../js/views/componentes.js?v=20"></script>
     <!-- View: desenho do HTML -->
-    <script defer src="../js/views/palavra-passe.js?v=19"></script>
-    <script defer src="../js/views/graficos.js?v=19"></script>
-    <script defer src="../js/views/eleitor/eleicoes.js?v=19"></script>
-    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=19"></script>
-    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=19"></script>
-    <script defer src="../js/views/eleitor/recibos.js?v=19"></script>
-    <script defer src="../js/views/eleitor/perfil.js?v=19"></script>
+    <script defer src="../js/views/palavra-passe.js?v=20"></script>
+    <script defer src="../js/views/graficos.js?v=20"></script>
+    <script defer src="../js/views/eleitor/eleicoes.js?v=20"></script>
+    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js?v=20"></script>
+    <script defer src="../js/views/eleitor/sondagem-e-resultados.js?v=20"></script>
+    <script defer src="../js/views/eleitor/recibos.js?v=20"></script>
+    <script defer src="../js/views/eleitor/perfil.js?v=20"></script>
     <!-- Controller: o que acontece em cada página -->
-    <script defer src="../js/controllers/comum/menu.js?v=19"></script>
-    <script defer src="../js/controllers/comum/paineis.js?v=19"></script>
-    <script defer src="../js/controllers/comum/pagina.js?v=19"></script>
-    <script defer src="../js/controllers/comum/palavra-passe.js?v=19"></script>
-    <script defer src="../js/controllers/comum/descarregar.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/eleicoes.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/boletim.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/recibos.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/perfil.js?v=19"></script>
-    <script defer src="../js/controllers/eleitor/arranque.js?v=19"></script>
-    <script defer src="../js/views/animacoes.js?v=19"></script>
+    <script defer src="../js/controllers/comum/menu.js?v=20"></script>
+    <script defer src="../js/controllers/comum/paineis.js?v=20"></script>
+    <script defer src="../js/controllers/comum/pagina.js?v=20"></script>
+    <script defer src="../js/controllers/comum/palavra-passe.js?v=20"></script>
+    <script defer src="../js/controllers/comum/descarregar.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/eleicoes.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/boletim.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js?v=20"></script>
+    <script defer src="../js/controllers/eleitor/arranque.js?v=20"></script>
+    <script defer src="../js/views/animacoes.js?v=20"></script>
 </head>
 
 <body class="panel-body" data-page="voter">
@@ -45,7 +46,7 @@
     <header class="dashboard-header">
 
         <a class="brand" href="inicio.html">
-            <span class="brand-mark">✓</span>
+            <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>
             <span>
                 <b>TRUSTVOTE</b>
                 <small>ELEIÇÕES ACADÉMICAS</small>
@@ -68,9 +69,9 @@
         <div class="panel-user">
             <span class="session-chip rounded-lg" data-session-chip>SESSÃO SEGURA</span>
             <span class="user-chip" data-user-chip></span>
-            <a class="portal-link" href="inicio.html">Portal ↗</a>
+            <a class="portal-link" href="inicio.html">Portal <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg></a>
             <button class="logout-button" type="button" data-logout aria-label="Terminar sessão"
-                title="Terminar sessão">↪</button>
+                title="Terminar sessão"><svg class="icon" aria-hidden="true"><use href="#i-log-out"></use></svg></button>
         </div>
 
     </header>

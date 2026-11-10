@@ -7,24 +7,25 @@
 
   <title>Acessibilidade | TrustVote</title>
 
-  <link rel="stylesheet" href="../css/style.css?v=19">
-  <link rel="stylesheet" href="../css/tailwind.css?v=19">
-  <script defer src="../js/views/layout.js?v=19"></script>
+  <link rel="stylesheet" href="../css/style.css?v=20">
+  <link rel="stylesheet" href="../css/tailwind.css?v=20">
+  <script defer src="../js/views/icones.js?v=20"></script>
+  <script defer src="../js/views/layout.js?v=20"></script>
   <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
-  <script defer src="../js/models/servidor.js?v=19"></script>
-  <script defer src="../js/models/api.js?v=19"></script>
-  <script defer src="../js/models/sessao.js?v=19"></script>
-  <script defer src="../js/views/formatar.js?v=19"></script>
-  <script defer src="../js/models/eleicoes.js?v=19"></script>
-  <script defer src="../js/views/componentes.js?v=19"></script>
+  <script defer src="../js/models/servidor.js?v=20"></script>
+  <script defer src="../js/models/api.js?v=20"></script>
+  <script defer src="../js/models/sessao.js?v=20"></script>
+  <script defer src="../js/views/formatar.js?v=20"></script>
+  <script defer src="../js/models/eleicoes.js?v=20"></script>
+  <script defer src="../js/views/componentes.js?v=20"></script>
   <!-- View: desenho do HTML -->
-  <script defer src="../js/views/graficos.js?v=19"></script>
-  <script defer src="../js/views/publico.js?v=19"></script>
+  <script defer src="../js/views/graficos.js?v=20"></script>
+  <script defer src="../js/views/publico.js?v=20"></script>
   <!-- Controller: o que acontece em cada página -->
-  <script defer src="../js/controllers/comum/menu.js?v=19"></script>
-  <script defer src="../js/controllers/comum/pagina.js?v=19"></script>
-  <script defer src="../js/controllers/publico/paginas.js?v=19"></script>
-  <script defer src="../js/views/animacoes.js?v=19"></script>
+  <script defer src="../js/controllers/comum/menu.js?v=20"></script>
+  <script defer src="../js/controllers/comum/pagina.js?v=20"></script>
+  <script defer src="../js/controllers/publico/paginas.js?v=20"></script>
+  <script defer src="../js/views/animacoes.js?v=20"></script>
 </head>
 
 <body>
@@ -52,7 +53,7 @@
       <div class="hero-actions">
         <button class="button rounded-xl button-outline" type="button" data-font-toggle aria-pressed="false">A+ Texto
           maior</button>
-        <button class="button rounded-xl button-outline" type="button" data-contrast-toggle aria-pressed="false">◐
+        <button class="button rounded-xl button-outline" type="button" data-contrast-toggle aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-contrast"></use></svg>
           Contraste elevado</button>
       </div>
     </article>
@@ -80,7 +81,7 @@
         <div>
           <h2>Acompanhamento</h2>
           <p>Estudantes com necessidades específicas podem pedir apoio ao Gabinete de Apoio ao Estudante.</p>
-          <a href="ajuda.html#contactos">Pedir acompanhamento →</a>
+          <a href="ajuda.html#contactos">Pedir acompanhamento <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
         </div>
       </article>
 
