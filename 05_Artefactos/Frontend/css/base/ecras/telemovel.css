@@ -12,11 +12,11 @@
     .topbar a,
     .topbar button {
         padding: 0 14px;
-        font-size: 13px;
+        font-size: var(--text-sm);
     }
 
     .brand b {
-        font-size: 16px;
+        font-size: var(--text-base);
     }
 
     .hero h1 {
@@ -29,11 +29,11 @@
 
     .lead,
     .section-item > p {
-        font-size: 15px;
+        font-size: var(--text-base);
     }
 
     .section-item h1 {
-        font-size: 28px;
+        font-size: var(--text-3xl);
     }
 
     .section-item-tools {
@@ -61,7 +61,7 @@
     }
 
     .metrics b {
-        font-size: 24px;
+        font-size: var(--text-2xl);
     }
 
     .election-info {
@@ -71,11 +71,11 @@
 
     .security-card h3,
     .platform-grid h3 {
-        font-size: 22px;
+        font-size: var(--text-xl);
     }
 
     .breadcrumb {
-        font-size: 13px;
+        font-size: var(--text-sm);
     }
 
     .breadcrumb-tools {
@@ -87,7 +87,7 @@
     }
 
     .press-hero h2 {
-        font-size: 20px;
+        font-size: var(--text-xl);
     }
 
     .history-hero,
@@ -105,7 +105,7 @@
 
     .panel-link {
         padding: 8px 10px;
-        font-size: 14px;
+        font-size: var(--text-sm);
     }
 
     .dashboard-content h1 {
@@ -113,7 +113,7 @@
     }
 
     .dashboard-content .muted {
-        font-size: 15px;
+        font-size: var(--text-base);
     }
 
     .election-card-body {
@@ -121,7 +121,7 @@
     }
 
     .election-card-body h2 {
-        font-size: 24px;
+        font-size: var(--text-2xl);
     }
 
     .election-card-actions,

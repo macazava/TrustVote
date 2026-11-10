@@ -1,5 +1,4 @@
 /* TrustVote · índice dos estilos
-   A ordem conta: cada ficheiro pode afinar o que vem antes dele.
    base/        cores, letra e regras gerais
    componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
    paginas/     estilos próprios de cada página ou área
@@ -11,6 +10,7 @@
 @import url("componentes/cabecalho.css?v=7");
 @import url("componentes/rodape.css?v=7");
 @import url("componentes/cartoes.css?v=7");
+@import url("componentes/superficies.css?v=7");
 @import url("componentes/formularios.css?v=7");
 @import url("componentes/tabelas.css?v=7");
 @import url("componentes/estados.css?v=7");

@@ -4,8 +4,8 @@
     flex-direction: column;
     gap: 8px;
     margin: 18px 0;
-    color: #475467;
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     font-weight: 500;
 }
 
@@ -15,21 +15,21 @@
     width: 100%;
     min-height: 46px;
     padding: 12px 14px;
-    border: 1px solid #dcdcd6;
-    background: #f8f8f6;
-    color: var(--ink);
-    font-size: 14px;
+    border: 1px solid var(--color-border);
+    background: var(--color-field);
+    color: var(--color-text);
+    font-size: var(--text-sm);
 }
 
 .field-label input:focus,
 .field-label select:focus,
 .field-label textarea:focus {
-    border-color: var(--accent);
-    outline: 2px solid #1F5A4522;
+    border-color: var(--color-brand);
+    outline: 2px solid var(--color-focus-ring);
 }
 
 .field-label input[readonly] {
-    color: var(--ink);
+    color: var(--color-text);
 }
 
 .field-label textarea {
@@ -40,8 +40,8 @@
     display: flex;
     align-items: flex-start;
     gap: 9px;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.5;
 }
 
@@ -49,7 +49,7 @@
     width: 16px;
     height: 16px;
     margin-top: 2px;
-    accent-color: var(--accent);
+    accent-color: var(--color-brand);
 }
 
 .radio-line {
@@ -58,34 +58,34 @@
     gap: 10px;
     margin: 10px 0;
     padding: 15px 16px;
-    border: 1px solid var(--line);
-    background: white;
-    font-size: 16px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: var(--text-base);
     cursor: pointer;
 }
 
 .radio-line:has(input:checked) {
-    border-color: var(--accent);
-    background: var(--mint);
+    border-color: var(--color-brand);
+    background: var(--color-brand-soft);
 }
 
 .radio-line input {
-    accent-color: var(--accent);
+    accent-color: var(--color-brand);
 }
 
 .form-message {
     min-height: 16px;
     margin: 8px 0;
-    color: var(--warn);
-    font-size: 13px;
+    color: var(--color-warning);
+    font-size: var(--text-sm);
 }
 
 .form-message.is-ok {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .form-message a {
-    color: var(--accent);
+    color: var(--color-brand);
     font-weight: 700;
 }
 
@@ -101,7 +101,7 @@
     flex-wrap: wrap;
     margin-top: 18px;
     padding-top: 14px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .inline-form .field-label {
@@ -122,17 +122,17 @@
     justify-content: space-between;
     gap: 16px;
     padding: 18px 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .toggle-row b {
     display: block;
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 .toggle-row small {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 .switch {
@@ -142,7 +142,7 @@
     height: 22px;
     border: 0;
     border-radius: var(--radius-full);
-    background: #c9cbc6;
+    background: var(--color-border-strong);
 }
 
 .switch::after {
@@ -152,13 +152,13 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: white;
+    background: var(--color-surface);
     content: "";
     transition: transform 0.2s;
 }
 
 .switch[aria-pressed="true"] {
-    background: var(--accent);
+    background: var(--color-brand);
 }
 
 .switch[aria-pressed="true"]::after {

@@ -21,7 +21,7 @@
 
 .dashboard-content h1 {
     margin: 8px 0 10px;
-    color: var(--title);
+    color: var(--color-heading);
     font-size: 44px;
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -32,13 +32,13 @@ body[data-page="admin"] .dashboard-content {
 }
 
 body[data-page="admin"] .dashboard-content h1 {
-    color: var(--ink);
+    color: var(--color-text);
     font-weight: 700;
     letter-spacing: -0.04em;
 }
 
 .dashboard-content .muted {
-    font-size: 18px;
+    font-size: var(--text-lg);
 }
 
 .page-head {
@@ -53,33 +53,33 @@ body[data-page="admin"] .dashboard-content h1 {
     align-items: center;
     gap: 14px;
     padding: 14px 18px;
-    border: 1px solid var(--line);
-    background: white;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .badge-card small {
     display: block;
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.06em;
 }
 
 .badge-card b {
-    font-size: 13px;
+    font-size: var(--text-sm);
 }
 
 .badge-card i {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--color-brand);
 }
 
 /* ===== Cartão da eleição ===== */
 .election-card {
     margin-top: 32px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .election-card-top {
@@ -88,13 +88,13 @@ body[data-page="admin"] .dashboard-content h1 {
     justify-content: space-between;
     gap: 16px;
     padding: 14px 18px;
-    border-bottom: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 13px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .election-card-top b {
-    color: var(--ink);
+    color: var(--color-text);
 }
 
 .election-card-body {
@@ -109,20 +109,20 @@ body[data-page="admin"] .dashboard-content h1 {
 }
 
 .election-card-body small {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.04em;
 }
 
 .election-card-body h2 {
     margin: 6px 0 8px;
-    font-size: 30px;
+    font-size: var(--text-3xl);
 }
 
 .election-card-body p {
     margin: 0;
-    color: var(--muted);
-    font-size: 16px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
 }
 
 .election-card-actions {
@@ -136,8 +136,8 @@ body[data-page="admin"] .dashboard-content h1 {
     align-items: center;
     gap: 16px;
     padding: 18px 28px;
-    border-top: 1px solid var(--line);
-    background: var(--sand);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
 }
 
 .steps-track>span {
@@ -145,7 +145,7 @@ body[data-page="admin"] .dashboard-content h1 {
     grid-template-columns: 30px auto;
     align-items: center;
     gap: 0 10px;
-    font-size: var(--text-min);
+    font-size: var(--text-xs);
 }
 
 .steps-track>span>i {
@@ -154,26 +154,26 @@ body[data-page="admin"] .dashboard-content h1 {
     place-items: center;
     width: 28px;
     height: 28px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     border-radius: 50%;
-    background: white;
-    font-size: var(--text-min);
+    background: var(--color-surface);
+    font-size: var(--text-xs);
     font-style: normal;
 }
 
 .steps-track>span.is-done>i,
 .steps-track>span.is-current>i {
-    border-color: var(--title);
-    background: var(--title);
-    color: white;
+    border-color: var(--color-heading);
+    background: var(--color-heading);
+    color: var(--color-on-dark);
 }
 
 .steps-track b {
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 .steps-track small {
-    color: var(--muted);
+    color: var(--color-text-muted);
 }
 
 .steps-track>hr {
@@ -181,6 +181,6 @@ body[data-page="admin"] .dashboard-content h1 {
     height: 1px;
     margin: 0;
     border: 0;
-    background: var(--line);
+    background: var(--color-border);
 }
 

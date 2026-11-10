@@ -3,7 +3,7 @@
 /* ===== Áreas da plataforma ===== */
 .platform-section {
     padding: 100px 0;
-    background: var(--sand);
+    background: var(--color-surface-sunken);
 }
 
 .platform-grid {
@@ -14,32 +14,32 @@
 
 .platform-grid article {
     padding: 28px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .platform-grid article > small {
     display: flex;
     justify-content: space-between;
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.1em;
 }
 
 .platform-grid article > small b {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .platform-grid h3 {
     margin: 30px 0 8px;
-    font-size: 26px;
+    font-size: var(--text-2xl);
     font-weight: 600;
 }
 
 .platform-grid p {
     max-width: 470px;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
@@ -73,8 +73,8 @@
 }
 
 .news-grid h3 {
-    color: var(--title);
-    font-size: 30px;
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
     font-weight: 600;
 }
 
@@ -89,18 +89,18 @@
     align-items: center;
     gap: 14px;
     padding: 18px 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-border);
     text-decoration: none;
 }
 
 .news-list time {
-    color: var(--accent);
-    font-size: var(--text-min);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
     font-weight: 700;
 }
 
 .news-list b {
-    font-size: 15px;
+    font-size: var(--text-base);
     line-height: 1.4;
 }
 
@@ -109,6 +109,6 @@
 }
 
 .news-list a:hover b {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 

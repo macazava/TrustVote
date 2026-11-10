@@ -1,41 +1,134 @@
-/* Cores, tipografia e medidas usadas em todo o site */
+/* TrustVote · design tokens (a única fonte de cores, letra, medidas, cantos e sombras)
+
+   Duas camadas:
+   1. Paleta  (--green-*, --neutral-*, --amber-*, --red-*): os valores em bruto. Não usar diretamente nos componentes.
+   2. Papéis  (--color-*, --text-*, --space-*, --radius-*, --shadow-*): o que cada valor significa.
+      Os componentes só usam papéis, por isso mudar o tema (ex.: alto contraste) é mudar só esta camada.
+
+   O Tailwind (js/tailwind.config.js) fica apenas com a grelha e os breakpoints: não define cores nem sombras. */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-    --accent: #1F5A45;
-    --accent-strong: #2d6a4f;
-    --ink: #252824;
-    --ivory: #f4f0e4;
-    --paper: #fffdf6;
-    --sand: #ebe7dd;
-    --beige: #e8e5d7;
-    --mint: #e7f1ec;
-    --line: #d8d1c2;
-    --muted: #505650;
-    --green: #1F5A45;
-    --dark: #173f32;
-    --title: #1b4332;
-    --warn: #9a4a12;
-    --danger: #b3261e;
-    --line-strong: #b9b2a3;
-    --container: 1200px;
+    /* ===================== 1. PALETA ===================== */
 
-    /* Cantos: os mesmos valores das classes Tailwind usadas no HTML
-       (rounded-lg = sm, rounded-xl = md, rounded-2xl = lg) */
+    /* Verde institucional (escala do mais claro ao mais escuro) */
+    --green-50: #e7f1ec;
+    --green-100: #d9e7df;
+    --green-200: #cbd8d0;
+    --green-300: #4bd59a;  /* verde vivo: só sobre fundos escuros (indicadores "ao vivo") */
+    --green-400: #6f9c84;
+    --green-600: #2d6a4f;
+    --green-700: #1f5a45;
+    --green-800: #1b4332;
+    --green-900: #173f32;
+
+    /* Neutros quentes (papel e marfim) */
+    --neutral-0: #fffdf6;
+    --neutral-50: #f9f7f1;
+    --neutral-100: #f4f0e4;
+    --neutral-200: #ebe7dd;
+    --neutral-300: #d8d1c2;
+    --neutral-400: #b9b2a3;
+    --neutral-500: #8d928c;
+    --neutral-600: #505650;
+    --neutral-800: #3b403c;
+    --neutral-900: #252824;
+
+    /* Avisos e erros */
+    --amber-50: #fff0d9;
+    --amber-200: #f2c39b;
+    --amber-500: #c0841f;
+    --amber-700: #895718;
+    --red-600: #b3261e;
+
+    /* ===================== 2. PAPÉIS ===================== */
+
+    /* Fundos e superfícies */
+    --color-bg: var(--neutral-100);              /* fundo da página */
+    --color-surface: var(--neutral-0);           /* cartões, painéis, cabeçalho */
+    --color-surface-sunken: var(--neutral-200);  /* zonas rebaixadas: separadores, quadrados de ícone */
+    --color-field: var(--neutral-50);            /* fundo dos campos de formulário */
+
+    /* Texto */
+    --color-text: var(--neutral-900);
+    --color-text-secondary: var(--neutral-800);
+    --color-text-muted: var(--neutral-600);
+    --color-text-subtle: var(--neutral-500);     /* só em texto grande ou gráficos (contraste < 4.5:1) */
+    --color-heading: var(--green-800);
+
+    /* Marca e ações */
+    --color-brand: var(--green-700);             /* links, ícones, realces */
+    --color-brand-deep: var(--green-900);        /* faixas escuras (topo, painéis, cartões escuros) */
+    --color-brand-soft: var(--green-50);         /* fundo de realce suave */
+    --color-brand-muted: var(--green-200);       /* bordas de realce suave */
+    --color-action: var(--green-600);            /* botão principal */
+    --color-action-hover: var(--green-700);
+    --color-focus: var(--green-400);             /* contorno de foco do teclado */
+    --color-indicator: var(--green-400);         /* traços decorativos e item atual dos menus */
+    --color-focus-ring: color-mix(in srgb, var(--green-700) 14%, transparent);
+    --color-brand-tint: color-mix(in srgb, var(--green-700) 8%, transparent);
+
+    /* Linhas */
+    --color-border: var(--neutral-300);
+    --color-border-strong: var(--neutral-400);
+
+    /* Estados */
+    --color-success: var(--green-700);
+    --color-success-soft: var(--green-50);
+    --color-warning: var(--amber-700);
+    --color-warning-soft: var(--amber-50);
+    --color-warning-dot: var(--amber-500);
+    --color-danger: var(--red-600);
+    --color-on-brand: #fff;                      /* texto sobre o botão principal ou de perigo */
+
+    /* Sobre fundos escuros (--color-brand-deep) */
+    --color-on-dark: #fff;
+    --color-on-dark-muted: var(--green-200);
+    --color-on-dark-border: rgb(255 255 255 / 28%);
+    --color-on-dark-hover: rgb(255 255 255 / 10%);
+    --color-on-dark-active: var(--green-600);
+    --color-on-dark-live: var(--green-300);
+    --color-on-dark-warning: var(--amber-200);
+    --color-overlay: rgb(23 63 50 / 45%);        /* fundo atrás das janelas modais */
+
+    /* Tipografia: escala única (todas as medidas de letra do site saem daqui) */
+    --font-sans: Poppins, Arial, sans-serif;
+    --font-mono: ui-monospace, Consolas, monospace;
+    --text-xs: 12px;    /* mínimo absoluto: etiquetas, legendas */
+    --text-sm: 14px;    /* texto secundário, tabelas, ajudas */
+    --text-base: 16px;  /* texto corrente, botões, menus */
+    --text-lg: 18px;    /* introduções */
+    --text-xl: 20px;    /* títulos de cartão */
+    --text-2xl: 24px;   /* números de destaque, títulos de secção pequenos */
+    --text-3xl: 30px;   /* títulos de página nos painéis */
+    --text-min: var(--text-xs);
+
+    /* Espaçamento (múltiplos de 4px) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Cantos: controlos (sm, md) e superfícies (lg) */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-full: 999px;
 
-    /* Sombras suaves, tingidas com o verde da marca (as mesmas de shadow-soft/shadow-lift do Tailwind) */
+    /* Elevação: sombras suaves, tingidas com o verde da marca */
     --shadow-sm: 0 1px 2px rgb(23 63 50 / 6%);
     --shadow-md: 0 10px 30px -12px rgb(23 63 50 / 18%);
     --shadow-lg: 0 22px 45px -18px rgb(23 63 50 / 28%);
-    --shadow: var(--shadow-lg);
 
-    /* Tamanho mínimo de texto em todo o site */
-    --text-min: 12px;
-    font-family: Poppins, Arial, sans-serif;
-    color: var(--ink);
-    background: var(--ivory);
+    /* Layout */
+    --container: 1200px;
+
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background: var(--color-bg);
 }

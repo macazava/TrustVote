@@ -1,7 +1,7 @@
 /* Rodapé do portal */
 .site-footer {
     padding: 56px 0 0;
-    background: var(--sand);
+    background: var(--color-surface-sunken);
 }
 
 .footer-main {
@@ -13,8 +13,8 @@
 
 .footer-about p {
     max-width: 270px;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
@@ -27,14 +27,14 @@
 
 .footer-main > div > b {
     margin: 4px 0 6px;
-    color: var(--title);
-    font-size: 13px;
+    color: var(--color-heading);
+    font-size: var(--text-sm);
     letter-spacing: 0.02em;
 }
 
 .footer-main a:not(.brand) {
-    color: var(--ink);
-    font-size: 15px;
+    color: var(--color-text);
+    font-size: var(--text-base);
     text-decoration: none;
 }
 
@@ -48,9 +48,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 13px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .footer-bottom a {

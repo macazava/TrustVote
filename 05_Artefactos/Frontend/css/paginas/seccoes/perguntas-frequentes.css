@@ -7,9 +7,9 @@
 }
 
 .faq-list details {
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    background: var(--paper);
+    background: var(--color-surface);
 }
 
 .faq-list summary {
@@ -19,8 +19,8 @@
     gap: 16px;
     min-height: 48px;
     padding: 14px 18px;
-    color: var(--title);
-    font-size: 16px;
+    color: var(--color-heading);
+    font-size: var(--text-base);
     font-weight: 600;
     list-style: none;
     cursor: pointer;
@@ -32,8 +32,8 @@
 
 .faq-list summary::after {
     flex: none;
-    color: var(--accent);
-    font-size: 20px;
+    color: var(--color-brand);
+    font-size: var(--text-xl);
     content: "+";
 }
 
@@ -42,7 +42,7 @@
 }
 
 .faq-list summary:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--color-brand);
     outline-offset: 2px;
     border-radius: var(--radius-lg);
 }
@@ -50,12 +50,12 @@
 .faq-list details p {
     margin: 0;
     padding: 0 18px 16px;
-    color: #3b403c;
-    font-size: 15px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
     line-height: 1.7;
 }
 
 .faq-list details a {
-    color: var(--accent);
+    color: var(--color-brand);
     text-underline-offset: 4px;
 }

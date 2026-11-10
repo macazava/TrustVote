@@ -11,13 +11,13 @@
     grid-template-columns: 130px 1fr;
     gap: 24px;
     padding: 22px;
-    border-top: 1px solid var(--line);
-    background: white;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .timeline time {
-    color: var(--accent);
-    font-size: 12px;
+    color: var(--color-brand);
+    font-size: var(--text-xs);
     font-weight: 700;
 }
 
@@ -25,22 +25,22 @@
 .candidate-grid h2,
 .info-list h2 {
     margin: 0 0 8px;
-    font-size: 19px;
+    font-size: var(--text-xl);
 }
 
 .timeline p,
 .candidate-grid p,
 .info-list p {
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
 .candidate-proposals {
     margin: 0 0 18px;
     padding-left: 18px;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
@@ -53,8 +53,8 @@
 
 .candidate-grid article {
     padding: 24px;
-    border: 1px solid var(--line);
-    background: white;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .candidate-badge {
@@ -64,9 +64,9 @@
     height: 52px;
     margin-bottom: 18px;
     border-radius: 50%;
-    background: var(--mint);
-    color: var(--title);
-    font-size: 16px;
+    background: var(--color-brand-soft);
+    color: var(--color-heading);
+    font-size: var(--text-base);
     font-weight: 700;
 }
 
@@ -78,18 +78,18 @@
     display: flex;
     gap: 22px;
     padding: 22px 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .info-list article > span {
-    color: var(--accent);
-    font-size: 14px;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
     font-weight: 700;
 }
 
 .info-list a {
-    color: var(--accent);
-    font-size: 14px;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
 }
 
 .faq-list {
@@ -98,7 +98,7 @@
 
 .faq-list details {
     padding: 19px 5px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .faq-list details p {
@@ -111,7 +111,7 @@
     align-items: center;
     gap: 14px;
     padding: 10px 0;
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 .result-row:not(:has(.avatar)) {
@@ -123,15 +123,15 @@
 }
 
 .result-row small {
-    color: var(--muted);
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     text-align: right;
 }
 
 .result-row .avatar {
     width: 46px;
     height: 46px;
-    font-size: 13px;
+    font-size: var(--text-sm);
 }
 
 .result-row .bar {

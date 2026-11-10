@@ -15,21 +15,21 @@
 
 .side-menu,
 .manager-card {
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .side-menu h2,
 .manager-card h2 {
     margin: 0;
     padding: 26px 16px 0;
-    color: var(--ink);
-    font-size: 23px;
+    color: var(--color-text);
+    font-size: var(--text-2xl);
     font-weight: 500;
 }
 
 .manager-card h2 {
-    color: var(--title);
+    color: var(--color-heading);
 }
 
 .side-menu h2::after,
@@ -38,7 +38,7 @@
     width: 28px;
     height: 3px;
     margin: 12px 0 16px;
-    background: #6f9c84;
+    background: var(--color-indicator);
     content: "";
 }
 
@@ -49,20 +49,20 @@
 
 .side-menu a {
     padding: 15px 22px;
-    border-top: 1px solid var(--line);
-    border-left: 4px solid #ecebe6;
-    color: var(--ink);
-    font-size: 16px;
+    border-top: 1px solid var(--color-border);
+    border-left: 4px solid transparent;
+    color: var(--color-text);
+    font-size: var(--text-base);
     text-decoration: none;
 }
 
 .side-menu a:hover {
-    background: var(--ivory);
+    background: var(--color-bg);
 }
 
 .side-menu a[aria-current="page"] {
-    border-left-color: #6f9c84;
-    background: var(--beige);
+    border-left-color: var(--color-indicator);
+    background: var(--color-surface-sunken);
     font-weight: 700;
 }
 
@@ -71,20 +71,20 @@
     justify-content: space-between;
     gap: 10px;
     padding: 0 18px 24px;
-    color: var(--muted);
-    font-size: 15px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
     text-decoration: none;
 }
 
 .manager-card a:hover {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .section-content {
     min-height: 560px;
     padding: 40px 44px 48px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .section-item[hidden] {
@@ -100,7 +100,7 @@
 
 .section-item h1 {
     margin: 0 0 26px;
-    color: var(--title);
+    color: var(--color-heading);
     font-size: clamp(32px, 3.4vw, 42px);
     font-weight: 500;
     line-height: 1.15;
@@ -115,8 +115,8 @@
 
 .section-item > p {
     max-width: 780px;
-    color: #3b403c;
-    font-size: 17px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-lg);
     line-height: 1.8;
 }
 
@@ -127,12 +127,12 @@
 
 .section-links li {
     margin: 10px 0;
-    color: var(--ink);
-    font-size: 17px;
+    color: var(--color-text);
+    font-size: var(--text-lg);
 }
 
 .section-links a {
-    color: var(--accent);
+    color: var(--color-brand);
     text-underline-offset: 5px;
 }
 
@@ -142,8 +142,8 @@
 
 .visit-also h2 {
     margin: 0;
-    color: var(--title);
-    font-size: 28px;
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
     font-weight: 500;
 }
 
@@ -152,7 +152,7 @@
     width: 28px;
     height: 2px;
     margin: 14px 0 22px;
-    background: #6f9c84;
+    background: var(--color-indicator);
     content: "";
 }
 
@@ -165,7 +165,7 @@
 .visit-also li {
     position: relative;
     margin: 12px 0;
-    font-size: 16px;
+    font-size: var(--text-base);
 }
 
 .visit-also li::before {
@@ -175,12 +175,12 @@
 }
 
 .visit-also a {
-    color: var(--ink);
+    color: var(--color-text);
     text-decoration: none;
 }
 
 .visit-also a:hover {
-    color: var(--accent);
+    color: var(--color-brand);
     text-decoration: underline;
 }
 
@@ -193,7 +193,7 @@
 
 .content-page > h1 {
     margin: 12px 0 14px;
-    color: var(--title);
+    color: var(--color-heading);
     font-size: clamp(40px, 4.6vw, 56px);
     font-weight: 600;
     letter-spacing: -0.02em;

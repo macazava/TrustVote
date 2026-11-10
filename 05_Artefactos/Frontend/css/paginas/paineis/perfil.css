@@ -7,8 +7,8 @@
     gap: 26px;
     margin-top: 24px;
     padding: 30px 32px;
-    background: linear-gradient(135deg, var(--dark), var(--accent));
-    color: #fff;
+    background: linear-gradient(135deg, var(--color-brand-deep), var(--color-brand));
+    color: var(--color-on-dark);
 }
 
 .profile-avatar {
@@ -17,11 +17,11 @@
     place-items: center;
     width: 88px;
     height: 88px;
-    border: 3px solid rgb(255 255 255 / 35%);
+    border: 3px solid var(--color-on-dark-border);
     border-radius: 50%;
-    background: var(--mint);
-    color: var(--title);
-    font-size: 30px;
+    background: var(--color-brand-soft);
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
     font-weight: 700;
 }
 
@@ -31,23 +31,23 @@
 }
 
 .profile-id small {
-    color: #cbd8d0;
-    font-size: var(--text-min);
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.12em;
 }
 
 .profile-id h2 {
     margin: 4px 0 2px;
-    color: #fff;
-    font-size: 28px;
+    color: var(--color-on-dark);
+    font-size: var(--text-3xl);
     font-weight: 700;
     letter-spacing: -0.02em;
 }
 
 .profile-id p {
     margin: 0;
-    color: #e3ece7;
-    font-size: 14px;
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-sm);
     overflow-wrap: anywhere;
 }
 
@@ -60,16 +60,16 @@
 
 .profile-tags span {
     padding: 5px 12px;
-    border: 1px solid rgb(255 255 255 / 30%);
+    border: 1px solid var(--color-on-dark-border);
     border-radius: var(--radius-full);
-    background: rgb(255 255 255 / 10%);
-    font-size: 12px;
+    background: var(--color-on-dark-hover);
+    font-size: var(--text-xs);
     font-weight: 500;
 }
 
 .profile-tags .is-off {
-    border-color: #f2c39b;
-    color: #fde3cc;
+    border-color: var(--color-on-dark-warning);
+    color: var(--color-on-dark-warning);
 }
 
 .profile-hero .button {
@@ -86,21 +86,21 @@
 
 .profile-stat {
     padding: 20px 22px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .profile-stat b {
     display: block;
-    color: var(--title);
+    color: var(--color-heading);
     font-size: 34px;
     font-weight: 700;
     line-height: 1.1;
 }
 
 .profile-stat small {
-    color: var(--muted);
-    font-size: 13px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 /* ===== Grelha de cartões ===== */
@@ -111,7 +111,7 @@
 }
 
 .profile-grid .muted {
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 /* ===== Linha do tempo da participação ===== */
@@ -127,7 +127,7 @@
     align-items: center;
     gap: 16px;
     padding: 14px 0 14px 4px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .profile-timeline li:first-child {
@@ -141,13 +141,13 @@
 
 .profile-timeline b {
     display: block;
-    color: var(--ink);
-    font-size: 15px;
+    color: var(--color-text);
+    font-size: var(--text-base);
 }
 
 .profile-timeline small {
-    color: var(--muted);
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 .profile-timeline .button {
@@ -159,19 +159,19 @@
     flex: none;
     width: 12px;
     height: 12px;
-    border: 2px solid var(--line);
+    border: 2px solid var(--color-border);
     border-radius: 50%;
-    background: var(--paper);
+    background: var(--color-surface);
 }
 
 .profile-timeline .is-done .profile-dot {
-    border-color: var(--accent);
-    background: var(--accent);
+    border-color: var(--color-brand);
+    background: var(--color-brand);
 }
 
 .profile-timeline .is-open .profile-dot {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--mint);
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 4px var(--color-brand-soft);
 }
 
 /* ===== Sessão ===== */
@@ -185,19 +185,19 @@
 .profile-session div {
     padding: 14px 16px;
     border-radius: var(--radius-md);
-    background: var(--mint);
+    background: var(--color-brand-soft);
 }
 
 .profile-session small {
     display: block;
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.08em;
 }
 
 .profile-session b {
-    color: var(--title);
-    font-size: 22px;
+    color: var(--color-heading);
+    font-size: var(--text-xl);
 }
 
 /* ===== Privacidade ===== */
@@ -207,7 +207,7 @@
     margin: 16px 0;
     padding: 0;
     list-style: none;
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 .profile-list li {
@@ -229,12 +229,12 @@
 
 .profile-list .is-yes::before {
     --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20 6 9 17l-5-5%27/%3E%3C/svg%3E");
-    background: var(--accent);
+    background: var(--color-brand);
 }
 
 .profile-list .is-no::before {
     --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M18 6 6 18%27/%3E%3Cpath d=%27m6 6 12 12%27/%3E%3C/svg%3E");
-    background: var(--danger);
+    background: var(--color-danger);
 }
 
 /* ===== Telemóvel ===== */
@@ -249,11 +249,11 @@
     .profile-avatar {
         width: 68px;
         height: 68px;
-        font-size: 24px;
+        font-size: var(--text-2xl);
     }
 
     .profile-id h2 {
-        font-size: 23px;
+        font-size: var(--text-2xl);
     }
 
     .profile-hero .button {
@@ -261,7 +261,7 @@
     }
 
     .profile-stat b {
-        font-size: 28px;
+        font-size: var(--text-3xl);
     }
 
     .profile-timeline li {

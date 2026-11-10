@@ -7,7 +7,7 @@
     align-items: center;
     gap: 26px;
     padding: 40px 30px;
-    border-color: var(--line);
+    border-color: var(--color-border);
 }
 
 .receipt-card .seal-icon {
@@ -17,7 +17,7 @@
 }
 
 .receipt-card h2 {
-    font-size: 28px;
+    font-size: var(--text-3xl);
 }
 
 .receipt-card .receipt-code {
@@ -28,8 +28,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    color: var(--accent);
-    font-size: var(--text-min);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
 }
 
 .receipt-actions {
@@ -64,9 +64,9 @@
 
 .model-tag {
     padding: 10px 14px;
-    border: 1px solid #c9cde8;
-    background: #f1f4ff;
-    color: var(--muted);
-    font-size: var(--text-min);
+    border: 1px solid var(--color-brand-muted);
+    background: var(--color-brand-soft);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 

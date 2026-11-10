@@ -29,7 +29,7 @@
 
 @media (max-width: 760px) {
     .dashboard-content h1 {
-        font-size: 32px;
+        font-size: var(--text-3xl);
     }
 
     .session-chip,

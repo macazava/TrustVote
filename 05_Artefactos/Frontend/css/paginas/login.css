@@ -5,8 +5,8 @@
     justify-content: space-between;
     gap: 20px;
     padding: 20px max(24px, calc((100% - var(--container)) / 2));
-    border-bottom: 1px solid var(--line);
-    background: var(--paper);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .auth-layout {
@@ -23,7 +23,7 @@
 .auth-intro h1 {
     max-width: 580px;
     margin: 15px 0;
-    color: var(--title);
+    color: var(--color-heading);
     font-size: clamp(40px, 4.6vw, 60px);
     font-weight: 600;
     line-height: 1.05;
@@ -32,8 +32,8 @@
 
 .auth-intro>p:not(.eyebrow) {
     max-width: 550px;
-    color: var(--muted);
-    font-size: 16px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
     line-height: 1.75;
 }
 
@@ -54,10 +54,10 @@
     place-items: center;
     width: 44px;
     height: 44px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--accent);
-    font-size: 22px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-brand);
+    font-size: var(--text-xl);
 }
 
 .assurances>div>div {
@@ -67,18 +67,18 @@
 }
 
 .assurances b {
-    font-size: 15px;
+    font-size: var(--text-base);
 }
 
 .assurances small {
-    color: var(--muted);
-    font-size: 13px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .auth-card {
     padding: 32px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .role-switch,
@@ -86,7 +86,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin-bottom: 14px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
 }
 
 .mode-switch {
@@ -97,16 +97,16 @@
 .mode-switch button {
     padding: 17px;
     border: 0;
-    background: var(--beige);
-    color: #4b5563;
-    font-size: 16px;
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
     font-weight: 600;
 }
 
 .role-switch button.active,
 .mode-switch button.active {
-    background: var(--title);
-    color: white;
+    background: var(--color-heading);
+    color: var(--color-on-dark);
 }
 
 .auth-card form {
@@ -115,13 +115,13 @@
 
 .auth-card form h2 {
     margin: 0 0 14px;
-    font-size: 26px;
+    font-size: var(--text-2xl);
     font-weight: 700;
 }
 
 .auth-card form>p:not(.eyebrow):not(.form-message):not(.server-status) {
-    color: var(--muted);
-    font-size: 15px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
     line-height: 1.7;
 }
 
@@ -130,18 +130,18 @@
     flex-direction: column;
     gap: 8px;
     margin: 18px 0;
-    color: #475467;
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 .auth-card input:not([type="checkbox"]) {
     width: 100%;
     min-height: 58px;
     padding: 14px 16px;
-    border: 1px solid #dcdcd6;
-    background: #f8f8f6;
-    color: var(--ink);
-    font-size: 16px;
+    border: 1px solid var(--color-border);
+    background: var(--color-field);
+    color: var(--color-text);
+    font-size: var(--text-base);
 }
 
 .form-options {
@@ -153,9 +153,9 @@
 }
 
 .form-options .link-button {
-    border-bottom: 1px solid var(--title);
-    color: var(--title);
-    font-size: 15px;
+    border-bottom: 1px solid var(--color-heading);
+    color: var(--color-heading);
+    font-size: var(--text-base);
     text-decoration: none;
 }
 
@@ -163,15 +163,15 @@
     width: 100%;
     min-height: 62px;
     margin-top: 10px;
-    font-size: 19px;
+    font-size: var(--text-xl);
 }
 
 .register-link {
     display: block;
     margin: 20px auto 0;
-    border-bottom: 1px solid var(--ink);
-    color: var(--ink);
-    font-size: 15px;
+    border-bottom: 1px solid var(--color-text);
+    color: var(--color-text);
+    font-size: var(--text-base);
     text-decoration: none;
 }
 
@@ -184,13 +184,13 @@
     gap: 10px;
     margin-top: 26px;
     padding-top: 20px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 14px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .auth-footer a {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 @media (max-width: 860px) {
@@ -236,15 +236,15 @@
     border: 0;
     border-radius: var(--radius-md);
     background: transparent;
-    color: #667085;
+    color: var(--color-text-muted);
     cursor: pointer;
     transform: translateY(-50%);
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
 .password-toggle:hover {
-    background: #1f5a4514;
-    color: var(--accent);
+    background: var(--color-brand-tint);
+    color: var(--color-brand);
 }
 
 .password-toggle:active {
@@ -252,12 +252,12 @@
 }
 
 .password-toggle[aria-pressed="true"] {
-    background: #1f5a451f;
-    color: var(--accent);
+    background: var(--color-focus-ring);
+    color: var(--color-brand);
 }
 
 .password-toggle:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--color-brand);
     outline-offset: 1px;
 }
 

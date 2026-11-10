@@ -5,15 +5,15 @@
     align-items: center;
     gap: 8px;
     padding: 40px 20px;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     text-align: center;
 }
 
 .state-box h3 {
     margin: 6px 0 0;
-    color: var(--ink);
-    font-size: 18px;
+    color: var(--color-text);
+    font-size: var(--text-lg);
 }
 
 .state-box p {
@@ -29,8 +29,8 @@
 .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid var(--line);
-    border-top-color: var(--accent);
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-brand);
     border-radius: 50%;
     animation: tv-spin 0.8s linear infinite;
 }
@@ -54,22 +54,22 @@
 .toast {
     margin: 0;
     padding: 12px 16px;
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--accent);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-brand);
     border-radius: var(--radius-md);
-    background: var(--paper);
-    font-size: 13px;
+    background: var(--color-surface);
+    font-size: var(--text-sm);
     box-shadow: var(--shadow-lg);
 }
 
 .toast-error {
-    border-left-color: var(--danger);
+    border-left-color: var(--color-danger);
 }
 
 .server-status {
     margin: 18px 0 0;
-    color: var(--muted);
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 .server-status::before {
@@ -84,32 +84,32 @@
 }
 
 .server-status.is-ok {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .server-status.is-down {
-    color: var(--warn);
+    color: var(--color-warning);
 }
 
 /* Janela de confirmação (TrustVote.ui.confirm) */
 .confirm-dialog {
     width: min(440px, calc(100vw - 32px));
     padding: 24px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--color-surface);
+    color: var(--color-text);
     box-shadow: var(--shadow-lg);
 }
 
 .confirm-dialog::backdrop {
-    background: rgb(23 63 50 / 45%);
+    background: var(--color-overlay);
 }
 
 .confirm-dialog h2 {
     margin: 0 0 8px;
-    color: var(--title);
-    font-size: 20px;
+    color: var(--color-heading);
+    font-size: var(--text-xl);
 }
 
 .confirm-dialog p {
@@ -125,7 +125,7 @@
 }
 
 .button-danger {
-    border-color: var(--danger);
-    background: var(--danger);
-    color: #fff;
+    border-color: var(--color-danger);
+    background: var(--color-danger);
+    color: var(--color-on-brand);
 }

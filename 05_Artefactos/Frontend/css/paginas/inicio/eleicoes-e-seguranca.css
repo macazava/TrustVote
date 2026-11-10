@@ -17,22 +17,22 @@
     flex-direction: column;
     gap: 6px;
     padding: 28px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .hub-card h3 {
     margin: 0;
-    color: var(--title);
-    font-size: 30px;
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
     font-weight: 600;
     line-height: 1.15;
 }
 
 .hub-card > p:not(.eyebrow) {
     margin: 0;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
@@ -53,14 +53,14 @@
 }
 
 .hub-progress small {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.06em;
 }
 
 .hub-progress b {
-    color: var(--title);
-    font-size: 30px;
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
 }
 
 .hub-links {
@@ -91,8 +91,8 @@
     flex-direction: column;
     min-width: 0;
     padding: 28px;
-    border: 1px solid var(--line);
-    background: var(--paper);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .identity-card {
@@ -107,8 +107,8 @@
 }
 
 .card-meta small {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.1em;
 }
 
@@ -117,16 +117,16 @@
     place-items: center;
     width: 42px;
     height: 42px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     border-radius: 50%;
-    background: white;
-    font-size: 19px;
+    background: var(--color-surface);
+    font-size: var(--text-xl);
 }
 
 .security-card h3 {
     margin: 30px 0 10px;
-    color: var(--ink);
-    font-size: 26px;
+    color: var(--color-text);
+    font-size: var(--text-2xl);
     font-weight: 600;
     line-height: 1.2;
 }
@@ -134,8 +134,8 @@
 .security-card p {
     max-width: 480px;
     margin: 0;
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     line-height: 1.7;
 }
 
@@ -148,8 +148,8 @@
     flex-direction: column;
     gap: 8px;
     margin-top: auto;
-    border: 1px solid var(--line);
-    background: var(--beige);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
 }
 
 .credential-symbol {
@@ -157,29 +157,29 @@
     place-items: center;
     width: 58px;
     height: 58px;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--color-brand);
     border-radius: 50%;
-    color: var(--accent);
-    font-size: 26px;
-    box-shadow: 0 0 0 9px #1F5A4511;
+    color: var(--color-brand);
+    font-size: var(--text-2xl);
+    box-shadow: 0 0 0 9px var(--color-brand-tint);
 }
 
 .credential small {
     margin-top: 12px;
-    color: var(--accent);
-    font-size: var(--text-min);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
     letter-spacing: 0.12em;
 }
 
 .credential b {
-    font-size: 13px;
+    font-size: var(--text-sm);
 }
 
 .credential i {
     position: absolute;
     right: 12px;
     bottom: 12px;
-    color: var(--green);
+    color: var(--color-brand);
     font-style: normal;
 }
 
@@ -194,46 +194,46 @@
 
 .hash-chain span {
     padding: 10px;
-    border: 1px solid var(--accent);
-    background: var(--ivory);
-    color: var(--accent);
-    font-size: var(--text-min);
+    border: 1px solid var(--color-brand);
+    background: var(--color-bg);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
 }
 
 .hash-chain i {
-    color: var(--accent);
+    color: var(--color-brand);
     font-style: normal;
 }
 
 .dark-card {
-    border-color: var(--dark);
-    background: var(--dark);
-    color: white;
+    border-color: var(--color-brand-deep);
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark);
 }
 
 .dark-card h3 {
-    color: white;
+    color: var(--color-on-dark);
 }
 
 .dark-card .round-icon {
-    border-color: #ffffff44;
+    border-color: var(--color-on-dark-border);
     background: transparent;
 }
 
 .dark-card .card-meta small {
-    color: #c6cedb;
+    color: var(--color-on-dark-muted);
 }
 
 .dark-card p {
-    color: #b9c9bf;
+    color: var(--color-on-dark-muted);
 }
 
 .audit-log {
     display: flex;
     flex-direction: column;
     margin-top: auto;
-    color: #e1e7f0;
-    font-size: var(--text-min);
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-xs);
 }
 
 .audit-log span {
@@ -241,7 +241,7 @@
     align-items: center;
     gap: 10px;
     padding: 9px 0;
-    border-bottom: 1px solid #ffffff19;
+    border-bottom: 1px solid var(--color-on-dark-hover);
 }
 
 .audit-log span::before {
@@ -250,6 +250,6 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #4bd59a;
+    background: var(--color-on-dark-live);
 }
 

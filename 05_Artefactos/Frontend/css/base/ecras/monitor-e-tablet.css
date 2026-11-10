@@ -1,48 +1,10 @@
 /* Adaptação a todos os tipos de ecrã (as grelhas usam os breakpoints do Tailwind no HTML) */
 
-/* ===== Cantos arredondados nos elementos que não têm classe própria ===== */
-.field-label input,
-.field-label select,
-.field-label textarea,
-.auth-card input:not([type="checkbox"]),
-.row-actions button {
-    border-radius: var(--radius-md);
-}
-
-.candidate-list label,
-.candidate-grid article,
-.platform-grid article,
-.history-rows .year,
-.timeline article:first-child,
-.photo-panel img,
-.news-photo img {
-    border-radius: var(--radius-lg);
-}
-
-.news-photo {
-    overflow: hidden;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-
-.press-news article,
-.press-hero {
-    border-radius: var(--radius-lg);
-}
-
-.timeline {
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-}
-
-.timeline article:first-child {
-    border-radius: 0;
-}
-
 .button:focus-visible,
 .panel-link:focus-visible,
 .main-nav a:focus-visible,
 .side-menu a:focus-visible {
-    outline: 3px solid #6f9c84;
+    outline: 3px solid var(--color-focus);
     outline-offset: 2px;
 }
 
@@ -65,7 +27,7 @@
     }
 
     .lead {
-        font-size: 19px;
+        font-size: var(--text-xl);
     }
 }
 
@@ -84,7 +46,7 @@
         min-height: 44px;
         margin-left: auto;
         border-radius: var(--radius-md);
-        font-size: 18px;
+        font-size: var(--text-lg);
     }
 
     .main-nav {
@@ -102,13 +64,13 @@
     .main-nav a {
         min-height: 48px;
         padding: 0 4px;
-        border-bottom: 1px solid var(--line);
-        font-size: 16px;
+        border-bottom: 1px solid var(--color-border);
+        font-size: var(--text-base);
     }
 
     .main-nav a[aria-current="page"] {
-        border-bottom-color: var(--line);
-        border-left: 3px solid #6f9c84;
+        border-bottom-color: var(--color-border);
+        border-left: 3px solid var(--color-focus);
         padding-left: 12px;
     }
 
@@ -119,7 +81,7 @@
         padding-top: 12px;
     }
 
-    .main-nav.open + .header-actions {
+    .main-nav.open+.header-actions {
         display: flex;
     }
 
@@ -166,18 +128,18 @@
     .side-menu a {
         flex: none;
         padding: 10px 16px;
-        border: 1px solid var(--line);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-full);
-        background: var(--paper);
-        font-size: 14px;
+        background: var(--color-surface);
+        font-size: var(--text-sm);
         white-space: nowrap;
         scroll-snap-align: start;
     }
 
     .side-menu a[aria-current="page"] {
-        border-color: var(--title);
-        background: var(--title);
-        color: white;
+        border-color: var(--color-heading);
+        background: var(--color-heading);
+        color: var(--color-on-dark);
     }
 
     .section-content {
@@ -204,4 +166,3 @@
         grid-row: auto;
     }
 }
-

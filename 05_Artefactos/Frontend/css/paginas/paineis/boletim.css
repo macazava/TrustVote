@@ -13,22 +13,22 @@
     align-items: center;
     gap: 6px 16px;
     padding: 18px 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .check-list b {
-    font-size: 15px;
+    font-size: var(--text-base);
 }
 
 .check-list small {
-    color: var(--muted);
-    font-size: 13px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .check-list li>i {
     grid-row: 1 / span 2;
     grid-column: 3;
-    color: var(--muted);
+    color: var(--color-text-muted);
     font-style: normal;
 }
 
@@ -41,9 +41,9 @@
     place-items: center;
     min-height: 150px;
     padding: 20px;
-    border: 1px dashed #e0c9b0;
-    color: var(--muted);
-    font-size: 14px;
+    border: 1px dashed var(--color-border-strong);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     text-align: center;
 }
 
@@ -52,7 +52,7 @@
     align-items: center;
     gap: 18px;
     padding: 18px 0;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .history-rows>div>span:nth-child(2) {
@@ -63,12 +63,12 @@
 }
 
 .history-rows b {
-    font-size: 15px;
+    font-size: var(--text-base);
 }
 
 .history-rows small {
-    color: var(--muted);
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 .year {
@@ -76,9 +76,9 @@
     place-items: center;
     width: 52px;
     height: 42px;
-    background: #eef0fb;
-    color: var(--muted);
-    font-size: 12px;
+    background: var(--color-brand-soft);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 /* ===== Boletim ===== */
@@ -103,8 +103,8 @@
     align-items: center;
     gap: 16px;
     padding: 20px;
-    border: 1px solid var(--line);
-    background: white;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
     cursor: pointer;
 }
 
@@ -114,9 +114,9 @@
 }
 
 .candidate-list label:has(input:checked) {
-    border-color: var(--accent);
-    border-left: 3px solid var(--accent);
-    background: var(--mint);
+    border-color: var(--color-brand);
+    border-left: 3px solid var(--color-brand);
+    background: var(--color-brand-soft);
 }
 
 .candidate-list label>span:nth-of-type(2) {
@@ -126,19 +126,19 @@
 }
 
 .candidate-list label small:first-child {
-    color: var(--accent);
-    font-size: var(--text-min);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
     font-weight: 700;
     letter-spacing: 0.08em;
 }
 
 .candidate-list b {
-    font-size: 18px;
+    font-size: var(--text-lg);
 }
 
 .candidate-list label small:last-child {
-    color: var(--muted);
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .candidate-list input {
@@ -146,7 +146,7 @@
     width: 26px;
     height: 26px;
     margin: 0;
-    accent-color: var(--accent);
+    accent-color: var(--color-brand);
 }
 
 .ballot-foot {
@@ -155,12 +155,12 @@
     justify-content: space-between;
     gap: 16px;
     padding-top: 20px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--color-border);
 }
 
 .ballot-foot small {
-    color: var(--accent);
-    font-size: 12px;
+    color: var(--color-brand);
+    font-size: var(--text-xs);
 }
 
 .ballot-done {
@@ -178,10 +178,10 @@
     height: 90px;
     margin: 0 auto 22px;
     border-radius: 50%;
-    background: var(--accent-strong);
-    color: white;
-    font-size: 24px;
-    box-shadow: 0 0 0 12px var(--mint);
+    background: var(--color-action);
+    color: var(--color-on-dark);
+    font-size: var(--text-2xl);
+    box-shadow: 0 0 0 12px var(--color-brand-soft);
 }
 
 .receipt-code {
@@ -190,8 +190,8 @@
     gap: 8px;
     margin: 22px 0;
     padding: 20px;
-    border: 1px dashed var(--accent);
-    background: #f1f4ff;
+    border: 1px dashed var(--color-brand);
+    background: var(--color-brand-soft);
 }
 
 .ballot-done .receipt-code {
@@ -199,20 +199,20 @@
 }
 
 .receipt-code small {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     letter-spacing: 0.06em;
 }
 
 .receipt-code b {
-    color: var(--accent);
-    font-size: 22px;
+    color: var(--color-brand);
+    font-size: var(--text-xl);
     letter-spacing: 0.12em;
 }
 
 .receipt-code code {
-    color: var(--muted);
-    font-size: var(--text-min);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     word-break: break-all;
 }
 

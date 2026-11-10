@@ -1,26 +1,26 @@
 /* Tabelas dos painéis */
 .table-scroll {
     overflow: auto;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: var(--text-sm);
 }
 
 th,
 td {
     padding: 14px 16px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--color-border);
     text-align: left;
 }
 
 th {
-    background: #f2f0e9;
-    color: var(--muted);
-    font-size: var(--text-min);
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -31,20 +31,20 @@ tbody tr:last-child td {
 
 td.mono,
 td code {
-    color: var(--accent);
-    font-family: ui-monospace, Consolas, monospace;
-    font-size: 12px;
+    color: var(--color-brand);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
 }
 
 .ok-label {
-    color: var(--accent);
-    font-size: var(--text-min);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .ok-label.is-off {
-    color: var(--warn);
+    color: var(--color-warning);
 }
 
 .row-actions {
@@ -55,14 +55,14 @@ td code {
 
 .row-actions button {
     padding: 6px 10px;
-    border: 1px solid var(--line);
-    background: white;
-    font-size: 12px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: var(--text-xs);
 }
 
 .row-actions button:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--color-brand);
+    color: var(--color-brand);
 }
 
 .voter-picker {

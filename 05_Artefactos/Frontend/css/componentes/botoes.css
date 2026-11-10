@@ -6,9 +6,9 @@
     justify-content: center;
     gap: 10px;
     padding: 0 22px;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
-    font-size: 15px;
+    font-size: var(--text-base);
     font-weight: 600;
     text-decoration: none;
     transition: box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
@@ -26,51 +26,54 @@
 }
 
 .button-primary {
-    border-color: var(--accent-strong);
-    background: var(--accent-strong);
-    color: white;
+    border-color: var(--color-action);
+    background: var(--color-action);
+    color: var(--color-on-brand);
+    box-shadow: var(--shadow-sm);
 }
 
 .button-primary:hover {
-    background: var(--accent);
+    border-color: var(--color-action-hover);
+    background: var(--color-action-hover);
+    box-shadow: var(--shadow-lg);
 }
 
 .button-outline {
     background: transparent;
-    color: var(--ink);
+    color: var(--color-text);
 }
 
 .button-outline:hover {
-    border-color: var(--accent);
-    background: var(--mint);
-    color: var(--accent);
+    border-color: var(--color-brand);
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
     box-shadow: none;
 }
 
 .button-light {
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--color-surface);
+    color: var(--color-text);
 }
 
 .button-small {
     min-height: 38px;
     padding: 0 14px;
-    font-size: 13px;
+    font-size: var(--text-sm);
 }
 
 .text-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border-bottom: 1px solid var(--ink);
+    border-bottom: 1px solid var(--color-text);
     padding: 8px 0 5px;
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-decoration: none;
 }
 
 .text-link:hover {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .link-button {
@@ -80,8 +83,8 @@
     padding: 0;
     border: 0;
     background: none;
-    color: var(--accent);
-    font-size: 13px;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
     font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 4px;
@@ -92,14 +95,14 @@
     align-items: center;
     gap: 6px;
     padding: 8px 15px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-full);
-    background: var(--sand);
-    color: var(--muted);
-    font-size: 14px;
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }
 
 .pill-button:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--color-brand);
+    color: var(--color-brand);
 }

@@ -1,8 +1,8 @@
 /* Barra do topo, cabeçalho do portal e faixa de navegação */
 .topbar {
-    background: var(--dark);
-    color: #e8efe9;
-    font-size: 14px;
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-sm);
 }
 
 .topbar-inner {
@@ -21,11 +21,11 @@
     align-items: center;
     min-height: 34px;
     padding: 0 18px;
-    border: 1px solid #ffffff33;
+    border: 1px solid var(--color-on-dark-border);
     border-radius: var(--radius-sm);
     background: none;
     color: inherit;
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-decoration: none;
 }
@@ -33,15 +33,18 @@
 .topbar a:hover,
 .topbar button:hover,
 .topbar button[aria-pressed="true"] {
-    background: #ffffff14;
-    color: white;
+    background: var(--color-on-dark-hover);
+    color: var(--color-on-dark);
 }
 
 .site-header {
     position: relative;
     z-index: 5;
-    border-bottom: 1px solid var(--line);
-    background: var(--paper);
+    border-bottom: 1px solid var(--color-border);
+    /* papel translúcido: o conteúdo passa por baixo desfocado quando o cabeçalho fica fixo */
+    background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
 }
 
 .site-header-inner {
@@ -59,7 +62,7 @@
     align-items: center;
     gap: 12px;
     min-width: max-content;
-    color: var(--ink);
+    color: var(--color-text);
     text-decoration: none;
 }
 
@@ -69,9 +72,9 @@
     width: 34px;
     height: 34px;
     border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: white;
-    font-size: 22px;
+    background: var(--color-brand);
+    color: var(--color-on-dark);
+    font-size: var(--text-xl);
     font-weight: 600;
 }
 
@@ -81,14 +84,14 @@
 }
 
 .brand b {
-    font-size: 19px;
+    font-size: var(--text-xl);
     line-height: 1;
     letter-spacing: 0.12em;
 }
 
 .brand small {
     margin-top: 6px;
-    font-size: var(--text-min);
+    font-size: var(--text-xs);
     letter-spacing: 0.08em;
 }
 
@@ -103,20 +106,20 @@
     display: flex;
     align-items: center;
     border-bottom: 3px solid transparent;
-    color: var(--ink);
-    font-size: 15px;
+    color: var(--color-text);
+    font-size: var(--text-base);
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
 }
 
 .main-nav a:hover {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .main-nav a[aria-current="page"] {
-    border-bottom-color: #6f9c84;
-    color: var(--title);
+    border-bottom-color: var(--color-indicator);
+    color: var(--color-heading);
     font-weight: 700;
 }
 
@@ -135,14 +138,14 @@
 .menu-toggle {
     display: none;
     padding: 8px 11px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--color-border);
     background: transparent;
 }
 
 /* Faixa "⌂ / Secção / Página" */
 .breadcrumb-bar {
-    border-bottom: 1px solid var(--line);
-    background: var(--sand);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
 }
 
 .breadcrumb-bar .container {
@@ -159,8 +162,8 @@
     gap: 10px;
     margin: 0;
     padding: 0;
-    color: var(--muted);
-    font-size: 15px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
     list-style: none;
 }
 
@@ -170,13 +173,13 @@
 }
 
 .breadcrumb a {
-    color: var(--ink);
+    color: var(--color-text);
     font-weight: 500;
     text-decoration: none;
 }
 
 .breadcrumb a:hover {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 .breadcrumb-tools {
@@ -189,11 +192,11 @@
     height: 34px;
     border: 0;
     background: none;
-    color: var(--muted);
+    color: var(--color-text-muted);
 }
 
 .breadcrumb-tools button:hover {
-    color: var(--accent);
+    color: var(--color-brand);
 }
 
 @media (max-width: 1320px) {
@@ -206,7 +209,7 @@
     }
 
     .main-nav a {
-        font-size: 14px;
+        font-size: var(--text-sm);
     }
 }
 
@@ -216,7 +219,7 @@
     }
 
     .main-nav a {
-        font-size: 12px;
+        font-size: var(--text-xs);
     }
 
     .header-actions .button {
@@ -251,8 +254,8 @@
 
     .main-nav a {
         padding: 10px 0;
-        border-bottom: 1px solid var(--line);
-        font-size: 15px;
+        border-bottom: 1px solid var(--color-border);
+        font-size: var(--text-base);
     }
 
     .header-actions {
