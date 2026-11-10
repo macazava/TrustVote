@@ -4,24 +4,7 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, date, dateTime, period, time, initials } = TV.format;
-  const { statusLabels } = TV.elections;
   const { resultRow, roundSummary } = TV.charts;
-
-  // ===== Página inicial: faixa dos números =====
-  const metrics = (resumo, online) => `
-    <div><b>${number(resumo && resumo.eleitores)}</b><small>estudantes elegíveis</small></div>
-    <i></i>
-    <div><b>${number(resumo && resumo.votos)}</b><small>votos registados</small></div>
-    <i></i>
-    <div><b>1 voto</b><small>por estudante</small></div>
-    <i></i>
-    <div><b>${percent(resumo && resumo.participacao)}</b><small>participação</small></div>
-    <p>${resumo
-      ? `Dados em tempo real · atualizado às ${time(new Date().toISOString())}`
-      : online
-        ? "Ainda não há eleições públicas: os números aparecem quando a primeira for agendada."
-        : "Servidor indisponível: não foi possível obter os números."
-    }</p>`;
 
   // ===== Calendário: próxima eleição =====
   const electionEyebrow = { em_curso: "VOTAÇÃO A DECORRER", agendada: "PRÓXIMA ELEIÇÃO", encerrada: "ÚLTIMA ELEIÇÃO" };
@@ -32,7 +15,7 @@
         <h2>${escapeHtml(e.titulo)}</h2>
         <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
       </div>
-      <span class="status-pill"><i></i> ${statusLabels[e.estado] || e.estado}</span>
+      ${TV.blocks.stateBadge(e.estado)}
     </div>`;
 
   // ===== Listas: um cartão por lista, com candidatos e propostas =====
@@ -124,11 +107,11 @@
       <article class="dash-card">
         <div class="heading-row">
           <h2>${escapeHtml(eleicao.titulo)}</h2>
-          <span class="status-pill"><i></i> ${statusLabels[eleicao.estado] || eleicao.estado}</span>
+          ${TV.blocks.stateBadge(eleicao.estado)}
         </div>
         ${body}
       </article>`;
   }
 
-  TV.publicView = { metrics, notices, historyPeriod, nextElection, lastCount, listCard, turnoutCard, loginForResults, resultsCard };
+  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, turnoutCard, loginForResults, resultsCard };
 })();

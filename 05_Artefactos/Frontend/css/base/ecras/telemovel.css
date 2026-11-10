@@ -2,6 +2,7 @@
 
 /* ===== Telemóvel (até 640px) ===== */
 @media (max-width: 640px) {
+
     .container,
     .topbar-inner,
     .site-header-inner,
@@ -28,7 +29,7 @@
     }
 
     .lead,
-    .section-item > p {
+    .section-item>p {
         font-size: var(--text-base);
     }
 
@@ -54,14 +55,6 @@
 
     .news-photo {
         margin: 0 0 20px;
-    }
-
-    .metrics {
-        padding: 22px 18px;
-    }
-
-    .metrics b {
-        font-size: var(--text-2xl);
     }
 
     .election-info {
@@ -197,14 +190,11 @@
     .facts {
         grid-template-columns: 1fr;
     }
-
-    .metrics {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ===== Telemóvel deitado (pouca altura) ===== */
 @media (max-height: 500px) and (orientation: landscape) {
+
     .dashboard-header,
     .site-header {
         position: static !important;
@@ -214,4 +204,3 @@
         min-height: 0;
     }
 }
-

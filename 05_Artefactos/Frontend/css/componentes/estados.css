@@ -26,18 +26,67 @@
     margin-top: 10px;
 }
 
-.spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--color-border);
-    border-top-color: var(--color-brand);
-    border-radius: 50%;
-    animation: tv-spin 0.8s linear infinite;
+/* Texto só para leitores de ecrã */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
-@keyframes tv-spin {
+/* Skeleton: forma do conteúdo enquanto os dados chegam */
+.skeleton,
+[data-skeleton] {
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--color-surface-sunken) 25%, var(--color-bg) 50%, var(--color-surface-sunken) 75%) 0 0 / 200% 100%;
+    animation: tv-skeleton 1.4s ease-in-out infinite;
+}
+
+/* Texto de exemplo ("—", "A carregar…") escondido debaixo do bloco */
+[data-skeleton] {
+    color: transparent !important;
+    user-select: none;
+}
+
+[data-skeleton] * {
+    visibility: hidden;
+}
+
+.skeleton-group {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+}
+
+.skeleton {
+    display: block;
+}
+
+.skeleton-title {
+    width: min(320px, 60%);
+    height: 28px;
+}
+
+.skeleton-card {
+    height: 120px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-card-short {
+    width: 70%;
+    height: 72px;
+}
+
+.skeleton-line {
+    height: 18px;
+    margin: var(--space-4) 0;
+}
+
+@keyframes tv-skeleton {
     to {
-        transform: rotate(360deg);
+        background-position: -200% 0;
     }
 }
 

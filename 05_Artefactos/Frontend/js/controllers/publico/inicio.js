@@ -1,10 +1,10 @@
-/* Controller · página inicial: estado da eleição, números, eleição em tempo real e fecho da última eleição */
+/* Controller · página inicial: estado da eleição, eleição em tempo real, avisos e fecho da última eleição */
 document.addEventListener("DOMContentLoaded", () => {
-  const { api, format, elections, publicView, ui } = window.TrustVote;
+  const TV = window.TrustVote;
+  const { api, format, elections, publicView, ui } = TV;
   const { number, percent, dateTime, escapeHtml } = format;
 
   const alert = document.querySelector(".election-alert");
-  const metrics = document.querySelector(".metrics");
   const hub = document.querySelector("[data-hub-election]");
   const news = document.querySelector("[data-news]");
   const lastCount = document.querySelector("[data-last-count]");
@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!hub) return;
     const eleicao = resumo && resumo.eleicao;
     const pill = hub.querySelector(".status-pill");
-    pill.classList.toggle("status-warn", !eleicao);
+    hub.querySelector("[data-retry]")?.remove();
     if (eleicao) {
-      pill.innerHTML = `<i></i> ${elections.statusLabels[eleicao.estado] || eleicao.estado}`;
+      pill.outerHTML = TV.blocks.stateBadge(eleicao.estado);
       hub.querySelector("h3").textContent = eleicao.titulo;
       hub.querySelector("[data-hub-copy]").textContent =
         `Votação online para ${number(resumo.eleitores)} estudantes inscritos · ${dateTime(eleicao.data_inicio)} — ${dateTime(eleicao.data_fim)}.`;
@@ -45,11 +45,19 @@ document.addEventListener("DOMContentLoaded", () => {
       hub.querySelector("[data-hub-bar]").style.width = `${Math.min(100, resumo.participacao || 0)}%`;
       hub.querySelector("[data-hub-votes]").textContent = `${number(resumo.votos)} votos registados`;
     } else {
-      pill.innerHTML = `<i></i> ${online ? "SEM DADOS PÚBLICOS" : "SERVIDOR INDISPONÍVEL"}`;
+      pill.outerHTML = TV.blocks.stateBadge("indisponivel", online ? "SEM DADOS PÚBLICOS" : "SERVIDOR INDISPONÍVEL");
       hub.querySelector("h3").textContent = online ? "Sem eleições públicas" : "Eleição indisponível";
       hub.querySelector("[data-hub-copy]").textContent = online
         ? "Inicie sessão para consultar as eleições em que está habilitado."
         : "Não foi possível contactar o servidor TrustVote. Tente novamente dentro de momentos.";
+      if (!online) {
+        hub.querySelector("[data-hub-copy]").insertAdjacentHTML("beforeend", ' <button class="link-button" type="button" data-retry>Tentar novamente</button>');
+        hub.querySelector("[data-retry]").addEventListener("click", (event) => {
+          event.currentTarget.disabled = true;
+          event.currentTarget.textContent = "A tentar…";
+          carregar();
+        });
+      }
     }
   }
 
@@ -69,24 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
     showHub(resumo, online);
     if (news) news.innerHTML = resumo ? publicView.notices(resumo) : ui.empty("Sem avisos de momento");
 
-    if (metrics) {
-      metrics.innerHTML = publicView.metrics(resumo, online);
-      if (!resumo) {
-        metrics.querySelector("p").insertAdjacentHTML("beforeend", ' <button class="link-button" type="button" data-retry>Tentar novamente</button>');
-        metrics.querySelector("[data-retry]").addEventListener("click", (event) => {
-          event.currentTarget.disabled = true;
-          event.currentTarget.textContent = "A tentar…";
-          carregar();
-        });
-      }
-    }
-
     // Dados da simulação
     document.querySelectorAll("[data-live]").forEach((el) => {
       const key = el.dataset.live;
       const value = resumo ? resumo[key] : null;
       el.innerHTML = escapeHtml(key === "participacao" ? percent(value) : number(value));
     });
+
+    // Os dados chegaram: tira os skeletons
+    document.querySelectorAll("[data-skeleton]").forEach((el) => el.removeAttribute("data-skeleton"));
   }
 
   carregar();

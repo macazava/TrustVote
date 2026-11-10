@@ -4,7 +4,7 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, dateTime } = TV.format;
-  const { head, cardHead, pill } = TV.blocks;
+  const { head, cardHead, stateBadge } = TV.blocks;
   const { lineChart, barChart } = TV.charts;
   const { resultRows } = TV.results;
   const { statusLabels } = TV.elections;
@@ -22,7 +22,7 @@
     const { eleicao, lista, stats, resultados, serie, ultimaHora, emCurso, encerradas, rondaAtual, restante } = d;
     const s = stats.data;
     return `
-      ${head("CENTRO DE OPERAÇÕES", "Visão geral", "Acompanhe a participação e os resultados das eleições.", eleicao ? pill(eleicao.estadoLabel, !eleicao.aberta) : "")}
+      ${head("CENTRO DE OPERAÇÕES", "Visão geral", "Acompanhe a participação e os resultados das eleições.", eleicao ? stateBadge(eleicao.aberta ? "em_curso" : eleicao.estado) : "")}
       <div class="admin-metrics grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4">
         ${metricCard(
       "PARTICIPAÇÃO",

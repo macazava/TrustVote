@@ -50,8 +50,8 @@
     gap: 22px;
 }
 
-.dash-grid > .dash-card,
-.dash-grid > div > .dash-card:first-child {
+.dash-grid>.dash-card,
+.dash-grid>div>.dash-card:first-child {
     margin-top: 24px;
 }
 
@@ -63,7 +63,7 @@
     gap: 18px;
 }
 
-.status-row > span:last-child {
+.status-row>span:last-child {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
 }
@@ -104,6 +104,28 @@
 .status-plain {
     padding: 0;
     background: none;
+}
+
+/* Tons das etiquetas de estado (TrustVote.blocks.stateBadge): cor + ícone + texto */
+.status-pill .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.tone-scheduled {
+    background: var(--color-warning-soft);
+    color: var(--color-warning);
+}
+
+.tone-closed {
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+}
+
+.tone-draft {
+    border: 1px dashed var(--color-border-strong);
+    background: transparent;
+    color: var(--color-text-muted);
 }
 
 .large-icon {
@@ -189,7 +211,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-.service-card > span {
+.service-card>span {
     display: grid;
     place-items: center;
     width: 38px;
@@ -211,7 +233,7 @@
     font-size: var(--text-xs);
 }
 
-.service-card > i {
+.service-card>i {
     position: absolute;
     right: 19px;
     bottom: 18px;
@@ -219,8 +241,8 @@
 }
 
 /* Espaço reservado à direita para a seta do canto não ficar por cima do texto */
-.service-card > b,
-.service-card > small {
+.service-card>b,
+.service-card>small {
     padding-right: 28px;
 }
 

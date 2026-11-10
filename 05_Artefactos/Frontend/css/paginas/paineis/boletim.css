@@ -216,3 +216,29 @@
     word-break: break-all;
 }
 
+
+/* ===== Indicador de passos do boletim (reaproveita .steps-track dos cartões de eleição) ===== */
+.ballot-steps {
+    margin-bottom: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.ballot-steps>span {
+    grid-template-columns: 30px auto;
+}
+
+.ballot-steps .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* O título recebe o foco a cada passo (teclado e leitores de ecrã); não precisa de contorno */
+.ballot h1[tabindex="-1"]:focus {
+    outline: none;
+}
+
+.ballot-done .link-button {
+    margin: calc(-1 * var(--space-2)) 0 var(--space-4);
+}

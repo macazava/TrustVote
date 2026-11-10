@@ -5,7 +5,7 @@
   const TV = window.TrustVote;
   const { ui, elections } = TV;
   const { escapeHtml, percent, dateTime, period } = TV.format;
-  const { head, cardHead, pill, okLabel } = TV.blocks;
+  const { head, cardHead, okLabel, stateBadge } = TV.blocks;
 
   const card = (conteudo) => `<article class="dash-card">${conteudo}</article>`;
 
@@ -14,7 +14,7 @@
     <div class="election-row${e.estado === "em_curso" ? "" : " is-muted"}">
       <span class="round-mark">${TV.icon("vote")}</span>
       <div>
-        ${pill(e.estadoLabel, e.estado === "rascunho")}
+        ${stateBadge(e.estado)}
         <h3>${escapeHtml(e.titulo)}</h3>
         <small>${escapeHtml(e.periodo)} · ${(e.candidatos || []).filter((c) => c.ativo).length} candidatos</small>
       </div>

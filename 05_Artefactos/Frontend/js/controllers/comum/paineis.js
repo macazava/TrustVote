@@ -15,7 +15,15 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
-    function activateView(view) {
+    // O separador aberto fica no endereço (ex.: eleitor.html#recibos): atualizar a página,
+    // o botão "voltar" do browser e os links partilhados abrem o separador certo.
+    const views = [...document.querySelectorAll(".panel-nav [data-view]")].map((b) => b.dataset.view);
+    const viewFromHash = () => {
+      const view = decodeURIComponent(window.location.hash.slice(1));
+      return views.includes(view) ? view : null;
+    };
+
+    function activateView(view, scroll = true) {
       const panel = document.querySelector(`[data-panel="${view}"]`);
 
       if (!panel) return;
@@ -31,11 +39,22 @@
         else button.removeAttribute("aria-current");
       });
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     document.querySelectorAll("[data-view]").forEach((button) => {
-      button.addEventListener("click", () => activateView(button.dataset.view));
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+        activateView(view);
+        if (viewFromHash() !== view) history.pushState(null, "", `#${view}`);
+      });
     });
+
+    // Botões "voltar" / "avançar" do browser
+    window.addEventListener("popstate", () => activateView(viewFromHash() || views[0]));
+
+    // Separador pedido no endereço ao abrir a página
+    const inicial = viewFromHash();
+    if (inicial) activateView(inicial, false);
   });
 })();

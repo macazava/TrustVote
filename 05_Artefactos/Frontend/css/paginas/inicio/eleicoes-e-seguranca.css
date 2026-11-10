@@ -8,8 +8,7 @@
 
 .hub-grid {
     display: grid;
-    grid-template-columns: 1.25fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr;
 }
 
 .hub-card {
@@ -29,7 +28,7 @@
     line-height: 1.15;
 }
 
-.hub-card > p:not(.eyebrow) {
+.hub-card>p:not(.eyebrow) {
     margin: 0;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
@@ -46,7 +45,7 @@
     margin-top: 22px;
 }
 
-.hub-progress > div:first-child {
+.hub-progress>div:first-child {
     display: flex;
     align-items: end;
     justify-content: space-between;
@@ -61,17 +60,6 @@
 .hub-progress b {
     color: var(--color-heading);
     font-size: var(--text-3xl);
-}
-
-.hub-links {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-}
-
-.hub-links .service-card small {
-    margin-top: auto;
-    letter-spacing: 0.06em;
 }
 
 /* ===== Segurança ===== */
@@ -252,4 +240,3 @@
     border-radius: 50%;
     background: var(--color-on-dark-live);
 }
-

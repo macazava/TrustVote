@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelector(".dashboard-content").addEventListener("click", (event) => {
     const target = event.target.closest("[data-go]");
     if (target) go(target.dataset.go);
+    const copiar = event.target.closest("[data-copy]");
+    if (copiar) ui.copy(copiar.dataset.copy);
   });
 
   // Contagens decrescentes ("Termina em 01d : 23h : 59m")

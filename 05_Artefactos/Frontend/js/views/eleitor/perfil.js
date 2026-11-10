@@ -4,7 +4,7 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, time, initials, voterNumber } = TV.format;
-  const { head } = TV.blocks;
+  const { head, stateBadge } = TV.blocks;
   const v = (TV.voterView = TV.voterView || {});
 
   const card = (conteudo, extra = "") =>
@@ -44,10 +44,9 @@
 
   // ===== Participação: uma linha por eleição =====
   function estado(e) {
-    if (e.votou) return `<span class="ok-label">${TV.icon("check")} VOTOU</span>`;
+    if (e.votou) return stateBadge("votou");
     if (e.aberta) return `<button class="button button-small button-primary" type="button" data-vote="${e.id}">Votar agora ${TV.icon("arrow-right")}</button>`;
-    if (e.estado === "encerrada") return '<span class="ok-label is-off">ENCERRADA</span>';
-    return `<span class="ok-label is-off">${escapeHtml(e.estadoLabel)}</span>`;
+    return stateBadge(e.estado);
   }
 
   const participation = (lista) =>

@@ -30,6 +30,7 @@
       <div class="receipt-actions">
         <button class="button button-primary" type="button" data-verify="${i}">Verificar</button>
         <button class="button button-outline" type="button" data-download="${i}">Descarregar recibo</button>
+        <button class="link-button" type="button" data-copy="${escapeHtml(r.recibo)}">${TV.icon("copy")} Copiar código</button>
       </div>
     </article>`;
 

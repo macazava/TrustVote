@@ -4,7 +4,7 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, initials } = TV.format;
-  const { head } = TV.blocks;
+  const { head, stateBadge } = TV.blocks;
   const { resultRow, roundSummary } = TV.charts;
 
   // ===== Sondagem =====
@@ -52,12 +52,12 @@
   const resultsSlot = (e) => `<article class="dash-card" data-result="${e.id}"></article>`;
 
   const resultsCard = (e, rondas) => `
-    <div class="card-head"><div><p class="eyebrow">${e.estadoLabel}</p><h2>${escapeHtml(e.titulo)}</h2></div></div>
+    <div class="card-head"><div><h2>${escapeHtml(e.titulo)}</h2></div>${stateBadge(e.estado)}</div>
     ${rondas.map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`).join("")}`;
 
   // Votação ainda aberta: os resultados só são públicos depois de fechar (não é um erro)
   const resultsPending = (e, mensagem) => `
-    <div class="card-head"><div><p class="eyebrow">${e.estadoLabel}</p><h2>${escapeHtml(e.titulo)}</h2></div></div>
+    <div class="card-head"><div><h2>${escapeHtml(e.titulo)}</h2></div>${stateBadge(e.estado)}</div>
     ${TV.ui.empty("Resultados ainda não disponíveis", mensagem)}`;
 
   Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead, resultsSlot, resultsCard, resultsPending });

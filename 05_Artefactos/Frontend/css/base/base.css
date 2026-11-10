@@ -93,7 +93,6 @@ h3 {
 }
 
 /* Números com a mesma largura: alinham em métricas, resultados, contadores e tabelas */
-.metrics b,
 .facts b,
 .hub-progress b,
 .metric-card b,
@@ -158,6 +157,7 @@ table {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {

@@ -1,15 +1,11 @@
 /* Página inicial: tablet e telemóvel */
 
 @media (max-width: 1000px) {
+
     .hero,
     .election-info,
-    .hub-grid,
     .news-grid {
         grid-template-columns: 1fr;
-    }
-
-    .metrics {
-        flex-wrap: wrap;
     }
 }
 
@@ -35,7 +31,6 @@
     }
 
     .service-grid,
-    .hub-links,
     .security-grid,
     .platform-grid {
         grid-template-columns: 1fr;
@@ -54,21 +49,6 @@
         min-height: 250px;
     }
 
-    .metrics {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-    }
-
-    .metrics > i {
-        display: none;
-    }
-
-    .metrics > p {
-        position: static;
-        grid-column: 1 / -1;
-    }
-
     .news-list a {
         grid-template-columns: 1fr auto;
     }
@@ -77,4 +57,3 @@
         grid-column: 1 / -1;
     }
 }
-

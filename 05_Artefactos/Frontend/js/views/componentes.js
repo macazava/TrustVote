@@ -7,7 +7,24 @@
 
   // ===== Estados visuais (TrustVote.ui) =====
   const ui = {
-    loading: (label = "A carregar…") => `<div class="state-box"><span class="spinner"></span><p>${escapeHtml(label)}</p></div>`,
+    // Skeleton: blocos com a forma do conteúdo enquanto os dados chegam (o texto fica só para leitores de ecrã)
+    loading: (label = "A carregar…") => `
+      <div class="skeleton-group" role="status" aria-busy="true">
+        <span class="sr-only">${escapeHtml(label)}</span>
+        <span class="skeleton skeleton-title"></span>
+        <span class="skeleton skeleton-card"></span>
+        <span class="skeleton skeleton-card skeleton-card-short"></span>
+      </div>`,
+
+    // Copia um texto (ex.: código do recibo) e confirma com um aviso
+    async copy(text, done = "Código copiado.") {
+      try {
+        await navigator.clipboard.writeText(text);
+        ui.toast(done);
+      } catch {
+        ui.toast("Não foi possível copiar. Selecione o código e copie à mão.", true);
+      }
+    },
 
     error: (error, retry = true) => `
       <div class="state-box">
@@ -112,10 +129,22 @@
   const cardHead = (eyebrow, title, extra = "") =>
     `<div class="card-head"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div>${extra}</div>`;
 
-  const pill = (text, warn = false) => `<span class="status-pill${warn ? " status-warn" : ""}"><i></i> ${escapeHtml(text)}</span>`;
-
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${TV.icon(ok ? "check" : "circle-alert")} ${escapeHtml(text)}</span>`;
 
+  // Etiqueta de estado de uma eleição: o mesmo texto, ícone e cor em todo o site (nunca só a cor)
+  const estados = {
+    em_curso: ["VOTAÇÃO ABERTA", "vote", "open"],
+    agendada: ["AGENDADA", "calendar", "scheduled"],
+    encerrada: ["ENCERRADA", "lock", "closed"],
+    rascunho: ["RASCUNHO", "clipboard-list", "draft"],
+    votou: ["VOTO REGISTADO", "circle-check", "open"],
+    indisponivel: ["INDISPONÍVEL", "circle-alert", "scheduled"],
+  };
+  const stateBadge = (estado, label = "") => {
+    const [texto, icone, tom] = estados[estado] || [String(estado || "").toUpperCase(), "info", "closed"];
+    return `<span class="status-pill tone-${tom}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
+  };
+
   TV.ui = ui;
-  TV.blocks = { head, cardHead, pill, okLabel };
+  TV.blocks = { head, cardHead, okLabel, stateBadge };
 })();

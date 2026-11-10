@@ -43,6 +43,7 @@
     const recuperado =
       escolhidoId !== null ? null : guardado === "branco" ? { id: "branco" } : e.candidatosRonda.find((c) => String(c.id) === String(guardado));
     el.innerHTML = TV.voterView.ballotPage(e, recuperado ? recuperado.id : escolhidoId);
+    el.querySelector("h1").focus({ preventScroll: true });
     if (recuperado) ui.message(el.querySelector("[data-ballot] .form-message"), "Recuperámos a opção que tinha marcado antes de a sessão terminar.", true);
 
     el.querySelector("[data-back]").addEventListener("click", voter.renderElections);
@@ -61,6 +62,7 @@
   function review(e, candidato) {
     const el = panel("elections");
     el.innerHTML = TV.voterView.reviewPage(e, candidato);
+    el.querySelector("h1").focus({ preventScroll: true });
 
     el.querySelector("[data-change]").addEventListener("click", () => voter.openBallot(e.id, candidato ? candidato.id : "branco"));
     el.querySelector("[data-deposit]").addEventListener("click", async (event) => {
@@ -87,6 +89,7 @@
   function done(recibo) {
     rascunho.apagar();
     panel("elections").innerHTML = TV.voterView.donePage(recibo);
+    panel("elections").querySelector("h1").focus({ preventScroll: true });
     voter.loadReceipts();
     voter.renderProfile();
   }

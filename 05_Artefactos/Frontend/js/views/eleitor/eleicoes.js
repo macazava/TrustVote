@@ -5,7 +5,7 @@
   const TV = window.TrustVote;
   const { ui, elections } = TV;
   const { escapeHtml, countdown, initials } = TV.format;
-  const { head } = TV.blocks;
+  const { head, stateBadge } = TV.blocks;
 
   // Tempo que falta para fechar ou abrir (o número é atualizado a cada 30 s pelo arranque)
   const timeInfo = (e) =>
@@ -15,8 +15,7 @@
         ? `Começa em <b data-countdown="${e.inicio}">${countdown(e.inicio)}</b>`
         : escapeHtml(e.periodo);
 
-  const statusLine = (e) =>
-    `<span class="status-pill status-plain"><i></i> ${e.votou ? "VOTO REGISTADO" : e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</span>`;
+  const statusLine = (e) => stateBadge(e.votou ? "votou" : e.aberta ? "em_curso" : e.estado);
 
   // Botão principal: votar, ver o recibo ou votação fechada
   function voteAction(e, label = `Iniciar votação ${TV.icon("arrow-right")}`) {
@@ -97,7 +96,7 @@
   const detailsPage = (e) => `
     ${head(`ELEIÇÃO · ${e.ano}`, escapeHtml(e.titulo), "Informação completa sobre o ato eleitoral.")}
     <article class="dash-card">
-      <p class="eyebrow"><i></i> ${e.aberta ? "VOTAÇÃO ABERTA" : e.estadoLabel}</p>
+      ${statusLine(e)}
       <h2>Dados da eleição</h2>
       <label class="field-label">Período de votação<input value="${escapeHtml(e.periodo)}" readonly></label>
       <label class="field-label">Ronda<input value="${escapeHtml(e.voltaLabel)}" readonly></label>
