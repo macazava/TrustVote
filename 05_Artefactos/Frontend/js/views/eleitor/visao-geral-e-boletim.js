@@ -81,30 +81,44 @@
     </article>`;
 
   // ===== Boletim · passo 2: rever (candidato = null é voto em branco) =====
+  // O boletim aparece tal como vai ser depositado; o botão só fica ativo depois de confirmar
   const reviewPage = (e, candidato) => `
     <article class="dash-card ballot">
       ${ballotSteps(2)}
       <p class="eyebrow">BOLETIM DIGITAL · PASSO 2 DE 3</p>
       <h1 tabindex="-1">Confirme a sua escolha</h1>
-      <p class="muted">Depois de depositado, o voto não pode ser alterado.</p>
-      <div class="candidate-list">${candidato ? v.candidateOption(candidato, e.candidatosRonda.indexOf(candidato), false) : blankOption(false)}</div>
+      <p class="muted">Este é o boletim que vai entrar na urna. Depois de depositado, o voto não pode ser alterado.</p>
+      <div class="ballot-paper">
+        <header>
+          <span class="ballot-paper-mark">${TV.icon("check")}</span>
+          <div><small>BOLETIM DE VOTO · ${escapeHtml(e.voltaLabel || "1.ª volta").toUpperCase()}</small><b>${escapeHtml(e.titulo)}</b></div>
+        </header>
+        <div class="candidate-list">${candidato ? v.candidateOption(candidato, e.candidatosRonda.indexOf(candidato), false) : blankOption(false)}</div>
+        <footer>${TV.icon("lock")} Antes de entrar na urna, o boletim é separado da sua identidade.</footer>
+      </div>
+      <label class="check-label ballot-confirm">
+        <input type="checkbox" data-confirm>
+        Confirmo que esta é a minha escolha e sei que não a posso alterar depois de depositar.
+      </label>
       <p class="form-message" role="status" data-vote-message></p>
       <div class="ballot-foot">
         <button class="link-button" type="button" data-change>${TV.icon("arrow-left")} Alterar escolha</button>
-        <button class="button button-primary" type="button" data-deposit>Depositar voto ${TV.icon("arrow-right")}</button>
+        <button class="button button-primary" type="button" data-deposit disabled>Depositar voto ${TV.icon("arrow-right")}</button>
       </div>
     </article>`;
 
   // ===== Boletim · passo 3: voto depositado (recibo = null quando já tinha votado) =====
+  // O selo entra com uma animação de carimbo (css/paginas/paineis/boletim.css)
   const donePage = (recibo) => `
     <article class="dash-card ballot ballot-done">
       ${ballotSteps(3)}
-      <span class="seal-icon">${TV.icon("check")}</span>
-      <p class="eyebrow">VOTO DEPOSITADO</p>
+      <span class="seal-icon seal-stamp">${TV.icon("check")}</span>
+      <p class="eyebrow">VOTO DEPOSITADO E SELADO</p>
       <h1 tabindex="-1">${recibo ? "O seu voto foi registado." : "Já votou nesta eleição."}</h1>
       <p class="muted">${recibo ? "Obrigado por participar. Guarde o recibo como comprovativo." : "Cada eleitor só pode votar uma vez por ronda."}</p>
       ${recibo ? `<div class="receipt-code"><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(recibo.recibo)}</b></div>
-         <button class="link-button" type="button" data-copy="${escapeHtml(recibo.recibo)}">${TV.icon("copy")} Copiar código</button>` : ""}
+         <button class="link-button" type="button" data-copy="${escapeHtml(recibo.recibo)}">${TV.icon("copy")} Copiar código</button>
+         ${v.receiptQr(recibo, true)}` : ""}
       <button class="button button-primary" type="button" data-go="receipts">Continuar para o recibo ${TV.icon("arrow-right")}</button>
     </article>`;
 

@@ -51,6 +51,7 @@
           <div class="election-card-actions">
             ${withDetails ? `<button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
             ${voteAction(e)}
+            ${!e.votou && (e.aberta || e.estado === "agendada") ? TV.blocks.calendarButton({ id: e.id, titulo: e.titulo, inicio: e.inicio, fim: e.fim, descricao: e.descricao }) : ""}
           </div>
         </div>
         ${withDetails ? "" : stepsTrack(e)}

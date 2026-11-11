@@ -17,6 +17,19 @@
   const localNotice = () =>
     '<p class="notice"><b>Recibos guardados neste dispositivo.</b>Para manter o voto secreto, o servidor não sabe que recibo é de quem: descarregue-os para não os perder.</p>';
 
+  // QR code que abre a verificação pública deste recibo (aberto no fim do voto, fechado nos cartões)
+  const receiptQr = (r, aberto = false) => {
+    const url = TV.qr.verifyUrl(r.recibo);
+    return `
+      <details class="receipt-qr"${aberto ? " open" : ""}>
+        <summary>${TV.icon("shield-check")} QR code de verificação</summary>
+        <div>
+          ${TV.qr.svg(url, `QR code para verificar o recibo ${r.recibo}`)}
+          <p>Aponte a câmara do telemóvel para confirmar, na página pública, que este voto foi contado.</p>
+        </div>
+      </details>`;
+  };
+
   const receiptCard = (r, i) => `
     <article class="dash-card receipt-card grid-cols-1 md:grid-cols-[auto_1fr_auto]">
       <span class="seal-icon">${TV.icon("check")}</span>
@@ -26,6 +39,7 @@
         <p>Depositado a ${dateTime(r.data)} · ${r.ronda === 2 ? "2.ª" : "1.ª"} volta.</p>
         <div class="receipt-code"><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(r.recibo)}</b></div>
         <div class="receipt-checks" data-verify-checks="${i}"></div>
+        ${receiptQr(r)}
       </div>
       <div class="receipt-actions">
         <button class="button button-primary" type="button" data-verify="${i}">Verificar</button>
@@ -52,8 +66,8 @@
       `Data: ${dateTime(r.data)}`,
       `Recibo: ${r.recibo}`,
       r.hash ? `Hash: ${r.hash}` : "",
-      `Verificar: ${new URL(`verificar.html?codigo=${encodeURIComponent(r.recibo)}`, window.location.href).href}`,
+      `Verificar: ${TV.qr.verifyUrl(r.recibo)}`,
     ].filter(Boolean).join("\n");
 
-  Object.assign(v, { receiptsPage, noReceipts, localNotice, receiptCard, verifyPill, verifyChecks, receiptText });
+  Object.assign(v, { receiptQr, receiptsPage, noReceipts, localNotice, receiptCard, verifyPill, verifyChecks, receiptText });
 })();

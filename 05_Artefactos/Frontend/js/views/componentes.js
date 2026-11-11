@@ -145,6 +145,13 @@
     return `<span class="status-pill tone-${tom}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
   };
 
+  // Botão "Adicionar ao calendário": descarrega um .ics com o período de votação (controllers/comum/agenda.js)
+  // ev = { id, titulo, inicio, fim, descricao }; sem datas não mostra nada
+  const calendarButton = (ev, classe = "link-button") =>
+    ev && ev.inicio && ev.fim
+      ? `<button class="${classe}" type="button" data-ics="${escapeHtml(JSON.stringify(ev))}">${TV.icon("calendar")} Adicionar ao calendário</button>`
+      : "";
+
   TV.ui = ui;
-  TV.blocks = { head, cardHead, okLabel, stateBadge };
+  TV.blocks = { head, cardHead, okLabel, stateBadge, calendarButton };
 })();

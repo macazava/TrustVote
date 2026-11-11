@@ -65,6 +65,9 @@
     el.querySelector("h1").focus({ preventScroll: true });
 
     el.querySelector("[data-change]").addEventListener("click", () => voter.openBallot(e.id, candidato ? candidato.id : "branco"));
+    // "Depositar voto" só fica ativo depois de confirmar a escolha
+    const deposit = el.querySelector("[data-deposit]");
+    el.querySelector("[data-confirm]").addEventListener("change", (event) => (deposit.disabled = !event.target.checked));
     el.querySelector("[data-deposit]").addEventListener("click", async (event) => {
       try {
         const res = await ui.busy(event.currentTarget, "A depositar…", () => api.votacao.votar(e.id, e.ronda.numero, candidato ? candidato.id : null));

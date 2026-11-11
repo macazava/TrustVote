@@ -183,3 +183,9 @@ body[data-page="admin"] .dashboard-content h1 {
     border: 0;
     background: var(--color-border);
 }
+/* "Adicionar ao calendário" fica numa linha própria, por baixo dos botões */
+.election-card-actions .link-button {
+    flex-basis: 100%;
+    justify-content: flex-end;
+    font-size: var(--text-sm);
+}

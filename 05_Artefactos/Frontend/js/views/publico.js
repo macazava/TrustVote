@@ -14,6 +14,7 @@
         <p class="eyebrow">${electionEyebrow[e.estado] || "ELEIÇÃO"}</p>
         <h2>${escapeHtml(e.titulo)}</h2>
         <p>Votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}.</p>
+        ${e.estado === "encerrada" ? "" : TV.blocks.calendarButton({ id: e.id, titulo: e.titulo, inicio: e.data_inicio, fim: e.data_fim, descricao: e.descricao })}
       </div>
       ${TV.blocks.stateBadge(e.estado)}
     </div>`;

@@ -94,6 +94,8 @@
     --color-on-dark-live: var(--green-300);
     --color-on-dark-warning: var(--amber-200);
     --color-overlay: rgb(23 63 50 / 45%);        /* fundo atrás das janelas modais */
+    --color-qr-dark: var(--neutral-900);         /* QR code: escuro sobre branco em qualquer tema */
+    --color-qr-light: #fff;
 
     /* Tipografia: escala única, em rem (16px = 1rem) para crescer com o "Texto maior" e com o zoom do browser */
     /* Fontes carregadas no <head> de cada página (Google Fonts, com preconnect) */

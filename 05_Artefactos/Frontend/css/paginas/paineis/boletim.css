@@ -238,3 +238,181 @@
 .ballot-done .link-button {
     margin: calc(-1 * var(--space-2)) 0 var(--space-4);
 }
+/* ===== Passo 2: o boletim tal como vai entrar na urna ===== */
+.ballot-paper {
+    margin: var(--space-6) 0 var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-field);
+    box-shadow: var(--shadow-md);
+}
+
+.ballot-paper header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px dashed var(--color-border-strong);
+}
+
+.ballot-paper header div {
+    display: grid;
+    gap: 2px;
+}
+
+.ballot-paper header small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+}
+
+.ballot-paper-mark {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+}
+
+.ballot-paper .candidate-list {
+    margin: 0;
+    padding: var(--space-4) var(--space-5);
+}
+
+.ballot-paper .candidate-list label {
+    border-color: var(--color-brand);
+    border-left: 3px solid var(--color-brand);
+    background: var(--color-brand-soft);
+}
+
+.ballot-paper footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px dashed var(--color-border-strong);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.ballot-confirm {
+    margin: 0 0 var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.ballot-confirm:has(input:checked) {
+    border-color: var(--color-brand);
+    background: var(--color-brand-soft);
+}
+
+.ballot-confirm:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* ===== Passo 3: o selo entra como um carimbo e deixa uma onda ===== */
+.seal-stamp {
+    position: relative;
+    animation: tv-stamp 0.55s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+
+.seal-stamp::after {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    border: 2px solid var(--color-brand);
+    border-radius: 50%;
+    animation: tv-stamp-ring 0.9s 0.35s ease-out both;
+}
+
+@keyframes tv-stamp {
+    from {
+        opacity: 0;
+        transform: scale(1.8) rotate(-14deg);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(0.92) rotate(2deg);
+    }
+}
+
+@keyframes tv-stamp-ring {
+    from {
+        opacity: 0.9;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* ===== QR code de verificação do recibo ===== */
+.receipt-qr {
+    margin: var(--space-4) 0;
+}
+
+.receipt-qr summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.receipt-qr > div {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+}
+
+.receipt-qr p {
+    max-width: 260px;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    text-align: left;
+}
+
+.ballot-done .receipt-qr > div {
+    justify-content: center;
+}
+
+/* O QR fica sempre escuro sobre branco (também no modo escuro), para as câmaras o lerem bem */
+.qr-code {
+    flex: none;
+    width: 148px;
+    height: 148px;
+    border-radius: var(--radius-sm);
+}
+
+.qr-code-bg {
+    fill: var(--color-qr-light);
+}
+
+.qr-code-fg {
+    fill: var(--color-qr-dark);
+}
+
+@media (max-width: 520px) {
+    .receipt-qr > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ballot-done .receipt-qr > div {
+        align-items: center;
+    }
+}
