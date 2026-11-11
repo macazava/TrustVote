@@ -26,7 +26,8 @@
         return;
       }
       box.innerHTML =
-        (recibos.length ? view.localNotice() + recibos.map(view.receiptCard).join("") : "") +
+        view.receiptsSummary(recibos.length, comprovativos.length) +
+        recibos.map(view.receiptCard).join("") +
         comprovativos.map(view.participationCard).join("");
       box.querySelectorAll("[data-proof]").forEach((b) =>
         b.addEventListener("click", () => {
