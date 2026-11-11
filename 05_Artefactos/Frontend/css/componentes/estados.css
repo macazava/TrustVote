@@ -256,3 +256,37 @@
         transform: translateY(5px);
     }
 }
+
+/* Aviso de ligação (controllers/comum/pagina.js): faixa no fundo do ecrã */
+.connection-notice {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    background: var(--color-heading-fill);
+    box-shadow: var(--shadow-md);
+    color: var(--color-on-dark);
+    font-size: var(--text-sm);
+    line-height: 1.4;
+    transform: translateX(-50%);
+}
+
+.connection-notice[hidden] {
+    display: none;
+}
+
+.connection-notice > .icon {
+    flex: none;
+    color: var(--amber-200, #fde68a);
+}
+
+.connection-notice.is-ok > .icon {
+    color: var(--green-200, #bbf7d0);
+}

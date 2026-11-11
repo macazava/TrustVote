@@ -11,7 +11,8 @@
     display: flex;
     align-items: center;
     gap: 40px;
-    min-height: 94px; /* a mesma altura do cabeçalho do portal público */
+    min-height: 94px;
+    /* a mesma altura do cabeçalho do portal público */
     padding: 0 30px;
     background: var(--color-brand-deep);
     color: var(--color-on-dark);
@@ -39,6 +40,19 @@
 
 .panel-nav::-webkit-scrollbar {
     display: none;
+}
+
+/* Há separadores escondidos: a ponta desse lado esbate-se (controllers/comum/paineis.js) */
+.panel-nav.tem-depois {
+    mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+}
+
+.panel-nav.tem-antes {
+    mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent);
+}
+
+.panel-nav.tem-antes.tem-depois {
+    mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent);
 }
 
 .panel-link {
@@ -167,4 +181,3 @@
 .portal-link:hover {
     color: var(--color-on-dark);
 }
-

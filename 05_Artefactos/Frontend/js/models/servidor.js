@@ -63,6 +63,10 @@
   }
 
   // ===== Pedidos =====
+  // Estado da ligação ao servidor, para o aviso no ecrã (controllers/comum/pagina.js):
+  // "servidor" quando não há resposta ou o nginx/API responde 502/503/504; "ok" quando volta a responder.
+  const avisarLigacao = (estado) => document.dispatchEvent(new CustomEvent("trustvote:ligacao", { detail: { estado } }));
+
   async function request(method, path, options = {}) {
     const { body, query, auth = true, raw = false } = options;
     const urlEm = (indice) => {
@@ -105,6 +109,7 @@
         }
       }
     } catch (error) {
+      avisarLigacao("servidor");
       throw new ApiError(
         error.name === "AbortError"
           ? `O servidor (${bases[atual]}) não respondeu a tempo.`
@@ -115,6 +120,7 @@
       clearTimeout(timer);
     }
     const latency = Math.round(performance.now() - started);
+    avisarLigacao([502, 503, 504].includes(response.status) ? "servidor" : "ok");
 
     const text = await response.text();
     let data = null;

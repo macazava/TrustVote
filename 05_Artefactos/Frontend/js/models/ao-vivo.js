@@ -17,11 +17,14 @@
   function ligar() {
     if (fonte || !("EventSource" in window)) return;
     fonte = new EventSource(`${TV.base}/publico/eventos`);
+    const avisar = (estado) => document.dispatchEvent(new CustomEvent("trustvote:ao-vivo", { detail: { estado } }));
     fonte.addEventListener("open", () => {
       aberto = true;
+      avisar("ok");
       document.documentElement.classList.add("tv-live");
     });
     fonte.addEventListener("error", () => {
+      if (aberto) avisar("em-pausa"); // só depois de ter estado ligado: o browser já está a religar
       aberto = false;
       document.documentElement.classList.remove("tv-live");
     });

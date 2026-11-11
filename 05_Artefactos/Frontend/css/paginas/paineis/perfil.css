@@ -3,6 +3,8 @@
 /* ===== Cartão de identidade ===== */
 .profile-hero {
     display: flex;
+    /* Sem espaço (ecrã estreito), a identificação e as etiquetas passam para baixo do avatar */
+    flex-wrap: wrap;
     align-items: center;
     gap: 26px;
     margin-top: 8px;
@@ -26,7 +28,8 @@
 }
 
 .profile-id {
-    flex: 1;
+    /* Nunca mais estreita do que 200 px: sem espaço, passa para a linha seguinte */
+    flex: 1 1 200px;
     min-width: 0;
 }
 
@@ -131,7 +134,7 @@
     padding: var(--space-4);
 }
 
-.profile-numbers div + div {
+.profile-numbers div+div {
     border-left: 1px solid var(--color-border);
 }
 
@@ -179,7 +182,7 @@
     border-top: 0;
 }
 
-.profile-timeline li > div {
+.profile-timeline li>div {
     flex: 1;
     min-width: 0;
 }

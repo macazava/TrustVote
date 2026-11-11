@@ -50,8 +50,27 @@
         else button.removeAttribute("aria-current");
       });
 
+      mostrarSeparadorAtivo();
       if (scroll) window.scrollTo({ top: 0, behavior: scroll === "instant" ? "instant" : "smooth" });
     }
+
+    // Menu de separadores mais largo do que o ecrã: desliza até ao ativo e esbate as pontas
+    // onde há mais separadores escondidos (classes tem-antes / tem-depois)
+    const nav = document.querySelector(".panel-nav");
+    function marcarPontas() {
+      if (!nav) return;
+      nav.classList.toggle("tem-antes", nav.scrollLeft > 2);
+      nav.classList.toggle("tem-depois", nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2);
+    }
+    function mostrarSeparadorAtivo() {
+      const ativo = nav && nav.querySelector(".active");
+      if (!ativo || nav.scrollWidth <= nav.clientWidth) return marcarPontas();
+      nav.scrollTo({ left: ativo.offsetLeft - nav.offsetLeft - (nav.clientWidth - ativo.offsetWidth) / 2, behavior: "smooth" });
+      marcarPontas();
+    }
+    nav?.addEventListener("scroll", marcarPontas, { passive: true });
+    window.addEventListener("resize", mostrarSeparadorAtivo);
+    requestAnimationFrame(mostrarSeparadorAtivo);
 
     document.querySelectorAll("[data-view]").forEach((button) => {
       button.addEventListener("click", (event) => {

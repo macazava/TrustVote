@@ -25,7 +25,21 @@
 
   function applyPrefs(prefs = readPrefs()) {
     applyTheme(prefs);
-    document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(isDark(prefs))));
+    // Botões do tema no topo (com rótulo próprio): dizem o que acontece ao clicar ("Modo claro" com o
+    // escuro ligado). Os interruptores (Acessibilidade, definições) mostram o estado com aria-pressed.
+    const escuro = isDark(prefs);
+    document.querySelectorAll("[data-theme-toggle]").forEach((b) => {
+      const eAcao = b.querySelector("[data-theme-label]") || b.hasAttribute("aria-label");
+      if (!eAcao) return b.setAttribute("aria-pressed", String(escuro));
+      const acao = escuro ? "Modo claro" : "Modo escuro";
+      b.removeAttribute("aria-pressed");
+      const rotulo = b.querySelector("[data-theme-label]");
+      if (rotulo) rotulo.textContent = acao;
+      else {
+        b.setAttribute("aria-label", acao);
+        b.title = acao;
+      }
+    });
     document.documentElement.classList.toggle("large-text", !!prefs.largeText);
     document.body.classList.toggle("high-contrast", !!prefs.contrast);
     document.querySelectorAll("[data-font-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.largeText)));
@@ -128,3 +142,83 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// ===== Aviso de ligação: sem internet, servidor sem resposta ou atualizações ao vivo em pausa =====
+// Uma faixa discreta no fundo do ecrã (role="status": os leitores de ecrã anunciam-na). Enquanto o
+// servidor não responde, experimenta /api/health a cada 5 s e esconde o aviso quando volta.
+(function () {
+  const TV = window.TrustVote;
+  const MENSAGENS = {
+    offline: ["Sem ligação à internet.", "O que estava a fazer fica guardado. Continuamos quando a ligação voltar."],
+    servidor: ["O servidor não está a responder.", "A tentar de novo…"],
+    "ao-vivo": ["Atualizações ao vivo em pausa.", "A religar…"],
+    ok: ["Ligação restabelecida.", ""],
+  };
+  const problemas = { offline: !navigator.onLine, servidor: false, "ao-vivo": false };
+  let faixa = null;
+  let mostrado = "ok";
+  let tentar = null;
+  let esconder = null;
+  let saindo = false;
+
+  // Ao mudar de página o browser cancela os pedidos em curso: isso não é uma falha de ligação
+  window.addEventListener("pagehide", () => (saindo = true));
+  window.addEventListener("beforeunload", () => (saindo = true));
+
+  function criarFaixa() {
+    if (faixa || !document.body) return faixa;
+    faixa = document.createElement("div");
+    faixa.className = "connection-notice";
+    faixa.setAttribute("role", "status");
+    faixa.hidden = true;
+    document.body.append(faixa);
+    return faixa;
+  }
+
+  function atualizar() {
+    if (saindo) return;
+    const atual = ["offline", "servidor", "ao-vivo"].find((k) => problemas[k]) || "ok";
+    if (atual === mostrado) return;
+    const tinhaProblema = mostrado !== "ok";
+    mostrado = atual;
+    if (!criarFaixa()) return;
+    clearTimeout(esconder);
+    if (atual === "ok" && !tinhaProblema) return;
+    const [titulo, texto] = MENSAGENS[atual];
+    const icone = TV.icon ? TV.icon(atual === "ok" ? "circle-check" : "circle-alert") : "";
+    faixa.innerHTML = `${icone}<span><b>${titulo}</b>${texto ? ` ${texto}` : ""}</span>`;
+    faixa.classList.toggle("is-ok", atual === "ok");
+    faixa.hidden = false;
+    if (atual === "ok") esconder = setTimeout(() => (faixa.hidden = true), 3000);
+    vigiarServidor();
+  }
+
+  // Enquanto o servidor falha, pergunta-lhe a cada 5 s se já voltou
+  function vigiarServidor() {
+    if (problemas.servidor && !tentar && TV.api) {
+      tentar = setInterval(() => TV.api.health().catch(() => {}), 5000);
+    } else if (!problemas.servidor && tentar) {
+      clearInterval(tentar);
+      tentar = null;
+    }
+  }
+
+  document.addEventListener("trustvote:ligacao", (e) => {
+    problemas.servidor = e.detail.estado === "servidor";
+    atualizar();
+  });
+  document.addEventListener("trustvote:ao-vivo", (e) => {
+    problemas["ao-vivo"] = e.detail.estado === "em-pausa";
+    atualizar();
+  });
+  window.addEventListener("offline", () => {
+    problemas.offline = true;
+    atualizar();
+  });
+  window.addEventListener("online", () => {
+    problemas.offline = false;
+    atualizar();
+    if (TV.api) TV.api.health().catch(() => {}); // confirma que o servidor também responde
+  });
+  document.addEventListener("DOMContentLoaded", atualizar);
+})();
