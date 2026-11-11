@@ -7,41 +7,49 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
 > [README da raiz](../README.md). Este documento detalha apenas a infraestrutura.
 
-> **Estado atual:** o Compose corre a aplicação completa. `servidor1` e `servidor2` usam
-> a imagem de [`../Backend`](../Backend/README.md), e o nginx encaminha `/api/` para
-> essas instâncias e serve também o `../Frontend`. O Live Server em `127.0.0.1:5500`
+> **Estado atual:** o Compose executa a stack da aplicação. `servidor1` e `servidor2` usam
+> a imagem de [`../Backend`](../Backend/README.md), e o nginx serve o `../Frontend` por HTTPS
+> e encaminha `/api/` para essas instâncias. O Live Server em `127.0.0.1:5500`
 > continua disponível para desenvolvimento local.
+
+### Navegação
+
+- [Arquitetura e serviços](#1-arquitetura)
+- [Requisitos e configuração](#3-requisitos)
+- [HTTPS local e arranque](#5-https-local)
+- [Comandos do dia a dia](#6-comandos)
+- [Balanceamento e failover](#7-balanceamento-e-falha-de-uma-instância)
+- [Segurança e portas](#9-segurança-e-portas)
+- [Integração frontend/backend](#10-integração-com-o-backend-e-o-frontend)
+- [Resultados e trabalho por fazer](#11-resultados-dos-testes)
 
 ---
 
 ## 1. Arquitetura
 
 ```
-                  Windows (anfitrião) — um único PC físico
- ┌──────────────────────────────────────────────────────────────────────────┐
- │ browser / cliente                                                        │
- │      │  http://127.0.0.1:8080 / https://127.0.0.1:8443                   │
- │ ┌────▼──────────────────── rede Docker: trustvote-network ─────────────┐ │
- │ │  ┌────────┐   round-robin  ┌───────────┐                             │ │
- │ │  │ nginx  ├───────────────►│ servidor1 ├──┐                          │ │
- │ │  │  (LB)  ├───────────────►│ servidor2 ├──┤                          │ │
- │ │  └────────┘                └───────────┘  │                          │ │
- │ │                    escritas/leituras      │      cache/filas         │ │
- │ │              ┌────────────────────────────┤──────────────┐           │ │
- │ │        ┌─────▼──────┐  streaming WAL ┌────▼───────┐ ┌────▼────┐      │ │
- │ │        │ db-primary ├───────────────►│ db-replica │ │  redis  │      │ │
- │ │        │ (leitura + │   (assíncrono) │ (só leitura│ └────┬────┘      │ │
- │ │        │  escrita)  │                │ hot standby│      │           │ │
- │ │        └─────┬──────┘                └─────┬──────┘      │           │ │
- │ └──────────────┼─────────────────────────────┼─────────────┼───────────┘ │
- │        pg-primary-data               pg-replica-data   redis-data        │
- │                  (volumes Docker persistentes)                           │
- └──────────────────────────────────────────────────────────────────────────┘
+                      Windows — um único PC
+ Browser
+   | HTTPS :8443 (frontend + API)
+   | HTTP :8080 (redireciona para HTTPS)
+   v
+ Nginx (TLS, ficheiros do frontend, balanceamento de /api)
+   | /api
+   +----------+----------+
+   v                     v
+ servidor1             servidor2
+   +----------+----------+
+              v
+ PostgreSQL primário -- WAL --> réplica PostgreSQL
+              ^
+           monitor
+
+ Redis (configurado na stack; ainda não usado pela API)
 ```
 
 | Contentor | Serviço | Imagem | Função |
 |---|---|---|---|
-| `trustvote-nginx` | `nginx` | `nginx:1.28-alpine` | Reverse proxy e balanceador de carga (round-robin); único ponto de entrada |
+| `trustvote-nginx` | `nginx` | `nginx:1.28-alpine` | Termina TLS, serve o frontend e balanceia pedidos da API |
 | `trustvote-servidor1` | `servidor1` | `trustvote-backend` (de `../Backend`) | Instância 1 da aplicação |
 | `trustvote-servidor2` | `servidor2` | `trustvote-backend` (de `../Backend`) | Instância 2, independente da 1 |
 | `trustvote-monitor` | `monitor` | `trustvote-backend` | Failover automático da BD |
@@ -54,7 +62,7 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 | Nível | O que existe aqui | Protege contra | **Não** protege contra |
 |---|---|---|---|
 | Redundância de contentores | 2 instâncias da aplicação atrás do nginx | Falha/paragem de uma instância | Falha do nginx (instância única) |
-| Replicação de dados | Réplica PostgreSQL em streaming assíncrono | Perda do contentor/volume do primário | Erros lógicos (um `DELETE` errado é replicado); transações ainda não replicadas no momento da falha |
+| Replicação de dados | PostgreSQL em streaming; síncrona com a réplica ativa e assíncrona durante indisponibilidade | Perda do contentor/volume do primário | Erros lógicos (um `DELETE` errado é replicado); perda do PC/disco |
 | Tolerância a falhas do servidor físico | **Nenhuma** | — | Avaria do PC, disco, Docker Desktop ou Windows: **tudo para** |
 
 Isto **não é um cluster de máquinas independentes**: todos os contentores partilham o mesmo
@@ -73,7 +81,8 @@ PC, o mesmo disco e o mesmo motor Docker.
 ├── .gitattributes                # força LF nos scripts (correm em Linux)
 ├── README.md
 └── docker/
-    ├── nginx/default.conf                  # upstream, deteção de falhas, logs
+    ├── nginx/default.conf                  # HTTPS, redirecionamento, upstream e logs
+    ├── nginx/certs/                        # certificados locais (ignorada pelo Git)
     ├── pgadmin/servers.json                # servidores pré-registados no pgAdmin (modo debug)
     ├── postgres/pg-entrypoint.sh           # entrypoint comum: primário ou réplica (pg_basebackup)
     ├── postgres/initdb/00-replication.sh   # cria utilizador de replicação + pg_hba
@@ -94,7 +103,8 @@ O **esquema da base de dados** não é duplicado aqui: é montado diretamente de
 
 - Windows 10/11 com **WSL 2** (`wsl --install` numa consola de administrador + reiniciar)
 - **Docker Desktop** (testado com Docker Engine 29.8 / Compose v5.5)
-- Portas livres no anfitrião: `8080` (nginx). Opcional: `15432`, `15433`, `5050` (modo debug)
+- Portas livres no anfitrião: `8080` (HTTP, redireciona para HTTPS) e `8443` (HTTPS). Opcional:
+  `15432`, `15433`, `5050` (modo debug)
 
 ## 4. Configurar o `.env`
 
@@ -110,12 +120,53 @@ copy .env.example .env
 | `TRUSTVOTE_DB_PASSWORD` | utilizador `trustvote`, usado pelo backend |
 | `REPLICATION_PASSWORD` | utilizador `replicator` (primário → réplica) |
 | `REDIS_PASSWORD` | autenticação do Redis |
-| `NGINX_BIND_ADDRESS` / `NGINX_HTTP_PORT` | onde o nginx é publicado (por defeito `127.0.0.1:8080`) |
-| `DB_WRITE_HOST`, `DB_READ_HOST`, `DB_*_NODE_ROLE`, `DB_*_UPSTREAM` | só para o failover manual (secção 7) |
+| `NGINX_BIND_ADDRESS` / `NGINX_HTTP_PORT` | endereço e porta HTTP do Nginx (por defeito `127.0.0.1:8080`; HTTPS usa `8443`) |
+| `DB_WRITE_HOST`, `DB_READ_HOST`, `DB_*_NODE_ROLE`, `DB_*_UPSTREAM` | só para o failover manual (secção 8) |
 
 O `docker compose` recusa arrancar se faltar alguma password.
 
-## 5. Comandos
+## 5. HTTPS local
+
+O Nginx serve o frontend e a API por HTTPS em `https://127.0.0.1:8443`; a porta HTTP
+`8080` redireciona para HTTPS. Para desenvolvimento local, cada pessoa deve gerar o seu
+próprio certificado com `mkcert`; não partilhe nem faça commit da chave privada. No Windows,
+instale o `mkcert` (por exemplo,
+`winget install --id FiloSottile.mkcert -e`) e, a partir desta pasta `Infraestrutura`, execute:
+
+```powershell
+mkcert -install
+New-Item -ItemType Directory -Force .\docker\nginx\certs
+mkcert -cert-file .\docker\nginx\certs\cert.pem `
+  -key-file .\docker\nginx\certs\key.pem `
+  localhost 127.0.0.1 ::1
+```
+
+`mkcert -install` adiciona a autoridade certificadora local à confiança do utilizador neste
+computador. Os certificados e a chave são ignorados pelo Git. O certificado é local e não
+torna o site publicamente confiável nem deve ser copiado para outros computadores ou
+dispositivos móveis.
+
+Depois de configurar o `.env` e gerar os certificados:
+
+```powershell
+docker compose up -d --build --wait
+```
+
+Confirme o redirecionamento HTTP e o acesso HTTPS ao frontend e à API:
+
+```powershell
+curl.exe -I http://127.0.0.1:8080/
+Invoke-WebRequest https://127.0.0.1:8443/pages/inicio.html -UseBasicParsing |
+  Select-Object StatusCode
+Invoke-RestMethod https://127.0.0.1:8443/api/health
+```
+
+O primeiro comando deve mostrar `301 Moved Permanently` e `Location:
+https://127.0.0.1:8443/`. O segundo deve devolver `200`; o terceiro deve indicar
+`"status":"ok"` e `"database":"ok"`. O endpoint `/nginx-health` é uma verificação simples
+do Nginx, usada pelo healthcheck do contentor; não verifica a saúde da API nem da base de dados.
+
+## 6. Comandos
 
 ```powershell
 cd 05_Artefactos\Infraestrutura
@@ -216,7 +267,7 @@ Com dados que interessam, aplicar a alteração por migração (`ALTER TABLE ...
 
 ---
 
-## 6. Balanceamento e falha de uma instância
+## 7. Balanceamento e falha de uma instância
 
 Configuração em `docker/nginx/default.conf`:
 
@@ -234,7 +285,7 @@ Configuração em `docker/nginx/default.conf`:
 
 **Verificar que ambos recebem pedidos:**
 ```powershell
-1..10 | % { (Invoke-WebRequest http://127.0.0.1:8080/api/health -UseBasicParsing).Headers['X-Upstream-Server'] }
+1..10 | % { (Invoke-WebRequest https://127.0.0.1:8443/api/health -UseBasicParsing).Headers['X-Upstream-Server'] }
 docker compose logs nginx      # cada linha mostra upstream=<ip:porta> e upstream_status
 ```
 
@@ -247,7 +298,7 @@ docker compose up -d --no-deps --force-recreate servidor2      # substituir cont
 
 ---
 
-## 7. Replicação e failover do PostgreSQL
+## 8. Replicação e failover do PostgreSQL
 
 ### Como funciona
 - Replicação **física em streaming** (`wal_level=replica`), **síncrona enquanto a réplica estiver
@@ -314,11 +365,12 @@ replicação não substitui backups, porque os erros lógicos também são repli
 
 ---
 
-## 8. Segurança e portas
+## 9. Segurança e portas
 
 | Serviço | Porta interna | Publicada no anfitrião |
 |---|---|---|
-| nginx | 80 | `127.0.0.1:8080` (configurável no `.env`) |
+| nginx | 80 | `127.0.0.1:8080` (configurável no `.env`; redireciona para HTTPS) |
+| nginx | 443 | `127.0.0.1:8443` |
 | servidor1 / servidor2 | 8080 | não |
 | db-primary / db-replica | 5432 | não (só com `compose.debug.yaml`: `127.0.0.1:15432/15433`) |
 | pgadmin | 80 | só com `compose.debug.yaml`: `127.0.0.1:5050` |
@@ -326,13 +378,16 @@ replicação não substitui backups, porque os erros lógicos também são repli
 
 - PostgreSQL e Redis só são acessíveis dentro da `trustvote-network`.
 - Credenciais apenas no `.env` (ignorado pelo git); o `compose.yaml` só tem referências `${...}`.
+- O Nginx é publicado apenas em `127.0.0.1` por omissão. O certificado `mkcert` é local,
+  não é confiável automaticamente por telemóveis e não se destina a acesso público.
+- A porta HTTP redireciona para HTTPS, exceto o endpoint de healthcheck `/nginx-health`.
 - Replicação só aceite da sub-rede Docker (`pg_hba`: `host replication replicator samenet scram-sha-256`).
 - Redis com password, `protected-mode`, e `FLUSHALL`/`FLUSHDB`/`DEBUG` desativados.
 - Sem IPs fixos: os serviços comunicam por nome (DNS do Docker).
 
 ---
 
-## 9. Integração com o backend e o frontend
+## 10. Integração com o backend e o frontend
 
 - A âncora `x-app` do `compose.yaml` constrói a imagem de `../Backend`; aplica-se com
   `docker compose up -d --build --wait` (o `--build` é o que garante que a imagem
@@ -358,13 +413,13 @@ de CORS não é necessária para o navegador.
 - Os contentores recebem o `JWT_SECRET` do `.env` **desta** pasta.
 - A API corrida localmente na porta `8001` lê o `Backend/.env`, que não define
   `JWT_SECRET`, e usa por isso o segredo de desenvolvimento.
-- Consequência prática: **um token obtido em `127.0.0.1:8080` não é aceite em
+- Consequência prática: **um token obtido em `https://127.0.0.1:8443` não é aceite em
   `localhost:8001`**, e vice-versa. Se precisares de alternar, define o mesmo valor nos
   dois `.env`.
 
 ---
 
-## 10. Resultados dos testes (18/10/2026, Docker Engine 29.8.2)
+## 11. Resultados dos testes
 
 Executados neste PC. "Placeholder" = testado com o servidor de substituição, **não** com o backend.
 
@@ -398,7 +453,7 @@ teste anterior, um eleitor ficou com o voto contado mas sem recibo.
 | 8 | Falha de uma instância | ✅ placeholder — servidor1 parado: 10/10 respondidos pelo servidor2 (primeiros pedidos ~2 s mais lentos até ao timeout de ligação); servidor1 reiniciado e servidor2 recriado voltam ao round-robin sem reiniciar o nginx |
 | 9 | Replicação | ✅ estado `streaming/async`; escrita no primário visível na réplica; escrita na réplica recusada |
 | 9b | Promoção + reconstrução | ✅ réplica promovida aceita escritas; antigo primário **recusado** pela proteção; reconstruído como réplica do novo primário, replicação `streaming` e novas escritas replicadas |
-| 10 | Portas expostas | ✅ só `127.0.0.1:8080` publicado (BD só com `compose.debug.yaml`, em 127.0.0.1) |
+| 10 | Portas expostas | ✅ Nginx em `127.0.0.1:8080` (HTTP) e `127.0.0.1:8443` (HTTPS); BD só com `compose.debug.yaml`, em `127.0.0.1` |
 
 ### Ainda por exercitar
 
@@ -410,3 +465,13 @@ teste anterior, um eleitor ficou com o voto contado mas sem recibo.
 
 > Os testes 7 e 8 foram inicialmente feitos com um servidor de substituição e **já foram
 > repetidos com a aplicação real** nos testes de falha de 31/10 (tabela acima).
+
+**Validação HTTPS (11/11/2026, configuração local):**
+
+| Verificação | Resultado |
+|---|---|
+| `docker compose config --quiet` | ✅ configuração válida |
+| `docker compose run --rm --no-deps nginx nginx -t` | ✅ sintaxe Nginx válida e certificados carregados |
+| `http://127.0.0.1:8080/` | ✅ `301` para `https://127.0.0.1:8443/` |
+| `https://127.0.0.1:8443/pages/inicio.html` | ✅ `200` |
+| `https://127.0.0.1:8443/api/health` | ✅ `200`, API e base de dados saudáveis |

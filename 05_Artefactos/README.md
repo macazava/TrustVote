@@ -1,8 +1,8 @@
 # TrustVote
 
 Sistema de votação eletrónica para a **Associação de Estudantes de uma universidade
-europeia** — **API FastAPI + PostgreSQL + Redis**, a correr em Docker num único PC
-Windows.
+europeia** — **API FastAPI + PostgreSQL**, a correr em Docker num único PC Windows.
+O Redis está configurado na stack, mas ainda não é utilizado pela API.
 
 Este README é o **ponto de entrada**: explica o que existe no repositório, como
 pôr tudo a funcionar do zero e onde está a documentação detalhada. Quem pega no
@@ -15,7 +15,7 @@ código pela primeira vez deve começar por aqui.
 ```text
 05_Artefactos/
 ├── Backend/            # API (FastAPI + SQLAlchemy + PostgreSQL)
-├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Live Server
+├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Nginx ou Live Server
 ├── Infraestrutura/     # Docker Compose: nginx, aplicações, PostgreSQL e Redis
 ├── README.md           # este ficheiro — visão geral e como começar
 ├── ApresentaçãoTrustVote_1aEntrega.pdf
@@ -30,49 +30,66 @@ código pela primeira vez deve começar por aqui.
 Cada pasta tem o seu próprio README, com todos os detalhes. Este documento só
 dá o essencial para arrancar.
 
+### Navegação
+
+- [Arquitetura](#2-arquitetura)
+- [Arranque local](#4-comandos-para-pôr-tudo-a-correr)
+- [Problemas comuns](#8-problemas-comuns)
+- [Backend](Backend/README.md)
+- [Infraestrutura, HTTPS e failover](Infraestrutura/README.md)
+
 ---
 
-## 2. Arquitetura em duas linhas
+## 2. Arquitetura
 
 ```text
-   browser (nginx HTTPS :8443 ou Live Server local :5500)
-      │
-      ▼
-   nginx :8080 ──► servidor1 ─┐
-   (balanceador) ► servidor2 ─┤
-                              ├──► db-primary ──(síncrona)──► db-replica
-                              └──► redis            ▲              ▲
-                                                    └── monitor ───┘
+                                  ┌── HTTP :8080 ──301──┐
+browser ── HTTPS :8443 ─────────►│ nginx               │
+  │                              │ TLS + frontend      │
+  │                              │ /api: balanceamento│
+  │                              └─────────┬───────────┘
+  │                                        │
+  │                              ┌─────────┴─────────┐
+  │                              ▼                   ▼
+  │                         servidor1            servidor2
+  │                              └─────────┬─────────┘
+  │                                        ▼
+  │                          PostgreSQL primário ──WAL──► réplica
+  │                                  ▲
+  │                               monitor
+  │
+  ├── Live Server :5500 (opcional, desenvolvimento local)
+  └── Redis (na stack; ainda não usado pela API)
 ```
 
-Se a BD primária falhar, o monitor promove a réplica e a API passa a usá-la sem reiniciar. O
-guião da demonstração está em [Infraestrutura/demo/GUIAO.md](Infraestrutura/demo/GUIAO.md).
+Se a BD primária falhar enquanto a réplica estiver sincronizada, o monitor promove-a e a API
+passa a usá-la sem reiniciar. O guião da demonstração está em
+[Infraestrutura/demo/GUIAO.md](Infraestrutura/demo/GUIAO.md).
 
 - **`Infraestrutura/`** sobe toda esta stack com Docker, num único PC.
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
   **`8001`**, ligada ao PostgreSQL da infraestrutura.
-
-- O **frontend** pode ser servido pelo nginx, em <https://127.0.0.1:8443/>, ou pelo **Live Server**
-  para desenvolvimento local, em <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
-- Via nginx, o frontend usa a API na mesma origem (`/api`); no Live Server local, usa
-  `https://127.0.0.1:8443/api` (definido em `Frontend/js/models/servidor.js`). O backend aceita como origens **tanto
-  `http://127.0.0.1:5500` como `http://localhost:5500`** (a variável `CORS_ORIGINS`,
-  com esses dois valores por omissão). Isto é necessário porque, para o navegador,
-  `localhost` e `127.0.0.1` são origens **diferentes**: abrir a página por um nome e
-  apontar a API para o outro dá erro de CORS e a mensagem "Não foi possível contactar
-  o servidor".
-- O **nginx** serve o frontend e encaminha `/api/` para `servidor1`/`servidor2`, que correm a imagem do
-  `Backend/`.
-- O frontend não tem dados próprios: tudo o que mostra vem da API.
+- O **Nginx** termina HTTPS, serve os ficheiros do frontend e encaminha `/api/` para
+  `servidor1`/`servidor2`. A porta HTTP `8080` redireciona para HTTPS na `8443`.
+- O Redis está configurado na infraestrutura, mas ainda não é utilizado pela API.
+- O endereço recomendado para a aplicação é
+  <https://127.0.0.1:8443/pages/inicio.html>. O Live Server continua disponível
+  opcionalmente em `http://127.0.0.1:5500`; nesse modo, o frontend chama a API HTTPS
+  do Nginx.
+- O frontend não guarda os dados eleitorais: obtém-nos através da API.
 
 ---
 
 ## 3. Pré-requisitos
 
 - **Docker Desktop** iniciado (Windows 10/11 com WSL 2). Confirma com `docker info`.
+- **mkcert** instalado, para gerar um certificado HTTPS local (ver
+  [Infraestrutura > HTTPS local](Infraestrutura/README.md#5-https-local)).
 - **Python 3.12 ou superior** (só é necessário no modo B).
 - Portas livres:
-  - `8080` — nginx, o único ponto de entrada publicado (sempre);
+  - `8080` — HTTP do Nginx, redireciona para `8443`;
+  - `8443` — HTTPS do Nginx, frontend e API;
+  - `5500` — Live Server, opcional;
   - `8001` — API local (só no modo B);
   - `15432` / `15433` / `5050` — base de dados e pgAdmin (só com o `compose.debug.yaml`).
 
@@ -85,7 +102,7 @@ Há **dois modos**, ambos sobre a mesma base de dados e o mesmo frontend:
 | Modo | Onde corre a API | Para que serve |
 |---|---|---|
 | **A. Tudo em Docker** (recomendado) | contentores `servidor1` / `servidor2` | demonstração completa: balanceamento, replicação e failover |
-| **B. API local + infraestrutura em Docker** | no teu PC, porta `8001` | desenvolvimento, com `--reload` a cada gravação |
+| **B. API local + infraestrutura em Docker** | no teu PC, porta `8001` | desenvolvimento e testes diretos à API, com `--reload` |
 
 ### Passo 0 — Uma só vez: ambiente virtual (só é preciso no modo B)
 
@@ -105,7 +122,22 @@ copy .env.example .env
 # Abre o .env e substitui TODOS os valores "mudar_*" por passwords próprias.
 ```
 
-### Passo 2 — Subir a infraestrutura
+### Passo 2 — Gerar o certificado HTTPS local (só na primeira vez)
+
+Na pasta `Infraestrutura`, gera certificados próprios para este computador:
+
+```powershell
+mkcert -install
+New-Item -ItemType Directory -Force .\docker\nginx\certs
+mkcert -cert-file .\docker\nginx\certs\cert.pem `
+  -key-file .\docker\nginx\certs\key.pem `
+  localhost 127.0.0.1 ::1
+```
+
+Não partilhes nem faças commit da chave privada. A pasta dos certificados é ignorada pelo Git.
+Os detalhes estão em [Infraestrutura > HTTPS local](Infraestrutura/README.md#5-https-local).
+
+### Passo 3 — Subir a infraestrutura
 
 ```powershell
 # Modo A — tudo em Docker (nginx + servidor1 + servidor2 + BD + réplica + redis)
@@ -124,8 +156,11 @@ docker compose ps
 - O `compose.debug.yaml` é obrigatório no **modo B**: é ele que **publica a base de
   dados em `127.0.0.1:15432`**. Também acrescenta o pgAdmin em
   <http://127.0.0.1:5050>.
+- No modo B, o frontend continua a chamar a API Docker pelo Nginx. Para testar a API
+  local, usa `http://localhost:8001/docs` ou aponta temporariamente o frontend para
+  essa API.
 
-### Passo 3 — (Modo B) Configurar e arrancar a API no PC
+### Passo 4 — (Modo B) Configurar e arrancar a API no PC
 
 O `Backend/.env` aponta para a base de dados publicada no passo anterior:
 
@@ -147,21 +182,28 @@ Corre sempre a partir da pasta `Backend`, senão dá
 `ModuleNotFoundError: No module named 'app'`. Usa `--reload` durante o
 desenvolvimento: sem ele, o servidor continua a servir o código que tem em memória.
 
-### Passo 4 — Abrir o frontend
+### Passo 5 — Abrir o frontend
 
-Abre `Frontend/pages/inicio.html` com o **Live Server** (botão direito → *Open with
-Live Server*) → <http://127.0.0.1:5500/Frontend/pages/inicio.html>.
+No modo recomendado, abre diretamente
+<https://127.0.0.1:8443/pages/inicio.html>. Também podes abrir
+`Frontend/pages/inicio.html` com o Live Server em
+<http://127.0.0.1:5500/Frontend/pages/inicio.html>; nesse caso, o frontend chama
+a API HTTPS do Nginx.
 
-O frontend chama **sempre** a API pelo nginx, em `http://127.0.0.1:8080/api`.
+O certificado `mkcert` confia apenas no computador onde foi instalado. O acesso
+por omissão está limitado a `127.0.0.1`; não é um endereço para partilhar com
+outros dispositivos.
 
-### Passo 5 — Confirmar que funciona
+### Passo 6 — Confirmar que funciona
 
 | | Endereço |
 |---|---|
-| API através do nginx | <http://127.0.0.1:8080/api/health> |
-| Documentação interativa | <http://127.0.0.1:8080/docs> |
+| Aplicação pelo Nginx (HTTPS) | <https://127.0.0.1:8443/pages/inicio.html> |
+| API através do Nginx | <https://127.0.0.1:8443/api/health> |
+| Documentação interativa da API | <https://127.0.0.1:8443/api/docs> |
+| Redirecionamento HTTP | <http://127.0.0.1:8080/> → HTTPS |
 | API local (só no modo B) | <http://localhost:8001/docs> |
-| Aplicação | <http://127.0.0.1:5500/Frontend/pages/inicio.html> |
+| Live Server (opcional) | <http://127.0.0.1:5500/Frontend/pages/inicio.html> |
 | pgAdmin (com o ficheiro de debug) | <http://127.0.0.1:5050> |
 
 O registo exige o **número de estudante** (identificador do eleitor) e a conta é
@@ -172,7 +214,7 @@ rotas de administração, cria uma conta e promove-a:
 docker exec trustvote-db-primary psql -U trustvote -d trustvote -c "UPDATE utilizador SET ut_perfil='administrador' WHERE ut_nome='<o teu nome>';"
 ```
 
-### Passo 6 — Parar
+### Passo 7 — Parar
 
 Desce sempre com o **mesmo conjunto de ficheiros** que usaste para subir:
 
@@ -252,15 +294,14 @@ Detalhes em [Backend/README.md](Backend/README.md).
 
 Estado atual, em resumo:
 
-**Backend** — feito: registo (com nº de estudante), login com JWT, gestão de
-eleições, candidaturas, rondas e caderno eleitoral, **voto anónimo com recibo**,
-verificação de recibo, contagem de resultados, estatísticas e resumo público.
+**Backend** — feito: registo (com nº de estudante), login com JWT, TOTP opcional,
+gestão de eleições, candidaturas, rondas e caderno eleitoral, **voto anónimo com
+recibo**, verificação de recibo, contagem de resultados, estatísticas e resumo público.
 
 Falta expor, no backend, as rotas que o frontend já invoca:
 
 | Rota em falta | Área |
 |---|---|
-| `POST /auth/totp/configurar`, `/ativar`, `/desativar` | TOTP (a lógica ainda não existe em `app/security/totp.py`) |
 | `GET /auditoria` | auditoria (RF11) |
 | `GET /eleicoes/{id}/sondagem`, `POST /eleicoes/{id}/sondagem/respostas` | sondagem |
 | `GET /recibos` | listagem de recibos — **não deve existir** por desenho: o servidor só guarda o hash do recibo; a cópia vive no `localStorage` do browser |
@@ -278,9 +319,10 @@ funcionalidade ainda não está disponível.
 > estranho — um `404` real (ex.: eleição inexistente) é apresentado como
 > "funcionalidade ainda não disponível".
 
-**Infraestrutura** — feito: stack completa a funcionar com a API real (balanceamento,
-replicação síncrona, failover automático da BD, backups), com o frontend no Live Server.
-Limitações em [Infraestrutura > Limitações conhecidas](Infraestrutura/README.md).
+**Infraestrutura** — feito: stack Docker com Nginx (frontend HTTPS e redirecionamento
+HTTP), duas APIs, PostgreSQL primário/réplica, monitor de failover e backups. O acesso
+por omissão está limitado ao próprio PC; os certificados `mkcert` são locais. Limitações
+em [Infraestrutura > Limitações conhecidas](Infraestrutura/README.md).
 
 Listas completas em [Backend > Próximos passos](Backend/README.md) e
 [Infraestrutura > Integração](Infraestrutura/README.md).
@@ -292,16 +334,18 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 | Sintoma | Causa provável / solução |
 |---|---|
 | `ModuleNotFoundError: No module named 'app'` | Estás a correr o Uvicorn fora da pasta `Backend`. Corre `python -m uvicorn main:app ...` a partir de `Backend`. |
-| `ERR_CONNECTION_REFUSED` em `localhost:8001` | O Uvicorn não está a correr, ou a porta é outra. Ver Passo 3. |
+| `ERR_CONNECTION_REFUSED` em `localhost:8001` | O Uvicorn não está a correr, ou a porta é outra. Ver Passo 4. |
 | `[Errno 10048]` a ligar à porta `8001` | Já há um Uvicorn a segurar a porta (normalmente um processo órfão do `--reload`). Liberta-a com o comando da [secção 5](#5-comandos-do-dia-a-dia). |
 | O backend não liga à base de dados | Falta o `compose.debug.yaml` (a BD não está publicada em `15432`) ou as credenciais do `Backend/.env` não coincidem com o `.env` da Infraestrutura. |
 | Alterações ao código não aparecem | Sem `--reload` (API local) ou sem `--build` (contentores). Ver [secção 5](#5-comandos-do-dia-a-dia). |
 | `502` no nginx, com `no live upstreams` nos logs | As instâncias `servidor1`/`servidor2` estão em baixo, **ou** a imagem do backend está desatualizada (foi construída com outra porta). Sobe com `docker compose up -d --build --wait`. |
-| "Não foi possível contactar o servidor" no browser | CORS: a página está em `localhost:5500` mas o `CORS_ORIGINS` do backend só conhece `127.0.0.1:5500` (ou o contrário). Usa o mesmo nome nos dois lados. |
-| `503` / "Serviço temporariamente indisponível" | A API está viva mas sem acesso à base de dados. Confirma `docker compose ps` e `GET /health`. |
+| Aviso de certificado ao abrir HTTPS | Confirma que executaste `mkcert -install` e geraste certificados locais; vê [Infraestrutura > HTTPS local](Infraestrutura/README.md#5-https-local). |
+| "Não foi possível contactar o servidor" no browser | Confirma `docker compose ps`, testa `https://127.0.0.1:8443/api/health` e verifica se o certificado local é confiável. No Live Server, `localhost` e `127.0.0.1` são origens diferentes para CORS. |
+| `503` / "Serviço temporariamente indisponível" | A API está viva mas sem acesso à base de dados. Confirma `docker compose ps` e testa `https://127.0.0.1:8443/api/health`. |
 | `Resource is still in use` no `docker network rm` | Ficou um contentor órfão (tipicamente o `pgadmin`, ao descer sem o `compose.debug.yaml`). Usa `down --remove-orphans`. |
 | `docker compose up` recusa arrancar | Falta uma password no `.env` da Infraestrutura. Copia o `.env.example` e preenche os `mudar_*`. |
 | `port is already allocated` | A porta está ocupada (ex.: outro PostgreSQL na `5432`). Fecha o processo ou muda a porta no `.env`. |
+| HTTP não abre diretamente a aplicação | É esperado: `http://127.0.0.1:8080` redireciona para `https://127.0.0.1:8443`. |
 | Tabelas novas não aparecem na BD | Os scripts SQL só correm com o volume vazio. Ver [Infraestrutura > Scripts de inicialização](Infraestrutura/README.md). |
 | `docker compose` não responde | O Docker Desktop está desligado. Confirma com `docker info`. |
 
