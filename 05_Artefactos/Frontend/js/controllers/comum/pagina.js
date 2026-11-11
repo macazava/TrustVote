@@ -14,9 +14,9 @@
   }
 
   // Modo escuro: a escolha guardada ("dark"/"light") ou, sem escolha, o modo do sistema operativo.
-  // O contraste elevado usa sempre o tema claro (é aí que o contraste é máximo).
+  // O contraste elevado funciona nos dois modos: em claro (preto sobre branco) e em escuro (branco sobre preto).
   const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
-  const isDark = (prefs = readPrefs()) => !prefs.contrast && (prefs.theme ? prefs.theme === "dark" : systemDark.matches);
+  const isDark = (prefs = readPrefs()) => (prefs.theme ? prefs.theme === "dark" : systemDark.matches);
   const applyTheme = (prefs = readPrefs()) => {
     document.documentElement.dataset.theme = isDark(prefs) ? "dark" : "light";
   };
@@ -45,7 +45,7 @@
   document.addEventListener("click", (event) => {
     if (!event.target.closest?.("[data-theme-toggle]")) return;
     const dark = !isDark();
-    savePrefs({ theme: dark ? "dark" : "light", ...(dark ? { contrast: false } : {}) });
+    savePrefs({ theme: dark ? "dark" : "light" });
   });
 
   window.TrustVote.prefs = { read: readPrefs, apply: applyPrefs, save: savePrefs, isDark };

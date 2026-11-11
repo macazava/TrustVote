@@ -201,6 +201,41 @@ html.large-text {
     --color-focus: #0f3d2c;
 }
 
+/* Contraste elevado em modo escuro: fundo preto, texto branco e verdes muito claros
+   (todos os textos acima de 7:1 sobre o preto); o contorno de foco fica amarelo, o mais visível */
+:root[data-theme="dark"] .high-contrast {
+    --color-bg: #000;
+    --color-surface: #000;
+    --color-surface-sunken: #141414;
+    --color-field: #000;
+    --color-text: #fff;
+    --color-text-secondary: #f5f5f5;
+    --color-text-muted: #e6e6e6;
+    --color-text-subtle: #cccccc;
+    --color-border: #9a9a9a;
+    --color-border-strong: #e6e6e6;
+    --color-brand: #8ff5c0;
+    --color-heading: #b6ffd8;
+    --color-brand-deep: #000;
+    --color-brand-soft: #0b2a1d;
+    --color-brand-muted: #6fdca6;
+    --color-indicator: #8ff5c0;
+    --color-action: #0f6b45;
+    --color-action-hover: #0a5034;
+    --color-focus: #ffe066;
+    --color-success: #8ff5c0;
+    --color-success-soft: #0b2a1d;
+    --color-warning: #ffd479;
+    --color-warning-soft: #2b2000;
+    --color-danger: #ff9a91;
+    --color-on-dark-muted: #e6e6e6;
+}
+
+/* As faixas escuras (topo, painéis) também passam a ter o foco amarelo */
+:root[data-theme="dark"] .high-contrast :is(.skip-link, .topbar, .dashboard-header, .dark-card, .steps-help, .profile-hero) {
+    --color-focus: #ffe066;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     *,
