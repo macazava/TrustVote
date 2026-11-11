@@ -76,17 +76,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ===== Resultados =====
+  // ===== Resultados: um quadro por eleição em curso ou encerrada (views/resultados.js) =====
   const results = document.querySelector("[data-results]");
   if (results) {
+    const quadro = window.TrustVote.resultsView;
     ui.mount(results, async () => {
-      // Sem sessão: só a participação e um convite para entrar
+      const dados = await resumo().catch(() => null);
+      const aoVivo = (id) => (dados && dados.eleicao.id === id ? dados : null);
+
+      // Sem sessão: a participação ao vivo (é pública) e o convite para entrar
       if (!session.token()) {
-        let resumoHtml = "";
-        try {
-          resumoHtml = view.turnoutCard(await resumo());
-        } catch { }
-        results.innerHTML = `${resumoHtml}${view.loginForResults()}`;
+        results.innerHTML =
+          (dados && dados.eleicao.estado === "em_curso" ? quadro.pending(dados.eleicao, { aoVivo: dados }) : "") + view.loginForResults();
         return;
       }
 
@@ -95,17 +96,23 @@ document.addEventListener("DOMContentLoaded", () => {
         results.innerHTML = ui.empty("Ainda não existem resultados.", "Os resultados aparecem quando uma eleição começa.", { label: "Ver calendário eleitoral", href: "calendario.html" });
         return;
       }
+      // Encerradas primeiro; cada eleição com as datas e as listas (detalhe) e os resultados
+      lista.sort((x, y) => (x.estado === "encerrada" ? 0 : 1) - (y.estado === "encerrada" ? 0 : 1));
       const blocos = await Promise.all(
-        lista.map(async (e) => {
-          const { data, error } = await api.votacao.resultados(e.id).then(
-            (d) => ({ data: d, error: null }),
-            (err) => ({ data: null, error: err })
-          );
-          return view.resultsCard(e, data, error);
+        lista.map(async (resumida) => {
+          const e = await api.eleicoes.detalhe(resumida.id).then(window.TrustVote.elections.view, () => resumida);
+          try {
+            return quadro.board(e, await api.votacao.resultados(e.id));
+          } catch (error) {
+            if (error.status === 409) return quadro.pending(e, { aoVivo: aoVivo(e.id) });
+            return `<article class="dash-card results-board"><h2>${format.escapeHtml(e.titulo)}</h2><p class="form-message">${format.escapeHtml(error.message)}</p></article>`;
+          }
         })
       );
       results.innerHTML = blocos.join("");
     });
+    // Contagem decrescente até ao fecho ("Termina em 01d : 23h : 59m")
+    setInterval(() => results.querySelectorAll("[data-countdown]").forEach((el) => (el.textContent = format.countdown(el.dataset.countdown))), 30000);
   }
 
   // ===== Comunicação: avisos gerados a partir da eleição em destaque =====

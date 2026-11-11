@@ -4,8 +4,7 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, initials } = TV.format;
-  const { head, stateBadge } = TV.blocks;
-  const { resultRow, roundSummary } = TV.charts;
+  const { head } = TV.blocks;
 
   // ===== Sondagem =====
   const pollHead = () =>
@@ -45,20 +44,8 @@
       </article>
     </div>`;
 
-  // ===== Resultados =====
-  const resultsHead = () => head("INFORMAÇÃO ELEITORAL", "Resultados", "Apuramento das eleições em curso e concluídas.");
+  // ===== Resultados (o quadro de cada eleição vem de views/resultados.js) =====
+  const resultsHead = () => head("INFORMAÇÃO ELEITORAL", "Resultados", "Participação e apuramento das eleições em curso e concluídas.");
 
-  // Cartão vazio de cada eleição (o conteúdo chega depois com resultsCard)
-  const resultsSlot = (e) => `<article class="dash-card" data-result="${e.id}"></article>`;
-
-  const resultsCard = (e, rondas) => `
-    <div class="card-head"><div><h2>${escapeHtml(e.titulo)}</h2></div>${stateBadge(e.estado)}</div>
-    ${rondas.map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`).join("")}`;
-
-  // Votação ainda aberta: os resultados só são públicos depois de fechar (não é um erro)
-  const resultsPending = (e, mensagem) => `
-    <div class="card-head"><div><h2>${escapeHtml(e.titulo)}</h2></div>${stateBadge(e.estado)}</div>
-    ${TV.ui.empty("Resultados ainda não disponíveis", mensagem)}`;
-
-  Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead, resultsSlot, resultsCard, resultsPending });
+  Object.assign((TV.voterView = TV.voterView || {}), { pollHead, modelTag, pollBody, resultsHead });
 })();

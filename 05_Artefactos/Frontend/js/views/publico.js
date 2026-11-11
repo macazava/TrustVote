@@ -4,7 +4,6 @@
 
   const TV = window.TrustVote;
   const { escapeHtml, number, percent, date, dateTime, period, time, initials } = TV.format;
-  const { resultRow, roundSummary } = TV.charts;
 
   // ===== Calendário: próxima eleição =====
   const electionEyebrow = { em_curso: "VOTAÇÃO A DECORRER", agendada: "PRÓXIMA ELEIÇÃO", encerrada: "ÚLTIMA ELEIÇÃO" };
@@ -79,40 +78,16 @@
       ].map((linha) => `<span>${escapeHtml(linha)}</span>`).join("")
       : ["Votação encerrada", "Contagem concluída", "Resultados publicados"].map((t) => `<span>${t}</span>`).join("");
 
-  // ===== Resultados =====
-  const turnoutCard = (dados) => `
-    <article class="dash-card">
-      <p class="eyebrow">PARTICIPAÇÃO EM TEMPO REAL</p>
-      <h2>${escapeHtml(dados.eleicao.titulo)}</h2>
-      <div class="facts grid-cols-2 sm:grid-cols-3">
-        <div><b>${number(dados.eleitores)}</b><small>estudantes elegíveis</small></div>
-        <div><b>${number(dados.votos)}</b><small>votos</small></div>
-        <div><b>${percent(dados.participacao)}</b><small>participação</small></div>
-      </div>
-    </article>`;
-
+  // ===== Resultados: convite para entrar (o quadro de cada eleição vem de views/resultados.js) =====
   const loginForResults = () => `
-    <article class="dash-card">
-      <h2>Resultados detalhados</h2>
-      <p>Os resultados por candidatura estão disponíveis na área reservada.</p>
+    <article class="dash-card results-login">
+      <span class="results-pending-icon">${TV.icon("user-check")}</span>
+      <div>
+        <h2>Resultados por candidatura</h2>
+        <p>Os votos de cada candidatura, os brancos e o quórum estão na área reservada, depois de iniciar sessão.</p>
+      </div>
       <a class="button button-primary" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
     </article>`;
 
-  function resultsCard(eleicao, rondas, error) {
-    const body = error
-      ? `<p class="form-message">${escapeHtml(error.message)}</p>`
-      : (rondas || [])
-        .map((r) => `<p class="eyebrow">${r.ronda === 2 ? "2.ª" : "1.ª"} VOLTA</p>${r.candidatos.map(resultRow).join("")}${roundSummary(r)}`)
-        .join("");
-    return `
-      <article class="dash-card">
-        <div class="heading-row">
-          <h2>${escapeHtml(eleicao.titulo)}</h2>
-          ${TV.blocks.stateBadge(eleicao.estado)}
-        </div>
-        ${body}
-      </article>`;
-  }
-
-  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, turnoutCard, loginForResults, resultsCard };
+  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, loginForResults };
 })();
