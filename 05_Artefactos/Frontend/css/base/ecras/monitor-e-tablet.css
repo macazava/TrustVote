@@ -1,4 +1,4 @@
-/* Adaptação a todos os tipos de ecrã (as grelhas usam os breakpoints do Tailwind no HTML) */
+/* Adaptação a todos os tipos de ecrã (as colunas de cada página estão em base/grelha.css) */
 
 /* ===== Ecrãs grandes (monitores 1800px+) ===== */
 @media (min-width: 1800px) {

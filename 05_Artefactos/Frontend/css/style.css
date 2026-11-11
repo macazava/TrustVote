@@ -1,8 +1,9 @@
-/* TrustVote · índice dos estilos (fonte: as páginas carregam css/site.css, gerado a partir daqui)
+/* TrustVote · índice dos estilos: é o único ficheiro que as páginas carregam (<link href="../css/style.css">).
    base/        cores, letra e regras gerais
    componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
    paginas/     estilos próprios de cada página ou área
-   base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra) */
+   base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra)
+   base/grelha.css  colunas das páginas (classes do HTML como lg:grid-cols-2), mesmo no fim */
 @import url("base/fontes.css");
 @import url("base/variaveis.css");
 @import url("base/base.css");
@@ -50,3 +51,6 @@
 /* Tamanho do ecrã e impressão */
 @import url("base/ecras/monitor-e-tablet.css");
 @import url("base/ecras/impressao.css");
+
+/* Grelha das páginas (classes de colunas usadas no HTML) */
+@import url("base/grelha.css");

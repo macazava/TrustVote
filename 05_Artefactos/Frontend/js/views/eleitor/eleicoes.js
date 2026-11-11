@@ -133,9 +133,14 @@
       </ul>
     </article>
     <article class="dash-card">
+      <p class="eyebrow">PERGUNTAS FREQUENTES</p>
       <h2>Dúvidas sobre a votação</h2>
-      <p>Veja as respostas às perguntas mais comuns ou fale com a comissão eleitoral académica.</p>
-      <a class="button button-outline" href="ajuda.html#perguntas-frequentes">Perguntas frequentes ${TV.icon("arrow-right")}</a>
+      <!-- As mesmas perguntas da página Ajuda, lidas de lá (controllers/eleitor/arranque.js) -->
+      <div class="faq-list" data-help-faq>${ui.loading("A carregar as perguntas frequentes…")}</div>
+      <div class="help-contact">
+        <p>Não encontrou a resposta? Escreva à comissão eleitoral académica.</p>
+        <a class="button button-outline" href="ajuda.html#contactos">${TV.icon("message-circle")} Contactar a comissão eleitoral</a>
+      </div>
     </article>`;
 
   Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });

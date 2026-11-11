@@ -12,7 +12,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
-# Node: pacotes do npm (só servem para compilar o Tailwind)
+# Node: pacotes do npm (o site não precisa deles; só para ferramentas locais)
 node_modules/
 
 # Cópias da base de dados feitas pelo contentor backup

@@ -5,7 +5,7 @@
    2. Papéis  (--color-*, --text-*, --space-*, --radius-*, --shadow-*): o que cada valor significa.
       Os componentes só usam papéis, por isso mudar o tema (ex.: alto contraste) é mudar só esta camada.
 
-   O Tailwind (js/tailwind.config.js) fica apenas com a grelha e os breakpoints: não define cores nem sombras. */
+   As colunas das páginas (classes como lg:grid-cols-2) estão em base/grelha.css: não definem cores nem sombras. */
 
 :root {
    /* ===================== 1. PALETA ===================== */

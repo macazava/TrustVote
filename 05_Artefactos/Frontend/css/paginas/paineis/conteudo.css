@@ -189,3 +189,23 @@ body[data-page="admin"] .dashboard-content h1 {
     justify-content: flex-end;
     font-size: var(--text-sm);
 }
+
+/* Separador Ajuda do eleitor: perguntas frequentes e contacto */
+.dash-card .faq-list[data-help-faq] {
+    margin: var(--space-4) 0 var(--space-6);
+}
+
+.help-contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+}
+
+.help-contact p {
+    margin: 0;
+    color: var(--color-text-muted);
+}

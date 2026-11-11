@@ -65,6 +65,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       fimSessao: exp ? time(new Date(exp * 1000).toISOString()) : null,
     });
     voter.bindVoteButtons(panel("help"));
+    loadFaq(panel("help").querySelector("[data-help-faq]"));
+  }
+
+  // Perguntas frequentes: lidas da página pública Ajuda (uma só fonte para as duas).
+  // Os links internos dessa página (ex.: "#contactos") passam a apontar para ela.
+  const faqHtml = fetch(TV.pageUrl("ajuda.html"))
+    .then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status))))
+    .then((html) => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const itens = [...doc.querySelectorAll("#perguntas-frequentes .faq-list details")];
+      if (!itens.length) throw new Error("sem perguntas");
+      itens.forEach((d) => d.querySelectorAll('a[href^="#"]').forEach((a) => a.setAttribute("href", `ajuda.html${a.getAttribute("href")}`)));
+      return itens.map((d) => d.outerHTML).join("");
+    })
+    .catch(() => null);
+  async function loadFaq(box) {
+    if (!box) return;
+    const html = await faqHtml;
+    box.innerHTML =
+      html ||
+      `<p class="muted">Não foi possível carregar as perguntas. <a href="ajuda.html#perguntas-frequentes">Ver na página Ajuda</a>.</p>`;
   }
 
   panel("overview").innerHTML = ui.loading("A carregar as suas eleições…");
