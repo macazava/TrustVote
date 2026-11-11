@@ -70,22 +70,3 @@
     }
 }
 
-@media (max-width: 560px) {
-    .demo-section {
-        padding: 64px 0 72px;
-    }
-
-    .demo-ballot {
-        padding: var(--space-6) var(--space-5);
-    }
-
-    .demo-ballot .candidate-list label {
-        grid-template-columns: 44px 1fr 24px;
-        gap: 12px;
-        padding: 14px;
-    }
-
-    .demo-ballot .ballot-foot {
-        flex-wrap: wrap;
-    }
-}

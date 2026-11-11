@@ -1,4 +1,4 @@
-/* Áreas do eleitor e da equipa: tablet e telemóvel */
+/* Áreas do eleitor e da equipa: tablet (ecrãs até 1100px) */
 
 @media (max-width: 1100px) {
     .dashboard-header {
@@ -27,62 +27,3 @@
     }
 }
 
-@media (max-width: 760px) {
-    .dashboard-content h1 {
-        font-size: var(--text-3xl);
-    }
-
-    .session-chip,
-    .user-chip>span:last-child,
-    .portal-link {
-        display: none;
-    }
-
-    .page-head,
-    .election-card-body,
-    .election-row {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .steps-track {
-        flex-wrap: wrap;
-    }
-
-    .steps-track>hr {
-        display: none;
-    }
-
-    .ballot {
-        padding: 30px 20px;
-    }
-
-    .ballot-foot {
-        flex-direction: column;
-    }
-
-    .receipt-card {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-metrics {
-        grid-template-columns: 1fr;
-    }
-
-    .bar-chart-row {
-        grid-template-columns: 1fr 76px;
-    }
-
-    .bar-chart-track {
-        grid-column: 1 / -1;
-        grid-row: 2;
-    }
-
-    .column-chart {
-        gap: 8px;
-    }
-
-    .election-row .turnout {
-        border-right: 0;
-    }
-}

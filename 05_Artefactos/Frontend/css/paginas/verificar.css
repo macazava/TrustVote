@@ -156,12 +156,3 @@
     }
 }
 
-@media (max-width: 520px) {
-    .verify-form {
-        grid-template-columns: 1fr;
-    }
-
-    .verify-form .button {
-        margin-top: 0;
-    }
-}

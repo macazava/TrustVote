@@ -178,13 +178,6 @@
     margin-bottom: 0;
 }
 
-@media (max-width: 760px) {
-    .inline-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
 /* Validação enquanto se escreve (js/controllers/comum/validacao.js) */
 .field-error {
     display: flex;

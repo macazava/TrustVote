@@ -216,7 +216,6 @@
     word-break: break-all;
 }
 
-
 /* ===== Indicador de passos do boletim (reaproveita .steps-track dos cartões de eleição) ===== */
 .ballot-steps {
     margin-bottom: var(--space-6);
@@ -233,7 +232,6 @@
     width: 14px;
     height: 14px;
 }
-
 
 .ballot-done .link-button {
     margin: calc(-1 * var(--space-2)) 0 var(--space-4);
@@ -406,13 +404,3 @@
     fill: var(--color-qr-dark);
 }
 
-@media (max-width: 520px) {
-    .receipt-qr > div {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .ballot-done .receipt-qr > div {
-        align-items: center;
-    }
-}

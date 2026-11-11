@@ -361,3 +361,70 @@
     font-weight: 500;
     text-transform: none;
 }
+
+/* ===== Equipa: mensagens do formulário de contacto ===== */
+.nav-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-on-dark-warning);
+    color: var(--color-brand-deep);
+    font-size: var(--text-xs);
+    font-weight: 700;
+}
+
+.message-list {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+}
+
+.message-card {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+.message-card.is-unread {
+    border-left: 4px solid var(--color-warning-dot);
+}
+
+.message-card header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.message-card header div {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+}
+
+.message-card header small {
+    overflow-wrap: anywhere;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.message-subject {
+    margin: var(--space-4) 0 var(--space-1);
+    color: var(--color-heading);
+    font-weight: 700;
+}
+
+.message-body {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    white-space: pre-line;
+}
+
+.message-card .row-actions {
+    align-items: center;
+}

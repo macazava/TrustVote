@@ -1,4 +1,4 @@
-/* Páginas das secções: tablet e telemóvel */
+/* Páginas das secções: tablet (ecrãs até 1100px) */
 
 @media (max-width: 960px) {
     .section-page {
@@ -20,22 +20,6 @@
     .timeline article {
         grid-template-columns: 1fr;
         gap: 8px;
-    }
-}
-
-@media (max-width: 760px) {
-    .result-row,
-    .result-row:not(:has(.avatar)) {
-        grid-template-columns: 1fr 70px;
-    }
-
-    .result-row .bar {
-        grid-column: 1 / -1;
-        order: 3;
-    }
-
-    .result-row .avatar {
-        display: none;
     }
 }
 

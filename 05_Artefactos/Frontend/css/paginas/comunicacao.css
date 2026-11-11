@@ -181,14 +181,3 @@
     }
 }
 
-@media (max-width: 760px) {
-    .press-featured,
-    .press-news,
-    .press-bar {
-        grid-template-columns: 1fr;
-    }
-
-    .press-bar > div + div {
-        border-left: 0;
-    }
-}

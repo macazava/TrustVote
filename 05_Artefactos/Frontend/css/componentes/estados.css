@@ -179,3 +179,80 @@
     background: var(--color-danger-fill);
     color: var(--color-on-brand);
 }
+/* Aviso com botão (ex.: "Desfazer") */
+.toast-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.toast-action button {
+    flex: none;
+    padding: 6px 12px;
+    border: 1px solid var(--color-brand);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 700;
+}
+
+.toast-action button:hover {
+    background: var(--color-brand-soft);
+}
+
+/* Ilustração dos estados vazios (urna com um boletim a entrar) */
+.empty-art {
+    width: 150px;
+    height: auto;
+    margin-bottom: var(--space-2);
+}
+
+.empty-art .ea-shadow {
+    fill: var(--color-surface-sunken);
+}
+
+.empty-art .ea-box {
+    fill: var(--color-surface);
+    stroke: var(--color-border-strong);
+    stroke-width: 2;
+}
+
+.empty-art .ea-slot {
+    fill: var(--color-heading);
+}
+
+.empty-art .ea-paper rect {
+    fill: var(--color-surface);
+    stroke: var(--color-brand);
+    stroke-width: 2;
+}
+
+.empty-art .ea-paper path,
+.empty-art .ea-line {
+    fill: none;
+    stroke: var(--color-brand-muted);
+    stroke-linecap: round;
+    stroke-width: 3;
+}
+
+.empty-art .ea-paper .ea-tick {
+    stroke: var(--color-brand);
+    stroke-linejoin: round;
+}
+
+.empty-art .ea-dot {
+    fill: var(--color-indicator);
+}
+
+/* O boletim desce devagar até à ranhura e volta */
+.empty-art .ea-paper {
+    animation: tv-empty-float 3.2s ease-in-out infinite;
+}
+
+@keyframes tv-empty-float {
+    50% {
+        transform: translateY(5px);
+    }
+}

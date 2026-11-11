@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     gap: 40px;
-    min-height: 76px;
+    min-height: 94px; /* a mesma altura do cabeçalho do portal público */
     padding: 0 30px;
     background: var(--color-brand-deep);
     color: var(--color-on-dark);
@@ -26,16 +26,21 @@
     color: var(--color-brand-deep);
 }
 
+/* Menu: os itens ocupam a altura toda, para o sublinhado do item ativo ficar na base (como no portal) */
 .panel-nav {
     display: flex;
     flex: 1;
+    align-self: stretch;
     gap: 4px;
     overflow-x: auto;
 }
 
 .panel-link {
-    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
     border: 0;
+    border-bottom: 3px solid transparent;
     background: none;
     color: var(--color-on-dark-muted);
     font-size: var(--text-base);
@@ -48,7 +53,7 @@
     }
 
     .panel-link {
-        padding: 10px 11px;
+        padding: 0 11px;
         font-size: var(--text-base);
     }
 
@@ -59,7 +64,7 @@
 
 @media (max-width: 1360px) {
     .panel-link {
-        padding: 9px 9px;
+        padding: 0 9px;
         font-size: var(--text-sm);
     }
 
@@ -72,9 +77,11 @@
     color: var(--color-on-dark);
 }
 
+/* Item ativo: sublinhado e a negrito, o mesmo padrão do menu do portal público */
 .panel-link.active {
-    background: var(--color-on-dark-active);
+    border-bottom-color: var(--color-on-dark-live);
     color: var(--color-on-dark);
+    font-weight: 700;
 }
 
 .panel-user {

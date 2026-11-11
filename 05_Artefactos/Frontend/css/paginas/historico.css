@@ -77,9 +77,3 @@
     color: var(--color-heading);
     font-size: var(--text-xl);
 }
-
-@media (max-width: 760px) {
-    .history-period time {
-        font-size: var(--text-3xl);
-    }
-}

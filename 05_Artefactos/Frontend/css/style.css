@@ -14,6 +14,7 @@
 @import url("componentes/formularios.css");
 @import url("componentes/tabelas.css");
 @import url("componentes/estados.css");
+@import url("componentes/pesquisa-rapida.css");
 @import url("componentes/animacoes.css");
 
 /* Página inicial */
@@ -47,5 +48,4 @@
 
 /* Tamanho do ecrã e impressão */
 @import url("base/ecras/monitor-e-tablet.css");
-@import url("base/ecras/telemovel.css");
 @import url("base/ecras/impressao.css");
