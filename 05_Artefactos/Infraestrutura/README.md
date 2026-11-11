@@ -9,8 +9,8 @@ balanceador de carga, duas instâncias da aplicação, PostgreSQL com réplica e
 
 > **Estado atual:** o Compose executa a stack da aplicação. `servidor1` e `servidor2` usam
 > a imagem de [`../Backend`](../Backend/README.md), e o nginx serve o `../Frontend` por HTTPS
-> e encaminha `/api/` para essas instâncias. O Live Server em `127.0.0.1:5500`
-> continua disponível para desenvolvimento local.
+> e encaminha `/api/` para essas instâncias. O site abre-se sempre pelo nginx
+> (`https://127.0.0.1:8443` ou `https://<IP do PC>:8443`).
 
 ### Navegação
 
@@ -331,7 +331,8 @@ arrancar (mensagem `RECUSADO` no log).
 
 **Verificar:**
 ```powershell
-.\.venv\Scripts\python.exe Infraestrutura\demo\estado.py   # papel, votos e replicação de cada nó
+docker exec trustvote-db-primary psql -U postgres -tAc "select pg_is_in_recovery()"   # f = primário, t = réplica
+docker exec trustvote-db-replica psql -U postgres -tAc "select pg_is_in_recovery()"
 docker logs -f trustvote-monitor
 ```
 
@@ -345,9 +346,9 @@ guardados não coincidirem com os confirmados nos dois nós. Cria dados de teste
 
 ### Backups
 ```powershell
-.\.venv\Scripts\python.exe Infraestrutura\demo\backup.py
+docker exec trustvote-db-primary pg_dump -U postgres -Fc trustvote > backups\trustvote.dump
 ```
-Faz uma cópia com `pg_dump` para `Infraestrutura/backups/` e confirma-a numa BD temporária. A
+Faz uma cópia com `pg_dump` para `Infraestrutura/backups/` (use o nó que estiver como primário). A
 replicação não substitui backups, porque os erros lógicos também são replicados.
 
 ### Limitações conhecidas
@@ -397,16 +398,14 @@ replicação não substitui backups, porque os erros lógicos também são repli
 - O nginx serve as páginas do frontend e encaminha `/api/` para as instâncias, sem o
   prefixo: `/api/eleicoes` chega à API como `/eleicoes`.
 - O browser chama o nginx, nunca as instâncias diretamente. Ao abrir pelo nginx, o frontend
-  usa a API na mesma origem (`/api`); no Live Server local, usa `https://127.0.0.1:8443/api`.
+  usa sempre a API na mesma origem (`/api`).
 - As instâncias são stateless: os tokens são JWT, não há sessão em memória.
 
-### CORS no Live Server local
+### CORS
 
-O backend autoriza, por omissão, `http://127.0.0.1:5500` **e** `http://localhost:5500`
-(`CORS_ORIGINS`, ver [`../Backend/README.md`](../Backend/README.md)). Sem as duas, abrir
-a aplicação por um dos nomes e apontar a API para o outro pode dar erro de CORS. Quando
-frontend e API são servidos pelo nginx, ambos partilham a mesma origem e esta configuração
-de CORS não é necessária para o navegador.
+Frontend e API são servidos pelo nginx na mesma origem, por isso o browser não precisa de
+CORS. O backend só autoriza, por omissão, `https://127.0.0.1:8443` e `https://localhost:8443`
+(`CORS_ORIGINS`, ver [`../Backend/README.md`](../Backend/README.md)).
 
 ### `JWT_SECRET`: contentores vs. API local
 

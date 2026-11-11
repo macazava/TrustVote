@@ -2,7 +2,7 @@
 
 API REST do TrustVote, construída com **FastAPI**, **SQLAlchemy** e **PostgreSQL**.
 Serve as votações da **Associação de Estudantes de uma universidade europeia** e as
-instâncias de aplicação e os workers definidos na infraestrutura Docker
+duas instâncias de aplicação definidas na infraestrutura Docker
 ([`../Infraestrutura/compose.yaml`](../Infraestrutura/compose.yaml)).
 
 > Para a visão geral do projeto e como pôr tudo a funcionar, começa pelo
@@ -28,7 +28,7 @@ instâncias de aplicação e os workers definidos na infraestrutura Docker
 | Integridade | Cada voto leva um **selo HMAC-SHA256**; um voto alterado ou inserido fora da API não conta. `GET /eleicoes/{id}/integridade` compara também a urna com as participações |
 | Apuramento | Ao encerrar uma volta, a contagem é gravada em `resultado` e a volta passa a `apurada`; com **quórum** configurável por eleição |
 | Tarefas automáticas | [`app/tarefas.py`](app/tarefas.py): inicia eleições agendadas, abre a 2.ª volta e fecha/apura as voltas na hora de fim |
-| Worker | [`app/worker.py`](app/worker.py) (`python -m app.worker`): no Docker, apura as voltas pedidas na fila do Redis e corre as tarefas automáticas; um worker principal e um de reserva, com liderança por advisory lock |
+| Tarefas automáticas | [`app/tarefas.py`](app/tarefas.py): cada instância da API abre, encerra e apura as voltas à hora marcada; um advisory lock garante que só uma o faz de cada vez |
 | Auditoria (RF11) | Todas as ações da equipa, logins e alterações de conta ficam em `auditoria`, numa **cadeia de hashes** verificável. Os votos nunca passam pela auditoria |
 | Contas | Mudança de palavra-passe, reposição pelo administrador, **logout real** (token revogado no Redis) e limite de tentativas de login |
 | Registo | Aberto por omissão; com `REGISTO_RESTRITO=true`, só os números da **lista oficial de inscritos** |
@@ -94,8 +94,7 @@ Componentes transversais:
 
 - [`app/database.py`](app/database.py) — ligação ao PostgreSQL (escrita e réplica de leitura) e sessão por pedido.
 - [`app/cache.py`](app/cache.py) — Redis: tokens revogados, tentativas de login e fila de apuramento. Sem Redis, a API continua a funcionar (e deixa de o tentar até ele voltar).
-- [`app/tarefas.py`](app/tarefas.py) — tarefas automáticas (no worker, ou em segundo plano na API).
-- [`app/worker.py`](app/worker.py) — worker de apuramento (contentores `worker` e `worker-reserva`).
+- [`app/tarefas.py`](app/tarefas.py) — tarefas automáticas, em segundo plano em cada instância da API.
 - [`app/erros.py`](app/erros.py) — exceções de negócio e a sua tradução para HTTP.
 - [`app/security/`](app/security) — tokens JWT, selo dos votos e dependências de autorização (incluindo o `Auditor`).
 
@@ -115,7 +114,6 @@ Backend/
 │   ├── testes/          # espaço para testes (teste_top.py ainda vazio)
 │   ├── cache.py         # Redis
 │   ├── tarefas.py       # tarefas automáticas
-│   ├── worker.py        # worker de apuramento (python -m app.worker)
 │   ├── migracoes.py     # aplica as migrações (python -m app.migracoes)
 │   ├── database.py      # engines, sessões e Base declarativa
 │   └── erros.py         # erros de negócio -> respostas HTTP
@@ -160,10 +158,9 @@ A API lê a configuração de um ficheiro `.env` na pasta `Backend` (copia o
 | `REDIS_SENTINELS`, `REDIS_GRUPO` | *(desligado)*, `trustvote` | Em vez de `REDIS_HOST`: lista `IP:porta` dos Sentinels, que indicam o Redis principal e seguem o failover (é o que o Docker usa) |
 | `LOGIN_TENTATIVAS`, `LOGIN_JANELA_SEGUNDOS` | `5`, `900` | Falhas seguidas até bloquear o email, e por quanto tempo |
 | `REGISTO_RESTRITO` | `false` | `true` = só a lista oficial de inscritos pode criar conta |
-| `TAREFAS_INTERVALO` | `30` | Segundos entre ciclos das tarefas automáticas; `0` desliga (na API; o worker usa 30) |
-| `APURAMENTO` | `imediato` | `worker` = encerrar uma volta só fecha a votação e pede o apuramento ao worker pela fila do Redis (é o que as instâncias usam no Docker) |
-| `WORKER_NOME`, `WORKER_PAPEL` | `worker`, `principal` | Só no worker: nome nos logs e `reserva` para o que só apura sem o principal |
-| `CORS_ORIGINS` | HTTPS 8443 e HTTP 8080 (nginx) e o Live Server (5500), por `127.0.0.1` e `localhost` | Origens autorizadas a chamar a API, separadas por vírgula |
+| `TAREFAS_INTERVALO` | `30` | Segundos entre ciclos das tarefas automáticas; `0` desliga |
+| `APURAMENTO` | `imediato` | `imediato` = a volta é apurada no pedido que a encerra (é o que o Docker usa). `worker` = só fecha a votação e o apuramento é feito depois pelas tarefas automáticas |
+| `CORS_ORIGINS` | `https://127.0.0.1:8443` e `https://localhost:8443` (o nginx) | Origens autorizadas a chamar a API, separadas por vírgula |
 
 Exemplo de `.env` para desenvolvimento local:
 
@@ -182,10 +179,6 @@ JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
 > desenvolvimento. Resultado: um token emitido em `localhost:8001` **não é aceite**
 > pelos contentores em `127.0.0.1:8080`, e vice-versa. Define o mesmo valor se
 > precisares de alternar entre os dois.
-
-> **CORS:** `localhost:5500` e `127.0.0.1:5500` são origens **diferentes** para o
-> navegador. Por isso a lista inclui as duas — sem isso, abrir a página por um nome e
-> apontar a API para o outro resulta no erro "Não foi possível contactar o servidor".
 
 > **Aviso de segurança:** o `Backend/.env` **já não está versionado** (o `.gitignore` da
 > raiz cobre `.env`), mas **continua no histórico do git**: a password da base de dados
@@ -403,10 +396,9 @@ e abre <http://localhost:8002/>.
 > configurável por `APP_PORT` (por omissão `8001`), para poder entrar no Compose
 > da infraestrutura sem alterações ao código.
 
-Para a stack completa (dois servidores com nginx, API e worker, PostgreSQL com
-réplica, Redis e monitor), usa o `stack.cmd` de
-[`../Infraestrutura`](../Infraestrutura/README.md). A mesma imagem corre a API, os workers
-(`python -m app.worker`) e o monitor.
+Para a stack completa (nginx, duas instâncias da API, PostgreSQL com réplica, Redis e
+monitor), usa o `docker compose` de [`../Infraestrutura`](../Infraestrutura/README.md).
+A mesma imagem corre a API e o monitor.
 
 ---
 

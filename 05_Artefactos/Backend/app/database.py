@@ -73,7 +73,7 @@ def _criar_engine(url: URL, atributos: str, **opcoes):
 engine = _criar_engine(DATABASE_URL, "read-write")
 engine_leitura = _criar_engine(_url(NOS_LEITURA), "prefer-standby")
 # Sem pool: fechar a ligação fecha-a mesmo, e com ela os advisory locks de sessão
-# (a liderança do app/worker.py). Uma ligação devolvida ao pool mantinha-os.
+# (o lock das tarefas automáticas). Uma ligação devolvida ao pool mantinha-os.
 engine_sem_pool = _criar_engine(DATABASE_URL, "read-write", poolclass=NullPool)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 SessionLeitura = sessionmaker(bind=engine_leitura, autocommit=False, autoflush=False)

@@ -1,6 +1,6 @@
 """Provoca uma falha a meio de uma votação e confirma que nenhum voto se perde.
 
-Uso, com a stack e os dados de demonstração a correr:
+Uso, com a stack a correr (pelo nginx em HTTPS, porta 8443):
 
     python Infraestrutura/testes/teste_falhas.py <cenário> [eleitores]
 
@@ -13,12 +13,14 @@ Cenários:
 
 Os eleitores repetem o voto em caso de erro, como faria uma pessoa. No fim, os votos
 guardados têm de coincidir com os confirmados, nas duas bases de dados.
-Cada execução cria uma eleição e contas de teste: limpem a BD antes da demonstração.
+Cada execução cria uma eleição e contas de teste: limpem a BD antes da apresentação.
+Variáveis opcionais: TESTE_API, TESTE_ADMIN (e-mail de um administrador) e TESTE_PASSWORD.
 """
 
 import json
 import os
 import queue
+import ssl
 import subprocess
 import sys
 import threading
@@ -28,8 +30,11 @@ import urllib.request
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
-API = os.getenv("DEMO_API", "http://127.0.0.1:8080/api")
-PASSWORD = os.getenv("DEMO_PASSWORD", "Demonstracao2026")
+API = os.getenv("TESTE_API", "https://127.0.0.1:8443/api")
+ADMIN = os.getenv("TESTE_ADMIN", "equipa@trustvote.pt")
+PASSWORD = os.getenv("TESTE_PASSWORD", "Demonstracao2026")
+# O certificado do nginx é local (gerado neste PC): o teste não o valida.
+SEM_VERIFICAR = ssl._create_unverified_context()
 NOS = ("trustvote-db-primary", "trustvote-db-replica")
 ERROS_TEMPORARIOS = (0, 502, 503, 504)
 LIMITE_REPETICAO = 45
@@ -43,7 +48,7 @@ def pedido(metodo, rota, corpo=None, token=None, timeout=12):
     dados = None if corpo is None else json.dumps(corpo).encode()
     req = urllib.request.Request(API + rota, data=dados, headers=cabecalhos, method=metodo)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resposta:
+        with urllib.request.urlopen(req, timeout=timeout, context=SEM_VERIFICAR) as resposta:
             texto = resposta.read().decode()
             return resposta.status, json.loads(texto) if texto else None
     except urllib.error.HTTPError as erro:
@@ -83,7 +88,7 @@ def esperar(condicao, limite):
 
 
 def preparar(eleitores):
-    token_equipa = pedido("POST", "/auth/login", {"email": "taha@trustvote.pt", "password": PASSWORD})[1]["access_token"]
+    token_equipa = pedido("POST", "/auth/login", {"email": ADMIN, "password": PASSWORD})[1]["access_token"]
     agora = datetime.now(timezone.utc)
     prefixo = f"f{int(time.time()) % 100000}"
     eleicao = pedido("POST", "/eleicoes", {"titulo": f"Teste de falhas {prefixo}"}, token_equipa)[1]["id"]

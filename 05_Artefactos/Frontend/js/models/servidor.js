@@ -4,9 +4,9 @@
 
   const TV = (window.TrustVote = window.TrustVote || {});
 
-  // A página e a API partilham a origem do nginx (HTTPS na porta 8443): a API está em <origem>/api.
-  // No Live Server (porta 5500, desenvolvimento) a página usa a API do nginx.
-  const bases = [window.location.port === "5500" ? "https://127.0.0.1:8443/api" : `${window.location.origin}/api`];
+  // O site é aberto pelo nginx (HTTPS, porta 8443, pelo IP do PC ou 127.0.0.1): a página e a API
+  // partilham a origem, por isso a API está sempre em <origem>/api.
+  const bases = [`${window.location.origin}/api`];
   const TIMEOUT = 12000;
   const CHAVE_BASE = "trustvote.api";
 
@@ -109,7 +109,7 @@
         error.name === "AbortError"
           ? `O servidor (${bases[atual]}) não respondeu a tempo.`
           : `Não foi possível contactar o servidor (${bases.join(" nem ")}). Confirme que a stack está a correr ` +
-            "(Infraestrutura: .\\stack.cmd up)."
+          "(Infraestrutura: .\\stack.cmd up)."
       );
     } finally {
       clearTimeout(timer);

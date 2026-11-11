@@ -1,5 +1,4 @@
-"""Tarefas automáticas: corridas pelo worker (app/worker.py) ou, sem ele, em
-segundo plano por cada instância da API.
+"""Tarefas automáticas, corridas em segundo plano por cada instância da API.
 
 A cada TAREFAS_INTERVALO segundos (0 desliga, na API):
 

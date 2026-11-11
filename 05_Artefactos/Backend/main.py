@@ -43,17 +43,14 @@ async def ciclo_de_vida(_app: FastAPI):
 app = FastAPI(title="TrustVote API", lifespan=ciclo_de_vida, root_path=os.getenv("API_PREFIXO", ""))
 
 # O site e a API partilham a origem do nginx (HTTPS na porta 8443), por isso o CORS só é
-# preciso para o Live Server (5500) e para quem abre a API diretamente.
+# preciso para quem chama a API a partir de outra origem.
 CORS_ORIGINS = os.getenv(
     "CORS_ORIGINS",
-    ",".join(
-        [f"{esquema}://{anfitriao}:{porta}" for esquema, porta in (("https", 8443), ("http", 8080)) for anfitriao in ("127.0.0.1", "localhost")]
-        + ["http://127.0.0.1:5500", "http://localhost:5500"]
-    ),
+    ",".join(f"https://{anfitriao}:8443" for anfitriao in ("127.0.0.1", "localhost")),
 ).split(",")
 
 # Site aberto pelo IP do PC na rede local (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
-REDE_LOCAL = r"https?://(192\.168|10\.\d+|172\.(1[6-9]|2\d|3[01]))\.\d+\.\d+:(8443|8080|5500)"
+REDE_LOCAL = r"https?://(192\.168|10\.\d+|172\.(1[6-9]|2\d|3[01]))\.\d+\.\d+:8443"
 
 app.add_middleware(
     CORSMiddleware,

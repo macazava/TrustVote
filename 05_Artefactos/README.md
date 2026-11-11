@@ -15,7 +15,7 @@ código pela primeira vez deve começar por aqui.
 ```text
 05_Artefactos/
 ├── Backend/            # API (FastAPI + SQLAlchemy + PostgreSQL)
-├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Nginx ou Live Server
+├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Nginx
 ├── Infraestrutura/     # Docker Compose: nginx, aplicações, PostgreSQL e Redis
 ├── README.md           # este ficheiro — visão geral e como começar
 ├── ApresentaçãoTrustVote_1aEntrega.pdf
@@ -58,24 +58,22 @@ browser ── HTTPS :8443 ─────────►│ nginx              
   │                                  ▲
   │                               monitor
   │
-  ├── Live Server :5500 (opcional, desenvolvimento local)
-  └── Redis (na stack; ainda não usado pela API)
+  └── Redis (logout imediato, limite de tentativas de login, mensagens ao vivo)
 ```
 
 Se a BD primária falhar enquanto a réplica estiver sincronizada, o monitor promove-a e a API
-passa a usá-la sem reiniciar. O guião da demonstração está em
-[Infraestrutura/demo/GUIAO.md](Infraestrutura/demo/GUIAO.md).
+passa a usá-la sem reiniciar.
 
 - **`Infraestrutura/`** sobe toda esta stack com Docker, num único PC.
 - **`Backend/`** é a aplicação; em desenvolvimento corre fora do Docker, na porta
   **`8001`**, ligada ao PostgreSQL da infraestrutura.
 - O **Nginx** termina HTTPS, serve os ficheiros do frontend e encaminha `/api/` para
   `servidor1`/`servidor2`. A porta HTTP `8080` redireciona para HTTPS na `8443`.
-- O Redis está configurado na infraestrutura, mas ainda não é utilizado pela API.
-- O endereço recomendado para a aplicação é
-  <https://127.0.0.1:8443/pages/inicio.html>. O Live Server continua disponível
-  opcionalmente em `http://127.0.0.1:5500`; nesse modo, o frontend chama a API HTTPS
-  do Nginx.
+- O Redis guarda as sessões terminadas (logout imediato) e o limite de tentativas de login;
+  se cair, o site continua a funcionar sem essas duas proteções.
+- O site abre-se sempre pelo Nginx: <https://127.0.0.1:8443> neste PC, ou
+  `https://<IP do PC>:8443` a partir de outro computador da rede (com
+  `NGINX_BIND_ADDRESS=0.0.0.0` no `.env`). A página e a API partilham a origem.
 - O frontend não guarda os dados eleitorais: obtém-nos através da API.
 
 ---
@@ -89,7 +87,6 @@ passa a usá-la sem reiniciar. O guião da demonstração está em
 - Portas livres:
   - `8080` — HTTP do Nginx, redireciona para `8443`;
   - `8443` — HTTPS do Nginx, frontend e API;
-  - `5500` — Live Server, opcional;
   - `8001` — API local (só no modo B);
   - `15432` / `15433` / `5050` — base de dados e pgAdmin (só com o `compose.debug.yaml`).
 
@@ -184,11 +181,10 @@ desenvolvimento: sem ele, o servidor continua a servir o código que tem em mem�
 
 ### Passo 5 — Abrir o frontend
 
-No modo recomendado, abre diretamente
-<https://127.0.0.1:8443/pages/inicio.html>. Também podes abrir
-`Frontend/pages/inicio.html` com o Live Server em
-<http://127.0.0.1:5500/Frontend/pages/inicio.html>; nesse caso, o frontend chama
-a API HTTPS do Nginx.
+Abre <https://127.0.0.1:8443> (vai direto para a página inicial). Para abrir a partir
+de outro computador da rede (ex.: na apresentação), define `NGINX_BIND_ADDRESS=0.0.0.0`
+no `.env`, inclui o IP do PC no certificado e usa `https://<IP do PC>:8443`.
+O site tem de ser aberto pelo Nginx: a página inicial é montada por ele (SSI).
 
 O certificado `mkcert` confia apenas no computador onde foi instalado. O acesso
 por omissão está limitado a `127.0.0.1`; não é um endereço para partilhar com
@@ -203,7 +199,7 @@ outros dispositivos.
 | Documentação interativa da API | <https://127.0.0.1:8443/api/docs> |
 | Redirecionamento HTTP | <http://127.0.0.1:8080/> → HTTPS |
 | API local (só no modo B) | <http://localhost:8001/docs> |
-| Live Server (opcional) | <http://127.0.0.1:5500/Frontend/pages/inicio.html> |
+| Pelo IP do PC (outro computador da rede) | `https://<IP do PC>:8443` |
 | pgAdmin (com o ficheiro de debug) | <http://127.0.0.1:5050> |
 
 O registo exige o **número de estudante** (identificador do eleitor) e a conta é
@@ -340,7 +336,7 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
 | Alterações ao código não aparecem | Sem `--reload` (API local) ou sem `--build` (contentores). Ver [secção 5](#5-comandos-do-dia-a-dia). |
 | `502` no nginx, com `no live upstreams` nos logs | As instâncias `servidor1`/`servidor2` estão em baixo, **ou** a imagem do backend está desatualizada (foi construída com outra porta). Sobe com `docker compose up -d --build --wait`. |
 | Aviso de certificado ao abrir HTTPS | Confirma que executaste `mkcert -install` e geraste certificados locais; vê [Infraestrutura > HTTPS local](Infraestrutura/README.md#5-https-local). |
-| "Não foi possível contactar o servidor" no browser | Confirma `docker compose ps`, testa `https://127.0.0.1:8443/api/health` e verifica se o certificado local é confiável. No Live Server, `localhost` e `127.0.0.1` são origens diferentes para CORS. |
+| "Não foi possível contactar o servidor" no browser | Confirma `docker compose ps`, testa `https://127.0.0.1:8443/api/health` e verifica se o certificado local é confiável. Se o erro persistir, atualiza a página sem cache (Ctrl+F5). |
 | `503` / "Serviço temporariamente indisponível" | A API está viva mas sem acesso à base de dados. Confirma `docker compose ps` e testa `https://127.0.0.1:8443/api/health`. |
 | `Resource is still in use` no `docker network rm` | Ficou um contentor órfão (tipicamente o `pgadmin`, ao descer sem o `compose.debug.yaml`). Usa `down --remove-orphans`. |
 | `docker compose up` recusa arrancar | Falta uma password no `.env` da Infraestrutura. Copia o `.env.example` e preenche os `mudar_*`. |
