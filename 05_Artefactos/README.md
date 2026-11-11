@@ -184,7 +184,7 @@ desenvolvimento: sem ele, o servidor continua a servir o código que tem em mem�
 Abre <https://127.0.0.1:8443> (vai direto para a página inicial). Para abrir a partir
 de outro computador da rede (ex.: na apresentação), define `NGINX_BIND_ADDRESS=0.0.0.0`
 no `.env`, inclui o IP do PC no certificado e usa `https://<IP do PC>:8443`.
-O site tem de ser aberto pelo Nginx: a página inicial é montada por ele (SSI).
+O site é aberto pelo Nginx, que serve a página e a API na mesma origem (HTTPS).
 
 O certificado `mkcert` confia apenas no computador onde foi instalado. O acesso
 por omissão está limitado a `127.0.0.1`; não é um endereço para partilhar com
