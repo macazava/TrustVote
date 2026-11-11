@@ -43,6 +43,7 @@
 /* Áreas do eleitor e da equipa */
 @import url("paginas/paineis/cabecalho.css");
 @import url("paginas/paineis/conteudo.css");
+@import url("paginas/paineis/eleicoes.css");
 @import url("paginas/paineis/boletim.css");
 @import url("paginas/paineis/recibos-e-sondagem.css");
 @import url("paginas/paineis/perfil.css");
