@@ -152,6 +152,20 @@ def limpar_falhas_login(email: str) -> None:
     _executar(lambda r: r.delete(_chave_login(email)))
 
 
+# ===== Limite de envios (ex.: formulário de contacto) =====
+def contar_envio(nome: str, janela: int) -> int:
+    """Conta mais um envio na janela (segundos) e devolve o total. Sem Redis devolve 0 (não limita)."""
+
+    def operacao(r):
+        chave = f"tv:limite:{nome}"
+        with r.pipeline() as p:
+            p.incr(chave)
+            p.expire(chave, janela, nx=True)
+            return p.execute()[0]
+
+    return int(_executar(operacao, 0) or 0)
+
+
 # ===== Fila de apuramento (API → worker) =====
 FILA_APURAMENTO = "tv:fila:apuramento"
 

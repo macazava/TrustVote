@@ -1,9 +1,16 @@
 """Endpoints de votação, recibos, resultados e resumo público."""
 
-from fastapi import APIRouter, Depends, status
+import asyncio
+import json
+import time
+
+from fastapi import APIRouter, Depends, Request, status
+from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from app.database import obter_sessao, obter_sessao_leitura
+from app.database import SessionLeitura, obter_sessao, obter_sessao_leitura
+from app.erros import NaoEncontradoError
 from app.models.utilizador import Utilizador
 from app.schemas.votacao import (
     ConfiguracaoPublica,
@@ -111,3 +118,58 @@ def obter_configuracao_publica():
 def obter_resumo_publico(sessao: Session = Depends(obter_sessao_leitura)):
     """Dados da eleição em destaque para as páginas sem sessão."""
     return servico.obter_resumo_publico(sessao)
+
+
+# ===== Eventos ao vivo (Server-Sent Events) =====
+# Só dados que já são públicos em /publico/resumo (participação, sem votos por candidato).
+# O browser liga-se uma vez e recebe uma mensagem sempre que a participação muda; entre
+# mensagens chega um "ping" a cada 2 s, para o nginx (proxy_read_timeout de 4 s) manter a ligação.
+# Ao fim de 10 minutos o servidor fecha e o browser volta a ligar sozinho (pode calhar na
+# outra instância), para nenhuma ligação ficar presa a uma instância para sempre.
+EVENTOS_INTERVALO = 2
+EVENTOS_DURACAO = 600
+
+
+def _instantaneo_publico() -> dict | None:
+    sessao = SessionLeitura()
+    try:
+        resumo = servico.obter_resumo_publico(sessao)
+    except NaoEncontradoError:
+        return None
+    finally:
+        sessao.close()
+    return {
+        "eleicao_id": resumo.eleicao.id,
+        "estado": resumo.eleicao.estado,
+        "eleitores": resumo.eleitores,
+        "votos": resumo.votos,
+        "participacao": resumo.participacao,
+    }
+
+
+@votacao_routers.get("/publico/eventos")
+async def eventos_publicos(request: Request):
+    """Participação da eleição em destaque, em tempo real (text/event-stream)."""
+
+    async def fluxo():
+        yield "retry: 5000\n\n"
+        anterior = None
+        fim = time.monotonic() + EVENTOS_DURACAO
+        while time.monotonic() < fim and not await request.is_disconnected():
+            try:
+                atual = await run_in_threadpool(_instantaneo_publico)
+            except Exception:  # BD indisponível: tenta de novo no próximo ciclo
+                atual = anterior
+            if atual != anterior:
+                anterior = atual
+                yield f"event: resumo\ndata: {json.dumps(atual)}\n\n"
+            else:
+                yield ": ping\n\n"
+            await asyncio.sleep(EVENTOS_INTERVALO)
+
+    return StreamingResponse(
+        fluxo(),
+        media_type="text/event-stream",
+        # X-Accel-Buffering: o nginx entrega cada mensagem logo, sem a guardar em buffer
+        headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+    )

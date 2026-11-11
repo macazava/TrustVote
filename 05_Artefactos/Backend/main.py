@@ -15,6 +15,7 @@ from app.routers.auditoria_routers import auditoria_routers
 from app.routers.auth_routers import auth_routers
 from app.routers.eleicao_routers import eleicao_routers
 from app.routers.estudante_inscrito_routers import estudante_inscrito_routers
+from app.routers.mensagem_routers import mensagem_routers
 from app.routers.sondagem_routers import sondagem_routers
 from app.routers.utilizador_routers import utilizador_routers
 from app.routers.votacao_routers import votacao_routers
@@ -64,6 +65,7 @@ app.include_router(auditoria_routers)
 app.include_router(estudante_inscrito_routers)
 app.include_router(utilizador_routers)
 app.include_router(votacao_routers)
+app.include_router(mensagem_routers)
 
 
 @app.get("/health")
