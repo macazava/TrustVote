@@ -8,36 +8,93 @@
   const v = (TV.voterView = TV.voterView || {});
 
   // ===== Visão geral =====
-  // d = { e, recibos, user, hoje, saudacao, subtitulo }
-  const overviewPage = ({ e, recibos, votou, user, hoje, saudacao, subtitulo }) => `
-    ${head(hoje, `${saudacao}, ${escapeHtml(user.nome.split(" ")[0])}.`, subtitulo, `
+  // d = { e, lista, recibos, votou, user, hoje, saudacao, subtitulo }
+
+  // Eleição em destaque: o que fazer agora, quanto tempo falta e em que passo está
+  const focusCard = (e) => `
+    <article class="dash-card ov-focus ${e.votou ? "is-voted" : e.aberta ? "is-open" : ""}">
+      <div class="ov-focus-main">
+        <div class="el-item-top">${v.statusLine(e)}<span class="el-time">${v.timeInfo(e)}</span></div>
+        <small class="ov-focus-kicker">${e.votou ? "VOTO REGISTADO" : e.aberta ? "A SUA PRÓXIMA AÇÃO" : "PRÓXIMA ELEIÇÃO"} · ${e.ano}</small>
+        <h2>${escapeHtml(e.titulo)}</h2>
+        <p class="ov-focus-text">${e.votou
+          ? "O seu voto já foi contado. Pode consultar o recibo e, quando a votação fechar, os resultados."
+          : e.aberta
+            ? `Tem ${e.candidatosRonda.length} candidaturas no boletim. Votar demora cerca de um minuto.`
+            : "A votação ainda não abriu. Adicione as datas ao seu calendário para não se esquecer."}</p>
+        ${v.periodBar(e)}
+      </div>
+      <div class="ov-focus-actions">
+        ${v.voteAction(e, `Votar agora ${TV.icon("arrow-right")}`)}
+        <button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>
+        ${v.calendario(e)}
+      </div>
+      ${v.stepsTrack(e)}
+    </article>`;
+
+  // Atalhos com um número ou estado em cada um
+  function shortcuts({ lista, recibos, votou }) {
+    const abertas = lista.filter((x) => x.aberta && !x.votou).length;
+    const encerradas = lista.filter((x) => x.estado === "encerrada").length;
+    const documentos = recibos.length || lista.filter((x) => x.votou).length;
+    return `
+      <nav class="help-shortcuts ov-shortcuts" aria-label="Atalhos">
+        ${v.atalho({ icone: "vote", titulo: "Eleições", texto: abertas ? `${abertas} à espera do seu voto` : "Nenhuma à espera do seu voto", attrs: { "data-go": "elections" } })}
+        ${v.atalho({ icone: "inbox", titulo: "Recibos", texto: documentos ? `${documentos} ${documentos === 1 ? "documento" : "documentos"}` : votou ? "Comprovativo disponível" : "Disponível depois de votar", attrs: { "data-go": "receipts" } })}
+        ${v.atalho({ icone: "chart-column", titulo: "Resultados", texto: encerradas ? `${encerradas} ${encerradas === 1 ? "eleição apurada" : "eleições apuradas"}` : "Publicados após o fecho", attrs: { "data-go": "results" } })}
+        ${v.atalho({ icone: "message-circle", titulo: "Sondagem", texto: "Dê a sua opinião, de forma anónima", attrs: { "data-go": "poll" } })}
+      </nav>`;
+  }
+
+  // Atividade: votos (data do servidor ou do recibo) e criação da conta, do mais recente para o mais antigo
+  function activity({ lista, recibos, user }) {
+    const itens = lista
+      .filter((x) => x.votou)
+      .map((x) => {
+        const recibo = recibos.find((r) => r.eleicao_id === x.id);
+        const data = (x.participacao && x.participacao.data) || (recibo && recibo.data);
+        return { data, icone: "circle-check", titulo: `Votou em ${x.titulo}`, texto: recibo ? "Recibo guardado neste dispositivo" : "Comprovativo de participação disponível" };
+      });
+    if (user.data_registo) itens.push({ data: user.data_registo, icone: "user-check", titulo: "Conta de eleitor criada", texto: "Credencial verificada pela instituição" });
+    itens.sort((a, b) => Date.parse(b.data || 0) - Date.parse(a.data || 0));
+    return `
+      <article class="dash-card">
+        <div class="el-card-head"><div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>O que aconteceu na sua conta</h2></div></div>
+        ${itens.length
+          ? `<ol class="ov-activity">${itens.slice(0, 4).map((i) => `
+              <li><span>${TV.icon(i.icone)}</span><div><b>${escapeHtml(i.titulo)}</b><small>${escapeHtml(i.texto)}</small></div><time>${i.data ? dateTime(i.data) : "—"}</time></li>`).join("")}</ol>`
+          : '<p class="muted">Ainda não há atividade.</p>'}
+        <button class="link-button" type="button" data-go="receipts">Ver os meus recibos ${TV.icon("arrow-right")}</button>
+      </article>`;
+  }
+
+  const safety = () => `
+    <article class="dash-card">
+      <p class="eyebrow">O SEU VOTO</p>
+      <h2>Garantias</h2>
+      <ul class="profile-list">
+        <li class="is-yes">Voto secreto: ninguém sabe em quem votou</li>
+        <li class="is-yes">Recibo para confirmar que o voto foi contado</li>
+        <li class="is-no">Um voto por eleição: depois de confirmado não pode ser alterado</li>
+      </ul>
+      <button class="link-button" type="button" data-go="help">Dúvidas? Abrir a ajuda ${TV.icon("arrow-right")}</button>
+    </article>`;
+
+  const overviewPage = (d) => `
+    ${head(d.hoje, `${d.saudacao}, ${escapeHtml(d.user.nome.split(" ")[0])}.`, d.subtitulo, `
       <div class="badge-card">
         <span class="ok-label">${TV.icon("check")}</span>
-        <div><small>CREDENCIAL ELEITORAL · ${escapeHtml(voterNumber(user))}</small><b>${user.ativo === false ? "Suspensa" : "Verificada e válida"}</b></div>
+        <div><small>CREDENCIAL ELEITORAL · ${escapeHtml(voterNumber(d.user))}</small><b>${d.user.ativo === false ? "Suspensa" : "Verificada e válida"}</b></div>
         <i></i>
       </div>`)}
 
-    ${e ? v.electionCard(e, false) : v.emptyCard("Sem eleições ativas", "As eleições em que pode votar aparecem aqui.", { label: "Ver calendário eleitoral", href: "calendario.html" })}
+    ${d.e ? focusCard(d.e) : v.emptyCard("Sem eleições ativas", "As eleições em que pode votar aparecem aqui.", { label: "Ver calendário eleitoral", href: "calendario.html" })}
 
-    <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
-      <article class="dash-card">
-        <p class="eyebrow">O SEU VOTO</p>
-        <h2>O que precisa de saber</h2>
-        <ul class="check-list">
-          <li><span class="check-box">${TV.icon("check")}</span><b>Voto secreto</b><small>Ninguém sabe em quem votou.</small><i>${TV.icon("check")}</i></li>
-          <li><span class="check-box">${TV.icon("check")}</span><b>Um voto por eleição</b><small>Depois de confirmado, o voto não pode ser alterado.</small><i>${TV.icon("check")}</i></li>
-        </ul>
-      </article>
-      <article class="dash-card">
-        <p class="eyebrow">ATIVIDADE RECENTE</p>
-        <h2>${recibos.length ? "O seu último voto" : votou ? "Já votou" : "Ainda não votou"}</h2>
-        ${recibos.length
-      ? `<div class="receipt-code"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
-      : votou
-        ? '<div class="empty-box">O seu voto está registado e contado. O comprovativo está em Recibos.</div>'
-        : '<div class="empty-box">O recibo fica disponível depois de votar.</div>'}
-        <button class="link-button" type="button" data-go="receipts">Como funciona o recibo? ${TV.icon("arrow-right")}</button>
-      </article>
+    ${shortcuts(d)}
+
+    <div class="ov-columns">
+      ${activity(d)}
+      ${safety()}
     </div>`;
 
   // ===== Opção "voto em branco" (value="branco" no formulário) =====

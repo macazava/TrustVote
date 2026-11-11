@@ -22,7 +22,10 @@
         voter.openBallot(Number(b.dataset.vote));
       })
     );
-    root.querySelectorAll("[data-details]").forEach((b) => b.addEventListener("click", () => voter.openDetails(Number(b.dataset.details))));
+    root.querySelectorAll("[data-details]").forEach((b) => b.addEventListener("click", () => {
+      go("elections");
+      voter.openDetails(Number(b.dataset.details));
+    }));
   };
 
   // ===== Visão geral =====
@@ -39,6 +42,7 @@
 
     panel("overview").innerHTML = TV.voterView.overviewPage({
       e,
+      lista: voter.state.lista,
       recibos: localReceipts.all(),
       votou: voter.state.lista.some((x) => x.votou),
       user: session.user,

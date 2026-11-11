@@ -37,27 +37,6 @@
       </div>`;
   }
 
-  function electionCard(e, withDetails) {
-    return `
-      <article class="election-card overflow-hidden">
-        <div class="election-card-top">${statusLine(e)}<span>${timeInfo(e)}</span></div>
-        <div class="election-card-body">
-          <span class="round-mark">${TV.icon("vote")}</span>
-          <div>
-            <small>ELEIÇÃO · ${e.ano}</small>
-            <h2>${escapeHtml(e.titulo)}</h2>
-            <p>${escapeHtml(e.descricao || `${e.periodo} · ${e.voltaLabel}`)}</p>
-          </div>
-          <div class="election-card-actions">
-            ${withDetails ? `<button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>` : ""}
-            ${voteAction(e)}
-            ${!e.votou && (e.aberta || e.estado === "agendada") ? TV.blocks.calendarButton({ id: e.id, titulo: e.titulo, inicio: e.inicio, fim: e.fim, descricao: e.descricao }) : ""}
-          </div>
-        </div>
-        ${withDetails ? "" : stepsTrack(e)}
-      </article>`;
-  }
-
   // Uma opção do boletim (com rádio) ou só a apresentação (na revisão)
   function candidateOption(c, i, selectable = true, checked = false) {
     const info = [c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "Candidatura registada";
@@ -277,5 +256,5 @@
     <p class="help-session">${TV.icon("lock")} <span>${sessao.join(" · ")}.</span></p>`;
   };
 
-  Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });
+  Object.assign((TV.voterView = TV.voterView || {}), { candidateOption, emptyCard, electionsPage, detailsPage, helpPage, atalho, periodBar, stepsTrack, statusLine, timeInfo, voteAction, calendario });
 })();
