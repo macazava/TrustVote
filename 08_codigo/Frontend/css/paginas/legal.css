@@ -14,6 +14,30 @@
     padding-bottom: 36px;
 }
 
+.legal-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-bottom: 20px;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.legal-back[hidden] {
+    display: none;
+}
+
+.legal-back .icon {
+    transition: transform 0.2s;
+}
+
+.legal-back:hover .icon {
+    transform: translateX(-3px);
+}
+
 .legal-switch {
     display: inline-flex;
     gap: 4px;
@@ -554,6 +578,7 @@
 
 /* ===== Impressão ===== */
 @media print {
+    .legal-back,
     .legal-switch,
     .legal-meta-action,
     .legal-toc,

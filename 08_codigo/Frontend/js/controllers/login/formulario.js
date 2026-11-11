@@ -73,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
       : "Inicie sessão para consultar a sua área reservada.";
 
     message.textContent = "";
+
+    // Guarda o modo no endereço (#registar): ao abrir os termos e voltar atrás, volta ao formulário de registo
+    const hash = isRegister ? "#registar" : "";
+    if (window.location.hash !== hash) {
+      history.replaceState(null, "", window.location.pathname + window.location.search + hash);
+    }
   }
 
   roleButtons.forEach((button) => {

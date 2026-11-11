@@ -42,5 +42,41 @@
   window.addEventListener("resize", agendar);
   atualizar();
 
+  // ===== "Voltar" para a página de onde se veio (ex.: o formulário de registo) =====
+  // Trocar entre Termos e Privacidade substitui a entrada do histórico, por isso um só "voltar" chega à origem.
+  const LEGAIS = /(termos|privacidade)\.html$/;
+  const CHAVE = "trustvote:legal-origem";
+  const guardar = (v) => { try { v ? sessionStorage.setItem(CHAVE, v) : sessionStorage.removeItem(CHAVE); } catch (e) { } };
+  const lerGuardada = () => { try { return sessionStorage.getItem(CHAVE); } catch (e) { return null; } };
+
+  let origem = null;
+  try {
+    const ref = document.referrer ? new URL(document.referrer) : null;
+    if (ref && ref.origin === window.location.origin) {
+      if (!LEGAIS.test(ref.pathname)) origem = ref.href;
+      else origem = lerGuardada(); // veio do outro documento legal: mantém a origem inicial
+    }
+  } catch (e) { }
+  guardar(origem);
+
+  const voltar = document.querySelector("[data-legal-back]");
+  if (voltar && origem) {
+    if (/login\.html/.test(origem)) voltar.querySelector("span").textContent = "Voltar ao registo";
+    voltar.href = origem;
+    voltar.hidden = false;
+    voltar.addEventListener("click", (e) => {
+      e.preventDefault();
+      history.back();
+    });
+  }
+
+  document.querySelectorAll(".legal-switch a:not([aria-current])").forEach((a) =>
+    a.addEventListener("click", (e) => {
+      if (!origem) return;
+      e.preventDefault();
+      window.location.replace(a.href);
+    })
+  );
+
   document.querySelectorAll("[data-legal-print]").forEach((b) => b.addEventListener("click", () => window.print()));
 })();
