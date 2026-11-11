@@ -30,6 +30,15 @@ server {
 
     access_log /var/log/nginx/access.log trustvote;
 
+    # Compressão: o CSS e o JS viajam ~5x mais pequenos (o HTML já é comprimido por omissão).
+    # O fluxo ao vivo (text/event-stream) fica de fora, para cada mensagem chegar logo.
+    gzip on;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
     location = /nginx-health {
         access_log off;
         default_type text/plain;
@@ -46,6 +55,14 @@ server {
         # O browser guarda os ficheiros mas pergunta sempre se mudaram (resposta 304 se não):
         # assim uma alteração ao site aparece logo, sem ficar preso a HTML/CSS/JS antigos.
         add_header Cache-Control "no-cache" always;
+        # SSI: uma página pode incluir outro ficheiro HTML (<!--# include virtual="…" -->).
+        # Usado para a página inicial, dividida em inicio.html + inicio-parte-2.html.
+        ssi on;
+    }
+    # A 2.ª parte da página inicial só existe dentro de inicio.html: aberta sozinha dá 404
+    location = /pages/inicio-parte-2.html {
+        internal;
+        root /usr/share/nginx/html;
     }
     # Ficheiros de desenvolvimento da pasta Frontend: não fazem parte do site
     location ~ ^/node_modules/|^/(package(-lock)?\.json|README\.md)$ {
