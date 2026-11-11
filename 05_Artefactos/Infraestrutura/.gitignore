@@ -1,5 +1,9 @@
 # Segredos e configuração local
-
+.env
+.env.*
+!.env.example
+compose.override.yaml
+/docker/nginx/certs/
 
 # Backups / dumps da base de dados
 *.dump
