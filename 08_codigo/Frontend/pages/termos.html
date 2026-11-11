@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Termos de utilização | TrustVote</title>
+  <meta name="description" content="Termos de utilização da plataforma de votação académica TrustVote.">
+
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/controllers/publico/legal.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-atual="Termos de utilização"></div>
+
+  <main id="conteudo">
+
+    <!-- Topo do documento -->
+    <header class="legal-hero">
+      <div class="container">
+        <a class="legal-back" href="inicio.html" data-legal-back hidden><svg class="icon" aria-hidden="true">
+            <use href="#i-arrow-left"></use>
+          </svg> <span>Voltar</span></a>
+
+        <nav class="legal-switch" aria-label="Documentos legais">
+          <a href="termos.html" aria-current="page"><svg class="icon" aria-hidden="true">
+              <use href="#i-file-text"></use>
+            </svg> Termos de utilização</a>
+          <a href="privacidade.html"><svg class="icon" aria-hidden="true">
+              <use href="#i-lock"></use>
+            </svg> Política de privacidade</a>
+        </nav>
+
+        <p class="eyebrow">DOCUMENTOS LEGAIS</p>
+        <h1>Termos de utilização</h1>
+        <p class="lead">
+          As regras que garantem eleições académicas justas, seguras e transparentes. Ao criar conta
+          ou votar no TrustVote, aceita estes termos.
+        </p>
+
+        <ul class="legal-meta">
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-calendar"></use>
+            </svg> Em vigor desde <b><time datetime="2026-11-11">11 de novembro de 2026</time></b></li>
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-file-text"></use>
+            </svg> Versão <b>1.0</b></li>
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-clock"></use>
+            </svg> Leitura de <b>6 min</b></li>
+          <li class="legal-meta-action"><button type="button" data-legal-print><svg class="icon" aria-hidden="true">
+                <use href="#i-printer"></use>
+              </svg> Imprimir</button></li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="container legal-layout">
+
+      <!-- Índice -->
+      <aside class="legal-toc" aria-label="Índice">
+        <p class="legal-toc-title">NESTA PÁGINA</p>
+        <div class="legal-progress" aria-hidden="true"><span data-legal-progress></span></div>
+        <nav data-legal-toc>
+          <ol>
+            <li><a href="#objeto">Objeto e aceitação</a></li>
+            <li><a href="#elegibilidade">Quem pode utilizar</a></li>
+            <li><a href="#conta">Conta e credenciais</a></li>
+            <li><a href="#voto">Exercício do voto</a></li>
+            <li><a href="#conduta">Utilização aceitável</a></li>
+            <li><a href="#disponibilidade">Disponibilidade e prazos</a></li>
+            <li><a href="#resultados">Resultados e auditoria</a></li>
+            <li><a href="#propriedade">Propriedade intelectual</a></li>
+            <li><a href="#responsabilidade">Responsabilidade</a></li>
+            <li><a href="#alteracoes">Alterações e lei aplicável</a></li>
+          </ol>
+        </nav>
+      </aside>
+
+      <article class="legal-doc" data-legal-doc>
+
+        <!-- Resumo -->
+        <div class="legal-summary">
+          <h2><svg class="icon" aria-hidden="true">
+              <use href="#i-info"></use>
+            </svg> Em resumo</h2>
+          <p>Os pontos essenciais. Não substitui a leitura do texto completo.</p>
+          <ul>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-user-check"></use>
+              </svg>
+              <span><b>Só estudantes inscritos</b>A conta é pessoal e associada ao seu número de estudante.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-vote"></use>
+              </svg>
+              <span><b>Um voto por ronda</b>Depois de submetido, o voto é definitivo e não pode ser alterado.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-lock"></use>
+              </svg>
+              <span><b>Credenciais protegidas</b>Não partilhe a palavra-passe nem deixe outra pessoa votar por
+                si.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-shield-check"></use>
+              </svg>
+              <span><b>Voto secreto e verificável</b>Recebe um recibo para confirmar que o voto foi contado.</span>
+            </li>
+          </ul>
+        </div>
+
+        <section id="objeto">
+          <h2><span class="legal-num">01</span> Objeto e aceitação</h2>
+          <p>
+            Estes termos regulam o acesso e a utilização do TrustVote, a plataforma de votação online das eleições
+            académicas da Universidade — Associação de Estudantes, representantes de turma e de curso e núcleos
+            académicos.
+          </p>
+          <p>
+            Ao criar uma conta, iniciar sessão ou submeter um voto, declara que leu, compreendeu e aceita estes
+            termos e a <a href="privacidade.html">Política de privacidade</a>. Se não concordar, não deve utilizar
+            a plataforma.
+          </p>
+        </section>
+
+        <section id="elegibilidade">
+          <h2><span class="legal-num">02</span> Quem pode utilizar</h2>
+          <p>A área do eleitor está reservada a estudantes que cumpram, cumulativamente, as seguintes condições:</p>
+          <ul>
+            <li>estar inscrito na Universidade no ano letivo em curso;</li>
+            <li>constar dos cadernos eleitorais da eleição em causa;</li>
+            <li>registar-se com o seu próprio número de estudante e um e-mail a que tenha acesso.</li>
+          </ul>
+          <p>
+            A área da equipa é exclusiva da comissão eleitoral e de quem esta autorizar. As páginas públicas —
+            calendário, listas, resultados e verificação de recibos — podem ser consultadas por qualquer pessoa.
+          </p>
+        </section>
+
+        <section id="conta">
+          <h2><span class="legal-num">03</span> Conta e credenciais</h2>
+          <p>
+            A conta é pessoal e intransmissível. É responsável por manter a confidencialidade da palavra-passe e,
+            se a tiver ativado, do código de autenticação em dois fatores.
+          </p>
+          <ul>
+            <li>Os dados indicados no registo devem ser verdadeiros e estar atualizados.</li>
+            <li>Após várias tentativas de entrada falhadas, a conta é bloqueada temporariamente por segurança.</li>
+            <li>Se suspeitar de acesso indevido, altere a palavra-passe e contacte de imediato a equipa.</li>
+          </ul>
+          <div class="legal-callout">
+            <svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg>
+            <p>Recomendamos ativar a autenticação em dois fatores no seu perfil. É a forma mais eficaz de impedir
+              que alguém vote em seu nome.</p>
+          </div>
+        </section>
+
+        <section id="voto">
+          <h2><span class="legal-num">04</span> Exercício do voto</h2>
+          <p>
+            O voto é livre, secreto e pessoal. Cada eleitor habilitado pode votar uma única vez em cada ronda,
+            dentro do período definido pela comissão eleitoral.
+          </p>
+          <h3>Submissão e recibo</h3>
+          <p>
+            Depois de confirmado, o voto é registado de forma anónima e não pode ser alterado nem anulado. Recebe
+            um recibo com um código único que permite verificar, na página
+            <a href="verificar.html">Verificar o meu voto</a>, que o voto foi contado — sem revelar a escolha feita.
+          </p>
+          <h3>Segunda volta</h3>
+          <p>
+            Quando nenhuma candidatura obtém a maioria exigida, pode ser aberta uma nova ronda. Cada ronda é
+            independente e exige um novo voto.
+          </p>
+          <div class="legal-callout is-warning">
+            <svg class="icon" aria-hidden="true">
+              <use href="#i-circle-alert"></use>
+            </svg>
+            <p>Reveja o boletim com atenção antes de confirmar. Uma vez submetido, o voto é definitivo.</p>
+          </div>
+        </section>
+
+        <section id="conduta">
+          <h2><span class="legal-num">05</span> Utilização aceitável</h2>
+          <p>Para proteger a integridade das eleições, é expressamente proibido:</p>
+          <ul>
+            <li>votar em nome de outra pessoa ou permitir que alguém vote em seu nome;</li>
+            <li>pressionar, coagir ou oferecer contrapartidas a outros eleitores pelo sentido do voto;</li>
+            <li>tentar aceder a contas, dados ou áreas para as quais não tem autorização;</li>
+            <li>utilizar programas automáticos, explorar falhas ou sobrecarregar a plataforma;</li>
+            <li>divulgar recibos ou capturas de ecrã de terceiros com o objetivo de expor o voto de outra pessoa.</li>
+          </ul>
+          <p>
+            O incumprimento pode levar à suspensão da conta, à comunicação à comissão eleitoral e aos órgãos
+            competentes da Universidade, sem prejuízo de outras consequências legais.
+          </p>
+        </section>
+
+        <section id="disponibilidade">
+          <h2><span class="legal-num">06</span> Disponibilidade e prazos</h2>
+          <p>
+            Fazemos o possível para manter a plataforma disponível durante todo o período eleitoral. Podem, no
+            entanto, ocorrer interrupções por manutenção, motivos de segurança ou causas alheias à equipa.
+          </p>
+          <p>
+            Os prazos de cada eleição são publicados no <a href="calendario.html">Calendário eleitoral</a>. Em caso
+            de falha técnica relevante, a comissão eleitoral pode prolongar o período de votação e comunicá-lo em
+            <a href="comunicacao.html">Comunicação</a>.
+          </p>
+        </section>
+
+        <section id="resultados">
+          <h2><span class="legal-num">07</span> Resultados e auditoria</h2>
+          <p>
+            Os resultados são apurados automaticamente após o fecho de cada ronda e publicados em
+            <a href="resultados.html">Resultados</a>, de forma agregada. Nenhum resultado parcial é revelado
+            enquanto a votação estiver aberta.
+          </p>
+          <p>
+            As ações relevantes ficam registadas num histórico de auditoria encadeado, que permite detetar
+            qualquer alteração posterior. Eventuais reclamações devem ser dirigidas à comissão eleitoral nos prazos
+            previstos no regulamento de cada eleição.
+          </p>
+        </section>
+
+        <section id="propriedade">
+          <h2><span class="legal-num">08</span> Propriedade intelectual</h2>
+          <p>
+            O código, o design, os textos e a marca TrustVote pertencem à equipa do projeto. Os conteúdos das
+            candidaturas — nomes, programas e imagens — são da responsabilidade das respetivas listas. Não é
+            permitida a reprodução para fins comerciais sem autorização prévia.
+          </p>
+        </section>
+
+        <section id="responsabilidade">
+          <h2><span class="legal-num">09</span> Responsabilidade</h2>
+          <p>
+            A equipa não é responsável por falhas causadas pelo equipamento ou pela ligação à internet do
+            utilizador, nem por danos resultantes da partilha indevida das suas credenciais.
+          </p>
+          <p>
+            O TrustVote é desenvolvido no âmbito académico. Nada nestes termos limita direitos que a lei lhe
+            reconheça e que não possam ser afastados por contrato.
+          </p>
+        </section>
+
+        <section id="alteracoes">
+          <h2><span class="legal-num">10</span> Alterações e lei aplicável</h2>
+          <p>
+            Podemos atualizar estes termos para refletir alterações à plataforma ou à lei. Alterações relevantes
+            são anunciadas em <a href="comunicacao.html">Comunicação</a> com antecedência e nunca se aplicam a uma
+            ronda que já esteja a decorrer.
+          </p>
+          <p>
+            Estes termos regem-se pela lei portuguesa. Qualquer litígio será resolvido, sempre que possível, por
+            acordo, junto da comissão eleitoral.
+          </p>
+        </section>
+
+        <!-- Contacto -->
+        <aside class="legal-contact">
+          <div>
+            <h2>Tem dúvidas sobre estes termos?</h2>
+            <p>Escreva-nos para geral@trustvote.pt ou use o formulário de contacto.</p>
+          </div>
+          <a class="button" href="ajuda.html#contactos">Contactar a equipa <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg></a>
+        </aside>
+
+      </article>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

@@ -39,6 +39,7 @@
 @import url("paginas/login.css");
 @import url("paginas/verificar.css");
 @import url("paginas/demonstracao.css");
+@import url("paginas/legal.css");
 
 /* Áreas do eleitor e da equipa */
 @import url("paginas/paineis/cabecalho.css");
