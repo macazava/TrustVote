@@ -13,7 +13,7 @@ código pela primeira vez deve começar por aqui.
 ## 1. O que existe neste repositório
 
 ```text
-05_Artefactos/
+08_codigo/
 ├── Backend/            # API (FastAPI + SQLAlchemy + PostgreSQL)
 ├── Frontend/           # páginas HTML/CSS/JS, servidas pelo Nginx
 ├── Infraestrutura/     # Docker Compose: nginx, aplicações, PostgreSQL e Redis
@@ -103,10 +103,10 @@ Há **dois modos**, ambos sobre a mesma base de dados e o mesmo frontend:
 
 ### Passo 0 — Uma só vez: ambiente virtual (só é preciso no modo B)
 
-O ambiente virtual vive na raiz de `05_Artefactos`, em `.venv`.
+O ambiente virtual vive na raiz de `08_codigo`, em `.venv`.
 
 ```powershell
-cd "C:\...\05_Artefactos"
+cd "C:\...\08_codigo"
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r Backend\requirements.txt
 ```
@@ -114,7 +114,7 @@ python -m venv .venv
 ### Passo 1 — Criar o `.env` da infraestrutura (só na primeira vez)
 
 ```powershell
-cd "C:\...\05_Artefactos\Infraestrutura"
+cd "C:\...\08_codigo\Infraestrutura"
 copy .env.example .env
 # Abre o .env e substitui TODOS os valores "mudar_*" por passwords próprias.
 ```
@@ -170,7 +170,7 @@ DATABASE_PASSWORD=<o mesmo valor de TRUSTVOTE_DB_PASSWORD do .env da Infraestrut
 ```
 
 ```powershell
-cd "C:\...\05_Artefactos\Backend"
+cd "C:\...\08_codigo\Backend"
 ..\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
@@ -215,7 +215,7 @@ docker exec trustvote-db-primary psql -U trustvote -d trustvote -c "UPDATE utili
 Desce sempre com o **mesmo conjunto de ficheiros** que usaste para subir:
 
 ```powershell
-cd "C:\...\05_Artefactos\Infraestrutura"
+cd "C:\...\08_codigo\Infraestrutura"
 
 docker compose down                      # modo A (mantém os dados)
 docker compose down --remove-orphans     # idem, e remove contentores órfãos
@@ -236,7 +236,7 @@ docker compose down -v                   # ATENÇÃO: apaga também os dados (vo
 ## 5. Comandos do dia a dia
 
 ```powershell
-cd "C:\...\05_Artefactos\Infraestrutura"
+cd "C:\...\08_codigo\Infraestrutura"
 
 docker compose ps                      # estado + health dos contentores
 docker compose logs -f nginx           # seguir os logs de um serviço
@@ -358,7 +358,7 @@ Listas completas em [Backend > Próximos passos](Backend/README.md) e
   `.idea/` na **raiz** e em **`Backend/`** continuam **rastreados** — foram adicionados
   antes da regra existir, e o `.gitignore` não desrastreia nada. Incluem
   `dataSources.xml` (com a URL JDBC) e `awsToolkit.xml`. Para limpar:
-  `git rm -r --cached .idea 05_Artefactos/Backend/.idea`
+  `git rm -r --cached .idea 08_codigo/Backend/.idea`
 - **Esquema da BD:** altera-se nos scripts SQL em
   `Backend/config/database/init/docker_sql_and_sh/`, nunca com `create_all` do SQLAlchemy.
 - **Finais de linha:** os ficheiros que correm em Linux (`.sh`, `.conf`, `.yaml`) usam

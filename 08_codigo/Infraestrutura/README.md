@@ -73,7 +73,7 @@ PC, o mesmo disco e o mesmo motor Docker.
 ## 2. Estrutura dos ficheiros
 
 ```
-05_Artefactos/Infraestrutura/
+08_codigo/Infraestrutura/
 ├── compose.yaml                  # definição de todos os serviços
 ├── compose.debug.yaml            # OPCIONAL: publica a BD em 127.0.0.1:15432/15433 e o pgAdmin em :5050
 ├── .env.example                  # variáveis necessárias (valores ilustrativos)
@@ -90,7 +90,7 @@ PC, o mesmo disco e o mesmo motor Docker.
 ```
 
 O **esquema da base de dados** não é duplicado aqui: é montado diretamente de
-`05_Artefactos/Backend/config/database/init/docker_sql_and_sh/`
+`08_codigo/Backend/config/database/init/docker_sql_and_sh/`
 (`00-trustvote-user.sql` → cria o utilizador `trustvote` e torna-o dono da BD;
 `trustvote.sql` → tabelas, executadas como `trustvote` via `SET ROLE`).
 
@@ -109,7 +109,7 @@ O **esquema da base de dados** não é duplicado aqui: é montado diretamente de
 ## 4. Configurar o `.env`
 
 ```powershell
-cd 05_Artefactos\Infraestrutura
+cd 08_codigo\Infraestrutura
 copy .env.example .env
 # editar .env e substituir TODOS os "mudar_*" por passwords fortes
 ```
@@ -169,7 +169,7 @@ do Nginx, usada pelo healthcheck do contentor; não verifica a saúde da API nem
 ## 6. Comandos
 
 ```powershell
-cd 05_Artefactos\Infraestrutura
+cd 08_codigo\Infraestrutura
 
 # --- Subir ------------------------------------------------------------------
 docker compose up -d --wait                  # 1ª vez, ou depois de alterar o compose.yaml

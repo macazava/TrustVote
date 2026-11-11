@@ -1,4 +1,4 @@
-# Ficheiros que não vão para o git em todo o 05_Artefactos (Backend, Frontend e Infraestrutura)
+# Ficheiros que não vão para o git em todo o 08_codigo (Backend, Frontend e Infraestrutura)
 
 # Segredos e configuração local (o stack.ps1 cria o .env na primeira vez)
 .env

@@ -229,14 +229,14 @@ impede que as duas o façam ao mesmo tempo), uma só vez e numa transação (reg
 
 ## 8. Executar localmente (Windows)
 
-O ambiente virtual do projeto vive na **raiz de `05_Artefactos`**, na pasta `.venv`.
+O ambiente virtual do projeto vive na **raiz de `08_codigo`**, na pasta `.venv`.
 A API é executada a partir da pasta `Backend`.
 
 **Pré-requisito — a base de dados tem de estar publicada.** Sobe a infraestrutura com
 o ficheiro de debug, que expõe a BD em `127.0.0.1:15432`:
 
 ```powershell
-cd "C:\Users\<utilizador>\...\05_Artefactos\Infraestrutura"
+cd "C:\Users\<utilizador>\...\08_codigo\Infraestrutura"
 copy .env.example .env      # só na primeira vez; preencher os "mudar_*"
 docker compose -f compose.yaml -f compose.debug.yaml up -d --build --wait
 docker compose ps           # todos `healthy`
@@ -245,7 +245,7 @@ docker compose ps           # todos `healthy`
 Depois arranca a API:
 
 ```powershell
-cd "C:\Users\<utilizador>\...\05_Artefactos\Backend"
+cd "C:\Users\<utilizador>\...\08_codigo\Backend"
 ..\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ..\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
@@ -257,10 +257,10 @@ Se preferires ativar o ambiente virtual:
 python -m uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
-Se ainda não existir ambiente virtual, cria-o na raiz de `05_Artefactos`:
+Se ainda não existir ambiente virtual, cria-o na raiz de `08_codigo`:
 
 ```powershell
-cd "C:\Users\<utilizador>\...\05_Artefactos"
+cd "C:\Users\<utilizador>\...\08_codigo"
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r Backend\requirements.txt
 ```
@@ -384,7 +384,7 @@ regras de estado e a auditoria se aplicam (as rotas soltas `/candidatos`, `/rond
 ## 11. Executar com Docker
 
 ```powershell
-cd "C:\...\05_Artefactos\Backend"
+cd "C:\...\08_codigo\Backend"
 docker build -t trustvote-backend .
 docker run --rm --name trustvote-api -p 8001:8001 trustvote-backend
 ```
