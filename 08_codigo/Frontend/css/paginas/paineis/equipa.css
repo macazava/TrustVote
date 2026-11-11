@@ -1,0 +1,430 @@
+/* Área da equipa: métricas, gráficos, eleições e resultados */
+
+/* ===== Equipa: métricas e gráfico ===== */
+.admin-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.metric-card {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 4px 14px;
+    padding: 22px 20px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.metric-card .check-box {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: center;
+}
+
+.metric-card>small {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+}
+
+.metric-card b small {
+    color: var(--color-text-muted);
+}
+
+.metric-card em {
+    grid-column: 3;
+    grid-row: 1;
+    color: var(--color-brand);
+    font-size: var(--text-xs);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.metric-card b {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    font-size: var(--text-xl);
+}
+
+.metric-card>span:not(.check-box) {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.metric-card .bar {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    align-self: center;
+    height: 3px;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: 2.1fr 1fr;
+    gap: 18px;
+}
+
+.overview-grid>.dash-card {
+    margin-top: 18px;
+    background: var(--color-surface);
+}
+
+.line-chart {
+    width: 100%;
+    height: 260px;
+    margin-top: 18px;
+}
+
+.line-chart line {
+    stroke: var(--color-surface-sunken);
+}
+
+.line-chart text {
+    fill: var(--color-text-subtle);
+    font-size: var(--text-xs);
+}
+
+.line-chart path {
+    fill: none;
+    stroke: var(--color-heading);
+    stroke-width: 2.5;
+}
+
+/* ===== Equipa: eleições ===== */
+.election-rows {
+    display: grid;
+    gap: 22px;
+}
+
+.election-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 28px 22px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.election-row.is-muted h3 {
+    color: var(--color-text-muted);
+}
+
+.election-row>div:nth-child(2) {
+    flex: 1;
+}
+
+.election-row h3 {
+    margin: 6px 0;
+    font-size: var(--text-xl);
+}
+
+.election-row small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.election-row .turnout {
+    padding-right: 20px;
+    border-right: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.election-row .turnout b {
+    display: block;
+    font-size: var(--text-xl);
+}
+
+.election-row .turnout small {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+}
+
+/* ===== Equipa: resultados ===== */
+.results-section-title {
+    margin: 34px 0 14px;
+    font-size: var(--text-xl);
+}
+
+.results-split {
+    display: grid;
+    gap: 18px 40px;
+}
+
+.results-split h3 {
+    margin: 0 0 6px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+/* Barras horizontais: nome · barra · valor */
+.bar-chart {
+    display: grid;
+    gap: 4px;
+    margin: 6px 0 18px;
+}
+
+.bar-chart-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.9fr) 2fr 84px;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.bar-chart-row:hover {
+    background: var(--color-brand-soft);
+}
+
+.bar-chart-label b,
+.bar-chart-value b {
+    display: block;
+    font-size: var(--text-sm);
+}
+
+.bar-chart-label small,
+.bar-chart-value small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.bar-chart-value {
+    text-align: right;
+}
+
+.bar-chart-track {
+    height: 14px;
+}
+
+.bar-chart-track i {
+    display: block;
+    min-width: 4px;
+    height: 100%;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--color-brand);
+}
+
+/* Colunas: participação por eleição (escala fixa de 0 a 100%) */
+.column-chart {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    height: 240px;
+    margin: 18px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.column-chart-item {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    max-width: 160px;
+    gap: 6px;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+}
+
+.column-chart-item:hover {
+    background: var(--color-brand-soft);
+}
+
+.column-chart-item b {
+    font-size: var(--text-sm);
+}
+
+.column-chart-track {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    width: 56px;
+}
+
+.column-chart-track i {
+    display: block;
+    width: 100%;
+    min-height: 4px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--color-brand);
+}
+
+.column-chart-item small {
+    min-height: 2.6em;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.3;
+    text-align: center;
+}
+
+
+/* ===== Gráficos interativos ===== */
+/* Linha: o marcador e a legenda ficam por cima do SVG, na posição do ponto (em %) */
+.line-chart-box {
+    position: relative;
+    margin-top: 18px;
+    border-radius: var(--radius-sm);
+    cursor: crosshair;
+}
+
+.line-chart-box .line-chart {
+    display: block;
+    margin-top: 0;
+}
+
+.line-chart .line-chart-area {
+    fill: var(--color-brand-tint);
+    stroke: none;
+}
+
+.chart-marker {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 3px solid var(--color-surface);
+    border-radius: 50%;
+    background: var(--color-heading);
+    box-shadow: 0 0 0 4px var(--color-focus-ring);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.chart-tip {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    min-width: 96px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    transform: translate(12px, calc(-100% - 10px));
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.chart-tip.is-left {
+    transform: translate(calc(-100% - 12px), calc(-100% - 10px));
+}
+
+.chart-tip b {
+    font-size: var(--text-sm);
+}
+
+.chart-tip small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+/* Barras e colunas: ao passar o rato, as outras ficam em segundo plano */
+.bar-chart:hover .bar-chart-row:not(:hover),
+.column-chart:hover .column-chart-item:not(:hover) {
+    opacity: 0.5;
+}
+
+.bar-chart-row,
+.column-chart-item {
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+/* "Ver como tabela" por baixo de cada gráfico */
+.chart-table {
+    margin: 4px 0 12px;
+}
+
+.chart-table summary {
+    width: max-content;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.chart-table .table-scroll {
+    margin-top: 10px;
+    border-radius: var(--radius-sm);
+}
+
+.chart-table tbody th {
+    background: none;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-transform: none;
+}
+
+/* ===== Equipa: mensagens do formulário de contacto ===== */
+.nav-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-on-dark-warning);
+    color: var(--color-brand-deep);
+    font-size: var(--text-xs);
+    font-weight: 700;
+}
+
+.message-list {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+}
+
+.message-card {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+.message-card.is-unread {
+    border-left: 4px solid var(--color-warning-dot);
+}
+
+.message-card header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.message-card header div {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+}
+
+.message-card header small {
+    overflow-wrap: anywhere;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.message-subject {
+    margin: var(--space-4) 0 var(--space-1);
+    color: var(--color-heading);
+    font-weight: 700;
+}
+
+.message-body {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    white-space: pre-line;
+}
+
+.message-card .row-actions {
+    align-items: center;
+}

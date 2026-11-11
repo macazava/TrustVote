@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Acesso | TrustVote</title>
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/controllers/comum/validacao.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/login/formulario.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/login/autenticacao.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body data-page="login">
+  <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
+
+  <header class="auth-header">
+    <a class="brand" href="inicio.html">
+      <span class="brand-mark"><svg class="icon" aria-hidden="true">
+          <use href="#i-check"></use>
+        </svg></span>
+      <span>
+        <b>TRUSTVOTE</b>
+        <small>ELEIÇÕES ACADÉMICAS</small>
+      </span>
+    </a>
+
+    <a class="text-link" href="inicio.html">
+      <svg class="icon" aria-hidden="true">
+        <use href="#i-arrow-left"></use>
+      </svg> Voltar ao portal público
+    </a>
+  </header>
+
+  <main id="conteudo" class="auth-layout grid-cols-1 lg:grid-cols-[1fr_minmax(360px,530px)]">
+
+    <section class="auth-intro">
+      <p class="eyebrow">ACESSO RESERVADO E PROTEGIDO</p>
+
+      <h1 id="auth-heading">Entre para exercer o seu voto.</h1>
+
+      <p id="auth-description">
+        Inicie sessão para consultar eleições, acompanhar o processo
+        de votação e consultar os seus recibos.
+      </p>
+
+      <div class="assurances">
+        <div>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg></span>
+          <div>
+            <b>Ligação protegida</b>
+            <small>As credenciais são enviadas apenas ao servidor TrustVote.</small>
+          </div>
+        </div>
+
+        <div>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-lock"></use>
+            </svg></span>
+          <div>
+            <b>Identidade separada do voto</b>
+            <small>A sua conta nunca fica ligada à escolha depositada.</small>
+          </div>
+        </div>
+
+        <div>
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-vote"></use>
+            </svg></span>
+          <div>
+            <b>Um voto por volta</b>
+            <small>Cada eleitor autenticado só pode votar uma vez em cada volta.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+
+      <div class="role-switch overflow-hidden">
+        <button type="button" data-role="eleitor" class="active">
+          Eleitor
+        </button>
+        <button type="button" data-role="equipa">
+          Equipa
+        </button>
+      </div>
+
+      <div class="mode-switch">
+        <button type="button" data-mode="login" class="active">
+          Iniciar sessão
+        </button>
+        <button type="button" data-mode="register">
+          Criar conta
+        </button>
+      </div>
+
+      <form id="auth-form">
+        <p class="eyebrow" id="form-kicker">INÍCIO DE SESSÃO</p>
+
+        <h2 id="form-title">Aceder à área do eleitor</h2>
+
+        <p id="form-help">
+          Introduza as suas credenciais para continuar.
+        </p>
+
+        <label id="name-field" hidden>
+          Nome de utilizador
+          <input name="name" autocomplete="nickname" minlength="3" maxlength="50" pattern="[A-Za-z0-9_.\-]+"
+            title="Letras sem acentos, números, ponto, hífen e sublinhado" placeholder="nome.apelido">
+        </label>
+
+        <label id="email-field">
+          E-mail
+          <input name="email" type="email" autocomplete="username" required maxlength="255"
+            placeholder="nome@exemplo.pt">
+        </label>
+
+        <label id="number-field" hidden>
+          Número de estudante
+          <input name="numero" autocomplete="off" pattern="[A-Za-z0-9]{4,20}" maxlength="20"
+            title="Entre 4 e 20 letras ou números" placeholder="a12345">
+        </label>
+
+        <label id="course-field" hidden>
+          Curso
+          <input name="curso" maxlength="150" pattern=".*\S.*" title="Indique o seu curso"
+            placeholder="Engenharia Informática">
+        </label>
+
+        <label>
+          Palavra-passe
+          <span class="password-field">
+            <input name="password" type="password" autocomplete="current-password" required minlength="8"
+              placeholder="Introduza a sua palavra-passe">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe"
+              aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                <circle cx="12" cy="12" r="2.75" />
+                <path class="eye-slash" pathLength="1" d="M4 4l16 16" />
+              </svg>
+            </button>
+          </span>
+        </label>
+
+        <label id="confirm-field" hidden>
+          Confirmar palavra-passe
+          <span class="password-field">
+            <input name="confirm" type="password" minlength="8" placeholder="Repita a palavra-passe">
+            <button type="button" class="password-toggle" data-toggle-password aria-label="Mostrar palavra-passe"
+              aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                <circle cx="12" cy="12" r="2.75" />
+                <path class="eye-slash" pathLength="1" d="M4 4l16 16" />
+              </svg>
+            </button>
+          </span>
+        </label>
+
+        <label class="check-label" id="terms-field" hidden>
+          <input type="checkbox" name="terms">
+          Li e aceito os termos de utilização e a política de privacidade.
+        </label>
+
+        <div class="form-options">
+          <label class="check-label">
+            <input type="checkbox" name="remember">
+            Manter o identificador neste dispositivo
+          </label>
+        </div>
+
+        <p class="form-message" role="status" aria-live="polite"></p>
+
+        <button class="button button-primary full-button" type="submit" id="submit-label">
+          Iniciar sessão <svg class="icon" aria-hidden="true">
+            <use href="#i-arrow-right"></use>
+          </svg>
+        </button>
+
+        <button class="link-button register-link" type="button" data-mode="register">
+          Ainda não tenho conta · Criar conta
+        </button>
+
+        <button class="link-button register-link" type="button" data-login-link hidden>
+          Já tenho conta · Iniciar sessão
+        </button>
+
+        <p class="server-status" data-server-status>A verificar o servidor…</p>
+      </form>
+
+      <div class="auth-footer">
+        <svg class="icon" aria-hidden="true">
+          <use href="#i-info"></use>
+        </svg>
+        <span>
+          <b>Precisa de ajuda?</b>
+          Consulte a página de <a href="ajuda.html#contactos">apoio</a>.
+        </span>
+      </div>
+
+    </section>
+  </main>
+
+</body>
+
+</html>

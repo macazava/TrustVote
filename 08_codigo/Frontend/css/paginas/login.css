@@ -1,0 +1,276 @@
+/* Página de acesso (login e registo) */
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px max(24px, calc((100% - var(--container)) / 2));
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.auth-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(360px, 530px);
+    align-items: center;
+    gap: 7vw;
+    width: min(var(--container), calc(100% - 48px));
+    min-height: calc(100vh - 90px);
+    margin: auto;
+    padding: 55px 0;
+}
+
+.auth-intro h1 {
+    max-width: 580px;
+    margin: 15px 0;
+    color: var(--color-heading);
+    font-size: clamp(2.5rem, 4.6vw, 3.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.auth-intro>p:not(.eyebrow) {
+    max-width: 550px;
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    line-height: 1.75;
+}
+
+.assurances {
+    display: grid;
+    gap: 22px;
+    margin-top: 35px;
+}
+
+.assurances>div {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.assurances>div>span {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-brand);
+    font-size: var(--text-xl);
+}
+
+.assurances>div>div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.assurances b {
+    font-size: var(--text-base);
+}
+
+.assurances small {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.auth-card {
+    padding: 32px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.role-switch,
+/* "Iniciar sessão" / "Criar conta": os botões ficam escondidos; o modo muda pelos links
+   por baixo do formulário, que os clicam (controllers/login/autenticacao.js) */
+.mode-switch {
+    display: none;
+}
+
+.role-switch button {
+    padding: 17px;
+    border: 0;
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    font-weight: 600;
+}
+
+.role-switch button.active {
+    background: var(--color-heading-fill);
+    color: var(--color-on-dark);
+}
+
+.auth-card form {
+    padding-top: 18px;
+}
+
+.auth-card form h2 {
+    margin: 0 0 14px;
+    font-size: var(--text-2xl);
+    font-weight: 700;
+}
+
+.auth-card form>p:not(.eyebrow):not(.form-message):not(.server-status) {
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    line-height: 1.7;
+}
+
+.auth-card label:not(.check-label) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 18px 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.auth-card input:not([type="checkbox"]) {
+    width: 100%;
+    min-height: 58px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    background: var(--color-field);
+    color: var(--color-text);
+    font-size: var(--text-base);
+}
+
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.full-button {
+    width: 100%;
+    min-height: 62px;
+    margin-top: 10px;
+    font-size: var(--text-xl);
+}
+
+.register-link {
+    display: block;
+    margin: 20px auto 0;
+    border-bottom: 1px solid var(--color-text);
+    color: var(--color-text);
+    font-size: var(--text-base);
+    text-decoration: none;
+}
+
+.register-link[hidden] {
+    display: none;
+}
+
+.auth-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.auth-footer a {
+    color: var(--color-brand);
+}
+
+@media (max-width: 860px) {
+    .auth-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 35px 0;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 560px;
+        margin: auto;
+        padding: 22px;
+    }
+
+    .auth-header {
+        flex-wrap: wrap;
+    }
+}
+
+/* Palavra-passe com botão para mostrar ou esconder */
+.password-field {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.auth-card .password-field input {
+    width: 100%;
+    padding-right: 52px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.password-toggle:hover {
+    background: var(--color-brand-tint);
+    color: var(--color-brand);
+}
+
+.password-toggle:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+.password-toggle[aria-pressed="true"] {
+    background: var(--color-focus-ring);
+    color: var(--color-brand);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 1px;
+}
+
+.password-toggle svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* O risco desenha-se por cima do olho quando a palavra-passe está visível */
+.password-toggle .eye-slash {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.22s ease;
+}
+
+.password-toggle[aria-pressed="true"] .eye-slash {
+    stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .password-toggle,
+    .password-toggle .eye-slash {
+        transition: none;
+    }
+}

@@ -1,0 +1,292 @@
+/* Estados dos dados: a carregar, erro, vazio e avisos rápidos */
+.state-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-align: center;
+}
+
+/* h2 para não saltar níveis de título; com o tamanho de um subtítulo */
+.state-box h2 {
+    margin: 6px 0 0;
+    color: var(--color-text);
+    font-size: var(--text-lg);
+}
+
+.state-box p {
+    max-width: 460px;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.state-box .button {
+    margin-top: 10px;
+}
+
+/* Texto só para leitores de ecrã */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Skeleton: forma do conteúdo enquanto os dados chegam */
+.skeleton,
+[data-skeleton] {
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, var(--color-surface-sunken) 25%, var(--color-bg) 50%, var(--color-surface-sunken) 75%) 0 0 / 200% 100%;
+    animation: tv-skeleton 1.4s ease-in-out infinite;
+}
+
+/* Texto de exemplo ("—", "A carregar…") escondido debaixo do bloco */
+[data-skeleton] {
+    color: transparent !important;
+    user-select: none;
+}
+
+[data-skeleton] * {
+    visibility: hidden;
+}
+
+.skeleton-group {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+}
+
+.skeleton {
+    display: block;
+}
+
+.skeleton-title {
+    width: min(320px, 60%);
+    height: 28px;
+}
+
+.skeleton-card {
+    height: 120px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-card-short {
+    width: 70%;
+    height: 72px;
+}
+
+.skeleton-line {
+    height: 18px;
+    margin: var(--space-4) 0;
+}
+
+@keyframes tv-skeleton {
+    to {
+        background-position: -200% 0;
+    }
+}
+
+.toast-host {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 50;
+    display: grid;
+    gap: 8px;
+    max-width: min(380px, calc(100vw - 32px));
+}
+
+.toast {
+    margin: 0;
+    padding: 12px 16px;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-brand);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+    box-shadow: var(--shadow-lg);
+}
+
+.toast-error {
+    border-left-color: var(--color-danger);
+}
+
+.server-status {
+    margin: 18px 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.server-status::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: 0.05em;
+}
+
+.server-status.is-ok {
+    color: var(--color-brand);
+}
+
+.server-status.is-down {
+    color: var(--color-warning);
+}
+
+/* Janela de confirmação (TrustVote.ui.confirm) */
+.confirm-dialog {
+    width: min(440px, calc(100vw - 32px));
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-lg);
+}
+
+.confirm-dialog::backdrop {
+    background: var(--color-overlay);
+}
+
+.confirm-dialog h2 {
+    margin: 0 0 8px;
+    color: var(--color-heading);
+    font-size: var(--text-xl);
+}
+
+.confirm-dialog p {
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+.confirm-dialog .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button-danger {
+    border-color: var(--color-danger-fill);
+    background: var(--color-danger-fill);
+    color: var(--color-on-brand);
+}
+/* Aviso com botão (ex.: "Desfazer") */
+.toast-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.toast-action button {
+    flex: none;
+    padding: 6px 12px;
+    border: 1px solid var(--color-brand);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 700;
+}
+
+.toast-action button:hover {
+    background: var(--color-brand-soft);
+}
+
+/* Ilustração dos estados vazios (urna com um boletim a entrar) */
+.empty-art {
+    width: 150px;
+    height: auto;
+    margin-bottom: var(--space-2);
+}
+
+.empty-art .ea-shadow {
+    fill: var(--color-surface-sunken);
+}
+
+.empty-art .ea-box {
+    fill: var(--color-surface);
+    stroke: var(--color-border-strong);
+    stroke-width: 2;
+}
+
+.empty-art .ea-slot {
+    fill: var(--color-heading);
+}
+
+.empty-art .ea-paper rect {
+    fill: var(--color-surface);
+    stroke: var(--color-brand);
+    stroke-width: 2;
+}
+
+.empty-art .ea-paper path,
+.empty-art .ea-line {
+    fill: none;
+    stroke: var(--color-brand-muted);
+    stroke-linecap: round;
+    stroke-width: 3;
+}
+
+.empty-art .ea-paper .ea-tick {
+    stroke: var(--color-brand);
+    stroke-linejoin: round;
+}
+
+.empty-art .ea-dot {
+    fill: var(--color-indicator);
+}
+
+/* O boletim desce devagar até à ranhura e volta */
+.empty-art .ea-paper {
+    animation: tv-empty-float 3.2s ease-in-out infinite;
+}
+
+@keyframes tv-empty-float {
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+/* Aviso de ligação (controllers/comum/pagina.js): faixa no fundo do ecrã */
+.connection-notice {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    background: var(--color-heading-fill);
+    box-shadow: var(--shadow-md);
+    color: var(--color-on-dark);
+    font-size: var(--text-sm);
+    line-height: 1.4;
+    transform: translateX(-50%);
+}
+
+.connection-notice[hidden] {
+    display: none;
+}
+
+.connection-notice > .icon {
+    flex: none;
+    color: var(--amber-200, #fde68a);
+}
+
+.connection-notice.is-ok > .icon {
+    color: var(--green-200, #bbf7d0);
+}

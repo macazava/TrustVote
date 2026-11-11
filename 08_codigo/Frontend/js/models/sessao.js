@@ -1,0 +1,135 @@
+/* Model · sessão do utilizador (token, quem está ligado, proteção das áreas) e recibos guardados no dispositivo */
+(function () {
+  "use strict";
+
+  const TV = window.TrustVote;
+  const { api, pageUrl } = TV;
+
+  const SESSION_KEY = "trustvote:sessao";
+
+  function readSession() {
+    try {
+      const value = JSON.parse(sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY) || "null");
+      if (!value || !value.token) return null;
+      if (value.expiresAt && Date.parse(value.expiresAt) <= Date.now()) {
+        session.clear();
+        return null;
+      }
+      return value;
+    } catch {
+      return null;
+    }
+  }
+
+  let currentUser = null;
+
+  const session = {
+    token: () => (readSession() || {}).token || null,
+
+    save(resposta, remember) {
+      session.clear();
+      const value = {
+        token: resposta.access_token,
+        expiresAt: resposta.expires_in ? new Date(Date.now() + resposta.expires_in * 1000).toISOString() : null,
+      };
+      try {
+        (remember ? localStorage : sessionStorage).setItem(SESSION_KEY, JSON.stringify(value));
+      } catch { }
+    },
+
+    clear() {
+      currentUser = null;
+      try {
+        sessionStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_KEY);
+      } catch { }
+    },
+
+    claims() {
+      const token = session.token();
+      if (!token) return null;
+      try {
+        const part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(decodeURIComponent(escape(atob(part))));
+      } catch {
+        return null;
+      }
+    },
+
+    get user() {
+      return currentUser;
+    },
+
+    isAdmin: (user = currentUser) => !!user && user.perfil === "administrador",
+
+    async refresh() {
+      currentUser = await api.auth.eu();
+      return currentUser;
+    },
+
+    // Protege as áreas reservadas: sem sessão volta ao login
+    async require(area) {
+      if (!session.token()) {
+        window.location.href = pageUrl(`login.html?area=${area}`);
+        return new Promise(() => { });
+      }
+      const user = await session.refresh();
+      if (area === "equipa" && !session.isAdmin(user)) {
+        window.location.href = pageUrl("eleitor.html");
+        return new Promise(() => { });
+      }
+      if (area === "eleitor" && session.isAdmin(user)) {
+        window.location.href = pageUrl("equipa.html");
+        return new Promise(() => { });
+      }
+      const expiresAt = (readSession() || {}).expiresAt;
+      if (expiresAt) {
+        const left = Date.parse(expiresAt) - Date.now();
+        if (left > 0 && left < 2 ** 31) setTimeout(session.expire, left);
+      }
+      return user;
+    },
+
+    expire() {
+      const area = document.body.dataset.page === "admin" ? "equipa" : "eleitor";
+      session.clear();
+      if (document.body.dataset.page === "login") return;
+      window.location.href = pageUrl(`login.html?area=${area}&motivo=expirada`);
+    },
+
+    // Avisa o servidor (o token deixa de valer já), mas não espera mais de 1,5 s por ele
+    logout() {
+      const sair = () => {
+        session.clear();
+        try {
+          sessionStorage.removeItem("trustvote:rascunho-voto");
+        } catch { }
+        window.location.href = pageUrl("inicio.html");
+      };
+      if (!session.token()) return sair();
+      Promise.race([api.auth.logout().catch(() => { }), new Promise((ok) => setTimeout(ok, 1500))]).then(sair);
+    },
+  };
+
+  // ===== Recibos guardados no dispositivo (cópia de segurança) =====
+  const receiptsKey = () => `trustvote:recibos:${(currentUser && currentUser.id) || "anon"}`;
+  const localReceipts = {
+    all() {
+      try {
+        return JSON.parse(localStorage.getItem(receiptsKey()) || "[]");
+      } catch {
+        return [];
+      }
+    },
+    save(recibo) {
+      const list = localReceipts.all().filter((r) => r.recibo !== recibo.recibo);
+      list.unshift(recibo);
+      try {
+        localStorage.setItem(receiptsKey(), JSON.stringify(list));
+      } catch { }
+    },
+  };
+
+  TV.session = session;
+  TV.localReceipts = localReceipts;
+})();

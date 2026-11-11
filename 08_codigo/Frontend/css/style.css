@@ -1,0 +1,58 @@
+/* TrustVote · índice dos estilos: é o único ficheiro que as páginas carregam (<link href="../css/style.css">).
+   base/        cores, letra e regras gerais
+   componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
+   paginas/     estilos próprios de cada página ou área
+   base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra)
+   base/grelha.css  colunas das páginas (classes do HTML como lg:grid-cols-2), mesmo no fim */
+@import url("base/fontes.css");
+@import url("base/variaveis.css");
+@import url("base/base.css");
+
+@import url("componentes/botoes.css");
+@import url("componentes/cabecalho.css");
+@import url("componentes/rodape.css");
+@import url("componentes/cartoes.css");
+@import url("componentes/superficies.css");
+@import url("componentes/formularios.css");
+@import url("componentes/tabelas.css");
+@import url("componentes/estados.css");
+@import url("componentes/resultados.css");
+@import url("componentes/pesquisa-rapida.css");
+@import url("componentes/animacoes.css");
+
+/* Página inicial */
+@import url("paginas/inicio/topo.css");
+@import url("paginas/inicio/atalhos-e-numeros.css");
+@import url("paginas/inicio/eleicoes-e-seguranca.css");
+@import url("paginas/inicio/plataforma-e-avisos.css");
+@import url("paginas/inicio/ecras-pequenos.css");
+@import url("paginas/inicio/perguntas-frequentes.css");
+
+/* Páginas com menu lateral (Eleições, Listas, Ajuda…) */
+@import url("paginas/seccoes/menu-lateral.css");
+@import url("paginas/seccoes/conteudos.css");
+@import url("paginas/seccoes/ecras-pequenos.css");
+@import url("paginas/seccoes/perguntas-frequentes.css");
+
+@import url("paginas/comunicacao.css");
+@import url("paginas/historico.css");
+@import url("paginas/login.css");
+@import url("paginas/verificar.css");
+@import url("paginas/demonstracao.css");
+
+/* Áreas do eleitor e da equipa */
+@import url("paginas/paineis/cabecalho.css");
+@import url("paginas/paineis/conteudo.css");
+@import url("paginas/paineis/eleicoes.css");
+@import url("paginas/paineis/boletim.css");
+@import url("paginas/paineis/recibos-e-sondagem.css");
+@import url("paginas/paineis/perfil.css");
+@import url("paginas/paineis/equipa.css");
+@import url("paginas/paineis/ecras-pequenos.css");
+
+/* Tamanho do ecrã e impressão */
+@import url("base/ecras/monitor-e-tablet.css");
+@import url("base/ecras/impressao.css");
+
+/* Grelha das páginas (classes de colunas usadas no HTML) */
+@import url("base/grelha.css");

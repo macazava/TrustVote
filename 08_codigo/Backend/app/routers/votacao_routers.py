@@ -1,0 +1,173 @@
+"""Endpoints de votação, recibos, resultados e resumo público."""
+
+import asyncio
+import json
+import time
+
+from fastapi import APIRouter, Depends, Request, status
+from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+
+from app.database import SessionLeitura, obter_sessao, obter_sessao_leitura
+from app.erros import NaoEncontradoError
+from app.models.utilizador import Utilizador
+from app.schemas.votacao import (
+    ConfiguracaoPublica,
+    Estatisticas,
+    HistoricoEleicao,
+    IntegridadeEleicao,
+    ParticipacaoResposta,
+    ReciboVerificacao,
+    ResultadoRonda,
+    ResumoPublico,
+    VotoPedido,
+    VotoResposta,
+)
+from app.security.dependencias import exigir_administrador, utilizador_atual
+from app.services import votacao as servico
+
+votacao_routers = APIRouter(tags=["votacao"])
+
+
+@votacao_routers.post(
+    "/eleicoes/{eleicao_id}/rondas/{numero}/votos",
+    response_model=VotoResposta,
+    status_code=status.HTTP_201_CREATED,
+)
+def votar(
+    eleicao_id: int,
+    numero: int,
+    dados: VotoPedido,
+    sessao: Session = Depends(obter_sessao),
+    utilizador: Utilizador = Depends(utilizador_atual),
+):
+    """Deposita o voto (num candidato ou em branco) e devolve o recibo."""
+    return servico.votar(sessao, eleicao_id, numero, dados.candidato_id, utilizador)
+
+
+@votacao_routers.get(
+    "/eleicoes/{eleicao_id}/participacao", response_model=ParticipacaoResposta
+)
+def obter_participacao(
+    eleicao_id: int,
+    sessao: Session = Depends(obter_sessao),
+    utilizador: Utilizador = Depends(utilizador_atual),
+):
+    """Diz se o utilizador autenticado já votou na volta atual, e quando (sem dizer em quem)."""
+    return servico.obter_participacao(sessao, eleicao_id, utilizador)
+
+
+@votacao_routers.get(
+    "/eleicoes/{eleicao_id}/resultados", response_model=list[ResultadoRonda]
+)
+def obter_resultados(
+    eleicao_id: int,
+    sessao: Session = Depends(obter_sessao),
+    utilizador: Utilizador = Depends(utilizador_atual),
+):
+    """Votos por candidato em cada volta."""
+    return servico.obter_resultados(sessao, eleicao_id, utilizador)
+
+
+@votacao_routers.get(
+    "/eleicoes/{eleicao_id}/estatisticas",
+    response_model=Estatisticas,
+    dependencies=[Depends(exigir_administrador)],
+)
+def obter_estatisticas(eleicao_id: int, sessao: Session = Depends(obter_sessao)):
+    """Participação e votos por hora (só administradores)."""
+    return servico.obter_estatisticas(sessao, eleicao_id)
+
+
+@votacao_routers.get(
+    "/eleicoes/{eleicao_id}/integridade",
+    response_model=IntegridadeEleicao,
+    dependencies=[Depends(exigir_administrador)],
+)
+def verificar_integridade(eleicao_id: int, sessao: Session = Depends(obter_sessao)):
+    """Confere os selos dos votos e se a urna bate certo com as participações."""
+    return servico.verificar_integridade(sessao, eleicao_id)
+
+
+@votacao_routers.get("/recibos/{codigo}/verificar", response_model=ReciboVerificacao)
+def verificar_recibo(codigo: str, sessao: Session = Depends(obter_sessao)):
+    """Confirma que o voto de um recibo foi contado, sem revelar em quem foi.
+
+    É público (sem sessão): o recibo não está ligado a nenhum eleitor e o código tem
+    96 bits aleatórios, por isso não se adivinha. A resposta nunca diz em quem foi o voto.
+    """
+    return servico.verificar_recibo(sessao, codigo)
+
+
+@votacao_routers.get("/publico/historico", response_model=list[HistoricoEleicao])
+def obter_historico_publico(sessao: Session = Depends(obter_sessao_leitura)):
+    """Eleições encerradas, sem votos por candidato."""
+    return servico.obter_historico_publico(sessao)
+
+
+@votacao_routers.get("/publico/configuracao", response_model=ConfiguracaoPublica)
+def obter_configuracao_publica():
+    """Duração da sessão, limite de tentativas de login e outras regras da plataforma."""
+    return servico.obter_configuracao_publica()
+
+
+@votacao_routers.get("/publico/resumo", response_model=ResumoPublico)
+def obter_resumo_publico(sessao: Session = Depends(obter_sessao_leitura)):
+    """Dados da eleição em destaque para as páginas sem sessão."""
+    return servico.obter_resumo_publico(sessao)
+
+
+# ===== Eventos ao vivo (Server-Sent Events) =====
+# Só dados que já são públicos em /publico/resumo (participação, sem votos por candidato).
+# O browser liga-se uma vez e recebe uma mensagem sempre que a participação muda; entre
+# mensagens chega um "ping" a cada 2 s, para o nginx (proxy_read_timeout de 4 s) manter a ligação.
+# Ao fim de 10 minutos o servidor fecha e o browser volta a ligar sozinho (pode calhar na
+# outra instância), para nenhuma ligação ficar presa a uma instância para sempre.
+EVENTOS_INTERVALO = 2
+EVENTOS_DURACAO = 600
+
+
+def _instantaneo_publico() -> dict | None:
+    sessao = SessionLeitura()
+    try:
+        resumo = servico.obter_resumo_publico(sessao)
+    except NaoEncontradoError:
+        return None
+    finally:
+        sessao.close()
+    return {
+        "eleicao_id": resumo.eleicao.id,
+        "estado": resumo.eleicao.estado,
+        "eleitores": resumo.eleitores,
+        "votos": resumo.votos,
+        "participacao": resumo.participacao,
+    }
+
+
+@votacao_routers.get("/publico/eventos")
+async def eventos_publicos(request: Request):
+    """Participação da eleição em destaque, em tempo real (text/event-stream)."""
+
+    async def fluxo():
+        yield "retry: 5000\n\n"
+        anterior = None
+        fim = time.monotonic() + EVENTOS_DURACAO
+        while time.monotonic() < fim and not await request.is_disconnected():
+            try:
+                atual = await run_in_threadpool(_instantaneo_publico)
+            except Exception:  # BD indisponível: tenta de novo no próximo ciclo
+                atual = anterior
+            if atual != anterior:
+                anterior = atual
+                yield f"event: resumo\ndata: {json.dumps(atual)}\n\n"
+            else:
+                yield ": ping\n\n"
+            await asyncio.sleep(EVENTOS_INTERVALO)
+
+    return StreamingResponse(
+        fluxo(),
+        media_type="text/event-stream",
+        # X-Accel-Buffering: o nginx entrega cada mensagem logo, sem a guardar em buffer
+        headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+    )

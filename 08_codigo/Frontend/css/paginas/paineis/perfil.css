@@ -1,0 +1,291 @@
+/* Área do eleitor, separador "Perfil": conta, dados pessoais, participação, segurança e privacidade */
+
+/* ===== Cartão de identidade ===== */
+.profile-hero {
+    display: flex;
+    /* Sem espaço (ecrã estreito), a identificação e as etiquetas passam para baixo do avatar */
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 26px;
+    margin-top: 8px;
+    padding: 30px 32px;
+    background: linear-gradient(135deg, var(--color-brand-deep), var(--color-brand));
+    color: var(--color-on-dark);
+}
+
+.profile-avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border: 3px solid var(--color-on-dark-border);
+    border-radius: 50%;
+    background: var(--color-brand-soft);
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+}
+
+.profile-id {
+    /* Nunca mais estreita do que 200 px: sem espaço, passa para a linha seguinte */
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.profile-id small {
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+}
+
+.profile-id h1 {
+    margin: 4px 0 2px;
+    color: var(--color-on-dark);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.profile-id p {
+    margin: 0;
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+}
+
+/* Estado da conta e número, à direita do cabeçalho */
+.profile-tags {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.profile-tags span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-on-dark-border);
+    border-radius: var(--radius-full);
+    background: var(--color-on-dark-hover);
+    font-size: var(--text-xs);
+    font-weight: 500;
+}
+
+.profile-tags .is-off {
+    border-color: var(--color-on-dark-warning);
+    color: var(--color-on-dark-warning);
+}
+
+/* ===== Dados pessoais: ficha em duas colunas (rótulo · valor) ===== */
+.profile-data {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-6);
+    margin: var(--space-4) 0 0;
+}
+
+.profile-data div {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.profile-data dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.profile-data dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.profile-note {
+    display: flex;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+}
+
+.profile-note .icon {
+    flex: none;
+    margin-top: 0.25em;
+}
+
+/* ===== Participação: os números no topo do cartão ===== */
+.profile-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-4) 0 var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.profile-numbers div {
+    padding: var(--space-4);
+}
+
+.profile-numbers div+div {
+    border-left: 1px solid var(--color-border);
+}
+
+.profile-numbers b {
+    display: block;
+    color: var(--color-heading);
+    font-size: var(--text-2xl);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.profile-numbers small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+/* ===== Grelha de cartões ===== */
+.profile-grid {
+    display: grid;
+    gap: 0 22px;
+    align-items: start;
+}
+
+.profile-grid .muted {
+    font-size: var(--text-sm);
+}
+
+/* ===== Linha do tempo da participação ===== */
+.profile-timeline {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.profile-timeline li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0 14px 4px;
+    border-top: 1px solid var(--color-border);
+}
+
+.profile-timeline li:first-child {
+    border-top: 0;
+}
+
+.profile-timeline li>div {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-timeline b {
+    display: block;
+    color: var(--color-text);
+    font-size: var(--text-base);
+}
+
+.profile-timeline small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.profile-timeline .button {
+    flex: none;
+    margin: 0;
+}
+
+.profile-dot {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface);
+}
+
+.profile-timeline .is-done .profile-dot {
+    border-color: var(--color-brand);
+    background: var(--color-brand);
+}
+
+.profile-timeline .is-open .profile-dot {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 4px var(--color-brand-soft);
+}
+
+/* ===== Sessão ===== */
+.profile-session {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0 6px;
+}
+
+.profile-session div {
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--color-brand-soft);
+}
+
+.profile-session small {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+}
+
+.profile-session b {
+    color: var(--color-heading);
+    font-size: var(--text-xl);
+}
+
+/* ===== Privacidade ===== */
+.profile-list {
+    display: grid;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text-sm);
+}
+
+.profile-list li {
+    display: flex;
+    gap: 10px;
+}
+
+/* Visto ou cruz desenhados com os mesmos ícones SVG do resto do site (máscara pintada com a cor) */
+.profile-list li::before {
+    content: "";
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 0.25em;
+    background: currentColor;
+    -webkit-mask: var(--marca) center / contain no-repeat;
+    mask: var(--marca) center / contain no-repeat;
+}
+
+.profile-list .is-yes::before {
+    --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20 6 9 17l-5-5%27/%3E%3C/svg%3E");
+    background: var(--color-brand);
+}
+
+.profile-list .is-no::before {
+    --marca: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M18 6 6 18%27/%3E%3Cpath d=%27m6 6 12 12%27/%3E%3C/svg%3E");
+    background: var(--color-danger);
+}
+
+/* Sessão: o botão de sair fica no fim do cartão */
+.dash-card [data-logout-profile] {
+    margin-top: var(--space-4);
+}

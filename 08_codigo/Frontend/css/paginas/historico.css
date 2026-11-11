@@ -1,0 +1,79 @@
+/* Histórico eleitoral */
+.history-hero {
+    position: relative;
+    min-height: 230px;
+    background: #2f2b24 center / cover no-repeat;
+}
+
+.history-hero::after {
+    position: absolute;
+    inset: 0;
+    background: #2a241c99;
+    content: "";
+}
+
+.history-hero .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: 230px;
+}
+
+.history-hero h1 {
+    margin: 0;
+    color: var(--color-on-dark);
+    font-size: clamp(2.125rem, 3.5vw, 2.75rem);
+    font-weight: 500;
+}
+
+.history-intro {
+    padding: 34px 0;
+    background: var(--color-band);
+    color: var(--color-on-dark);
+}
+
+.history-intro p {
+    margin: 0 0 12px;
+    font-size: var(--text-base);
+    line-height: 1.7;
+}
+
+.history-list {
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.history-period {
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.history-period>header {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.history-period>header span {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-brand);
+    font-size: var(--text-xs);
+}
+
+.history-period time {
+    color: var(--color-heading);
+    font-size: 2.625rem;
+    font-weight: 400;
+}
+
+.history-period h2 {
+    margin: 20px 0 18px 12px;
+    color: var(--color-heading);
+    font-size: var(--text-xl);
+}

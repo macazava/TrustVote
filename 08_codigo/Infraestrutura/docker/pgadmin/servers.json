@@ -1,0 +1,22 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "TrustVote - primário",
+      "Group": "TrustVote",
+      "Host": "db-primary",
+      "Port": 5432,
+      "MaintenanceDB": "trustvote",
+      "Username": "trustvote",
+      "SSLMode": "prefer"
+    },
+    "2": {
+      "Name": "TrustVote - réplica",
+      "Group": "TrustVote",
+      "Host": "db-replica",
+      "Port": 5432,
+      "MaintenanceDB": "trustvote",
+      "Username": "trustvote",
+      "SSLMode": "prefer"
+    }
+  }
+}

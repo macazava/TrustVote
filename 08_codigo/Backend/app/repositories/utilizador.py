@@ -1,0 +1,69 @@
+"""Acesso à tabela de utilizadores."""
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.models.utilizador import Utilizador
+
+
+def obter_por_id(sessao: Session, utilizador_id: int) -> Utilizador | None:
+    return sessao.get(Utilizador, utilizador_id)
+
+
+def obter_por_nome_utilizador(sessao: Session, nome_utilizador: str) -> Utilizador | None:
+    return sessao.scalar(
+        select(Utilizador).where(Utilizador.nome_utilizador == nome_utilizador)
+    )
+
+
+def obter_por_email(sessao: Session, email: str) -> Utilizador | None:
+    return sessao.scalar(select(Utilizador).where(Utilizador.email == email))
+
+
+def obter_por_num_estudante(
+    sessao: Session, num_estudante: str
+) -> Utilizador | None:
+    return sessao.scalar(
+        select(Utilizador).where(Utilizador.num_estudante == num_estudante)
+    )
+
+
+def listar(
+    sessao: Session, perfil: str | None = None, limite: int = 1000
+) -> list[Utilizador]:
+    consulta = select(Utilizador)
+    if perfil is not None:
+        consulta = consulta.where(Utilizador.perfil == perfil)
+    return list(sessao.scalars(consulta.order_by(Utilizador.id).limit(limite)))
+
+
+def criar(
+    sessao: Session,
+    nome_utilizador: str,
+    email: str,
+    num_estudante: str,
+    curso: str | None,
+    password_hash: str,
+) -> Utilizador:
+    utilizador = Utilizador(
+        nome_utilizador=nome_utilizador,
+        email=email,
+        num_estudante=num_estudante,
+        curso=curso,
+        password_hash=password_hash,
+    )
+    sessao.add(utilizador)
+    sessao.commit()
+    sessao.refresh(utilizador)
+    return utilizador
+
+
+def guardar_totp(
+    sessao: Session, utilizador: Utilizador, segredo: str | None, ativo: bool
+) -> Utilizador:
+    """Guarda o segredo e o estado da autenticação de dois fatores do utilizador."""
+    utilizador.totp_secret = segredo
+    utilizador.totp_ativo = ativo
+    sessao.commit()
+    sessao.refresh(utilizador)
+    return utilizador

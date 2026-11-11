@@ -1,0 +1,535 @@
+/* Área do eleitor, separador "Eleições": resumo, eleições a decorrer, histórico e detalhes de uma eleição */
+
+/* ===== Resumo em números ===== */
+.el-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    overflow: hidden;
+    margin-top: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+}
+
+.el-summary>div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-left: -1px;
+    padding: var(--space-4) var(--space-5);
+    border-left: 1px solid var(--color-border);
+}
+
+.el-summary b {
+    color: var(--color-heading);
+    font-size: var(--text-2xl);
+    font-variant-numeric: tabular-nums;
+}
+
+.el-summary small {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-summary .is-highlight {
+    background: var(--color-brand-soft);
+}
+
+.el-summary .is-highlight b {
+    color: var(--color-brand);
+}
+
+.el-section-title {
+    margin: 34px 0 0;
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ===== Uma eleição ===== */
+.el-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-6);
+    margin-top: 14px;
+    border-left: 4px solid var(--color-border-strong);
+}
+
+.el-item.is-open {
+    border-left-color: var(--color-brand-fill);
+}
+
+.el-item.is-voted {
+    border-left-color: var(--color-success);
+}
+
+.el-item-main {
+    display: flex;
+    flex: 1 1 520px;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.el-item-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+}
+
+.el-time {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-time b {
+    color: var(--color-heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.el-item h2 {
+    margin: 0;
+    font-size: var(--text-2xl);
+}
+
+.el-desc {
+    margin: -8px 0 0;
+    color: var(--color-text-muted);
+}
+
+.el-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.el-meta .is-ok {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+/* Abertura · barra do tempo decorrido · encerramento */
+.el-period {
+    display: grid;
+    grid-template-columns: auto minmax(80px, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-sunken);
+}
+
+.el-period>div:last-child {
+    text-align: right;
+}
+
+.el-period small {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+.el-period b {
+    color: var(--color-heading);
+    font-size: var(--text-sm);
+}
+
+.el-period-bar {
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+}
+
+.el-period-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-brand-fill);
+}
+
+/* Iniciais sobrepostas das candidaturas */
+.el-candidates {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.el-avatars {
+    display: flex;
+    flex: none;
+}
+
+.el-avatars .avatar {
+    width: 34px;
+    height: 34px;
+    margin-left: -8px;
+    border: 2px solid var(--color-surface);
+    font-size: 11px;
+}
+
+.el-avatars .avatar:first-child {
+    margin-left: 0;
+}
+
+.el-candidates small {
+    overflow: hidden;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.el-item-actions {
+    display: flex;
+    flex: 0 1 220px;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.el-item-actions .button {
+    width: 100%;
+}
+
+.el-item-actions .link-button {
+    align-self: center;
+}
+
+/* ===== Histórico ===== */
+.el-history {
+    margin-top: 34px;
+}
+
+.el-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.el-history-list {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.el-history-list li {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.el-history-list .year {
+    color: var(--color-text-muted);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.el-history-list b {
+    display: block;
+    color: var(--color-heading);
+}
+
+.el-history-list small {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-history-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.el-history-state.is-ok {
+    color: var(--color-success);
+}
+
+/* ===== Detalhes de uma eleição ===== */
+.el-back {
+    margin-bottom: var(--space-4);
+}
+
+.el-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 22px;
+    margin-top: 8px;
+}
+
+.el-details-main {
+    flex: 1 1 560px;
+    min-width: 0;
+    margin: 0;
+}
+
+.el-details-aside {
+    display: flex;
+    flex: 1 1 300px;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 420px;
+}
+
+.el-details-aside>.dash-card {
+    margin: 0;
+}
+
+.el-candidate-list {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.el-candidate-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.el-candidate-list .avatar {
+    flex: none;
+    width: 52px;
+    height: 52px;
+}
+
+.el-candidate-list small {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+.el-candidate-list b {
+    display: block;
+    margin-top: 2px;
+    color: var(--color-heading);
+    font-size: var(--text-lg);
+}
+
+.el-candidate-list div > span {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-candidate-list p {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text);
+}
+
+.el-sheet {
+    margin: var(--space-3) 0 0;
+}
+
+.el-sheet div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.el-sheet dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.el-sheet dd {
+    margin: 0;
+    color: var(--color-heading);
+    font-weight: 600;
+    text-align: right;
+}
+
+.el-details-aside .el-item-top + h2 {
+    margin-top: var(--space-3);
+}
+
+.el-details-aside .el-time {
+    margin: var(--space-4) 0 0;
+}
+
+.el-details-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.el-details-actions .button {
+    width: 100%;
+}
+
+.el-details-actions .link-button {
+    align-self: center;
+}
+/* ===== Visão geral: eleição em destaque, atalhos, atividade e garantias ===== */
+.ov-focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-6);
+    overflow: hidden;
+    margin-top: 24px;
+    padding-bottom: 0;
+    border-left: 4px solid var(--color-border-strong);
+}
+
+.ov-focus.is-open {
+    border-left-color: var(--color-brand-fill);
+}
+
+.ov-focus.is-voted {
+    border-left-color: var(--color-success);
+}
+
+.ov-focus-main {
+    display: flex;
+    flex: 1 1 520px;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ov-focus-kicker {
+    margin-top: var(--space-2);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.ov-focus h2 {
+    margin: 0;
+    font-size: var(--text-3xl);
+}
+
+.ov-focus-text {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+}
+
+.ov-focus-actions {
+    display: flex;
+    flex: 0 1 220px;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.ov-focus-actions .button {
+    width: 100%;
+}
+
+.ov-focus-actions .link-button {
+    align-self: center;
+}
+
+/* Os passos ocupam a largura toda, encostados ao fundo do cartão */
+.ov-focus .steps-track {
+    flex-basis: calc(100% + 2 * var(--card-padding, 28px));
+    margin: 0 calc(-1 * var(--card-padding, 28px));
+}
+
+.ov-shortcuts {
+    margin-top: 22px;
+}
+
+.ov-columns {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 22px;
+    margin-top: 22px;
+}
+
+.ov-columns > .dash-card {
+    display: flex;
+    flex: 1 1 420px;
+    flex-direction: column;
+    margin: 0;
+}
+
+.ov-columns > .dash-card:last-child {
+    flex: 1 1 320px;
+}
+
+.ov-columns .link-button {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-4);
+}
+
+/* Linha do tempo da atividade */
+.ov-activity {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ov-activity li {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.ov-activity li > span {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+}
+
+.ov-activity b {
+    display: block;
+    color: var(--color-heading);
+    font-size: var(--text-sm);
+}
+
+.ov-activity small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+.ov-activity time {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}

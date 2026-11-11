@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Verificar o meu voto | TrustVote</title>
+  <meta name="description" content="Confirme com o código do recibo que o seu voto foi contado, sem revelar a escolha.">
+
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/controllers/comum/validacao.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/verificar.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-atual="Verificar o meu voto"></div>
+
+  <main id="conteudo" class="container content-page verify-page">
+
+    <p class="eyebrow">VERIFICAÇÃO PÚBLICA</p>
+
+    <h1>Verificar o meu voto</h1>
+
+    <p class="lead">
+      Introduza o código do recibo que recebeu ao votar. Confirmamos que o voto foi registado e contado,
+      sem revelar em quem votou.
+    </p>
+
+    <div class="verify-layout">
+
+      <!-- Formulário: o resultado aparece logo por baixo -->
+      <article class="dash-card verify-card">
+        <form class="verify-form" data-verify-form>
+          <label class="field-label">
+            Código do recibo
+            <input name="codigo" required autocomplete="off" spellcheck="false" autocapitalize="characters"
+              maxlength="40" pattern="s*[Tt][Vv]-[0-9A-Fa-f]{24}s*"
+              title="O código começa por TV- e tem mais 24 letras (A a F) e números."
+              placeholder="TV-XXXXXXXXXXXXXXXXXXXXXXXX">
+          </label>
+          <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg> Verificar</button>
+        </form>
+
+        <div class="verify-result" data-verify-result aria-live="polite"></div>
+      </article>
+
+      <!-- Como funciona -->
+      <div class="info-list">
+
+        <article>
+          <span>01</span>
+          <div>
+            <h2>Onde encontro o código</h2>
+            <p>
+              No ecrã que aparece depois de votar e no separador <b>Recibos</b> da área do eleitor,
+              onde também o pode copiar ou descarregar.
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <span>02</span>
+          <div>
+            <h2>O que é confirmado</h2>
+            <p>
+              Que o voto existe, em que volta foi depositado e que o selo de integridade está correto,
+              ou seja, que ninguém o alterou depois de entrar na urna.
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <span>03</span>
+          <div>
+            <h2>O que nunca é mostrado</h2>
+            <p>
+              Em quem votou e quem é o dono do recibo. O servidor não liga recibos a eleitores:
+              é isso que mantém o voto secreto.
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

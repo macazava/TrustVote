@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+  <meta name="description" content="Momentos que marcaram as eleições académicas na plataforma TrustVote.">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Histórico eleitoral | TrustVote</title>
+
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preload" as="image" href="../assets/01_iade_campus_patio_exterior.webp" fetchpriority="high">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Histórico eleitoral" data-seccao-link="historico.html"
+    data-atual="Eleições académicas"></div>
+
+  <main id="conteudo">
+
+    <section class="history-hero" style="background-image:url('../assets/01_iade_campus_patio_exterior.webp')">
+      <div class="container">
+        <h1>Histórico Eleitoral</h1>
+      </div>
+    </section>
+
+    <section class="history-intro">
+      <div class="container">
+        <p>Eleições académicas já encerradas, com as datas e a participação registadas na plataforma.</p>
+      </div>
+    </section>
+
+    <!-- Eleições encerradas (preenchido por controllers/publico/paginas.js) -->
+    <div class="container history-list" data-history></div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

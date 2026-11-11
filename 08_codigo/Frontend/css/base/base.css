@@ -1,0 +1,316 @@
+/* Regras gerais: reset, contentor, textos e preferências de acessibilidade */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    margin: 0;
+    background: var(--color-bg);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
+/* width/height no HTML reservam o espaço da imagem (sem saltos ao carregar); a altura real segue a proporção */
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.container {
+    width: min(var(--container), calc(100% - 48px));
+    margin-inline: auto;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 14px;
+    color: var(--color-heading);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.eyebrow i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-brand);
+    box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.lead {
+    max-width: 620px;
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+    line-height: 1.75;
+}
+
+.muted {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+}
+
+code {
+    font-family: var(--font-mono);
+}
+
+/* Títulos em serifa (tom académico); o resto do site fica em Inter */
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    font-optical-sizing: auto;
+}
+
+/* Números com a mesma largura: alinham em métricas, resultados, contadores e tabelas */
+.facts b,
+.hub-progress b,
+.metric-card b,
+.turnout b,
+.profile-session b,
+.receipt-code b,
+[data-countdown],
+table {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Ícones SVG (js/views/icones.js): tamanho e cor vêm do elemento que os contém */
+.icon {
+    display: inline-block;
+    flex: none;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Setas no fim dos botões e links: deslizam um pouco ao passar o rato */
+.button .icon,
+.text-link .icon,
+.link-button .icon {
+    transition: transform 0.2s;
+}
+
+.button:hover .icon:last-child,
+.text-link:hover .icon:last-child {
+    transform: translateX(3px);
+}
+
+/* Foco do teclado: contorno visível em tudo o que é interativo (WCAG 2.4.7 / 2.4.11) */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* Nas faixas escuras o contorno passa a verde claro, para manter o contraste (≥ 3:1) */
+.skip-link,
+.topbar,
+.dashboard-header,
+.dark-card,
+.steps-help,
+.profile-hero {
+    --color-focus: var(--green-200);
+}
+
+/* Opções escolhidas com rádio (boletim, sondagem): o contorno vai para o cartão inteiro */
+.candidate-list label:has(input:focus-visible),
+.radio-line:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* Saltar para o conteúdo: escondido até receber o foco do teclado */
+.skip-link {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 100;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark);
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(-200%);
+}
+
+.skip-link:focus {
+    transform: none;
+}
+
+/* Preferências de acessibilidade (A+ e Contraste) */
+/* Texto maior: o tamanho base sobe 12,5% e todas as medidas em rem acompanham */
+html.large-text {
+    font-size: 112.5%;
+}
+
+/* Tema de alto contraste: só troca papéis (os componentes não mudam) */
+.high-contrast {
+    --color-bg: #fff;
+    --color-surface: #fff;
+    --color-surface-sunken: #f2f2f2;
+    --color-field: #fff;
+    --color-text: #000;
+    --color-text-secondary: #111;
+    --color-text-muted: #222;
+    --color-text-subtle: #444;
+    --color-border: #555;
+    --color-border-strong: #333;
+    --color-brand: #0f3d2c;
+    --color-heading: #0f3d2c;
+    --color-action: #0f3d2c;
+    --color-action-hover: #000;
+    --color-focus: #0f3d2c;
+}
+
+/* Contraste elevado em modo escuro: fundo preto, texto branco e verdes muito claros
+   (todos os textos acima de 7:1 sobre o preto); o contorno de foco fica amarelo, o mais visível */
+:root[data-theme="dark"] .high-contrast {
+    --color-bg: #000;
+    --color-surface: #000;
+    --color-surface-sunken: #141414;
+    --color-field: #000;
+    --color-text: #fff;
+    --color-text-secondary: #f5f5f5;
+    --color-text-muted: #e6e6e6;
+    --color-text-subtle: #cccccc;
+    --color-border: #9a9a9a;
+    --color-border-strong: #e6e6e6;
+    --color-brand: #8ff5c0;
+    --color-heading: #b6ffd8;
+    --color-brand-deep: #000;
+    --color-brand-soft: #0b2a1d;
+    --color-brand-muted: #6fdca6;
+    --color-indicator: #8ff5c0;
+    --color-action: #0f6b45;
+    --color-action-hover: #0a5034;
+    --color-focus: #ffe066;
+    --color-success: #8ff5c0;
+    --color-success-soft: #0b2a1d;
+    --color-warning: #ffd479;
+    --color-warning-soft: #2b2000;
+    --color-danger: #ff9a91;
+    --color-on-dark-muted: #e6e6e6;
+}
+
+/* As faixas escuras (topo, painéis) também passam a ter o foco amarelo */
+:root[data-theme="dark"] .high-contrast :is(.skip-link, .topbar, .dashboard-header, .dark-card, .steps-help, .profile-hero) {
+    --color-focus: #ffe066;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Destinos de âncoras e do "Saltar para o conteúdo" recebem o foco sem mostrar contorno */
+[tabindex="-1"]:focus {
+    outline: none;
+}
+
+/* Botão "Modo escuro": lua no tema claro, sol no tema escuro */
+.theme-toggle {
+    gap: 8px;
+}
+
+.theme-toggle .theme-sun,
+:root[data-theme="dark"] .theme-toggle .theme-moon {
+    display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle .theme-sun {
+    display: inline-block;
+}
+
+/* Imagens um pouco menos brilhantes no tema escuro */
+:root[data-theme="dark"] img {
+    filter: brightness(0.92);
+}
+
+/* Transição entre separadores dos painéis (View Transitions): o conteúdo troca com um fade curto,
+   o topo fica parado. Entre páginas diferentes não há transição: o browser mostrava a página
+   antiga até a nova estar pronta, o que atrasava a mudança e deixava ver um ecrã claro. */
+
+.topbar {
+    view-transition-name: topo;
+}
+
+.site-header {
+    view-transition-name: cabecalho;
+}
+
+.dashboard-header {
+    view-transition-name: painel-topo;
+}
+
+::view-transition-old(root) {
+    animation: 160ms ease-out both tv-vt-out;
+}
+
+::view-transition-new(root) {
+    animation: 260ms cubic-bezier(.2, .8, .2, 1) both tv-vt-in;
+}
+
+@keyframes tv-vt-out {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes tv-vt-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}

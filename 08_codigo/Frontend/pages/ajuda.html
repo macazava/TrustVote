@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+  <meta name="description" content="Quem somos, comissão eleitoral, transparência e contactos do TrustVote.">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Ajuda | TrustVote</title>
+
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/controllers/comum/validacao.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/controllers/publico/contactos.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-seccao="Ajuda" data-seccao-link="ajuda.html" data-atual="Quem somos" data-atual-muda>
+  </div>
+
+  <main id="conteudo"
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu overflow-hidden">
+        <h2>Ajuda</h2>
+        <nav aria-label="Ajuda">
+          <a href="#quem-somos">Quem somos</a>
+          <a href="#contactos">Contactos</a>
+          <a href="#perguntas-frequentes">Perguntas frequentes</a>
+        </nav>
+      </div>
+      <div class="manager-card">
+        <h2>Gestor responsável</h2>
+        <a href="ajuda.html#contactos">Equipa TrustVote <svg class="icon" aria-hidden="true">
+            <use href="#i-chevron-right"></use>
+          </svg></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo: um tema de cada vez -->
+    <div class="section-content">
+      <article class="section-item" id="quem-somos" data-item>
+        <div class="section-item-head">
+          <h1>Quem somos</h1>
+        </div>
+        <p>O TrustVote é a plataforma de votação online das eleições académicas da Universidade: Associação de
+          Estudantes, representantes de turma e de curso e núcleos académicos.</p>
+
+        <!-- A equipa que desenvolveu o projeto (fotografias em assets/) -->
+        <h2 class="team-title">A equipa</h2>
+        <p>Projeto desenvolvido por estudantes da licenciatura em Engenharia Informática do IADE, Universidade
+          Europeia, no ano letivo 2026/2027.</p>
+        <ul class="team-grid" aria-label="Equipa do TrustVote">
+          <li>
+            <span class="team-photo"><img src="../assets/fabio-1024w.jpeg" width="1024" height="1820"
+                alt="Fotografia de Fábio Teixeira" loading="lazy" decoding="async"></span>
+            <b>Fábio Teixeira</b>
+            <small>Engenharia Informática</small>
+          </li>
+          <li class="is-foco-direita">
+            <span class="team-photo"><img src="../assets/feliciano-1024w.jpeg" width="1024" height="1024"
+                alt="Fotografia de Feliciano Barata" loading="lazy" decoding="async"></span>
+            <b>Feliciano Barata</b>
+            <small>Engenharia Informática</small>
+          </li>
+          <li class="is-perto-camila">
+            <span class="team-photo"><img src="../assets/camila-1024w.jpeg" width="1024" height="1536"
+                alt="Fotografia de Camila Vargas" loading="lazy" decoding="async"></span>
+            <b>Camila Vargas</b>
+            <small>Engenharia Informática</small>
+          </li>
+          <li class="is-perto-taha">
+            <span class="team-photo"><img src="../assets/taha-wur-1024w.jpeg" width="1024" height="1365"
+                alt="Fotografia de Taha-Wur Pereira" loading="lazy" decoding="async"></span>
+            <b>Taha-Wur Pereira</b>
+            <small>Engenharia Informática</small>
+          </li>
+        </ul>
+      </article>
+
+      <article class="section-item" id="contactos" data-item>
+        <div class="section-item-head">
+          <h1>Contactos</h1>
+        </div>
+        <p>Tem dúvidas sobre como votar ou não encontra a sua eleição? Escreva à comissão eleitoral académica.</p>
+
+        <div class="contact-grid">
+
+          <!-- Formulário: abre a aplicação de e-mail com a mensagem já escrita -->
+          <form class="contact-form" data-contact-form data-email="geral@trustvote.pt">
+            <div class="contact-row">
+              <label class="field-label">
+                Nome
+                <input name="nome" required minlength="2" maxlength="80" autocomplete="name" placeholder="O seu nome">
+              </label>
+              <label class="field-label">
+                E-mail
+                <input name="email" type="email" required maxlength="255" autocomplete="email"
+                  placeholder="nome@exemplo.pt">
+              </label>
+            </div>
+
+            <fieldset class="contact-topics">
+              <legend>Assunto</legend>
+              <label><input type="radio" name="assunto" value="Dúvida sobre como votar" checked> Como votar</label>
+              <label><input type="radio" name="assunto" value="Não encontro a minha eleição"> Não vejo a minha
+                eleição</label>
+              <label><input type="radio" name="assunto" value="Problema com o recibo"> Recibo</label>
+              <label><input type="radio" name="assunto" value="Acesso à conta"> Acesso à conta</label>
+              <label><input type="radio" name="assunto" value="Outro assunto"> Outro</label>
+            </fieldset>
+
+            <label class="field-label">
+              Mensagem
+              <textarea name="mensagem" rows="5" required minlength="10" maxlength="1500"
+                placeholder="Descreva a sua dúvida. Nunca indique em quem votou."></textarea>
+              <span class="contact-count" data-contact-count aria-live="polite">0 / 1500</span>
+            </label>
+
+            <p class="form-message" role="status" data-contact-message></p>
+            <div class="contact-actions">
+              <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true">
+                  <use href="#i-send"></use>
+                </svg> Enviar mensagem</button>
+              <small>A mensagem chega à comissão eleitoral, que responde para o seu e-mail.</small>
+            </div>
+          </form>
+
+          <!-- Contacto direto -->
+          <aside class="contact-card">
+            <span class="contact-icon"><svg class="icon" aria-hidden="true">
+                <use href="#i-mail"></use>
+              </svg></span>
+            <h2>Comissão Eleitoral Académica</h2>
+            <p>Prefere escrever diretamente? Use este endereço.</p>
+            <a class="contact-mail" href="mailto:geral@trustvote.pt">geral@trustvote.pt</a>
+            <button class="link-button" type="button" data-contact-copy="geral@trustvote.pt"><svg class="icon"
+                aria-hidden="true">
+                <use href="#i-copy"></use>
+              </svg> Copiar endereço</button>
+            <ul class="contact-links">
+              <li><a href="calendario.html#como-votar">Como votar</a></li>
+              <li><a href="verificar.html">Verificar o meu voto</a></li>
+              <li><a href="#perguntas-frequentes">Perguntas frequentes</a></li>
+            </ul>
+          </aside>
+
+        </div>
+      </article>
+
+      <article class="section-item" id="perguntas-frequentes" data-item>
+        <div class="section-item-head">
+          <h1>Perguntas frequentes</h1>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Quem pode votar?</summary>
+            <p>Os estudantes com matrícula ativa que a comissão eleitoral habilitou nessa eleição. Se não vê a eleição
+              na
+              sua área, fale com a comissão através dos <a href="#contactos">contactos</a>.</p>
+          </details>
+          <details>
+            <summary>Até quando posso votar?</summary>
+            <p>Até ao fim do período de votação indicado no <a href="calendario.html">calendário eleitoral</a>. Na Área
+              do
+              Eleitor aparece o tempo que falta para a votação fechar.</p>
+          </details>
+          <details>
+            <summary>Como sei que o meu voto foi registado?</summary>
+            <p>No fim recebe um código de recibo. Na Área do Eleitor, em Recibos, pode usar esse código para confirmar
+              que
+              o voto foi contado.</p>
+          </details>
+          <details>
+            <summary>O recibo mostra em quem votei?</summary>
+            <p>Não. O recibo só confirma que o voto foi registado. Assim ninguém o pode usar para provar em quem votou,
+              nem
+              para o obrigar a mostrar o voto.</p>
+          </details>
+          <details>
+            <summary>Posso mudar o voto depois de votar?</summary>
+            <p>Não. Por isso, antes de depositar o voto, a plataforma mostra um resumo da escolha para a rever ou
+              alterar.</p>
+          </details>
+          <details>
+            <summary>E se a ligação falhar ou a sessão terminar a meio?</summary>
+            <p>Se não chegou a ver o código do recibo, o voto não foi registado: entre de novo e vote. Se o voto já
+              tinha
+              sido registado, a plataforma avisa que já votou. O mesmo voto nunca conta duas vezes.</p>
+          </details>
+          <details>
+            <summary>Não consigo entrar na minha conta. O que faço?</summary>
+            <p>Confirme o e-mail e a palavra-passe da conta de estudante. Se o problema continuar, contacte a comissão
+              eleitoral académica.</p>
+          </details>
+        </div>
+      </article>
+
+      <div class="visit-also" data-visit-also></div>
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

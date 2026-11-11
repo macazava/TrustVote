@@ -1,0 +1,151 @@
+/* Grelha das páginas: as classes de colunas usadas no HTML (ex.: class="grid-cols-1 lg:grid-cols-2").
+   Os nomes seguem a convenção do Tailwind (prefixo = a partir de que largura de ecrã se aplica),
+   mas estão escritas aqui à mão: o site não precisa de nenhum passo de build.
+
+   Larguras:  sm ≥ 640px · md ≥ 768px · lg ≥ 1024px · xl ≥ 1280px · 2xl ≥ 1536px
+   Nos nomes com ":" ou "[ ]", o CSS exige "\" antes desses sinais (ex.: .lg\:grid-cols-2).
+   Fica no fim de css/style.css, para ganhar às regras gerais dos componentes. */
+
+/* ===== Sempre ===== */
+.sticky {
+    position: sticky;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.z-40 {
+    z-index: 40;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.col-span-2 {
+    grid-column: span 2 / span 2;
+}
+
+.gap-10 {
+    gap: 2.5rem;
+}
+
+/* ===== sm: a partir de 640px ===== */
+@media (min-width: 640px) {
+    .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sm\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ===== md: a partir de 768px ===== */
+@media (min-width: 768px) {
+    .md\:col-span-4 {
+        grid-column: span 4 / span 4;
+    }
+
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .md\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .md\:grid-cols-\[auto_1fr_auto\] {
+        grid-template-columns: auto 1fr auto;
+    }
+}
+
+/* ===== lg: a partir de 1024px ===== */
+@media (min-width: 1024px) {
+    .lg\:col-span-1 {
+        grid-column: span 1 / span 1;
+    }
+
+    .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .lg\:grid-cols-\[1\.05fr_0\.95fr\] {
+        grid-template-columns: 1.05fr 0.95fr;
+    }
+
+    .lg\:grid-cols-\[1\.1fr_1fr\] {
+        grid-template-columns: 1.1fr 1fr;
+    }
+
+    .lg\:grid-cols-\[1\.2fr_repeat\(4\2c 1fr\)\] {
+        grid-template-columns: 1.2fr repeat(4, 1fr);
+    }
+
+    .lg\:grid-cols-\[1\.35fr_1fr\] {
+        grid-template-columns: 1.35fr 1fr;
+    }
+
+    .lg\:grid-cols-\[1\.5fr_repeat\(3\2c 1fr\)\] {
+        grid-template-columns: 1.5fr repeat(3, 1fr);
+    }
+
+    .lg\:grid-cols-\[1\.95fr_1fr\] {
+        grid-template-columns: 1.95fr 1fr;
+    }
+
+    .lg\:grid-cols-\[1fr_minmax\(360px\2c 530px\)\] {
+        grid-template-columns: 1fr minmax(360px, 530px);
+    }
+
+    .lg\:grid-cols-\[280px_minmax\(0\2c 1fr\)\] {
+        grid-template-columns: 280px minmax(0, 1fr);
+    }
+}
+
+/* ===== xl: a partir de 1280px ===== */
+@media (min-width: 1280px) {
+    .xl\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .xl\:grid-cols-\[1\.6fr_1fr\] {
+        grid-template-columns: 1.6fr 1fr;
+    }
+
+    .xl\:grid-cols-\[2\.1fr_1fr\] {
+        grid-template-columns: 2.1fr 1fr;
+    }
+
+    .xl\:grid-cols-\[300px_minmax\(0\2c 1fr\)\] {
+        grid-template-columns: 300px minmax(0, 1fr);
+    }
+
+    .xl\:gap-16 {
+        gap: 4rem;
+    }
+}
+
+/* ===== 2xl: a partir de 1536px ===== */
+@media (min-width: 1536px) {
+    .\32xl\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

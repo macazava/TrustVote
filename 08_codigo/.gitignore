@@ -1,0 +1,27 @@
+# Ficheiros que não vão para o git em todo o 08_codigo (Backend, Frontend e Infraestrutura)
+
+# Segredos e configuração local (o stack.ps1 cria o .env na primeira vez)
+.env
+.env.*
+!.env.example
+
+# Python: ambiente virtual e caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node: pacotes do npm (o site não precisa deles; só para ferramentas locais)
+node_modules/
+
+# Cópias da base de dados feitas pelo contentor backup
+Infraestrutura/backups/
+
+# Editores e sistema operativo
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+Desktop.ini
+.DS_Store

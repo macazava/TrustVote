@@ -1,0 +1,10 @@
+/* Página inicial: tablet (ecrãs até 1100px) */
+
+@media (max-width: 1000px) {
+
+    .hero,
+    .election-info,
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+}

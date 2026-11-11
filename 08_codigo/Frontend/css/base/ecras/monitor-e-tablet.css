@@ -1,0 +1,160 @@
+/* Adaptação a todos os tipos de ecrã (as colunas de cada página estão em base/grelha.css) */
+
+/* ===== Ecrãs grandes (monitores 1800px+) ===== */
+@media (min-width: 1800px) {
+    :root {
+        --container: 1360px;
+    }
+
+    .dashboard-content {
+        width: min(1360px, calc(100% - 96px));
+    }
+
+    body[data-page="admin"] .dashboard-content {
+        width: min(1560px, calc(100% - 96px));
+    }
+
+    .hero h1 {
+        font-size: 4.875rem;
+    }
+
+    .lead {
+        font-size: var(--text-xl);
+    }
+}
+
+/* ===== Portátil pequeno e tablet deitado (até 1100px): menu "☰" ===== */
+@media (max-width: 1100px) {
+    .site-header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 72px;
+        padding: 12px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+        min-width: 44px;
+        min-height: 44px;
+        margin-left: auto;
+        border-radius: var(--radius-md);
+        font-size: var(--text-lg);
+    }
+
+    .main-nav {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .main-nav a {
+        min-height: 48px;
+        padding: 0 4px;
+        border-bottom: 1px solid var(--color-border);
+        font-size: var(--text-base);
+    }
+
+    .main-nav a[aria-current="page"] {
+        border-bottom-color: var(--color-border);
+        border-left: 3px solid var(--color-focus);
+        padding-left: 12px;
+    }
+
+    .header-actions {
+        display: none;
+        order: 5;
+        width: 100%;
+        padding-top: 12px;
+    }
+
+    .main-nav.open+.header-actions {
+        display: flex;
+    }
+
+    .header-actions .button {
+        width: 100%;
+    }
+
+    .hero {
+        padding-top: 44px;
+    }
+
+    .steps-card {
+        max-width: 640px;
+    }
+}
+
+/* ===== Tablet (até 1023px): secções com menu em botões deslizantes ===== */
+@media (max-width: 1023px) {
+    .section-page {
+        gap: 16px;
+        padding-top: 20px;
+    }
+
+    .side-menu h2,
+    .manager-card {
+        display: none;
+    }
+
+    .side-menu {
+        background: transparent;
+        border: 0;
+        box-shadow: none !important;
+    }
+
+    .side-menu nav {
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+        scrollbar-width: thin;
+    }
+
+    .side-menu a {
+        flex: none;
+        padding: 10px 16px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-full);
+        background: var(--color-surface);
+        font-size: var(--text-sm);
+        white-space: nowrap;
+        scroll-snap-align: start;
+    }
+
+    .side-menu a[aria-current="page"] {
+        border-color: var(--color-heading-fill);
+        background: var(--color-heading-fill);
+        color: var(--color-on-dark);
+    }
+
+    .section-content {
+        min-height: 0;
+    }
+
+    .dashboard-content {
+        padding-top: 32px;
+    }
+
+    .panel-nav {
+        scrollbar-width: none;
+    }
+
+    .panel-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .security-grid {
+        grid-template-rows: auto;
+    }
+
+    .identity-card {
+        grid-row: auto;
+    }
+}

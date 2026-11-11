@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <title>Privacidade | TrustVote</title>
+
+  <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/views/icones.js"></script>
+  <script defer src="../js/views/layout.js"></script>
+  <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+  <script defer src="../js/models/servidor.js"></script>
+  <script defer src="../js/models/api.js"></script>
+  <script defer src="../js/models/sessao.js"></script>
+  <script defer src="../js/views/formatar.js"></script>
+  <script defer src="../js/models/eleicoes.js"></script>
+  <script defer src="../js/views/componentes.js"></script>
+  <!-- View: desenho do HTML -->
+  <script defer src="../js/views/graficos.js"></script>
+  <script defer src="../js/views/publico.js"></script>
+  <!-- Controller: o que acontece em cada página -->
+  <script defer src="../js/controllers/comum/menu.js"></script>
+  <script defer src="../js/controllers/comum/pagina.js"></script>
+  <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body>
+
+  <!-- Cabeçalho TrustVote -->
+  <div data-layout="cabecalho"></div>
+
+  <!-- Caminho da página -->
+  <div data-layout="caminho" data-atual="Privacidade"></div>
+
+  <main id="conteudo" class="container content-page">
+
+    <p class="eyebrow">PROTEÇÃO DE DADOS</p>
+
+    <h1>Privacidade</h1>
+
+    <p class="lead">
+      Recolhemos o mínimo necessário. A identidade e o sentido do voto nunca
+      são guardados no mesmo sistema.
+    </p>
+
+    <div class="info-list">
+
+      <article>
+        <span>01</span>
+        <div>
+          <h2>Que dados guardamos</h2>
+          <p>
+            Nome, e-mail e a palavra-passe cifrada, para iniciar sessão; a lista
+            de eleições em que está habilitado; e se já votou em cada ronda.
+          </p>
+        </div>
+      </article>
+
+      <article>
+        <span>02</span>
+        <div>
+          <h2>O que nunca guardamos</h2>
+          <p>
+            A ligação entre a sua conta e a candidatura escolhida. O recibo
+            confirma que o voto foi contado sem revelar a escolha.
+          </p>
+        </div>
+      </article>
+
+      <article>
+        <span>03</span>
+        <div>
+          <h2>Sessão e dispositivo</h2>
+          <p>
+            A sessão dura <b data-config="sessao_minutos">—</b> minutos e fica guardada apenas neste navegador.
+            Se escolher "manter o identificador", fica até terminar sessão ou expirar.
+            Depois de <b data-config="login_tentativas">—</b> tentativas de entrada falhadas, a conta fica
+            bloqueada durante <b data-config="login_bloqueio_minutos">—</b> minutos.
+          </p>
+        </div>
+      </article>
+
+      <article>
+        <span>04</span>
+        <div>
+          <h2>Os seus direitos</h2>
+          <p>
+            Pode pedir acesso, correção ou eliminação dos seus dados através
+            de geral@trustvote.pt.
+          </p>
+          <a href="ajuda.html#contactos">Contactar a equipa <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg></a>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- Rodapé TrustVote -->
+  <div data-layout="rodape"></div>
+
+</body>
+
+</html>

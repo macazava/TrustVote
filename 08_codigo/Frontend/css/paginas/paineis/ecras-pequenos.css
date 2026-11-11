@@ -1,0 +1,28 @@
+/* Áreas do eleitor e da equipa: tablet (ecrãs até 1100px) */
+
+@media (max-width: 1100px) {
+    .dashboard-header {
+        flex-wrap: wrap;
+        gap: 10px 20px;
+        padding: 12px 18px;
+    }
+
+    .panel-nav {
+        order: 3;
+        width: 100%;
+        flex: none;
+    }
+
+    .panel-user {
+        margin-left: auto;
+    }
+
+    .admin-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

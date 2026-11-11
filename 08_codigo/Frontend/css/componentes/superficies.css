@@ -1,0 +1,114 @@
+/* Superfícies: cantos e elevação de cada componente, num só sítio.
+   - controlos e blocos pequenos (botões, campos, avisos, etiquetas)  → --radius-sm / --radius-md
+   - superfícies (cartões, painéis, menus)                            → --radius-lg
+   - elevação: --shadow-md nas superfícies elevadas, --shadow-lg só no que flutua (login, janelas, hover de links)
+   - só sobe ou ganha sombra ao passar o rato o que é clicável. */
+
+/* ===== Cantos pequenos (--radius-sm): etiquetas e itens de menu ===== */
+.check-box,
+.model-tag,
+.session-chip {
+    border-radius: var(--radius-sm);
+}
+
+/* ===== Cantos médios (--radius-md): controlos e blocos dentro de cartões ===== */
+.badge-card,
+.election-alert,
+.empty-box,
+.large-icon,
+.notice,
+.radio-line,
+.receipt-code,
+.role-switch,
+.service-card,
+.table-scroll,
+.field-label input,
+.field-label select,
+.field-label textarea,
+.auth-card input:not([type="checkbox"]),
+.row-actions button {
+    border-radius: var(--radius-md);
+}
+
+.status-pill {
+    border-radius: var(--radius-full);
+}
+
+/* ===== Cantos grandes (--radius-lg): superfícies ===== */
+.dash-card,
+.auth-card,
+.election-row,
+.hub-card,
+.manager-card,
+.metric-card,
+.profile-hero,
+.section-content,
+.security-card,
+.services-panel,
+.side-menu,
+.steps-card,
+.candidate-list label,
+.candidate-grid article,
+.platform-grid article,
+.photo-panel img,
+.press-news article,
+.press-hero,
+.timeline {
+    border-radius: var(--radius-lg);
+}
+
+/* Recortes: o conteúdo segue os cantos do contentor */
+.role-switch,
+.steps-card,
+.timeline {
+    overflow: hidden;
+}
+
+.news-photo {
+    overflow: hidden;
+    border-radius: var(--radius-md);
+}
+
+.timeline article:first-child {
+    border-radius: 0;
+}
+
+/* ===== Elevação ===== */
+.dash-card,
+.badge-card,
+.hub-card,
+.manager-card,
+.metric-card,
+.press-bar,
+.press-hero,
+.profile-hero,
+.section-content,
+.services-panel,
+.side-menu {
+    box-shadow: var(--shadow-md);
+}
+
+.auth-card {
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Elementos clicáveis: reagem ao rato ===== */
+.panel-link {
+    transition: color 0.15s;
+}
+
+.radio-line {
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.radio-line:hover {
+    border-color: var(--color-brand);
+}
+
+.election-row {
+    transition: box-shadow 0.3s;
+}
+
+.election-row:hover {
+    box-shadow: var(--shadow-md);
+}

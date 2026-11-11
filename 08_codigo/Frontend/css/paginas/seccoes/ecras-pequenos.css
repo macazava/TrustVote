@@ -1,0 +1,25 @@
+/* Páginas das secções: tablet (ecrãs até 1100px) */
+
+@media (max-width: 960px) {
+    .section-page {
+        grid-template-columns: 1fr;
+    }
+
+    .section-content {
+        padding: 28px 22px;
+    }
+
+    .section-item-head {
+        flex-direction: column;
+    }
+
+    .candidate-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline article {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+

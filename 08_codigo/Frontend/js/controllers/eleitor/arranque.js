@@ -1,0 +1,117 @@
+/* Controller · arranque da área do eleitor: confirma a sessão, preenche o cabeçalho e carrega as eleições */
+document.addEventListener("DOMContentLoaded", async () => {
+  const TV = window.TrustVote;
+  const { session, ui, elections, voter } = TV;
+  const { escapeHtml, time, initials, countdown } = TV.format;
+  const { panel, go } = TV.panels;
+
+  const wrap = document.querySelector(".dashboard-wrap");
+
+  let user;
+  try {
+    user = await session.require("eleitor");
+  } catch (error) {
+    wrap.classList.add("is-ready");
+    document.querySelector(".dashboard-content").innerHTML = ui.error(error);
+    document.querySelector("[data-retry]").addEventListener("click", () => window.location.reload());
+    return;
+  }
+
+  // ===== Cabeçalho =====
+  const exp = (session.claims() || {}).exp;
+  document.querySelector("[data-session-chip]").textContent = exp ? `SESSÃO ATÉ ${time(new Date(exp * 1000).toISOString())}` : "SESSÃO SEGURA";
+  const year = user.data_registo ? new Date(user.data_registo).getFullYear() : "";
+  document.querySelector("[data-user-chip]").innerHTML =
+    `<span class="avatar">${escapeHtml(initials(user.nome))}</span><span><b>${escapeHtml(user.nome)}</b><small>ELEITOR${year ? ` · ${year}` : ""}</small></span>`;
+  document.querySelector("[data-logout]").addEventListener("click", session.logout);
+
+  // Botões data-go="separador" dentro do conteúdo (ex.: "Ver recibo")
+  document.querySelector(".dashboard-content").addEventListener("click", (event) => {
+    const target = event.target.closest("[data-go]");
+    if (target) go(target.dataset.go);
+    const copiar = event.target.closest("[data-copy]");
+    if (copiar) ui.copy(copiar.dataset.copy);
+  });
+
+  // Contagens decrescentes ("Termina em 01d : 23h : 59m")
+  setInterval(() => {
+    document.querySelectorAll("[data-countdown]").forEach((el) => {
+      el.textContent = countdown(el.dataset.countdown);
+    });
+  }, 30000);
+
+  // ===== Separadores =====
+  voter.renderProfile();
+  voter.loadReceipts();
+  wrap.classList.add("is-ready");
+
+  async function loadAll() {
+    voter.state.lista = await elections.loadForVoter();
+    voter.renderOverview();
+    voter.renderElections();
+    voter.renderPoll();
+    voter.renderResults();
+    voter.renderProfile();
+    voter.loadReceipts(); // já sabe se votou: muda a mensagem quando o recibo não está neste navegador
+    renderHelp();
+  }
+
+  // ===== Ajuda: eleição em destaque e regras lidas da API =====
+  const config = TV.api.publico.configuracao().catch(() => null);
+  async function renderHelp() {
+    panel("help").innerHTML = TV.voterView.helpPage({
+      e: voter.featured(),
+      config: await config,
+      fimSessao: exp ? time(new Date(exp * 1000).toISOString()) : null,
+    });
+    voter.bindVoteButtons(panel("help"));
+    const el = panel("help");
+    await loadFaq(el.querySelector("[data-help-faq]"));
+
+    // Pesquisa: mostra só as perguntas com as palavras escritas (na pergunta ou na resposta) e abre-as
+    const normalizar = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const pesquisa = el.querySelector("[data-help-search]");
+    const vazio = el.querySelector("[data-help-empty]");
+    pesquisa?.addEventListener("input", () => {
+      const termos = normalizar(pesquisa.value).split(/\s+/).filter(Boolean);
+      let visiveis = 0;
+      el.querySelectorAll("[data-help-faq] details").forEach((d) => {
+        const corresponde = termos.every((t) => normalizar(d.textContent).includes(t));
+        d.hidden = !corresponde;
+        d.open = corresponde && termos.length > 0;
+        if (corresponde) visiveis++;
+      });
+      vazio.hidden = visiveis > 0;
+    });
+  }
+
+  // Perguntas frequentes: lidas da página pública Ajuda (uma só fonte para as duas).
+  // Os links internos dessa página (ex.: "#contactos") passam a apontar para ela.
+  const faqHtml = fetch(TV.pageUrl("ajuda.html"))
+    .then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status))))
+    .then((html) => {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const itens = [...doc.querySelectorAll("#perguntas-frequentes .faq-list details")];
+      if (!itens.length) throw new Error("sem perguntas");
+      itens.forEach((d) => d.querySelectorAll('a[href^="#"]').forEach((a) => a.setAttribute("href", `ajuda.html${a.getAttribute("href")}`)));
+      return itens.map((d) => d.outerHTML).join("");
+    })
+    .catch(() => null);
+  async function loadFaq(box) {
+    if (!box) return;
+    const html = await faqHtml;
+    box.innerHTML =
+      html ||
+      `<p class="muted">Não foi possível carregar as perguntas. <a href="ajuda.html#perguntas-frequentes">Ver na página Ajuda</a>.</p>`;
+  }
+
+  panel("overview").innerHTML = ui.loading("A carregar as suas eleições…");
+  panel("help").innerHTML = ui.loading();
+  try {
+    await loadAll();
+  } catch (error) {
+    renderHelp();
+    panel("overview").innerHTML = ui.error(error);
+    panel("overview").querySelector("[data-retry]").addEventListener("click", () => loadAll().catch((e) => ui.toast(e.message, true)));
+  }
+});

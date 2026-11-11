@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+         js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+    <script>try { var p = JSON.parse(localStorage.getItem("trustvote:preferencias") || "{}"); document.documentElement.dataset.theme = (p.theme ? p.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light" } catch (e) { }</script>
+
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+    <title>Área do eleitor | TrustVote</title>
+
+    <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
+    <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Base comum: models (dados e servidor) + formatação e componentes partilhados -->
+    <script defer src="../js/views/icones.js"></script>
+    <script defer src="../js/models/servidor.js"></script>
+    <script defer src="../js/models/api.js"></script>
+    <script defer src="../js/models/sessao.js"></script>
+    <script defer src="../js/views/formatar.js"></script>
+    <script defer src="../js/models/eleicoes.js"></script>
+    <script defer src="../js/views/componentes.js"></script>
+    <script defer src="../js/views/qr.js"></script>
+    <script defer src="../js/views/recibo-pdf.js"></script>
+    <script defer src="../js/controllers/comum/validacao.js"></script>
+    <!-- View: desenho do HTML -->
+    <script defer src="../js/views/palavra-passe.js"></script>
+    <script defer src="../js/views/graficos.js"></script>
+    <script defer src="../js/views/eleitor/eleicoes.js"></script>
+    <script defer src="../js/views/eleitor/visao-geral-e-boletim.js"></script>
+    <script defer src="../js/views/resultados.js"></script>
+    <script defer src="../js/views/eleitor/sondagem-e-resultados.js"></script>
+    <script defer src="../js/views/eleitor/recibos.js"></script>
+    <script defer src="../js/views/eleitor/perfil.js"></script>
+    <!-- Controller: o que acontece em cada página -->
+    <script defer src="../js/controllers/comum/menu.js"></script>
+    <script defer src="../js/controllers/comum/paineis.js"></script>
+    <script defer src="../js/controllers/comum/pesquisa-rapida.js"></script>
+    <script defer src="../js/controllers/comum/pagina.js"></script>
+    <script defer src="../js/controllers/comum/agenda.js"></script>
+    <script defer src="../js/controllers/comum/palavra-passe.js"></script>
+    <script defer src="../js/controllers/comum/descarregar.js"></script>
+    <script defer src="../js/controllers/eleitor/eleicoes.js"></script>
+    <script defer src="../js/controllers/eleitor/boletim.js"></script>
+    <script defer src="../js/controllers/eleitor/sondagem-e-resultados.js"></script>
+    <script defer src="../js/controllers/eleitor/recibos.js"></script>
+    <script defer src="../js/controllers/eleitor/perfil.js"></script>
+    <script defer src="../js/controllers/eleitor/arranque.js"></script>
+    <script defer src="../js/views/animacoes.js"></script>
+</head>
+
+<body class="panel-body" data-page="voter">
+    <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
+
+    <!-- Cabeçalho com o menu do painel -->
+    <header class="dashboard-header">
+
+        <a class="brand" href="inicio.html">
+            <span class="brand-mark"><svg class="icon" aria-hidden="true">
+                    <use href="#i-check"></use>
+                </svg></span>
+            <span>
+                <b>TRUSTVOTE</b>
+                <small>ELEIÇÕES ACADÉMICAS</small>
+            </span>
+        </a>
+
+        <nav class="panel-nav" aria-label="Navegação da área do eleitor">
+            <button class="panel-link active" type="button" data-view="overview">Visão
+                geral</button>
+            <button class="panel-link" type="button" data-view="elections">Eleições</button>
+            <button class="panel-link" type="button" data-view="poll">Sondagem</button>
+            <button class="panel-link" type="button" data-view="receipts">Recibos</button>
+            <button class="panel-link" type="button" data-view="results">Resultados</button>
+            <button class="panel-link" type="button" data-view="help">Ajuda</button>
+            <button class="panel-link" type="button" data-view="profile">Perfil</button>
+        </nav>
+
+        <div class="panel-user">
+            <span class="session-chip" data-session-chip>SESSÃO SEGURA</span>
+            <span class="user-chip" data-user-chip></span>
+            <a class="portal-link" href="inicio.html">Portal <svg class="icon" aria-hidden="true">
+                    <use href="#i-arrow-up-right"></use>
+                </svg></a>
+            <button class="logout-button" type="button" data-palette aria-label="Pesquisa rápida (Ctrl+K)"
+                title="Pesquisa rápida (Ctrl+K)"><svg class="icon" aria-hidden="true">
+                    <use href="#i-search"></use>
+                </svg></button>
+            <button class="logout-button theme-toggle" type="button" data-theme-toggle aria-label="Modo escuro"
+                title="Modo escuro"><svg class="icon theme-moon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg><svg class="icon theme-sun" aria-hidden="true">
+                    <use href="#i-sun"></use>
+                </svg></button>
+            <button class="logout-button" type="button" data-logout aria-label="Terminar sessão"
+                title="Terminar sessão"><svg class="icon" aria-hidden="true">
+                    <use href="#i-log-out"></use>
+                </svg></button>
+        </div>
+
+    </header>
+
+    <div class="dashboard-wrap">
+
+        <!-- Conteúdo principal -->
+        <main id="conteudo" class="dashboard-content">
+
+            <!-- VISÃO GERAL -->
+            <section class="view-panel active" data-panel="overview"></section>
+
+
+            <!-- ELEIÇÕES -->
+            <section class="view-panel" data-panel="elections"></section>
+
+
+            <!-- SONDAGENS -->
+            <section class="view-panel" data-panel="poll"></section>
+
+
+            <!-- RESULTADOS -->
+            <section class="view-panel" data-panel="results"></section>
+
+
+            <!-- RECIBOS -->
+            <section class="view-panel" data-panel="receipts"></section>
+
+
+            <!-- AJUDA -->
+            <section class="view-panel" data-panel="help"></section>
+
+
+            <!-- PERFIL (preenchido por controllers/eleitor/perfil.js) -->
+            <section class="view-panel" data-panel="profile"></section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
