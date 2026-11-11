@@ -21,8 +21,7 @@
         grid-template-columns: 1fr 1fr;
     }
 
-    .overview-grid,
-    .poll-grid {
+    .overview-grid {
         grid-template-columns: 1fr;
     }
 }

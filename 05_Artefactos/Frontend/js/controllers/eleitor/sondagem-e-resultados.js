@@ -18,12 +18,9 @@
     }
     el.innerHTML = view.pollHead() + `<div data-poll-body></div>`;
     const body = el.querySelector("[data-poll-body]");
-    let marcado = false;
     const carregar = () =>
       ui.mount(body, async () => {
         const s = await api.sondagem.obter(e.id);
-        if (!marcado) el.querySelector(".page-head").insertAdjacentHTML("beforeend", view.modelTag(s));
-        marcado = true;
         body.innerHTML = view.pollBody(e, s);
         body.querySelector("[data-poll-form]")?.addEventListener("submit", async (event) => {
           event.preventDefault();
