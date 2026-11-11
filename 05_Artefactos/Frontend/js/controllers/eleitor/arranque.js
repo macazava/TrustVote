@@ -65,7 +65,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       fimSessao: exp ? time(new Date(exp * 1000).toISOString()) : null,
     });
     voter.bindVoteButtons(panel("help"));
-    loadFaq(panel("help").querySelector("[data-help-faq]"));
+    const el = panel("help");
+    await loadFaq(el.querySelector("[data-help-faq]"));
+
+    // Pesquisa: mostra só as perguntas com as palavras escritas (na pergunta ou na resposta) e abre-as
+    const normalizar = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const pesquisa = el.querySelector("[data-help-search]");
+    const vazio = el.querySelector("[data-help-empty]");
+    pesquisa?.addEventListener("input", () => {
+      const termos = normalizar(pesquisa.value).split(/\s+/).filter(Boolean);
+      let visiveis = 0;
+      el.querySelectorAll("[data-help-faq] details").forEach((d) => {
+        const corresponde = termos.every((t) => normalizar(d.textContent).includes(t));
+        d.hidden = !corresponde;
+        d.open = corresponde && termos.length > 0;
+        if (corresponde) visiveis++;
+      });
+      vazio.hidden = visiveis > 0;
+    });
   }
 
   // Perguntas frequentes: lidas da página pública Ajuda (uma só fonte para as duas).

@@ -110,38 +110,54 @@
       </div>
     </article>`;
 
-  // ===== Separador "Ajuda": a eleição em destaque e as regras reais da sessão =====
+  // ===== Separador "Ajuda": atalhos, perguntas frequentes com pesquisa e contacto =====
   // d = { e, config, fimSessao }
-  const helpPage = ({ e, config, fimSessao }) => `
-    ${head("APOIO AO ELEITOR", "Como podemos ajudar?")}
-    <article class="dash-card">
-      <p class="eyebrow">A SUA VOTAÇÃO</p>
-      ${e
-      ? `<h2>${escapeHtml(e.titulo)}</h2>
-         <p>${e.votou ? "Já votou nesta eleição. O recibo confirma que o voto foi contado." : timeInfo(e)}</p>
-         <div class="form-actions" style="justify-content:flex-start">${voteAction(e)}</div>`
-      : `<h2>Sem eleições ativas</h2>
-         <p>Não tem nenhuma eleição a decorrer ou agendada em que possa votar. Se acha que deveria ter, fale com a comissão eleitoral académica.</p>`}
-    </article>
-    <article class="dash-card">
-      <p class="eyebrow">SESSÃO E SEGURANÇA</p>
-      <h2>Regras desta plataforma</h2>
-      <ul class="profile-list">
-        ${config ? `<li class="is-yes">Cada sessão dura ${config.sessao_minutos} minutos${fimSessao ? `: a sua termina às ${fimSessao}` : ""}.</li>` : ""}
-        <li class="is-yes">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</li>
-        ${config ? `<li class="is-no">Depois de ${config.login_tentativas} tentativas de entrada falhadas, a conta fica bloqueada durante ${config.login_bloqueio_minutos} minutos.</li>` : ""}
-      </ul>
-    </article>
-    <article class="dash-card">
-      <p class="eyebrow">PERGUNTAS FREQUENTES</p>
-      <h2>Dúvidas sobre a votação</h2>
+  // Um atalho: botão (data-go / data-vote) ou link, com ícone, título e uma frase
+  const atalho = ({ icone, titulo, texto, attrs }) => `
+    <${attrs.href ? "a" : "button type=\"button\""} class="help-shortcut" ${Object.entries(attrs).map(([k, val]) => `${k}="${escapeHtml(String(val))}"`).join(" ")}>
+      <span class="help-shortcut-icon">${TV.icon(icone)}</span>
+      <span><b>${titulo}</b><small>${texto}</small></span>
+      <span class="help-shortcut-go">${TV.icon("arrow-right")}</span>
+    </${attrs.href ? "a" : "button"}>`;
+
+  const helpPage = ({ e, config, fimSessao }) => {
+    // O primeiro atalho muda com a situação do eleitor
+    const votar =
+      e && e.aberta && !e.votou
+        ? { icone: "vote", titulo: "Votar agora", texto: escapeHtml(e.titulo), attrs: { "data-vote": e.id } }
+        : e && e.votou
+          ? { icone: "circle-check", titulo: "O meu comprovativo", texto: "Já votou: veja e descarregue o comprovativo", attrs: { "data-go": "receipts" } }
+          : { icone: "calendar", titulo: "As minhas eleições", texto: "Eleições a decorrer e agendadas", attrs: { "data-go": "elections" } };
+    const sessao = [
+      fimSessao ? `A sua sessão termina às <b>${fimSessao}</b>` : "",
+      "se terminar a meio do voto, a opção marcada fica guardada",
+      config ? `após ${config.login_tentativas} tentativas falhadas a conta fica bloqueada ${config.login_bloqueio_minutos} min` : "",
+    ].filter(Boolean);
+    return `
+    ${head("APOIO AO ELEITOR", "Como podemos ajudar?", "Escolha um atalho ou procure a sua dúvida.")}
+
+    <nav class="help-shortcuts" aria-label="Atalhos">
+      ${atalho(votar)}
+      ${atalho({ icone: "inbox", titulo: "Os meus recibos", texto: "Recibos e comprovativos do seu voto", attrs: { "data-go": "receipts" } })}
+      ${atalho({ icone: "chart-column", titulo: "Resultados", texto: "Participação e resultados das eleições", attrs: { "data-go": "results" } })}
+      ${atalho({ icone: "message-circle", titulo: "Falar com a comissão", texto: "Escreva-nos pelo formulário de contacto", attrs: { href: "ajuda.html#contactos" } })}
+    </nav>
+
+    <article class="dash-card help-faq">
+      <div class="help-faq-head">
+        <div><p class="eyebrow">PERGUNTAS FREQUENTES</p><h2>Dúvidas sobre a votação</h2></div>
+        <label class="table-search help-search">${TV.icon("search")}<span class="sr-only">Procurar nas perguntas frequentes</span>
+          <input type="search" placeholder="Procurar (ex.: recibo, palavra-passe)" autocomplete="off" data-help-search>
+        </label>
+      </div>
       <!-- As mesmas perguntas da página Ajuda, lidas de lá (controllers/eleitor/arranque.js) -->
       <div class="faq-list" data-help-faq>${ui.loading("A carregar as perguntas frequentes…")}</div>
-      <div class="help-contact">
-        <p>Não encontrou a resposta? Escreva à comissão eleitoral académica.</p>
-        <a class="button button-outline" href="ajuda.html#contactos">${TV.icon("message-circle")} Contactar a comissão eleitoral</a>
-      </div>
-    </article>`;
+      <p class="help-no-results" data-help-empty hidden>Nenhuma pergunta corresponde à pesquisa.
+        <a href="ajuda.html#contactos">Pergunte diretamente à comissão eleitoral</a>.</p>
+    </article>
+
+    <p class="help-session">${TV.icon("lock")} <span>${sessao.join(" · ")}.</span></p>`;
+  };
 
   Object.assign((TV.voterView = TV.voterView || {}), { electionCard, candidateOption, emptyCard, electionsPage, detailsPage, helpPage });
 })();

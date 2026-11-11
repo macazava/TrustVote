@@ -190,22 +190,129 @@ body[data-page="admin"] .dashboard-content h1 {
     font-size: var(--text-sm);
 }
 
-/* Separador Ajuda do eleitor: perguntas frequentes e contacto */
-.dash-card .faq-list[data-help-faq] {
-    margin: var(--space-4) 0 var(--space-6);
+/* ===== Separador Ajuda do eleitor ===== */
+/* Atalhos: cartões clicáveis com ícone, título e uma frase */
+.help-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
 }
 
-.help-contact {
+.help-shortcut {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.help-shortcut:hover {
+    border-color: var(--color-brand-muted);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.help-shortcut-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    font-size: var(--text-xl);
+}
+
+.help-shortcut b {
+    display: block;
+    font-size: var(--text-base);
+}
+
+.help-shortcut small {
+    display: block;
+    margin-top: 2px;
+    overflow: hidden;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.45;
+    text-overflow: ellipsis;
+}
+
+.help-shortcut-go {
+    color: var(--color-text-subtle);
+    transition: transform 0.15s, color 0.15s;
+}
+
+.help-shortcut:hover .help-shortcut-go {
+    color: var(--color-brand);
+    transform: translateX(3px);
+}
+
+/* Perguntas frequentes com pesquisa */
+.help-faq-head {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: var(--space-3) var(--space-5);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--color-border);
+    gap: var(--space-4);
 }
 
-.help-contact p {
-    margin: 0;
+.help-faq-head h2 {
+    margin-bottom: 0;
+}
+
+.help-search {
+    flex: 0 1 360px;
+}
+
+.dash-card .faq-list[data-help-faq] {
+    max-width: none;
+    margin: var(--space-4) 0 0;
+}
+
+.dash-card .faq-list[data-help-faq] details,
+.dash-card .faq-list[data-help-faq] details p {
+    max-width: none;
+}
+
+.dash-card .faq-list[data-help-faq] details[hidden] {
+    display: none;
+}
+
+.help-no-results {
+    margin: var(--space-5) 0 0;
     color: var(--color-text-muted);
+}
+
+/* Regras da sessão numa linha discreta, no fim */
+.help-session {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+}
+
+.help-session .icon {
+    flex: none;
+    margin-top: 0.3em;
+}
+
+@media (max-width: 1100px) {
+    .help-shortcuts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
