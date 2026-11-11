@@ -45,6 +45,18 @@
     line-height: 1.5;
 }
 
+.check-label a {
+    color: var(--color-brand);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.check-label a:hover {
+    text-decoration-thickness: 2px;
+}
+
 .check-label input {
     width: 16px;
     height: 16px;

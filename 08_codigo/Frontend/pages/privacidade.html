@@ -10,7 +10,8 @@
 
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
-  <title>Privacidade | TrustVote</title>
+  <title>Política de privacidade | TrustVote</title>
+  <meta name="description" content="Como o TrustVote recolhe, utiliza e protege os dados pessoais dos eleitores.">
 
   <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
   <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -31,6 +32,7 @@
   <script defer src="../js/controllers/comum/menu.js"></script>
   <script defer src="../js/controllers/comum/pagina.js"></script>
   <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/controllers/publico/legal.js"></script>
   <script defer src="../js/views/animacoes.js"></script>
 </head>
 
@@ -42,68 +44,280 @@
   <!-- Caminho da página -->
   <div data-layout="caminho" data-atual="Privacidade"></div>
 
-  <main id="conteudo" class="container content-page">
+  <main id="conteudo">
 
-    <p class="eyebrow">PROTEÇÃO DE DADOS</p>
+    <!-- Topo do documento -->
+    <header class="legal-hero">
+      <div class="container">
+        <nav class="legal-switch" aria-label="Documentos legais">
+          <a href="termos.html"><svg class="icon" aria-hidden="true">
+              <use href="#i-file-text"></use>
+            </svg> Termos de utilização</a>
+          <a href="privacidade.html" aria-current="page"><svg class="icon" aria-hidden="true">
+              <use href="#i-lock"></use>
+            </svg> Política de privacidade</a>
+        </nav>
 
-    <h1>Privacidade</h1>
+        <p class="eyebrow">PROTEÇÃO DE DADOS</p>
+        <h1>Política de privacidade</h1>
+        <p class="lead">
+          Recolhemos o mínimo necessário. A sua identidade e o sentido do seu voto nunca são guardados
+          juntos — por desenho, não apenas por promessa.
+        </p>
 
-    <p class="lead">
-      Recolhemos o mínimo necessário. A identidade e o sentido do voto nunca
-      são guardados no mesmo sistema.
-    </p>
+        <ul class="legal-meta">
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-calendar"></use>
+            </svg> Atualizada a <b><time datetime="2026-11-11">11 de novembro de 2026</time></b></li>
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg> Conforme o <b>RGPD</b></li>
+          <li><svg class="icon" aria-hidden="true">
+              <use href="#i-clock"></use>
+            </svg> Leitura de <b>7 min</b></li>
+          <li class="legal-meta-action"><button type="button" data-legal-print><svg class="icon" aria-hidden="true">
+                <use href="#i-printer"></use>
+              </svg> Imprimir</button></li>
+        </ul>
+      </div>
+    </header>
 
-    <div class="info-list">
+    <div class="container legal-layout">
 
-      <article>
-        <span>01</span>
-        <div>
-          <h2>Que dados guardamos</h2>
-          <p>
-            Nome, e-mail e a palavra-passe cifrada, para iniciar sessão; a lista
-            de eleições em que está habilitado; e se já votou em cada ronda.
-          </p>
+      <!-- Índice -->
+      <aside class="legal-toc" aria-label="Índice">
+        <p class="legal-toc-title">NESTA PÁGINA</p>
+        <div class="legal-progress" aria-hidden="true"><span data-legal-progress></span></div>
+        <nav data-legal-toc>
+          <ol>
+            <li><a href="#responsavel">Responsável pelo tratamento</a></li>
+            <li><a href="#dados">Que dados recolhemos</a></li>
+            <li><a href="#sigilo">O que nunca guardamos</a></li>
+            <li><a href="#finalidades">Finalidades e fundamento</a></li>
+            <li><a href="#sessao">Sessão e armazenamento local</a></li>
+            <li><a href="#seguranca">Segurança</a></li>
+            <li><a href="#partilha">Partilha de dados</a></li>
+            <li><a href="#conservacao">Conservação</a></li>
+            <li><a href="#direitos">Os seus direitos</a></li>
+            <li><a href="#alteracoes">Alterações</a></li>
+          </ol>
+        </nav>
+      </aside>
+
+      <article class="legal-doc" data-legal-doc>
+
+        <!-- Resumo -->
+        <div class="legal-summary">
+          <h2><svg class="icon" aria-hidden="true">
+              <use href="#i-info"></use>
+            </svg> Em resumo</h2>
+          <p>Os pontos essenciais. Não substitui a leitura do texto completo.</p>
+          <ul>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-shield-check"></use>
+              </svg>
+              <span><b>Voto anónimo</b>Sabemos que votou, nunca em quem votou.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-clipboard-list"></use>
+              </svg>
+              <span><b>Dados mínimos</b>Só o necessário para confirmar que pode votar.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-lock"></use>
+              </svg>
+              <span><b>Sem venda nem publicidade</b>Os seus dados não são vendidos nem usados para marketing.</span>
+            </li>
+            <li><svg class="icon" aria-hidden="true">
+                <use href="#i-user-check"></use>
+              </svg>
+              <span><b>Controlo é seu</b>Pode pedir acesso, correção ou eliminação a qualquer momento.</span>
+            </li>
+          </ul>
         </div>
-      </article>
 
-      <article>
-        <span>02</span>
-        <div>
-          <h2>O que nunca guardamos</h2>
+        <section id="responsavel">
+          <h2><span class="legal-num">01</span> Responsável pelo tratamento</h2>
           <p>
-            A ligação entre a sua conta e a candidatura escolhida. O recibo
-            confirma que o voto foi contado sem revelar a escolha.
+            Os dados pessoais tratados no TrustVote são da responsabilidade da equipa do projeto TrustVote, em
+            articulação com a comissão eleitoral de cada eleição. Para qualquer questão sobre privacidade, contacte
+            <a href="mailto:geral@trustvote.pt">geral@trustvote.pt</a>.
           </p>
-        </div>
-      </article>
+        </section>
 
-      <article>
-        <span>03</span>
-        <div>
-          <h2>Sessão e dispositivo</h2>
+        <section id="dados">
+          <h2><span class="legal-num">02</span> Que dados recolhemos</h2>
+          <p>Tratamos apenas os dados indispensáveis ao funcionamento das eleições:</p>
+          <div class="legal-table" role="region" aria-label="Dados recolhidos" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Dado</th>
+                  <th scope="col">Para quê</th>
+                  <th scope="col">Quando</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nome, e-mail, número de estudante e curso</td>
+                  <td>Identificar o eleitor e confirmar que consta dos cadernos eleitorais</td>
+                  <td>No registo</td>
+                </tr>
+                <tr>
+                  <td>Palavra-passe (apenas o resumo cifrado)</td>
+                  <td>Iniciar sessão com segurança</td>
+                  <td>No registo</td>
+                </tr>
+                <tr>
+                  <td>Chave de autenticação em dois fatores</td>
+                  <td>Proteger a conta com um segundo passo</td>
+                  <td>Se ativar esta opção</td>
+                </tr>
+                <tr>
+                  <td>Eleições em que está habilitado e se já votou em cada ronda</td>
+                  <td>Impedir votos duplicados</td>
+                  <td>Ao votar</td>
+                </tr>
+                <tr>
+                  <td>Registo de ações (data, ação e endereço IP)</td>
+                  <td>Auditoria e deteção de abusos</td>
+                  <td>Em ações sensíveis</td>
+                </tr>
+                <tr>
+                  <td>Mensagens enviadas pelo formulário de contacto</td>
+                  <td>Responder ao seu pedido</td>
+                  <td>Se nos contactar</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="sigilo">
+          <h2><span class="legal-num">03</span> O que nunca guardamos</h2>
           <p>
-            A sessão dura <b data-config="sessao_minutos">—</b> minutos e fica guardada apenas neste navegador.
-            Se escolher "manter o identificador", fica até terminar sessão ou expirar.
+            A ligação entre a sua conta e a candidatura escolhida. Quando vota, o sistema regista em separado
+            <b>que</b> participou na ronda e, de forma anónima, <b>o voto</b> em si. Não existe nenhum campo,
+            tabela ou registo que permita juntar as duas informações.
+          </p>
+          <div class="legal-callout">
+            <svg class="icon" aria-hidden="true">
+              <use href="#i-shield-check"></use>
+            </svg>
+            <p>O recibo confirma que o voto foi contado sem revelar a escolha. Nem a equipa, nem a comissão eleitoral
+              conseguem saber em quem votou.</p>
+          </div>
+        </section>
+
+        <section id="finalidades">
+          <h2><span class="legal-num">04</span> Finalidades e fundamento legal</h2>
+          <p>Nos termos do Regulamento Geral sobre a Proteção de Dados (RGPD), tratamos os seus dados para:</p>
+          <ul>
+            <li><b>Organizar as eleições académicas</b> — execução do serviço que pediu ao criar conta (art. 6.º, n.º 1,
+              al. b);</li>
+            <li><b>Garantir a segurança e a integridade do processo</b> — interesse legítimo em prevenir fraude (al. f);
+            </li>
+            <li><b>Responder a pedidos de contacto</b> — o seu consentimento, que pode retirar a qualquer momento (al.
+              a).</li>
+          </ul>
+          <p>Não tomamos decisões automatizadas com efeitos jurídicos sobre si nem criamos perfis de utilizador.</p>
+        </section>
+
+        <section id="sessao">
+          <h2><span class="legal-num">05</span> Sessão e armazenamento local</h2>
+          <p>
+            Não utilizamos cookies de publicidade nem ferramentas de rastreamento de terceiros. Guardamos apenas,
+            no seu navegador, o estritamente necessário:
+          </p>
+          <ul>
+            <li>
+              <b>Sessão</b> — dura <b data-config="sessao_minutos">—</b> minutos e fica guardada apenas neste
+              navegador. Se escolher "manter o identificador", fica até terminar sessão ou expirar.
+            </li>
+            <li><b>Preferências</b> — tema claro ou escuro, contraste e tamanho do texto.</li>
+          </ul>
+          <p>
             Depois de <b data-config="login_tentativas">—</b> tentativas de entrada falhadas, a conta fica
             bloqueada durante <b data-config="login_bloqueio_minutos">—</b> minutos.
           </p>
-        </div>
-      </article>
+        </section>
 
-      <article>
-        <span>04</span>
-        <div>
-          <h2>Os seus direitos</h2>
+        <section id="seguranca">
+          <h2><span class="legal-num">06</span> Segurança</h2>
+          <p>Aplicamos medidas técnicas e organizativas adequadas ao risco, entre as quais:</p>
+          <ul>
+            <li>palavras-passe guardadas apenas como resumo criptográfico, nunca em texto legível;</li>
+            <li>autenticação em dois fatores opcional, com códigos temporários;</li>
+            <li>comunicações cifradas entre o navegador e o servidor;</li>
+            <li>votos com código de integridade e registo de auditoria encadeado, que revela qualquer alteração;</li>
+            <li>acesso à área da equipa restrito a perfis autorizados.</li>
+          </ul>
+        </section>
+
+        <section id="partilha">
+          <h2><span class="legal-num">07</span> Partilha de dados</h2>
           <p>
-            Pode pedir acesso, correção ou eliminação dos seus dados através
-            de geral@trustvote.pt.
+            Não vendemos, alugamos nem cedemos os seus dados a terceiros. A comissão eleitoral tem acesso aos
+            cadernos eleitorais e aos resultados agregados, nunca a votos individuais. Só partilharemos dados
+            quando a lei o exigir, por ordem de uma autoridade competente.
           </p>
-          <a href="ajuda.html#contactos">Contactar a equipa <svg class="icon" aria-hidden="true">
+        </section>
+
+        <section id="conservacao">
+          <h2><span class="legal-num">08</span> Conservação</h2>
+          <p>
+            Os dados da conta são conservados enquanto mantiver a conta ativa. Os registos de participação e de
+            auditoria são mantidos pelo período necessário à apreciação de reclamações sobre cada eleição. Os
+            resultados agregados são públicos e permanecem no <a href="historico.html">Histórico eleitoral</a>.
+          </p>
+        </section>
+
+        <section id="direitos">
+          <h2><span class="legal-num">09</span> Os seus direitos</h2>
+          <p>A qualquer momento, pode exercer gratuitamente os seguintes direitos:</p>
+          <ul class="legal-rights">
+            <li><b>Acesso</b>Saber que dados temos sobre si.</li>
+            <li><b>Retificação</b>Corrigir dados incorretos ou desatualizados.</li>
+            <li><b>Apagamento</b>Pedir a eliminação da sua conta e dados.</li>
+            <li><b>Limitação</b>Restringir a utilização dos seus dados.</li>
+            <li><b>Portabilidade</b>Receber os seus dados num formato comum.</li>
+            <li><b>Oposição</b>Opor-se ao tratamento baseado em interesse legítimo.</li>
+          </ul>
+          <p>
+            Para exercer estes direitos, escreva para <a href="mailto:geral@trustvote.pt">geral@trustvote.pt</a>.
+            Pode ainda apresentar reclamação à Comissão Nacional de Proteção de Dados
+            (<a href="https://www.cnpd.pt" target="_blank" rel="noopener">cnpd.pt</a>).
+          </p>
+          <div class="legal-callout is-warning">
+            <svg class="icon" aria-hidden="true">
+              <use href="#i-circle-alert"></use>
+            </svg>
+            <p>Os votos já submetidos são anónimos e, por isso, não podem ser associados à sua conta nem
+              eliminados individualmente. O apagamento da conta não altera resultados já apurados.</p>
+          </div>
+        </section>
+
+        <section id="alteracoes">
+          <h2><span class="legal-num">10</span> Alterações a esta política</h2>
+          <p>
+            Sempre que esta política mudar de forma relevante, atualizamos a data no topo da página e publicamos
+            um aviso em <a href="comunicacao.html">Comunicação</a>. Consulte também os
+            <a href="termos.html">Termos de utilização</a>.
+          </p>
+        </section>
+
+        <!-- Contacto -->
+        <aside class="legal-contact">
+          <div>
+            <h2>Questões sobre os seus dados?</h2>
+            <p>Escreva-nos para geral@trustvote.pt ou use o formulário de contacto.</p>
+          </div>
+          <a class="button" href="ajuda.html#contactos">Contactar a equipa <svg class="icon" aria-hidden="true">
               <use href="#i-arrow-right"></use>
             </svg></a>
-        </div>
-      </article>
+        </aside>
 
+      </article>
     </div>
 
   </main>

@@ -90,7 +90,7 @@
     </div>
     <div class="footer-bottom container">
       <span>TrustVote · ${new Date().getFullYear()}</span>
-      <span><a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
+      <span><a href="termos.html">Termos</a> · <a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
     </div>
   </footer>`;
 
