@@ -7,7 +7,8 @@
     link.href = URL.createObjectURL(new Blob([conteudo], { type: tipo }));
     link.download = nome;
     link.click();
-    URL.revokeObjectURL(link.href);
+    // Só se liberta depois de o browser começar a descarregar (apagar logo cancelava o download)
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
 
   // CSV que abre bem no Excel: separador ";" e BOM para os acentos

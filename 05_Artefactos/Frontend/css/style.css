@@ -3,6 +3,7 @@
    componentes/ peças usadas em várias páginas (botões, cartões, formulários…)
    paginas/     estilos próprios de cada página ou área
    base/ecras/  adaptação ao tamanho do ecrã e à impressão (fica no fim para ter a última palavra) */
+@import url("base/fontes.css");
 @import url("base/variaveis.css");
 @import url("base/base.css");
 

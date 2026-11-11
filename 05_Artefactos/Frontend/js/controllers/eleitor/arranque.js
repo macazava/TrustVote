@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     voter.renderPoll();
     voter.renderResults();
     voter.renderProfile();
+    voter.loadReceipts(); // já sabe se votou: muda a mensagem quando o recibo não está neste navegador
     renderHelp();
   }
 

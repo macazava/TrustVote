@@ -17,11 +17,23 @@
       // O servidor não liga recibos a eleitores (é isso que mantém o voto secreto):
       // os recibos só existem neste dispositivo, guardados no momento do voto.
       const recibos = localReceipts.all();
-      if (!recibos.length) {
+      // Votou, mas o recibo foi guardado noutro navegador ou endereço: mostra o comprovativo de participação
+      const comprovativos = (voter.state.lista || [])
+        .filter((e) => e.votou && !recibos.some((r) => r.eleicao_id === e.id && r.ronda === (e.participacao.ronda || r.ronda)))
+        .map((e) => ({ eleicao_id: e.id, eleicao_titulo: e.titulo, ronda: e.participacao.ronda || 1, data: e.participacao.data }));
+      if (!recibos.length && !comprovativos.length) {
         box.innerHTML = view.noReceipts();
         return;
       }
-      box.innerHTML = view.localNotice() + recibos.map(view.receiptCard).join("");
+      box.innerHTML =
+        (recibos.length ? view.localNotice() + recibos.map(view.receiptCard).join("") : "") +
+        comprovativos.map(view.participationCard).join("");
+      box.querySelectorAll("[data-proof]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const c = comprovativos[b.dataset.proof];
+          download.ficheiro(`comprovativo-${TV.format.slug(c.eleicao_titulo)}.pdf`, TV.reciboPdf(c), "application/pdf");
+        })
+      );
 
       box.querySelectorAll("[data-verify]").forEach((b) =>
         b.addEventListener("click", async () => {
@@ -41,7 +53,7 @@
       box.querySelectorAll("[data-download]").forEach((b) =>
         b.addEventListener("click", () => {
           const r = recibos[b.dataset.download];
-          download.ficheiro(`recibo-${r.recibo}.txt`, view.receiptText(r), "text/plain");
+          download.ficheiro(`recibo-${r.recibo}.pdf`, TV.reciboPdf(r), "application/pdf");
         })
       );
     });

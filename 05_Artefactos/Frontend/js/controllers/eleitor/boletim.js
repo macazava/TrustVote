@@ -93,6 +93,10 @@
     rascunho.apagar();
     panel("elections").innerHTML = TV.voterView.donePage(recibo);
     panel("elections").querySelector("h1").focus({ preventScroll: true });
+    // Descarregar o recibo em PDF logo a seguir a votar
+    panel("elections")
+      .querySelector("[data-download-receipt]")
+      ?.addEventListener("click", () => TV.download.ficheiro(`recibo-${recibo.recibo}.pdf`, TV.reciboPdf(recibo), "application/pdf"));
     voter.loadReceipts();
     voter.renderProfile();
   }

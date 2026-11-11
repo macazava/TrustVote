@@ -31,19 +31,27 @@
     display: flex;
     flex: 1;
     align-self: stretch;
-    gap: 4px;
+    gap: 24px;
     overflow-x: auto;
+    /* sem barra de scroll visível: se o menu não couber, desliza com o rato/dedo */
+    scrollbar-width: none;
+}
+
+.panel-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .panel-link {
+    position: relative;
     display: flex;
     align-items: center;
-    padding: 0 14px;
+    padding: 0;
     border: 0;
-    border-bottom: 3px solid transparent;
+    border-radius: 0;
     background: none;
     color: var(--color-on-dark-muted);
     font-size: var(--text-base);
+    font-weight: 500;
     white-space: nowrap;
 }
 
@@ -52,9 +60,8 @@
         gap: 24px;
     }
 
-    .panel-link {
-        padding: 0 11px;
-        font-size: var(--text-base);
+    .panel-nav {
+        gap: 20px;
     }
 
     .portal-link {
@@ -63,8 +70,11 @@
 }
 
 @media (max-width: 1360px) {
+    .panel-nav {
+        gap: 16px;
+    }
+
     .panel-link {
-        padding: 0 9px;
         font-size: var(--text-sm);
     }
 
@@ -77,11 +87,21 @@
     color: var(--color-on-dark);
 }
 
-/* Item ativo: sublinhado e a negrito, o mesmo padrão do menu do portal público */
+/* Item ativo: texto a negrito e uma linha reta logo por baixo (como no portal), em verde claro
+   para contrastar com o fundo escuro do cabeçalho */
 .panel-link.active {
-    border-bottom-color: var(--color-on-dark-live);
     color: var(--color-on-dark);
     font-weight: 700;
+}
+
+.panel-link.active::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 24px;
+    left: 0;
+    height: 3px;
+    background: var(--color-on-dark-muted);
 }
 
 .panel-user {

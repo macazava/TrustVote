@@ -9,7 +9,7 @@
 
   // ===== Visão geral =====
   // d = { e, recibos, user, hoje, saudacao, subtitulo }
-  const overviewPage = ({ e, recibos, user, hoje, saudacao, subtitulo }) => `
+  const overviewPage = ({ e, recibos, votou, user, hoje, saudacao, subtitulo }) => `
     ${head(hoje, `${saudacao}, ${escapeHtml(user.nome.split(" ")[0])}.`, subtitulo, `
       <div class="badge-card">
         <span class="ok-label">${TV.icon("check")}</span>
@@ -30,10 +30,12 @@
       </article>
       <article class="dash-card">
         <p class="eyebrow">ATIVIDADE RECENTE</p>
-        <h2>${recibos.length ? "O seu último voto" : "Ainda não votou"}</h2>
+        <h2>${recibos.length ? "O seu último voto" : votou ? "Já votou" : "Ainda não votou"}</h2>
         ${recibos.length
       ? `<div class="receipt-code"><small>${escapeHtml(recibos[0].eleicao_titulo || "")} · ${dateTime(recibos[0].data)}</small><b>${escapeHtml(recibos[0].recibo)}</b></div>`
-      : '<div class="empty-box">O recibo fica disponível depois de votar.</div>'}
+      : votou
+        ? '<div class="empty-box">O seu voto está registado e contado. O comprovativo está em Recibos.</div>'
+        : '<div class="empty-box">O recibo fica disponível depois de votar.</div>'}
         <button class="link-button" type="button" data-go="receipts">Como funciona o recibo? ${TV.icon("arrow-right")}</button>
       </article>
     </div>`;
@@ -117,7 +119,10 @@
       <h1 tabindex="-1">${recibo ? "O seu voto foi registado." : "Já votou nesta eleição."}</h1>
       <p class="muted">${recibo ? "Obrigado por participar. Guarde o recibo como comprovativo." : "Cada eleitor só pode votar uma vez por ronda."}</p>
       ${recibo ? `<div class="receipt-code"><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(recibo.recibo)}</b></div>
-         <button class="link-button" type="button" data-copy="${escapeHtml(recibo.recibo)}">${TV.icon("copy")} Copiar código</button>
+         <div class="ballot-done-actions">
+           <button class="button button-outline" type="button" data-download-receipt>${TV.icon("download")} Descarregar recibo (PDF)</button>
+           <button class="link-button" type="button" data-copy="${escapeHtml(recibo.recibo)}">${TV.icon("copy")} Copiar código</button>
+         </div>
          ${v.receiptQr(recibo, true)}` : ""}
       <button class="button button-primary" type="button" data-go="receipts">Continuar para o recibo ${TV.icon("arrow-right")}</button>
     </article>`;

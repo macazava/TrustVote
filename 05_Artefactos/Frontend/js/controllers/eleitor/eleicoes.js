@@ -40,6 +40,7 @@
     panel("overview").innerHTML = TV.voterView.overviewPage({
       e,
       recibos: localReceipts.all(),
+      votou: voter.state.lista.some((x) => x.votou),
       user: session.user,
       hoje: new Date().toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long" }),
       saudacao: hora < 12 ? "Bom dia" : hora < 20 ? "Boa tarde" : "Boa noite",

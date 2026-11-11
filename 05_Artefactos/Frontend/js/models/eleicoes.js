@@ -72,12 +72,15 @@
     return escolhida ? electionView(await api.eleicoes.detalhe(escolhida.id)) : null;
   }
 
-  // Eleições do eleitor, com a indicação de se já votou em cada uma
-  async function hasVoted(eleicao) {
+  // Eleições do eleitor, com a indicação de se já votou em cada uma e quando
+  // (a participação vem do servidor; nunca diz em quem votou)
+  async function participation(eleicao) {
     try {
-      return !!(await api.votacao.participacao(eleicao.id)).votou;
+      const p = await api.votacao.participacao(eleicao.id);
+      return { votou: !!p.votou, ronda: p.ronda || null, data: p.data || null };
     } catch {
-      return localReceipts.all().some((r) => r.eleicao_id === eleicao.id && (!eleicao.ronda || r.ronda === eleicao.ronda.numero));
+      const r = localReceipts.all().find((x) => x.eleicao_id === eleicao.id && (!eleicao.ronda || x.ronda === eleicao.ronda.numero));
+      return { votou: !!r, ronda: r ? r.ronda : null, data: r ? r.data : null };
     }
   }
 
@@ -86,7 +89,8 @@
     const detalhes = await Promise.all(todas.map((e) => api.eleicoes.detalhe(e.id).then(electionView)));
     await Promise.all(
       detalhes.map(async (e) => {
-        e.votou = await hasVoted(e);
+        e.participacao = await participation(e);
+        e.votou = e.participacao.votou;
       })
     );
     return detalhes;

@@ -31,7 +31,12 @@ class VotoResposta(BaseModel):
 
 
 class ParticipacaoResposta(BaseModel):
+    """Se o utilizador votou na volta atual e quando: serve de comprovativo de participação.
+    Nunca diz em quem votou (o servidor não liga a participação ao voto)."""
+
     votou: bool
+    ronda: int | None = None
+    data: datetime | None = None
 
 
 class ReciboVerificacao(BaseModel):

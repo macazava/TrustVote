@@ -46,6 +46,16 @@ def registar_voto(
     sessao.commit()
 
 
+def data_participacao(sessao: Session, ronda_id: int, utilizador_id: int) -> datetime | None:
+    """Quando o utilizador votou nesta volta (None se não votou). Não diz em quem."""
+    return sessao.scalar(
+        select(Participacao.registada_em).where(
+            Participacao.ronda_id == ronda_id,
+            Participacao.utilizador_id == utilizador_id,
+        )
+    )
+
+
 def ja_votou(sessao: Session, ronda_id: int, utilizador_id: int) -> bool:
     consulta = select(Participacao.id).where(
         Participacao.ronda_id == ronda_id,

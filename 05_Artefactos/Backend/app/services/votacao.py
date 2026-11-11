@@ -34,6 +34,7 @@ from app.schemas.votacao import (
     HistoricoEleicao,
     IntegridadeEleicao,
     IntegridadeRonda,
+    ParticipacaoResposta,
     PontoSerie,
     ReciboVerificacao,
     ResultadoCandidato,
@@ -123,11 +124,12 @@ def votar(
 
 def obter_participacao(
     sessao: Session, eleicao_id: int, utilizador: Utilizador
-) -> bool:
-    """Diz se o utilizador já votou na volta atual da eleição."""
+) -> ParticipacaoResposta:
+    """Diz se o utilizador já votou na volta atual da eleição, e quando."""
     servico_eleicao.obter_eleicao_visivel(sessao, eleicao_id, utilizador)
     ronda = _ronda_atual(repositorio_ronda.listar(sessao, eleicao_id=eleicao_id))
-    return ronda is not None and repositorio.ja_votou(sessao, ronda.id, utilizador.id)
+    data = repositorio.data_participacao(sessao, ronda.id, utilizador.id) if ronda else None
+    return ParticipacaoResposta(votou=data is not None, ronda=ronda.numero if data else None, data=data)
 
 
 def verificar_recibo(sessao: Session, codigo: str) -> ReciboVerificacao:

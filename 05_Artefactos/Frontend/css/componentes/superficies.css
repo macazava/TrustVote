@@ -7,7 +7,6 @@
 /* ===== Cantos pequenos (--radius-sm): etiquetas e itens de menu ===== */
 .check-box,
 .model-tag,
-.panel-link,
 .session-chip {
     border-radius: var(--radius-sm);
 }
@@ -100,7 +99,7 @@
 
 /* ===== Elementos clicáveis: reagem ao rato ===== */
 .panel-link {
-    transition: background-color 0.15s, color 0.15s;
+    transition: color 0.15s;
 }
 
 .radio-line {

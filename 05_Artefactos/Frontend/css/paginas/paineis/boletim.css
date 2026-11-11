@@ -404,3 +404,13 @@
     fill: var(--color-qr-dark);
 }
 
+
+/* Voto depositado: descarregar o recibo em PDF e copiar o código, lado a lado */
+.ballot-done-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3) var(--space-5);
+    margin-bottom: var(--space-2);
+}

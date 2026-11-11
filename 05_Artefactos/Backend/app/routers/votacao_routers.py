@@ -54,10 +54,8 @@ def obter_participacao(
     sessao: Session = Depends(obter_sessao),
     utilizador: Utilizador = Depends(utilizador_atual),
 ):
-    """Diz se o utilizador autenticado já votou na volta atual."""
-    return ParticipacaoResposta(
-        votou=servico.obter_participacao(sessao, eleicao_id, utilizador)
-    )
+    """Diz se o utilizador autenticado já votou na volta atual, e quando (sem dizer em quem)."""
+    return servico.obter_participacao(sessao, eleicao_id, utilizador)
 
 
 @votacao_routers.get(
