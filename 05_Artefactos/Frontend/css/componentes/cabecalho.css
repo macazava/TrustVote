@@ -182,23 +182,6 @@
     color: var(--color-brand);
 }
 
-.breadcrumb-tools {
-    display: flex;
-    gap: 6px;
-}
-
-.breadcrumb-tools button {
-    width: 34px;
-    height: 34px;
-    border: 0;
-    background: none;
-    color: var(--color-text-muted);
-}
-
-.breadcrumb-tools button:hover {
-    color: var(--color-brand);
-}
-
 @media (max-width: 1320px) {
     .site-header-inner {
         gap: 18px;

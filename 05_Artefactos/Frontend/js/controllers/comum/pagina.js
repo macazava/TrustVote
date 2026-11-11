@@ -1,4 +1,4 @@
-/* Controller · comum a todas as páginas: texto maior e contraste, menu ativo, temas das secções, imprimir/partilhar e links da sessão */
+/* Controller · comum a todas as páginas: texto maior e contraste, menu ativo, temas das secções e links da sessão */
 
 // ===== Texto maior e contraste (guardados no navegador) =====
 // Único sítio que trata estas preferências: as áreas do eleitor e da equipa usam TrustVote.prefs
@@ -114,19 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
-
-  document.querySelectorAll("[data-print]").forEach((b) => b.addEventListener("click", () => window.print()));
-  document.querySelectorAll("[data-share]").forEach((b) =>
-    b.addEventListener("click", async () => {
-      try {
-        if (navigator.share) await navigator.share({ title: document.title, url: window.location.href });
-        else {
-          await navigator.clipboard.writeText(window.location.href);
-          window.TrustVote.ui.toast("Ligação copiada.");
-        }
-      } catch { }
-    })
-  );
 
   // ===== Com sessão iniciada, os links levam direto ao painel =====
   const claims = session.claims();

@@ -106,14 +106,7 @@
     line-height: 1.15;
 }
 
-.section-item-tools {
-    display: flex;
-    flex-shrink: 0;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.section-item > p {
+.section-item>p {
     max-width: 780px;
     color: var(--color-text-secondary);
     font-size: var(--text-lg);
@@ -191,11 +184,10 @@
     padding-bottom: 80px;
 }
 
-.content-page > h1 {
+.content-page>h1 {
     margin: 12px 0 14px;
     color: var(--color-heading);
     font-size: clamp(2.5rem, 4.6vw, 3.5rem);
     font-weight: 600;
     letter-spacing: -0.02em;
 }
-

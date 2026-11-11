@@ -50,10 +50,6 @@
         ${seccao ? `<li><a href="${seccaoLink}">${seccao}</a></li>` : ""}
         <li${muda}>${atual}</li>
       </ol>
-      <div class="breadcrumb-tools">
-        <button type="button" data-share aria-label="Partilhar">${icon("share")}</button>
-        <button type="button" data-print aria-label="Imprimir">${icon("printer")}</button>
-      </div>
     </div>
   </div>`;
   }
