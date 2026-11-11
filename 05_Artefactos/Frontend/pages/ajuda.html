@@ -4,6 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Modo claro/escuro aplicado já, antes de a página aparecer (sem piscar em claro). A mesma regra de
+       js/controllers/comum/pagina.js: a escolha guardada ou, sem escolha, o modo do sistema operativo. -->
+  <script>try{var p=JSON.parse(localStorage.getItem("trustvote:preferencias")||"{}");document.documentElement.dataset.theme=(p.theme?p.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"}catch(e){}</script>
   <meta name="description" content="Quem somos, comissão eleitoral, transparência e contactos do TrustVote.">
 
   <link rel="icon"

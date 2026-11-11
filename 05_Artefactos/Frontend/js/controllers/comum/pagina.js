@@ -20,7 +20,7 @@
   const applyTheme = (prefs = readPrefs()) => {
     document.documentElement.dataset.theme = isDark(prefs) ? "dark" : "light";
   };
-  applyTheme(); // já, antes de a página aparecer, para não piscar em claro
+  applyTheme(); // o <head> de cada página já o fez antes de a página aparecer; aqui confirma
   systemDark.addEventListener("change", () => applyPrefs());
 
   function applyPrefs(prefs = readPrefs()) {

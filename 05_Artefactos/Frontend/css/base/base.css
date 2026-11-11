@@ -246,6 +246,7 @@ html.large-text {
         transition-duration: 0.01ms !important;
     }
 }
+
 /* Destinos de âncoras e do "Saltar para o conteúdo" recebem o foco sem mostrar contorno */
 [tabindex="-1"]:focus {
     outline: none;
@@ -270,11 +271,9 @@ html.large-text {
     filter: brightness(0.92);
 }
 
-/* Transições entre páginas e separadores (View Transitions): o conteúdo troca com um fade curto,
-   o topo fica parado. Browsers sem suporte mudam de página como antes. */
-@view-transition {
-    navigation: auto;
-}
+/* Transição entre separadores dos painéis (View Transitions): o conteúdo troca com um fade curto,
+   o topo fica parado. Entre páginas diferentes não há transição: o browser mostrava a página
+   antiga até a nova estar pronta, o que atrasava a mudança e deixava ver um ecrã claro. */
 
 .topbar {
     view-transition-name: topo;
@@ -310,9 +309,6 @@ html.large-text {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    @view-transition {
-        navigation: none;
-    }
 
     ::view-transition-group(*),
     ::view-transition-old(*),
