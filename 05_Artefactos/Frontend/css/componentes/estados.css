@@ -175,7 +175,7 @@
 }
 
 .button-danger {
-    border-color: var(--color-danger);
-    background: var(--color-danger);
+    border-color: var(--color-danger-fill);
+    background: var(--color-danger-fill);
     color: var(--color-on-brand);
 }

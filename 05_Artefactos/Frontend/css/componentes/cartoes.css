@@ -283,7 +283,7 @@
     display: block;
     border-radius: inherit;
     height: 100%;
-    background: var(--color-brand);
+    background: var(--color-brand-fill);
 }
 
 @media (max-width: 760px) {

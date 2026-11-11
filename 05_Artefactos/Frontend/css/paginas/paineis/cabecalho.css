@@ -22,7 +22,7 @@
 }
 
 .dashboard-header .brand-mark {
-    background: var(--color-surface);
+    background: var(--color-on-dark);
     color: var(--color-brand-deep);
 }
 

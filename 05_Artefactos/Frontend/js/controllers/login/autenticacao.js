@@ -27,10 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sync();
   });
 
-  document.querySelector('[data-action="recover"]')?.addEventListener("click", () => {
-    ui.message(message, "Para recuperar o acesso, contacte a comissão eleitoral académica.");
-  });
-
   if (params.get("motivo") === "expirada") ui.message(message, "A sessão terminou. Inicie sessão novamente.");
 
   // ===== Estado do servidor =====

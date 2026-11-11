@@ -105,7 +105,7 @@
 
 .role-switch button.active,
 .mode-switch button.active {
-    background: var(--color-heading);
+    background: var(--color-heading-fill);
     color: var(--color-on-dark);
 }
 
@@ -150,13 +150,6 @@
     justify-content: space-between;
     gap: 10px;
     margin: 18px 0;
-}
-
-.form-options .link-button {
-    border-bottom: 1px solid var(--color-heading);
-    color: var(--color-heading);
-    font-size: var(--text-base);
-    text-decoration: none;
 }
 
 .full-button {

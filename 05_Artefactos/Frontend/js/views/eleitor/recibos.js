@@ -31,6 +31,7 @@
         <button class="button button-primary" type="button" data-verify="${i}">Verificar</button>
         <button class="button button-outline" type="button" data-download="${i}">Descarregar recibo</button>
         <button class="link-button" type="button" data-copy="${escapeHtml(r.recibo)}">${TV.icon("copy")} Copiar código</button>
+        <a class="link-button" href="verificar.html?codigo=${encodeURIComponent(r.recibo)}">${TV.icon("shield-check")} Página pública de verificação</a>
       </div>
     </article>`;
 
@@ -51,6 +52,7 @@
       `Data: ${dateTime(r.data)}`,
       `Recibo: ${r.recibo}`,
       r.hash ? `Hash: ${r.hash}` : "",
+      `Verificar: ${new URL(`verificar.html?codigo=${encodeURIComponent(r.recibo)}`, window.location.href).href}`,
     ].filter(Boolean).join("\n");
 
   Object.assign(v, { receiptsPage, noReceipts, localNotice, receiptCard, verifyPill, verifyChecks, receiptText });

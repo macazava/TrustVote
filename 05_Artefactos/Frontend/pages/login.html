@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
   <title>Acesso | TrustVote</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +20,7 @@
   <script defer src="../js/views/formatar.js"></script>
   <script defer src="../js/models/eleicoes.js"></script>
   <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/controllers/comum/validacao.js"></script>
   <!-- Controller: o que acontece em cada página -->
   <script defer src="../js/controllers/comum/menu.js"></script>
   <script defer src="../js/controllers/login/formulario.js"></script>
@@ -187,10 +189,6 @@
             <input type="checkbox" name="remember">
             Manter o identificador neste dispositivo
           </label>
-
-          <button type="button" class="link-button" data-action="recover">
-            Recuperar acesso
-          </button>
         </div>
 
         <p class="form-message" role="status" aria-live="polite"></p>

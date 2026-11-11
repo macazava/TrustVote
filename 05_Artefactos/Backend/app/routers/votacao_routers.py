@@ -85,13 +85,13 @@ def verificar_integridade(eleicao_id: int, sessao: Session = Depends(obter_sessa
     return servico.verificar_integridade(sessao, eleicao_id)
 
 
-@votacao_routers.get(
-    "/recibos/{codigo}/verificar",
-    response_model=ReciboVerificacao,
-    dependencies=[Depends(utilizador_atual)],
-)
+@votacao_routers.get("/recibos/{codigo}/verificar", response_model=ReciboVerificacao)
 def verificar_recibo(codigo: str, sessao: Session = Depends(obter_sessao)):
-    """Confirma que o voto de um recibo foi contado, sem revelar em quem foi."""
+    """Confirma que o voto de um recibo foi contado, sem revelar em quem foi.
+
+    É público (sem sessão): o recibo não está ligado a nenhum eleitor e o código tem
+    96 bits aleatórios, por isso não se adivinha. A resposta nunca diz em quem foi o voto.
+    """
     return servico.verificar_recibo(sessao, codigo)
 
 

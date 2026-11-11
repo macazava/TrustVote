@@ -29,7 +29,7 @@
 
 .history-intro {
     padding: 34px 0;
-    background: var(--color-text-muted);
+    background: var(--color-band);
     color: var(--color-on-dark);
 }
 

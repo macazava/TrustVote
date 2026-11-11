@@ -49,7 +49,7 @@
 }
 
 .hero h1 em {
-    color: var(--color-action);
+    color: var(--color-accent-text);
     font-style: italic;
     font-weight: 500;
 }

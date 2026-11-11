@@ -33,6 +33,7 @@
 @import url("paginas/comunicacao.css");
 @import url("paginas/historico.css");
 @import url("paginas/login.css");
+@import url("paginas/verificar.css");
 
 /* Áreas do eleitor e da equipa */
 @import url("paginas/paineis/cabecalho.css");

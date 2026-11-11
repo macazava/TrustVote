@@ -163,8 +163,8 @@ body[data-page="admin"] .dashboard-content h1 {
 
 .steps-track>span.is-done>i,
 .steps-track>span.is-current>i {
-    border-color: var(--color-heading);
-    background: var(--color-heading);
+    border-color: var(--color-heading-fill);
+    background: var(--color-heading-fill);
     color: var(--color-on-dark);
 }
 

@@ -44,6 +44,7 @@
           ${cardHead("ACESSIBILIDADE", "Preferências deste navegador")}
           <div class="toggle-row"><div><b>Texto maior</b><small>Aumenta o tamanho de todas as páginas.</small></div><button class="switch" type="button" data-pref="largeText" aria-label="Texto maior"></button></div>
           <div class="toggle-row"><div><b>Contraste elevado</b><small>Cores com mais contraste.</small></div><button class="switch" type="button" data-pref="contrast" aria-label="Contraste elevado"></button></div>
+          <div class="toggle-row"><div><b>Modo escuro</b><small>Fundo escuro, mais confortável à noite. Sem escolha, segue o sistema.</small></div><button class="switch" type="button" data-theme-toggle aria-label="Modo escuro"></button></div>
         </article>
       </div>
     </div>`;

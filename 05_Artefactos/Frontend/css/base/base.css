@@ -215,3 +215,73 @@ html.large-text {
 [tabindex="-1"]:focus {
     outline: none;
 }
+
+/* Botão "Modo escuro": lua no tema claro, sol no tema escuro */
+.theme-toggle {
+    gap: 8px;
+}
+
+.theme-toggle .theme-sun,
+:root[data-theme="dark"] .theme-toggle .theme-moon {
+    display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle .theme-sun {
+    display: inline-block;
+}
+
+/* Imagens um pouco menos brilhantes no tema escuro */
+:root[data-theme="dark"] img {
+    filter: brightness(0.92);
+}
+
+/* Transições entre páginas e separadores (View Transitions): o conteúdo troca com um fade curto,
+   o topo fica parado. Browsers sem suporte mudam de página como antes. */
+@view-transition {
+    navigation: auto;
+}
+
+.topbar {
+    view-transition-name: topo;
+}
+
+.site-header {
+    view-transition-name: cabecalho;
+}
+
+.dashboard-header {
+    view-transition-name: painel-topo;
+}
+
+::view-transition-old(root) {
+    animation: 160ms ease-out both tv-vt-out;
+}
+
+::view-transition-new(root) {
+    animation: 260ms cubic-bezier(.2, .8, .2, 1) both tv-vt-in;
+}
+
+@keyframes tv-vt-out {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes tv-vt-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @view-transition {
+        navigation: none;
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}

@@ -23,7 +23,18 @@
       return views.includes(view) ? view : null;
     };
 
-    function activateView(view, scroll = true) {
+    // Troca de separador com transição suave (View Transitions), se o browser a suportar.
+    // Só nos cliques do utilizador: quando o código muda de separador (go()) o separador tem de abrir já,
+    // porque a seguir desenha e foca conteúdo dentro dele.
+    const smooth = document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function activateView(view, scroll = true, animate = false) {
+      if (!document.querySelector(`[data-panel="${view}"]`)) return;
+      // (se o browser não puder animar, a troca acontece na mesma; o aviso de "transição cancelada" é ignorado)
+      if (smooth && animate) document.startViewTransition(() => showView(view, "instant")).ready.catch(() => {});
+      else showView(view, scroll);
+    }
+
+    function showView(view, scroll) {
       const panel = document.querySelector(`[data-panel="${view}"]`);
 
       if (!panel) return;
@@ -39,13 +50,13 @@
         else button.removeAttribute("aria-current");
       });
 
-      if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+      if (scroll) window.scrollTo({ top: 0, behavior: scroll === "instant" ? "instant" : "smooth" });
     }
 
     document.querySelectorAll("[data-view]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
         const view = button.dataset.view;
-        activateView(view);
+        activateView(view, true, event.isTrusted);
         if (viewFromHash() !== view) history.pushState(null, "", `#${view}`);
       });
     });

@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
     <title>Área do eleitor | TrustVote</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +22,7 @@
     <script defer src="../js/views/formatar.js"></script>
     <script defer src="../js/models/eleicoes.js"></script>
     <script defer src="../js/views/componentes.js"></script>
+    <script defer src="../js/controllers/comum/validacao.js"></script>
     <!-- View: desenho do HTML -->
     <script defer src="../js/views/palavra-passe.js"></script>
     <script defer src="../js/views/graficos.js"></script>
@@ -45,7 +47,7 @@
 </head>
 
 <body class="panel-body" data-page="voter">
-  <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
+    <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
 
     <!-- Cabeçalho com o menu do painel -->
     <header class="dashboard-header">
@@ -77,6 +79,12 @@
             <a class="portal-link" href="inicio.html">Portal <svg class="icon" aria-hidden="true">
                     <use href="#i-arrow-up-right"></use>
                 </svg></a>
+            <button class="logout-button theme-toggle" type="button" data-theme-toggle aria-pressed="false"
+                aria-label="Modo escuro" title="Modo escuro"><svg class="icon theme-moon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg><svg class="icon theme-sun" aria-hidden="true">
+                    <use href="#i-sun"></use>
+                </svg></button>
             <button class="logout-button" type="button" data-logout aria-label="Terminar sessão"
                 title="Terminar sessão"><svg class="icon" aria-hidden="true">
                     <use href="#i-log-out"></use>

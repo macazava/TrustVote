@@ -62,10 +62,14 @@
     --color-brand-muted: var(--green-200);       /* bordas de realce suave */
     --color-action: var(--green-600);            /* botão principal */
     --color-action-hover: var(--green-700);
+    --color-accent-text: var(--green-600);       /* texto de realce (itálico do título da página inicial) */
     --color-focus: var(--green-600);             /* contorno de foco do teclado (≥ 5:1 nos fundos claros) */
     --color-indicator: var(--green-400);         /* traços decorativos e item atual dos menus */
     --color-focus-ring: color-mix(in srgb, var(--green-700) 14%, transparent);
     --color-brand-tint: color-mix(in srgb, var(--green-700) 8%, transparent);
+    --color-brand-fill: var(--green-700);        /* fundo sólido de marca com texto branco (logótipo, interruptor, barras) */
+    --color-heading-fill: var(--green-800);      /* item ativo escuro com texto branco (separadores, passos) */
+    --color-band: var(--neutral-600);            /* faixa neutra escura com texto branco */
 
     /* Linhas */
     --color-border: var(--neutral-300);
@@ -78,6 +82,7 @@
     --color-warning-soft: var(--amber-50);
     --color-warning-dot: var(--amber-500);
     --color-danger: var(--red-600);
+    --color-danger-fill: var(--red-600);         /* fundo do botão de perigo (texto branco por cima) */
     --color-on-brand: #fff;                      /* texto sobre o botão principal ou de perigo */
 
     /* Sobre fundos escuros (--color-brand-deep) */
@@ -133,4 +138,52 @@
     font-family: var(--font-sans);
     color: var(--color-text);
     background: var(--color-bg);
+}
+
+/* ===================== TEMA ESCURO =====================
+   Só troca os papéis (os componentes não mudam). Fica ativo com <html data-theme="dark">:
+   js/controllers/comum/pagina.js põe-no quando o utilizador escolhe "Modo escuro"
+   ou, sem escolha guardada, quando o sistema operativo está em modo escuro. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-bg: #111714;
+    --color-surface: #18201c;
+    --color-surface-sunken: #222b26;
+    --color-field: #141a17;
+
+    --color-text: #e7ece8;
+    --color-text-secondary: #d2d9d4;
+    --color-text-muted: #a8b2ab;
+    --color-text-subtle: #808b83;
+    --color-heading: #bfe0cd;
+
+    --color-brand: #86cfa6;
+    --color-brand-deep: #0c2119;
+    --color-brand-soft: #1b2f26;
+    --color-brand-muted: #2e4a3d;
+    --color-brand-fill: var(--green-600);
+    --color-heading-fill: var(--green-700);
+    --color-band: var(--neutral-800);
+    --color-action: var(--green-600);
+    --color-action-hover: #377a5c;
+    --color-accent-text: #86cfa6;
+    --color-focus: #86cfa6;
+    --color-focus-ring: color-mix(in srgb, #86cfa6 22%, transparent);
+    --color-brand-tint: color-mix(in srgb, #86cfa6 8%, transparent);
+
+    --color-border: #2f3a34;
+    --color-border-strong: #4a5650;
+
+    --color-success: #86cfa6;
+    --color-success-soft: #1b2f26;
+    --color-warning: var(--amber-200);
+    --color-warning-soft: #352a17;
+    --color-danger: #ff8f86;
+
+    --color-overlay: rgb(0 0 0 / 60%);
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+    --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 55%);
+    --shadow-lg: 0 22px 45px -18px rgb(0 0 0 / 70%);
 }

@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const desktop = () => matchMedia("(min-width: 768px)").matches;
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const ease = "cubic-bezier(.2, .8, .2, 1)";
+  // Próximo "frame" com setTimeout: um requestAnimationFrame pedido enquanto a página nova ainda não foi
+  // mostrada cancela a transição entre páginas (View Transitions)
+  const frame = (fn) => setTimeout(() => fn(performance.now()), 16);
   document.documentElement.classList.add("tv-anim");
 
   // ===== Tipos de entrada (só transform e opacity) =====
@@ -143,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => {
+    frame(() => {
       ticking = false;
       const vh = innerHeight;
       const on = desktop();
@@ -174,6 +177,55 @@ document.addEventListener("DOMContentLoaded", () => {
     addEventListener("resize", onScroll);
     onScroll();
   }
+
+  // ===== Números que contam até ao valor real (participação, votos, percentagens) =====
+  // Na primeira vez sobem desde 0; nas atualizações automáticas passam do valor anterior para o novo.
+  const counterSelector = ".metric-card > b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .result-row > b, .profile-stat b";
+  const lastValues = new Map();
+  const numberPattern = /^(\s*)(\d{1,3}(?:[\s  .]?\d{3})*(?:,\d+)?)(.*)$/s;
+
+  function counterKey(el, index) {
+    const zone = el.closest("[data-panel], [data-results], main");
+    return `${zone ? zone.dataset.panel || zone.id || zone.tagName : ""}:${index}`;
+  }
+
+  function countUp(el, key) {
+    const text = [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
+    const match = text && text.textContent.match(numberPattern);
+    if (!match) return;
+    const [, before, raw, after] = match;
+    const decimals = (raw.split(",")[1] || "").length;
+    const target = parseFloat(raw.replace(/[\s  .]/g, "").replace(",", "."));
+    const from = lastValues.has(key) ? lastValues.get(key) : 0;
+    lastValues.set(key, target);
+    if (!isFinite(target) || from === target) return;
+    const fmt = new Intl.NumberFormat("pt-PT", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    const start = performance.now();
+    const duration = 900;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      text.textContent = `${before}${fmt.format(from + (target - from) * eased)}${after}`;
+      if (t < 1) frame(step);
+    };
+    frame(step);
+  }
+
+
+  let counterTimer = 0;
+  function scanCounters() {
+    clearTimeout(counterTimer);
+    counterTimer = setTimeout(() => {
+      document.querySelectorAll(counterSelector).forEach((el) => {
+        if ("counted" in el.dataset) return;
+        el.dataset.counted = "";
+        const zone = el.closest("[data-panel], [data-results], main");
+        countUp(el, counterKey(el, [...(zone || document).querySelectorAll(counterSelector)].indexOf(el)));
+      });
+    }, 30);
+  }
+  new MutationObserver(scanCounters).observe(document.body, { childList: true, subtree: true });
+  scanCounters();
 
   // ===== Painéis do eleitor e da equipa =====
   const panels = [...document.querySelectorAll(".view-panel")];
@@ -208,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (Date.now() - lastAction > 4000 || !panel.classList.contains("active")) return;
       mutations.forEach((m) => m.addedNodes.forEach((n) => n.nodeType === 1 && queue.push(n)));
       if (queue.length === 0) return;
-      requestAnimationFrame(() => {
+      frame(() => {
         const roots = queue.filter((n) => n.isConnected);
         queue = [];
         if (roots.length) animatePanel(roots);

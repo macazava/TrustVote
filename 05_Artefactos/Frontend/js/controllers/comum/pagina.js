@@ -13,7 +13,19 @@
     }
   }
 
+  // Modo escuro: a escolha guardada ("dark"/"light") ou, sem escolha, o modo do sistema operativo.
+  // O contraste elevado usa sempre o tema claro (é aí que o contraste é máximo).
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const isDark = (prefs = readPrefs()) => !prefs.contrast && (prefs.theme ? prefs.theme === "dark" : systemDark.matches);
+  const applyTheme = (prefs = readPrefs()) => {
+    document.documentElement.dataset.theme = isDark(prefs) ? "dark" : "light";
+  };
+  applyTheme(); // já, antes de a página aparecer, para não piscar em claro
+  systemDark.addEventListener("change", () => applyPrefs());
+
   function applyPrefs(prefs = readPrefs()) {
+    applyTheme(prefs);
+    document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(isDark(prefs))));
     document.documentElement.classList.toggle("large-text", !!prefs.largeText);
     document.body.classList.toggle("high-contrast", !!prefs.contrast);
     document.querySelectorAll("[data-font-toggle]").forEach((b) => b.setAttribute("aria-pressed", String(!!prefs.largeText)));
@@ -29,7 +41,14 @@
     applyPrefs(prefs);
   }
 
-  window.TrustVote.prefs = { read: readPrefs, apply: applyPrefs, save: savePrefs };
+  // Botões "Modo escuro" (topo, painéis, acessibilidade, configuração): um só ouvinte, também para os que chegam depois
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest?.("[data-theme-toggle]")) return;
+    const dark = !isDark();
+    savePrefs({ theme: dark ? "dark" : "light", ...(dark ? { contrast: false } : {}) });
+  });
+
+  window.TrustVote.prefs = { read: readPrefs, apply: applyPrefs, save: savePrefs, isDark };
 })();
 
 document.addEventListener("DOMContentLoaded", () => {

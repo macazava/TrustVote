@@ -138,3 +138,180 @@
     height: 6px;
 }
 
+
+/* ===== Ajuda → Contactos: formulário e contacto direto ===== */
+.contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+}
+
+.contact-form {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.contact-form .field-label {
+    margin: 0 0 var(--space-5);
+}
+
+.contact-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+/* Assunto: etiquetas em forma de pastilha */
+.contact-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    border: 0;
+}
+
+.contact-topics legend {
+    margin-bottom: var(--space-2);
+    padding: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 500;
+}
+
+.contact-topics label {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-field);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.contact-topics input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.contact-topics label:hover {
+    border-color: var(--color-brand-muted);
+}
+
+.contact-topics label:has(input:checked) {
+    border-color: var(--color-brand-fill);
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+}
+
+.contact-topics label:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+.contact-count {
+    align-self: flex-end;
+    color: var(--color-text-subtle);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+.contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+}
+
+.contact-actions small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+/* Cartão escuro com o endereço direto */
+.contact-card {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark-muted);
+    --color-focus: var(--green-200);
+}
+
+.contact-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-md);
+    background: var(--color-on-dark-hover);
+    color: var(--color-on-dark);
+    font-size: var(--text-xl);
+}
+
+.contact-card h2 {
+    margin: 0;
+    color: var(--color-on-dark);
+    font-size: var(--text-xl);
+}
+
+.contact-card p {
+    margin: 0;
+    font-size: var(--text-sm);
+}
+
+.contact-mail {
+    color: var(--color-on-dark);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.contact-card .link-button {
+    color: var(--color-on-dark-muted);
+}
+
+.contact-links {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+    margin: var(--space-4) 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: 1px solid var(--color-on-dark-border);
+    list-style: none;
+    font-size: var(--text-sm);
+}
+
+.contact-links a {
+    color: var(--color-on-dark);
+}
+
+@media (max-width: 1100px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .contact-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .contact-form,
+    .contact-card {
+        padding: var(--space-5);
+    }
+}

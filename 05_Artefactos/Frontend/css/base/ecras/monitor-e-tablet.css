@@ -129,8 +129,8 @@
     }
 
     .side-menu a[aria-current="page"] {
-        border-color: var(--color-heading);
-        background: var(--color-heading);
+        border-color: var(--color-heading-fill);
+        background: var(--color-heading-fill);
         color: var(--color-on-dark);
     }
 

@@ -57,7 +57,8 @@
       votar: (id, n, candidatoId) =>
         post(`/eleicoes/${id}/rondas/${n}/votos`, candidatoId === null ? { branco: true } : { candidato_id: candidatoId }),
       participacao: (id) => get(`/eleicoes/${id}/participacao`),
-      verificarRecibo: (codigo) => get(`/recibos/${encodeURIComponent(codigo)}/verificar`),
+      // Público: qualquer pessoa com o código do recibo pode confirmar que o voto foi contado
+      verificarRecibo: (codigo) => get(`/recibos/${encodeURIComponent(codigo)}/verificar`, { auth: false }),
       resultados: (id) => get(`/eleicoes/${id}/resultados`),
       estatisticas: (id) => get(`/eleicoes/${id}/estatisticas`),
       integridade: (id) => get(`/eleicoes/${id}/integridade`),

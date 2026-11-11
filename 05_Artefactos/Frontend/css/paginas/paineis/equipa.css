@@ -265,3 +265,99 @@
     text-align: center;
 }
 
+
+/* ===== Gráficos interativos ===== */
+/* Linha: o marcador e a legenda ficam por cima do SVG, na posição do ponto (em %) */
+.line-chart-box {
+    position: relative;
+    margin-top: 18px;
+    border-radius: var(--radius-sm);
+    cursor: crosshair;
+}
+
+.line-chart-box .line-chart {
+    display: block;
+    margin-top: 0;
+}
+
+.line-chart .line-chart-area {
+    fill: var(--color-brand-tint);
+    stroke: none;
+}
+
+.chart-marker {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 3px solid var(--color-surface);
+    border-radius: 50%;
+    background: var(--color-heading);
+    box-shadow: 0 0 0 4px var(--color-focus-ring);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.chart-tip {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    min-width: 96px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    transform: translate(12px, calc(-100% - 10px));
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.chart-tip.is-left {
+    transform: translate(calc(-100% - 12px), calc(-100% - 10px));
+}
+
+.chart-tip b {
+    font-size: var(--text-sm);
+}
+
+.chart-tip small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+}
+
+/* Barras e colunas: ao passar o rato, as outras ficam em segundo plano */
+.bar-chart:hover .bar-chart-row:not(:hover),
+.column-chart:hover .column-chart-item:not(:hover) {
+    opacity: 0.5;
+}
+
+.bar-chart-row,
+.column-chart-item {
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+/* "Ver como tabela" por baixo de cada gráfico */
+.chart-table {
+    margin: 4px 0 12px;
+}
+
+.chart-table summary {
+    width: max-content;
+    color: var(--color-brand);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.chart-table .table-scroll {
+    margin-top: 10px;
+    border-radius: var(--radius-sm);
+}
+
+.chart-table tbody th {
+    background: none;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-transform: none;
+}

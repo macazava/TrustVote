@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Quem somos, comissão eleitoral, transparência e contactos do TrustVote.">
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%231f5a45%27/%3E%3Cpath d=%27M9 16.5l4.5 4.5L23 11%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
   <title>Ajuda | TrustVote</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +24,7 @@
   <script defer src="../js/views/formatar.js"></script>
   <script defer src="../js/models/eleicoes.js"></script>
   <script defer src="../js/views/componentes.js"></script>
+  <script defer src="../js/controllers/comum/validacao.js"></script>
   <!-- View: desenho do HTML -->
   <script defer src="../js/views/graficos.js"></script>
   <script defer src="../js/views/publico.js"></script>
@@ -30,6 +32,7 @@
   <script defer src="../js/controllers/comum/menu.js"></script>
   <script defer src="../js/controllers/comum/pagina.js"></script>
   <script defer src="../js/controllers/publico/paginas.js"></script>
+  <script defer src="../js/controllers/publico/contactos.js"></script>
   <script defer src="../js/views/animacoes.js"></script>
 </head>
 
@@ -79,7 +82,6 @@
         </div>
         <p>O TrustVote é a plataforma de votação online das eleições académicas da Universidade: Associação de
           Estudantes, representantes de turma e de curso e núcleos académicos.</p>
-        <p>É um projeto académico feito por estudantes.</p>
       </article>
 
       <article class="section-item" id="contactos" data-item>
@@ -94,10 +96,69 @@
               </svg> Imprimir</button>
           </div>
         </div>
-        <p>Tem dúvidas sobre como votar ou não encontra a sua eleição? Fale com a comissão eleitoral académica.</p>
-        <ul class="section-links">
-          <li><a href="calendario.html#como-votar">Como votar</a></li>
-        </ul>
+        <p>Tem dúvidas sobre como votar ou não encontra a sua eleição? Escreva à comissão eleitoral académica.</p>
+
+        <div class="contact-grid">
+
+          <!-- Formulário: abre a aplicação de e-mail com a mensagem já escrita -->
+          <form class="contact-form" data-contact-form data-email="geral@trustvote.pt">
+            <div class="contact-row">
+              <label class="field-label">
+                Nome
+                <input name="nome" required minlength="2" maxlength="80" autocomplete="name" placeholder="O seu nome">
+              </label>
+              <label class="field-label">
+                E-mail
+                <input name="email" type="email" required maxlength="255" autocomplete="email"
+                  placeholder="nome@exemplo.pt">
+              </label>
+            </div>
+
+            <fieldset class="contact-topics">
+              <legend>Assunto</legend>
+              <label><input type="radio" name="assunto" value="Dúvida sobre como votar" checked> Como votar</label>
+              <label><input type="radio" name="assunto" value="Não encontro a minha eleição"> Não vejo a minha
+                eleição</label>
+              <label><input type="radio" name="assunto" value="Problema com o recibo"> Recibo</label>
+              <label><input type="radio" name="assunto" value="Acesso à conta"> Acesso à conta</label>
+              <label><input type="radio" name="assunto" value="Outro assunto"> Outro</label>
+            </fieldset>
+
+            <label class="field-label">
+              Mensagem
+              <textarea name="mensagem" rows="5" required minlength="10" maxlength="1500"
+                placeholder="Descreva a sua dúvida. Nunca indique em quem votou."></textarea>
+              <span class="contact-count" data-contact-count aria-live="polite">0 / 1500</span>
+            </label>
+
+            <div class="contact-actions">
+              <button class="button button-primary" type="submit"><svg class="icon" aria-hidden="true">
+                  <use href="#i-send"></use>
+                </svg> Enviar mensagem</button>
+              <small>Abre a sua aplicação de e-mail com a mensagem pronta a enviar.</small>
+            </div>
+          </form>
+
+          <!-- Contacto direto -->
+          <aside class="contact-card">
+            <span class="contact-icon"><svg class="icon" aria-hidden="true">
+                <use href="#i-mail"></use>
+              </svg></span>
+            <h2>Comissão Eleitoral Académica</h2>
+            <p>Prefere escrever diretamente? Use este endereço.</p>
+            <a class="contact-mail" href="mailto:geral@trustvote.pt">geral@trustvote.pt</a>
+            <button class="link-button" type="button" data-contact-copy="geral@trustvote.pt"><svg class="icon"
+                aria-hidden="true">
+                <use href="#i-copy"></use>
+              </svg> Copiar endereço</button>
+            <ul class="contact-links">
+              <li><a href="calendario.html#como-votar">Como votar</a></li>
+              <li><a href="verificar.html">Verificar o meu voto</a></li>
+              <li><a href="#perguntas-frequentes">Perguntas frequentes</a></li>
+            </ul>
+          </aside>
+
+        </div>
       </article>
 
       <article class="section-item" id="perguntas-frequentes" data-item>

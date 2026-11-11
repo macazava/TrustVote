@@ -9,6 +9,7 @@
   <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
   <div class="topbar">
     <div class="topbar-inner">
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">${icon("moon", "theme-moon")}${icon("sun", "theme-sun")} Modo escuro</button>
       <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
       <a href="login.html?area=equipa">Área da equipa</a>
     </div>
@@ -74,6 +75,7 @@
         <a href="calendario.html#como-votar">Como votar</a>
         <a href="como-funciona.html">Como funciona</a>
         <a href="resultados.html">Resultados</a>
+        <a href="verificar.html">Verificar o meu voto</a>
       </div>
       <div>
         <b>ELEITOR</b>
