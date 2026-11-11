@@ -8,8 +8,8 @@ Ao encerrar uma ronda, a contagem fica guardada na tabela `resultado` e a ronda
 passa a 'apurada'; a partir daí os resultados são lidos dessa tabela.
 
 Por omissão, o apuramento é feito no próprio pedido que encerra a volta. Com
-APURAMENTO=worker, quem encerra só fecha a votação ('encerrada') e pede o apuramento
-pela fila do Redis, que as tarefas automáticas (app/tarefas.py) acabam por tratar.
+APURAMENTO=worker, quem encerra só fecha a votação ('encerrada') e as tarefas
+automáticas (app/tarefas.py) apuram-na no ciclo seguinte.
 """
 
 import os

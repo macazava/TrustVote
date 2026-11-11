@@ -60,7 +60,7 @@
       ano: new Date(inicio || eleicao.data_criacao || Date.now()).getFullYear(),
       estadoLabel: statusLabels[eleicao.estado] || String(eleicao.estado).toUpperCase(),
       periodo: period(inicio, fim),
-      voltaLabel: ronda ? `${ronda.numero === 2 ? "2.ª" : "1.ª"} volta · ${ronda.estado}` : "Sem ronda definida",
+      voltaLabel: ronda ? `${TV.format.volta(ronda.numero)} · ${ronda.estado}` : "Sem ronda definida",
       candidatosRonda: candidatos,
     };
   }
@@ -112,5 +112,5 @@
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   }
 
-  TV.elections = { statusLabels, orgaoLabels, candidateInfo, currentRound, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput };
+  TV.elections = { statusLabels, orgaoLabels, candidateInfo, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput };
 })();

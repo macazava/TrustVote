@@ -37,7 +37,6 @@
 /* ===== Cantos grandes (--radius-lg): superfícies ===== */
 .dash-card,
 .auth-card,
-.election-card,
 .election-row,
 .hub-card,
 .manager-card,
@@ -51,7 +50,6 @@
 .candidate-list label,
 .candidate-grid article,
 .platform-grid article,
-.history-rows .year,
 .photo-panel img,
 .press-news article,
 .press-hero,
@@ -60,7 +58,6 @@
 }
 
 /* Recortes: o conteúdo segue os cantos do contentor */
-.election-card,
 .role-switch,
 .steps-card,
 .timeline {
@@ -79,7 +76,6 @@
 /* ===== Elevação ===== */
 .dash-card,
 .badge-card,
-.election-card,
 .hub-card,
 .manager-card,
 .metric-card,

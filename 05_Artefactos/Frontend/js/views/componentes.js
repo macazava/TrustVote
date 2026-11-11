@@ -233,5 +233,8 @@
       : "";
 
   TV.ui = ui;
-  TV.blocks = { head, cardHead, okLabel, stateBadge, calendarButton };
+  // Uma linha de ficha de dados (<dl>): rótulo em cima, valor em baixo
+  const campo = (rotulo, valor) => `<div><dt>${rotulo}</dt><dd>${valor}</dd></div>`;
+
+  TV.blocks = { head, cardHead, okLabel, stateBadge, calendarButton, campo };
 })();

@@ -302,14 +302,10 @@
 }
 
 /* ===== Votação aberta: quando saem os resultados ===== */
-.results-pending,
-.results-login {
+.results-pending {
     display: flex;
     align-items: flex-start;
     gap: var(--space-4);
-}
-
-.results-pending {
     padding: var(--space-5);
     border-radius: var(--radius-md);
     background: var(--color-surface-sunken);
@@ -400,8 +396,10 @@ p.results-countdown {
 
 /* Página pública sem sessão: convite para ver os resultados por candidatura */
 .results-login {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: var(--space-4);
 }
 
 .results-login > div {

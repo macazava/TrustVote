@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
-from app import cache
 from app.database import apagar, gravar
 from app.erros import EstadoInvalidoError, NaoEncontradoError
 from app.models.eleicao import Eleicao
@@ -185,17 +184,13 @@ def encerrar_eleicao(sessao: Session, eleicao_id: int) -> tuple[Eleicao, int | N
     if eleicao.estado != "em_curso":
         raise EstadoInvalidoError("Só é possível encerrar eleições em curso.")
     invalidos = 0
-    por_apurar = []
     # Bloqueia as rondas: espera pelos votos em curso antes de os contar.
     for ronda in repositorio_ronda.listar(sessao, eleicao_id=eleicao.id, bloquear=True):
         if ronda.estado in ("aberta", "encerrada"):
             ronda.estado = "encerrada"
-            if apuramento.NO_WORKER:
-                por_apurar.append(ronda.id)
-            else:
+            # Com APURAMENTO=worker fica só fechada: as tarefas automáticas apuram-na
+            if not apuramento.NO_WORKER:
                 invalidos += apurar_ronda(sessao, ronda).invalidos
     eleicao.estado = "encerrada"
     gravar(sessao, eleicao)
-    for ronda_id in por_apurar:
-        cache.pedir_apuramento(ronda_id)
     return eleicao, None if apuramento.NO_WORKER else invalidos

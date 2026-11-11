@@ -142,15 +142,6 @@
       ${dataTable(label, ["Eleição", "Participação", "Detalhe"], colunas.map((c) => [c.nome, percent(c.valor), c.detalhe || ""]))}`;
   }
 
-  // Barras simples (resultados nas páginas públicas e na área do eleitor)
-  const resultRow = (c) => `
-    <div class="result-row">
-      <span>${escapeHtml(c.nome)}</span>
-      <div class="bar"><i style="width:${Math.min(100, c.percentagem || 0)}%"></i></div>
-      <b>${percent(c.percentagem)}</b>
-      <small>${number(c.total_votos)} votos</small>
-    </div>`;
-
   // Linha por baixo dos resultados de uma volta: brancos, participação, quórum e votos excluídos
   const roundSummary = (r) =>
     `<p class="muted round-summary">${[
@@ -163,5 +154,5 @@
       .filter(Boolean)
       .join(" · ")}</p>`;
 
-  window.TrustVote.charts = { lineChart, barChart, columnChart, resultRow, roundSummary };
+  window.TrustVote.charts = { lineChart, barChart, columnChart, roundSummary };
 })();

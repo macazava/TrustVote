@@ -1,12 +1,11 @@
-"""Ligação ao Redis: sessões terminadas, limite de tentativas de login e fila de apuramento.
+"""Ligação ao Redis: sessões terminadas e limite de tentativas (login e envios).
 
 No Docker há dois Redis (um em cada servidor) vigiados por três Sentinels: a API
 pergunta aos Sentinels (REDIS_SENTINELS) qual é o principal, por isso continua a
 funcionar quando um servidor cai e a réplica é promovida. Fora do Docker pode
 ligar-se a um Redis só (REDIS_HOST). Sem nenhum dos dois, estas funções não fazem nada. Se o Redis falhar, a API
 continua a funcionar: perde-se só o logout imediato e o limite de tentativas,
-nunca a votação. Um pedido de apuramento perdido é apanhado pelo worker na
-verificação periódica.
+nunca a votação.
 
 Com o Redis em baixo (ex.: o Servidor 1 parado), cada tentativa de ligação pode
 custar segundos só no DNS. Por isso, depois da primeira falha, a API deixa de o
@@ -165,30 +164,3 @@ def contar_envio(nome: str, janela: int) -> int:
 
     return int(_executar(operacao, 0) or 0)
 
-
-# ===== Fila de apuramento (API → worker) =====
-FILA_APURAMENTO = "tv:fila:apuramento"
-
-# Ligação própria do worker: o BLPOP espera até ESPERA_MAXIMA segundos, por isso a
-# leitura tem de aguentar mais do que isso (senão o cliente desiste quando o Redis
-# responde "fila vazia" e o worker perde o pedido seguinte).
-ESPERA_MAXIMA = 30
-_cliente_fila = _novo_cliente(socket_connect_timeout=2, socket_timeout=ESPERA_MAXIMA + 5)
-
-
-def pedir_apuramento(ronda_id: int) -> None:
-    _executar(lambda r: r.rpush(FILA_APURAMENTO, ronda_id))
-
-
-def esperar_apuramento(segundos: int) -> int | None:
-    """Espera até `segundos` por um pedido de apuramento; devolve o id da ronda."""
-    if _cliente_fila is None:
-        time.sleep(segundos)
-        return None
-    try:
-        item = _cliente_fila.blpop([FILA_APURAMENTO], timeout=min(segundos, ESPERA_MAXIMA))
-    except redis.RedisError as erro:
-        log.warning("Fila de apuramento indisponível: %s", erro)
-        time.sleep(segundos)
-        return None
-    return int(item[1]) if item else None

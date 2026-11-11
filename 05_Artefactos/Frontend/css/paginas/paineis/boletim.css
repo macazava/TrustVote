@@ -1,40 +1,4 @@
-/* Área do eleitor: listas de candidatos e boletim de voto */
-
-/* ===== Listas ===== */
-.check-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.check-list li {
-    display: grid;
-    grid-template-columns: 40px 1fr auto;
-    align-items: center;
-    gap: 6px 16px;
-    padding: 18px 0;
-    border-top: 1px solid var(--color-border);
-}
-
-.check-list b {
-    font-size: var(--text-base);
-}
-
-.check-list small {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-}
-
-.check-list li>i {
-    grid-row: 1 / span 2;
-    grid-column: 3;
-    color: var(--color-text-muted);
-    font-style: normal;
-}
-
-.check-list .check-box {
-    grid-row: span 2;
-}
+/* Área do eleitor: boletim de voto */
 
 .empty-box {
     display: grid;
@@ -45,30 +9,6 @@
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     text-align: center;
-}
-
-.history-rows>div {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 18px 0;
-    border-top: 1px solid var(--color-border);
-}
-
-.history-rows>div>span:nth-child(2) {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.history-rows b {
-    font-size: var(--text-base);
-}
-
-.history-rows small {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
 }
 
 .year {
@@ -403,7 +343,6 @@
 .qr-code-fg {
     fill: var(--color-qr-dark);
 }
-
 
 /* Voto depositado: descarregar o recibo em PDF e copiar o código, lado a lado */
 .ballot-done-actions {

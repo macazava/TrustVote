@@ -70,7 +70,7 @@
       y -= 48;
     };
     campo("Eleição", r.eleicao_titulo || `Eleição #${r.eleicao_id}`);
-    campo("Volta", r.ronda === 2 ? "2.ª volta" : "1.ª volta");
+    campo("Volta", TV.format.volta(r.ronda));
     campo("Data e hora do voto", dataCompleta(r.data));
 
     if (!comRecibo) {

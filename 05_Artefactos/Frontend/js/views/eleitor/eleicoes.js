@@ -57,9 +57,8 @@
   const verCalendario = { label: "Ver calendário eleitoral", href: "calendario.html" };
 
   // ===== Separador "Eleições": a decorrer e agendadas em cima, histórico em baixo =====
-  const { dateTime, number, percent } = TV.format;
-  const plural = (n, um, varios) => `${number(n)} ${n === 1 ? um : varios}`;
-  const nomeVolta = (e) => (e.ronda ? (e.ronda.numero === 2 ? "2.ª volta" : "1.ª volta") : "Sem volta definida");
+  const { dateTime, number, percent, plural, volta } = TV.format;
+  const nomeVolta = (e) => (e.ronda ? volta(e.ronda.numero) : "Sem volta definida");
 
   // Quanto do período de votação já passou (0–100)
   const decorrido = (e) => {
@@ -163,7 +162,6 @@
         </div>
       </li>`;
   };
-  const ficha = (rotulo, valor) => `<div><dt>${rotulo}</dt><dd>${valor}</dd></div>`;
 
   const detailsPage = (e) => `
     <button class="link-button el-back" type="button" data-back>${TV.icon("arrow-left")} Voltar às eleições</button>
@@ -183,11 +181,11 @@
           <div class="el-item-top">${statusLine(e)}</div>
           <h2>Dados da eleição</h2>
           <dl class="el-sheet">
-            ${ficha("Volta", nomeVolta(e))}
-            ${ficha("Abertura", e.inicio ? dateTime(e.inicio) : "—")}
-            ${ficha("Encerramento", e.fim ? dateTime(e.fim) : "—")}
+            ${TV.blocks.campo("Volta", nomeVolta(e))}
+            ${TV.blocks.campo("Abertura", e.inicio ? dateTime(e.inicio) : "—")}
+            ${TV.blocks.campo("Encerramento", e.fim ? dateTime(e.fim) : "—")}
             ${e.quorum ? ficha("Quórum", `${percent(e.quorum)} dos eleitores`) : ""}
-            ${ficha("O seu voto", e.votou ? "Registado" : e.aberta ? "Por depositar" : "—")}
+            ${TV.blocks.campo("O seu voto", e.votou ? "Registado" : e.aberta ? "Por depositar" : "—")}
           </dl>
           ${(e.aberta && !e.votou) || e.estado === "agendada" ? `<p class="el-time">${timeInfo(e)}</p>` : ""}
           <div class="el-details-actions">

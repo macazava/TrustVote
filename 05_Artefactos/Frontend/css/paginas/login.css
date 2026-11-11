@@ -82,19 +82,13 @@
 }
 
 .role-switch,
-.mode-switch {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin-bottom: 14px;
-    border: 1px solid var(--color-border);
-}
-
+/* "Iniciar sessão" / "Criar conta": os botões ficam escondidos; o modo muda pelos links
+   por baixo do formulário, que os clicam (controllers/login/autenticacao.js) */
 .mode-switch {
     display: none;
 }
 
-.role-switch button,
-.mode-switch button {
+.role-switch button {
     padding: 17px;
     border: 0;
     background: var(--color-surface-sunken);
@@ -103,8 +97,7 @@
     font-weight: 600;
 }
 
-.role-switch button.active,
-.mode-switch button.active {
+.role-switch button.active {
     background: var(--color-heading-fill);
     color: var(--color-on-dark);
 }

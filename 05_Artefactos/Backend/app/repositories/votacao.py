@@ -56,14 +56,6 @@ def data_participacao(sessao: Session, ronda_id: int, utilizador_id: int) -> dat
     )
 
 
-def ja_votou(sessao: Session, ronda_id: int, utilizador_id: int) -> bool:
-    consulta = select(Participacao.id).where(
-        Participacao.ronda_id == ronda_id,
-        Participacao.utilizador_id == utilizador_id,
-    )
-    return sessao.scalar(consulta) is not None
-
-
 def obter_voto_por_hash(sessao: Session, hash_voto: str) -> Voto | None:
     return sessao.scalar(select(Voto).where(Voto.hash == hash_voto))
 

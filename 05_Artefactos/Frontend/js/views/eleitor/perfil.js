@@ -26,17 +26,16 @@
     </section>`;
 
   // ===== Dados pessoais: ficha só de leitura (os dados vêm da instituição) =====
-  const linhaDado = (rotulo, valor) => `<div><dt>${rotulo}</dt><dd>${valor}</dd></div>`;
   const personal = (user) =>
     card(`
       ${cabeca("DADOS PESSOAIS", "Identificação")}
       <dl class="profile-data">
-        ${linhaDado("Nome de utilizador", escapeHtml(user.nome))}
-        ${linhaDado("E-mail", escapeHtml(user.email))}
-        ${linhaDado("Número de estudante", escapeHtml(voterNumber(user)))}
-        ${linhaDado("Curso", escapeHtml(user.curso || "—"))}
-        ${linhaDado("Conta criada a", user.data_registo ? date(user.data_registo) : "—")}
-        ${linhaDado("Estado", user.ativo === false ? "Suspensa" : "Ativa")}
+        ${TV.blocks.campo("Nome de utilizador", escapeHtml(user.nome))}
+        ${TV.blocks.campo("E-mail", escapeHtml(user.email))}
+        ${TV.blocks.campo("Número de estudante", escapeHtml(voterNumber(user)))}
+        ${TV.blocks.campo("Curso", escapeHtml(user.curso || "—"))}
+        ${TV.blocks.campo("Conta criada a", user.data_registo ? date(user.data_registo) : "—")}
+        ${TV.blocks.campo("Estado", user.ativo === false ? "Suspensa" : "Ativa")}
       </dl>
       <p class="profile-note">${TV.icon("info")}<span>Os dados vêm dos registos da instituição. Para corrigir algum, <a href="ajuda.html#contactos">contacte a comissão eleitoral</a>.</span></p>`);
 

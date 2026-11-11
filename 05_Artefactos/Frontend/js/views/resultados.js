@@ -5,11 +5,9 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { escapeHtml, number, percent, dateTime, period, initials, countdown } = TV.format;
+  const { escapeHtml, number, percent, dateTime, period, initials, countdown, volta, plural } = TV.format;
   const { stateBadge } = TV.blocks;
 
-  const volta = (n) => (n === 2 ? "2.ª volta" : "1.ª volta");
-  const plural = (n, um, varios) => `${number(n)} ${n === 1 ? um : varios}`;
 
   // Aceita a eleição da API (data_inicio/data_fim) ou a já preparada pelo modelo (inicio/fim/periodo)
   const fimDe = (e) => e.fim || e.data_fim || null;

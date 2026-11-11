@@ -23,13 +23,9 @@
 .manager-card h2 {
     margin: 0;
     padding: 26px 16px 0;
-    color: var(--color-text);
+    color: var(--color-heading);
     font-size: var(--text-2xl);
     font-weight: 500;
-}
-
-.manager-card h2 {
-    color: var(--color-heading);
 }
 
 .side-menu h2::after,
@@ -190,4 +186,80 @@
     font-size: clamp(2.5rem, 4.6vw, 3.5rem);
     font-weight: 600;
     letter-spacing: -0.02em;
+}
+/* ===== Ajuda → Quem somos: a equipa ===== */
+.team-title {
+    margin: 46px 0 0;
+    color: var(--color-heading);
+    font-size: var(--text-3xl);
+    font-weight: 500;
+}
+
+.team-title::after {
+    display: block;
+    width: 28px;
+    height: 2px;
+    margin: 14px 0 0;
+    background: var(--color-indicator);
+    content: "";
+}
+
+.team-grid {
+    display: grid;
+    /* auto-fit: 4 colunas em computador, 2 em ecrãs estreitos */
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 24px 20px;
+    margin: 26px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.team-grid li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Todas no mesmo formato (4:5), recortadas à volta da cara */
+.team-photo {
+    display: block;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-sunken);
+}
+
+.team-grid img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 35%;
+}
+
+.team-grid .is-foco-direita img {
+    object-position: 78% 50%;
+}
+
+/* Fotografias de corpo inteiro: aproximadas à cara */
+.team-grid .is-perto-camila img {
+    object-position: 50% 55%;
+    transform: scale(1.8);
+    transform-origin: 42% 46%;
+}
+
+.team-grid .is-perto-taha img {
+    transform: scale(1.3);
+    transform-origin: 58% 40%;
+}
+
+.team-grid b {
+    color: var(--color-heading);
+    font-size: var(--text-base);
+}
+
+.team-grid small {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }

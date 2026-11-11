@@ -37,13 +37,9 @@
 .press-bar p,
 .press-bar a {
     margin: 0;
-    color: var(--color-text);
+    color: var(--color-brand);
     font-size: var(--text-sm);
     line-height: 1.6;
-}
-
-.press-bar a {
-    color: var(--color-brand);
 }
 
 .press-featured {

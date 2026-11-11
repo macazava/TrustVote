@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Inclinação 3D ao passar o cursor =====
-  const tiltSelector = ".steps-card, .hub-card, .platform-grid > article, .candidate-grid > article, .press-news > article, .election-card, .metric-card, .receipt-card";
+  const tiltSelector = ".steps-card, .hub-card, .platform-grid > article, .candidate-grid > article, .press-news > article, .metric-card";
   if (finePointer) {
     document.addEventListener("pointermove", (event) => {
       const card = event.target.closest?.(tiltSelector);
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== Números que contam até ao valor real (participação, votos, percentagens) =====
   // Na primeira vez sobem desde 0; nas atualizações automáticas passam do valor anterior para o novo.
-  const counterSelector = ".metric-card > b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .result-row > b, .profile-numbers b";
+  const counterSelector = ".metric-card > b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .profile-numbers b";
   const lastValues = new Map();
   const numberPattern = /^(\s*)(\d{1,3}(?:[\s  .]?\d{3})*(?:,\d+)?)(.*)$/s;
 
@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const panels = [...document.querySelectorAll(".view-panel")];
   if (!panels.length) return;
 
-  const panelTargets = ".dash-card, .election-card, .metric-card, .badge-card, .receipt-card, .candidate-list > label, .result-row, tbody tr";
+  const panelTargets = ".dash-card, .metric-card, .badge-card, .candidate-list > label, tbody tr";
   // Só anima o que muda por ação do utilizador; as atualizações automáticas (ex.: a cada 20 s) ficam paradas
   let lastAction = Date.now();
   ["pointerdown", "keydown", "submit"].forEach((type) => document.addEventListener(type, () => (lastAction = Date.now()), true));

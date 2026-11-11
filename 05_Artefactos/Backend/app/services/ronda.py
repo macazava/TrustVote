@@ -2,7 +2,6 @@
 
 from sqlalchemy.orm import Session
 
-from app import cache
 from app.database import gravar
 from app.erros import (
     DadosInvalidosError,
@@ -133,10 +132,9 @@ def fechar_e_apurar(sessao: Session, ronda: Ronda) -> Contagem:
 
 
 def fechar_para_o_worker(sessao: Session, ronda: Ronda) -> None:
-    """Fecha a votação da ronda e pede o apuramento ao worker."""
+    """Fecha a votação da ronda; as tarefas automáticas (app/tarefas.py) apuram-na a seguir."""
     ronda.estado = "encerrada"
     gravar(sessao, ronda)
-    cache.pedir_apuramento(ronda.id)
 
 
 def encerrar_ronda(

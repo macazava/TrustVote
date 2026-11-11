@@ -105,39 +105,6 @@
     max-width: 800px;
 }
 
-.result-row {
-    display: grid;
-    grid-template-columns: auto minmax(120px, 1fr) 2fr 70px;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 0;
-    font-size: var(--text-sm);
-}
-
-.result-row:not(:has(.avatar)) {
-    grid-template-columns: minmax(120px, 1fr) 2fr 70px 90px;
-}
-
-.result-row b {
-    text-align: right;
-}
-
-.result-row small {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    text-align: right;
-}
-
-.result-row .avatar {
-    width: 46px;
-    height: 46px;
-    font-size: var(--text-sm);
-}
-
-.result-row .bar {
-    height: 6px;
-}
-
 /* ===== Ajuda → Contactos: formulário e contacto direto ===== */
 .contact-grid {
     display: grid;

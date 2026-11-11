@@ -75,62 +75,6 @@ body[data-page="admin"] .dashboard-content h1 {
     background: var(--color-brand);
 }
 
-/* ===== Cartão da eleição ===== */
-.election-card {
-    margin-top: 32px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-}
-
-.election-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-}
-
-.election-card-top b {
-    color: var(--color-text);
-}
-
-.election-card-body {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    padding: 36px 30px;
-}
-
-.election-card-body>div:nth-child(2) {
-    flex: 1;
-}
-
-.election-card-body small {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.04em;
-}
-
-.election-card-body h2 {
-    margin: 6px 0 8px;
-    font-size: var(--text-3xl);
-}
-
-.election-card-body p {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: var(--text-base);
-}
-
-.election-card-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
 .steps-track {
     display: flex;
     align-items: center;
@@ -182,12 +126,6 @@ body[data-page="admin"] .dashboard-content h1 {
     margin: 0;
     border: 0;
     background: var(--color-border);
-}
-/* "Adicionar ao calendário" fica numa linha própria, por baixo dos botões */
-.election-card-actions .link-button {
-    flex-basis: 100%;
-    justify-content: flex-end;
-    font-size: var(--text-sm);
 }
 
 /* ===== Separador Ajuda do eleitor ===== */

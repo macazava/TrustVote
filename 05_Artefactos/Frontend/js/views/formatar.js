@@ -47,5 +47,10 @@
   const slug = (texto) =>
     texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-  TV.format = { escapeHtml, number, percent, dateTime, fullDate, date, time, period, initials, voterNumber, countdown, slug };
+  // "1.ª volta" / "2.ª volta"
+  const volta = (n) => (n === 2 ? "2.ª volta" : "1.ª volta");
+  // "1 voto" / "3 votos" (o número já formatado)
+  const plural = (n, um, varios) => `${number(n)} ${n === 1 ? um : varios}`;
+
+  TV.format = { escapeHtml, number, percent, dateTime, fullDate, date, time, period, initials, voterNumber, countdown, slug, volta, plural };
 })();

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!form || !result) return;
   const input = form.elements.codigo;
 
-  const volta = (n) => (n === 2 ? "2.ª volta" : "1.ª volta");
+  const { volta } = window.TrustVote.format;
   const check = (ok, text) => `<li class="${ok ? "is-ok" : "is-bad"}">${icon(ok ? "circle-check" : "circle-alert")} ${text}</li>`;
 
   // Três respostas possíveis: incluído, encontrado mas alterado, ou não encontrado

@@ -139,7 +139,7 @@
     return data;
   }
 
-  Object.assign(TV, { pageUrl, ApiError, request });
+  Object.assign(TV, { pageUrl, request });
   // Endereço em uso neste momento (muda se um nginx falhar)
   Object.defineProperty(TV, "base", { get: () => bases[atual], enumerable: true });
 })();

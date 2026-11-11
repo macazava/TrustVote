@@ -3,12 +3,11 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { escapeHtml, dateTime } = TV.format;
-  const { head } = TV.blocks;
+  const { escapeHtml, dateTime, volta } = TV.format;
+  const { head, campo } = TV.blocks;
   const v = (TV.voterView = TV.voterView || {});
 
   // ===== Recibos =====
-  const volta = (n) => (n === 2 ? "2.ª volta" : "1.ª volta");
   const titulo = (r) => escapeHtml(r.eleicao_titulo || `Eleição #${r.eleicao_id}`);
 
   // Página: os documentos à esquerda e, ao lado, o que é cada um e porque o voto continua secreto
@@ -47,9 +46,6 @@
       ${nComprovativos ? `<span>${TV.icon("circle-check")} <b>${nComprovativos}</b> ${nComprovativos === 1 ? "comprovativo" : "comprovativos"} de participação</span>` : ""}
     </div>`;
 
-  // Linha de dados do documento (rótulo em cima, valor em baixo)
-  const dado = (rotulo, valor) => `<div><dt>${rotulo}</dt><dd>${valor}</dd></div>`;
-
   // Votou, mas o recibo não está neste navegador (o servidor nunca guarda recibos):
   // mostra o comprovativo de participação que o servidor conhece — eleição, volta e data, sem a escolha
   const participationCard = (c, i) => `
@@ -60,9 +56,9 @@
         <span class="status-pill"><i></i> VOTO REGISTADO</span>
       </header>
       <dl class="receipt-doc-data">
-        ${dado("Volta", volta(c.ronda))}
-        ${dado("Data do voto", c.data ? dateTime(c.data) : "—")}
-        ${dado("Escolha", "Não incluída")}
+        ${campo("Volta", volta(c.ronda))}
+        ${campo("Data do voto", c.data ? dateTime(c.data) : "—")}
+        ${campo("Escolha", "Não incluída")}
       </dl>
       <p class="receipt-doc-note">${TV.icon("info")} Confirma que votou nesta eleição, mas não indica em quem.</p>
       <footer class="receipt-doc-actions">
@@ -91,9 +87,9 @@
         <span class="status-pill status-plain" data-verify-status="${i}"><i></i> DEPOSITADO</span>
       </header>
       <dl class="receipt-doc-data">
-        ${dado("Volta", volta(r.ronda))}
-        ${dado("Data do voto", dateTime(r.data))}
-        ${dado("Escolha", "Não incluída")}
+        ${campo("Volta", volta(r.ronda))}
+        ${campo("Data do voto", dateTime(r.data))}
+        ${campo("Escolha", "Não incluída")}
       </dl>
       <div class="receipt-doc-code">
         <div><small>CÓDIGO DO RECIBO</small><b>${escapeHtml(r.recibo)}</b></div>
@@ -113,7 +109,7 @@
     `<i></i> ${!resposta.valido ? "NÃO ENCONTRADO" : resposta.incluido ? "INCLUÍDO E VERIFICADO" : "VOTO ALTERADO"}`;
   const verifyChecks = (resposta) =>
     resposta.valido
-      ? `<span>${TV.icon("check")} Voto registado</span><span>${resposta.incluido ? `${TV.icon("check")} Incluído na contagem` : `${TV.icon("circle-alert")} Selo de integridade inválido — contacte a comissão eleitoral`}</span><span>${TV.icon("check")} ${resposta.ronda === 2 ? "2.ª" : "1.ª"} volta</span>`
+      ? `<span>${TV.icon("check")} Voto registado</span><span>${resposta.incluido ? `${TV.icon("check")} Incluído na contagem` : `${TV.icon("circle-alert")} Selo de integridade inválido — contacte a comissão eleitoral`}</span><span>${TV.icon("check")} ${volta(resposta.ronda)}</span>`
       : "";
 
   // O recibo descarregado é um PDF (js/views/recibo-pdf.js)
