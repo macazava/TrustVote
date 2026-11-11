@@ -1,50 +1,10 @@
--- TrustVote — criação da base de dados (ficheiro único).
+-- TrustVote — tabelas da base de dados (corre uma vez, quando o volume do PostgreSQL está vazio).
 --
--- O Docker corre-o uma vez, quando o volume do PostgreSQL está vazio (montado em
--- /docker-entrypoint-initdb.d/ pelo Infraestrutura/comum.yaml), como superutilizador e
--- através do psql. Faz três coisas, por esta ordem:
---   1. contas: `trustvote` (usada pela API, dona das tabelas) e o utilizador de replicação;
---   2. autoriza a réplica a ligar-se (linha no pg_hba.conf);
---   3. as tabelas, criadas já como `trustvote` (a partir de "SET ROLE trustvote").
---
--- Os testes (app/testes/conftest.py) só leem a parte 3, a partir da linha do SET ROLE.
--- Numa base de dados que já existe este ficheiro não volta a correr.
+-- Montado pelo Infraestrutura/compose.yaml em /docker-entrypoint-initdb.d/, depois de:
+--   00-replication.sh       (Infraestrutura/docker/postgres/initdb) — utilizador de replicação;
+--   10-trustvote-user.sql   (00-trustvote-user.sql, nesta pasta) — conta "trustvote", dona das tabelas.
+-- Alterações posteriores ao esquema: migrações em basedados/migracoes/ (aplicadas pela API ao arrancar).
 
--- ============================================
--- 1. CONTAS (passwords lidas do ambiente do contentor)
--- ============================================
-\set ON_ERROR_STOP on
-\getenv trustvote_password TRUSTVOTE_DB_PASSWORD
-\getenv repl_user REPLICATION_USER
-\getenv repl_password REPLICATION_PASSWORD
-
-SELECT format('CREATE ROLE trustvote WITH LOGIN PASSWORD %L', :'trustvote_password')
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'trustvote')
-\gexec
-
-SELECT format('CREATE ROLE %I WITH REPLICATION LOGIN PASSWORD %L', :'repl_user', :'repl_password')
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'repl_user')
-\gexec
-
-ALTER DATABASE trustvote OWNER TO trustvote;
-GRANT CONNECT ON DATABASE trustvote TO trustvote;
-GRANT USAGE, CREATE ON SCHEMA public TO trustvote;
-
--- ============================================
--- 2. REPLICAÇÃO: a réplica liga-se a partir da rede Docker ("samenet")
--- ============================================
--- O pg_hba.conf não se altera por SQL; o COPY ... TO PROGRAM acrescenta a linha ao
--- ficheiro, e o PostgreSQL lê-o quando o Docker o arranca a seguir à criação.
-SELECT format(
-    'COPY (SELECT %L) TO PROGRAM %L',
-    format('host replication %s samenet scram-sha-256', :'repl_user'),
-    format('cat >> %s', current_setting('hba_file'))
-)
-\gexec
-
--- ============================================
--- 3. TABELAS
--- ============================================
 SET ROLE trustvote;
 
 CREATE TABLE utilizador (
@@ -57,6 +17,8 @@ CREATE TABLE utilizador (
     ut_perfil VARCHAR(20) NOT NULL DEFAULT 'eleitor',
     ut_ativo BOOLEAN DEFAULT TRUE,
     ut_datareg TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    ut_totp_secret VARCHAR(64),
+    ut_totp_ativo BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT ut_ck_perfil CHECK (ut_perfil IN ('eleitor', 'administrador')),
     CONSTRAINT ut_ck_num_estudante CHECK (ut_num_estudante ~ '^[A-Za-z0-9]{4,20}$')
 );

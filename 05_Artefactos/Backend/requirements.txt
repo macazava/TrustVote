@@ -13,3 +13,5 @@ python-dotenv==1.2.4
 # Segurança: JWT (HS256) e hashes Argon2
 PyJWT==2.7.0
 pwdlib[argon2]==0.3.1
+# Autenticação de dois fatores (códigos TOTP, RFC 6238)
+pyotp==2.9.0

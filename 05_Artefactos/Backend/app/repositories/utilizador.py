@@ -56,3 +56,14 @@ def criar(
     sessao.commit()
     sessao.refresh(utilizador)
     return utilizador
+
+
+def guardar_totp(
+    sessao: Session, utilizador: Utilizador, segredo: str | None, ativo: bool
+) -> Utilizador:
+    """Guarda o segredo e o estado da autenticação de dois fatores do utilizador."""
+    utilizador.totp_secret = segredo
+    utilizador.totp_ativo = ativo
+    sessao.commit()
+    sessao.refresh(utilizador)
+    return utilizador

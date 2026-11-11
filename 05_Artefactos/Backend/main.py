@@ -2,13 +2,14 @@ import asyncio
 import contextlib
 import os
 
+import uvicorn
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from app import cache, tarefas
+from app import cache, migracoes, tarefas
 from app.database import engine
 from app.erros import registar_tratadores
 from app.routers.auditoria_routers import auditoria_routers
@@ -23,7 +24,12 @@ from app.routers.votacao_routers import votacao_routers
 
 @contextlib.asynccontextmanager
 async def ciclo_de_vida(_app: FastAPI):
-    """Arranca as tarefas automáticas (app/tarefas.py) enquanto a API corre."""
+    """Aplica as migrações em falta e arranca as tarefas automáticas (app/tarefas.py).
+
+    As migrações correm aqui porque a infraestrutura não tem um serviço próprio para elas:
+    com duas instâncias, o lock na BD (app/migracoes.py) garante que só uma as aplica.
+    """
+    await asyncio.to_thread(migracoes.aplicar, engine)
     tarefa = asyncio.create_task(tarefas.correr_para_sempre()) if tarefas.INTERVALO > 0 else None
     yield
     if tarefa:
@@ -36,23 +42,25 @@ async def ciclo_de_vida(_app: FastAPI):
 # (/docs) e o "Try it out" usam-no para os pedidos chegarem à API e não ao site.
 app = FastAPI(title="TrustVote API", lifespan=ciclo_de_vida, root_path=os.getenv("API_PREFIXO", ""))
 
-# O site é servido pela entrada (8080) e pelos dois nginx (8081/8082). Cada página chama a
-# API da sua origem; as outras só servem de recurso, e por isso também estão autorizadas.
+# O site e a API partilham a origem do nginx (HTTPS na porta 8443), por isso o CORS só é
+# preciso para o Live Server (5500) e para quem abre a API diretamente.
 CORS_ORIGINS = os.getenv(
     "CORS_ORIGINS",
-    ",".join(f"http://{anfitriao}:{porta}" for porta in (8080, 8081, 8082) for anfitriao in ("127.0.0.1", "localhost")),
+    ",".join(
+        [f"{esquema}://{anfitriao}:{porta}" for esquema, porta in (("https", 8443), ("http", 8080)) for anfitriao in ("127.0.0.1", "localhost")]
+        + ["http://127.0.0.1:5500", "http://localhost:5500"]
+    ),
 ).split(",")
 
-# Com ".\stack.cmd up -Rede" o site também é aberto pelo IP do PC na rede local (ex.: num
-# telemóvel): aceitam-se só endereços privados (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
-REDE_LOCAL = r"http://(192\.168|10\.\d+|172\.(1[6-9]|2\d|3[01]))\.\d+\.\d+:808[0-2]"
+# Site aberto pelo IP do PC na rede local (192.168.x.x, 10.x.x.x, 172.16-31.x.x).
+REDE_LOCAL = r"https?://(192\.168|10\.\d+|172\.(1[6-9]|2\d|3[01]))\.\d+\.\d+:(8443|8080|5500)"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origem.strip() for origem in CORS_ORIGINS if origem.strip()],
     allow_origin_regex=REDE_LOCAL,
-    allow_methods=["GET", "POST", "PATCH", "DELETE"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 # Converte os erros de negócio definidos em app/erros.py em respostas HTTP.
@@ -97,3 +105,7 @@ def health() -> JSONResponse:
             ),
         },
     )
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8001)

@@ -8,6 +8,9 @@ from app.schemas.autenticacao import (
     AlterarPassword,
     LoginPedido,
     TokenResposta,
+    TotpCodigoPedido,
+    TotpConfiguracaoResposta,
+    TotpEstadoResposta,
     UtilizadorCriar,
     UtilizadorDetalhe,
     UtilizadorResposta,
@@ -90,3 +93,32 @@ def alterar_password(
     """Muda a palavra-passe da própria conta."""
     servico_autenticacao.alterar_password(sessao, utilizador, dados.atual, dados.nova)
     auditar("Palavra-passe alterada", "utilizador", utilizador.id)
+
+
+@auth_routers.post("/totp/configurar", response_model=TotpConfiguracaoResposta)
+def totp_configurar(
+    utilizador: Utilizador = Depends(utilizador_atual),
+    sessao: Session = Depends(obter_sessao),
+):
+    """Gera um segredo novo e o URI a ler pela aplicação autenticadora."""
+    return servico_autenticacao.configurar_totp(sessao, utilizador)
+
+
+@auth_routers.post("/totp/ativar", response_model=TotpEstadoResposta)
+def totp_ativar(
+    dados: TotpCodigoPedido,
+    utilizador: Utilizador = Depends(utilizador_atual),
+    sessao: Session = Depends(obter_sessao),
+):
+    """Ativa a autenticação de dois fatores depois de confirmar um código."""
+    return servico_autenticacao.ativar_totp(sessao, utilizador, dados.codigo)
+
+
+@auth_routers.post("/totp/desativar", response_model=TotpEstadoResposta)
+def totp_desativar(
+    dados: TotpCodigoPedido,
+    utilizador: Utilizador = Depends(utilizador_atual),
+    sessao: Session = Depends(obter_sessao),
+):
+    """Desativa a autenticação de dois fatores depois de confirmar um código."""
+    return servico_autenticacao.desativar_totp(sessao, utilizador, dados.codigo)

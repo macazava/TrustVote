@@ -1,7 +1,7 @@
 """Modelo SQLAlchemy do utilizador registado.
 
 A tabela é a `utilizador` definida em
-`basedados/trustvote.sql`, que é a fonte única do
+`config/database/init/docker_sql_and_sh/trustvote.sql`, que é a fonte única do
 esquema. Os atributos em Python mantêm nomes legíveis para a API; o mapeamento
 para as colunas `ut_*` é feito aqui.
 """
@@ -33,4 +33,10 @@ class Utilizador(Base):
     )
     criado_em: Mapped[datetime] = mapped_column(
         "ut_datareg", DateTime(timezone=True), server_default=func.now()
+    )
+    # Segredo da autenticação de dois fatores: só existe depois de o utilizador
+    # começar a configuração e nunca é devolvido pela API.
+    totp_secret: Mapped[str | None] = mapped_column("ut_totp_secret", String(64))
+    totp_ativo: Mapped[bool] = mapped_column(
+        "ut_totp_ativo", Boolean, server_default=text("FALSE")
     )

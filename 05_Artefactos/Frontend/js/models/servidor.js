@@ -4,13 +4,9 @@
 
   const TV = (window.TrustVote = window.TrustVote || {});
 
-  // O site é aberto pela entrada (8080), que já passa sozinha para o servidor que estiver
-  // de pé. Começa sempre pela origem da página; se ela não responder (ex.: página aberta
-  // diretamente no Nginx 1 ou 2 e esse servidor caiu), tenta a entrada e os outros nginx.
-  const anfitriao = window.location.hostname || "127.0.0.1";
-  const bases = [
-    ...new Set([window.location.port || "8080", "8080", "8081", "8082"].map((p) => `http://${anfitriao}:${p}/api`)),
-  ];
+  // A página e a API partilham a origem do nginx (HTTPS na porta 8443): a API está em <origem>/api.
+  // No Live Server (porta 5500, desenvolvimento) a página usa a API do nginx.
+  const bases = [window.location.port === "5500" ? "https://127.0.0.1:8443/api" : `${window.location.origin}/api`];
   const TIMEOUT = 12000;
   const CHAVE_BASE = "trustvote.api";
 

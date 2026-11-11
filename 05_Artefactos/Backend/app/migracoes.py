@@ -1,10 +1,10 @@
 """Migrações da base de dados: alterações ao esquema depois da criação inicial.
 
-A base de dados é criada pelo `basedados/trustvote.sql` (só quando o volume está vazio).
+A base de dados é criada pelo `config/database/init/docker_sql_and_sh/trustvote.sql` (só quando o volume está vazio).
 Cada alteração seguinte é um ficheiro em `basedados/migracoes/`, com o nome
 `NNN_descricao.sql` (ex.: `002_indice_auditoria.sql`), e nunca se edita depois de aplicado.
 
-    python -m app.migracoes        (no Docker corre sozinho no arranque: serviço "migracoes")
+    python -m app.migracoes        (no Docker corre sozinho: cada instância da API aplica-as ao arrancar)
 
 Aplica por ordem as que faltam, cada uma numa transação: se falhar, nada fica a meio e
 o comando termina com erro (a API não arranca com o esquema errado). As aplicadas ficam

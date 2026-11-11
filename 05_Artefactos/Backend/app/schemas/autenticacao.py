@@ -43,6 +43,7 @@ class UtilizadorDetalhe(UtilizadorResposta):
 
     perfil: str
     ativo: bool
+    totp_ativo: bool
 
     @computed_field
     @property
@@ -88,3 +89,22 @@ class PasswordTemporaria(BaseModel):
     """Devolvida uma única vez ao administrador que repôs a palavra-passe."""
 
     password_temporaria: str
+
+
+class TotpCodigoPedido(BaseModel):
+    """Código de 6 dígitos da aplicação autenticadora."""
+
+    codigo: str = Field(pattern=r"^[0-9]{6}$")
+
+
+class TotpConfiguracaoResposta(BaseModel):
+    """Segredo e URI otpauth:// devolvidos ao iniciar a configuração do TOTP."""
+
+    segredo: str
+    uri: str
+
+
+class TotpEstadoResposta(BaseModel):
+    """Estado da autenticação de dois fatores depois de ativar ou desativar."""
+
+    totp_ativo: bool

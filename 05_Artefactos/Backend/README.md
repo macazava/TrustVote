@@ -21,6 +21,7 @@ instâncias de aplicação e os workers definidos na infraestrutura Docker
 | Área | Descrição |
 |---|---|
 | Autenticação | Registo de utilizadores (com **número de estudante**) e login real com **JWT (HS256)** e passwords em **Argon2** |
+| Dois fatores | **TOTP (RFC 6238)** por utilizador: `POST /auth/totp/configurar`, `/ativar` e `/desativar` (segredo em `ut_totp_secret`, estado em `ut_totp_ativo`; lógica em [`app/security/totp.py`](app/security/totp.py)) |
 | Elegibilidade | **Auto-habilitação**: ao registar-se, o eleitor fica habilitado nas eleições ainda não encerradas (tabela `habilitacao`) |
 | Gestão de eleições | `eleicao`, `candidato` (por **órgão social** e **lista**), `ronda`, `ronda_candidato` e `habilitacao`, com o ciclo rascunho → agendada → em curso → encerrada |
 | Voto | Transação única em `participacao` + `voto`, um voto por volta, **voto em branco**, recibo verificável |
@@ -110,16 +111,19 @@ Backend/
 │   ├── repositories/    # acesso à base de dados
 │   ├── services/        # regras de negócio (apuramento.py, auditoria.py, sondagem.py, ...)
 │   ├── routers/         # rotas HTTP, agrupadas por prefixo
-│   ├── security/        # tokens.py (JWT), integridade.py (selo dos votos), dependencias.py
+│   ├── security/        # tokens.py (JWT), integridade.py (selo dos votos), dependencias.py, totp.py (códigos TOTP)
+│   ├── testes/          # espaço para testes (teste_top.py ainda vazio)
 │   ├── cache.py         # Redis
 │   ├── tarefas.py       # tarefas automáticas
 │   ├── worker.py        # worker de apuramento (python -m app.worker)
 │   ├── migracoes.py     # aplica as migrações (python -m app.migracoes)
 │   ├── database.py      # engines, sessões e Base declarativa
 │   └── erros.py         # erros de negócio -> respostas HTTP
+├── config/database/init/docker_sql_and_sh/
+│   ├── 00-trustvote-user.sql  # conta "trustvote", dona das tabelas
+│   └── trustvote.sql          # as tabelas (corre uma vez, com o volume vazio)
 ├── basedados/
-│   ├── trustvote.sql    # criação da BD num só ficheiro: contas, replicação e tabelas
-│   └── migracoes/       # alterações ao esquema numa BD já criada (001_…, 002_…)
+│   └── migracoes/       # alterações ao esquema numa BD já criada (001_…, 002_…, 003_…)
 ├── .env.example         # modelo do .env (o .env não vai para o git)
 ├── Dockerfile
 ├── main.py              # cria a app FastAPI, regista routers e arranca as tarefas
@@ -159,21 +163,49 @@ A API lê a configuração de um ficheiro `.env` na pasta `Backend` (copia o
 | `TAREFAS_INTERVALO` | `30` | Segundos entre ciclos das tarefas automáticas; `0` desliga (na API; o worker usa 30) |
 | `APURAMENTO` | `imediato` | `worker` = encerrar uma volta só fecha a votação e pede o apuramento ao worker pela fila do Redis (é o que as instâncias usam no Docker) |
 | `WORKER_NOME`, `WORKER_PAPEL` | `worker`, `principal` | Só no worker: nome nos logs e `reserva` para o que só apura sem o principal |
-| `CORS_ORIGINS` | a entrada (8080) e os dois nginx (8081/8082), por `127.0.0.1` e `localhost` | Origens autorizadas a chamar a API |
+| `CORS_ORIGINS` | HTTPS 8443 e HTTP 8080 (nginx) e o Live Server (5500), por `127.0.0.1` e `localhost` | Origens autorizadas a chamar a API, separadas por vírgula |
+
+Exemplo de `.env` para desenvolvimento local:
+
+```dotenv
+DATABASE_HOST=127.0.0.1
+DATABASE_PORT=15432
+DATABASE_NAME=trustvote
+DATABASE_USER=trustvote
+DATABASE_PASSWORD=<a mesma de TRUSTVOTE_DB_PASSWORD>
+JWT_SECRET=<o mesmo valor de JWT_SECRET do .env da Infraestrutura>
+```
+
+> **`JWT_SECRET` tem de ser o mesmo nos dois lados.** As instâncias do Compose recebem
+> o `JWT_SECRET` do `.env` da Infraestrutura. O `Backend/.env` de desenvolvimento
+> **não define** essa variável, pelo que a API local (porta `8001`) usa o segredo de
+> desenvolvimento. Resultado: um token emitido em `localhost:8001` **não é aceite**
+> pelos contentores em `127.0.0.1:8080`, e vice-versa. Define o mesmo valor se
+> precisares de alternar entre os dois.
+
+> **CORS:** `localhost:5500` e `127.0.0.1:5500` são origens **diferentes** para o
+> navegador. Por isso a lista inclui as duas — sem isso, abrir a página por um nome e
+> apontar a API para o outro resulta no erro "Não foi possível contactar o servidor".
+
+> **Aviso de segurança:** o `Backend/.env` **já não está versionado** (o `.gitignore` da
+> raiz cobre `.env`), mas **continua no histórico do git**: a password da base de dados
+> está exposta nos commits anteriores. Roda a password — ou reescreve o histórico — e
+> acrescenta um `.env.example` com valores fictícios. Sem `JWT_SECRET` definido, é usado
+> um segredo de desenvolvimento conhecido, que permite forjar tokens — **não usar assim
+> em produção.**
 
 ---
 
 ## 7. Base de dados
 
 O esquema **não é criado pelo Python**: vem de um único ficheiro,
-[`basedados/trustvote.sql`](basedados/trustvote.sql), que o Docker corre ao criar a base de
+[`config/database/init/docker_sql_and_sh/trustvote.sql`](config/database/init/docker_sql_and_sh/trustvote.sql), que o Docker corre ao criar a base de
 dados. A criação automática de tabelas (`Base.metadata.create_all`) foi removida de
-propósito — o SQL é a fonte única do esquema. O ficheiro tem três partes:
+propósito — o SQL é a fonte única do esquema. Ao criar a base de dados, o Docker corre por ordem:
 
-1. **Contas:** `trustvote` (usada pela API e dona das tabelas) e o utilizador de replicação,
-   com as passwords do `.env`.
-2. **Replicação:** autoriza a réplica a ligar-se a partir da rede Docker (`pg_hba.conf`).
-3. **Tabelas:** as 13 tabelas, criadas já como `trustvote` (`SET ROLE`).
+1. **Replicação:** `Infraestrutura/docker/postgres/initdb/00-replication.sh` cria o utilizador de replicação e autoriza a réplica (`pg_hba.conf`).
+2. **Conta:** `00-trustvote-user.sql` cria a conta `trustvote` (usada pela API e dona das tabelas), com a password do `.env`.
+3. **Tabelas:** `trustvote.sql`, as 13 tabelas, criadas já como `trustvote` (`SET ROLE`).
 
 | Tabela | Conteúdo |
 |---|---|
@@ -191,13 +223,13 @@ propósito — o SQL é a fonte única do esquema. O ficheiro tem três partes:
 
 **Importante:** o PostgreSQL só executa este ficheiro **na primeira inicialização**, quando
 o volume de dados está vazio. Para recriar a base de dados do zero (apaga os dados):
-`.\stack.cmd down`, apagar os volumes `trustvote_pg-primary-data` e `trustvote_pg-replica-data`,
-e `.\stack.cmd up`.
+`docker compose down` (na pasta `Infraestrutura`), apagar os volumes `trustvote_pg-primary-data`
+e `trustvote_pg-replica-data`, e `docker compose up -d`.
 
 **Alterações ao esquema** numa base já criada: um ficheiro novo em `basedados/migracoes/`
-(`002_o_que_muda.sql`, …). O contentor `migracoes` aplica-o automaticamente no arranque, antes da
-API, uma só vez e numa transação (registo na tabela `schema_migracao`); à mão:
-`.\stack.cmd migrar`.
+(`004_o_que_muda.sql`, …). Cada instância da API aplica as que faltam ao arrancar (um lock na BD
+impede que as duas o façam ao mesmo tempo), uma só vez e numa transação (registo na tabela
+`schema_migracao`); à mão: `python -m app.migracoes`.
 
 
 ---
@@ -206,6 +238,18 @@ API, uma só vez e numa transação (registo na tabela `schema_migracao`); à m�
 
 O ambiente virtual do projeto vive na **raiz de `05_Artefactos`**, na pasta `.venv`.
 A API é executada a partir da pasta `Backend`.
+
+**Pré-requisito — a base de dados tem de estar publicada.** Sobe a infraestrutura com
+o ficheiro de debug, que expõe a BD em `127.0.0.1:15432`:
+
+```powershell
+cd "C:\Users\<utilizador>\...\05_Artefactos\Infraestrutura"
+copy .env.example .env      # só na primeira vez; preencher os "mudar_*"
+docker compose -f compose.yaml -f compose.debug.yaml up -d --build --wait
+docker compose ps           # todos `healthy`
+```
+
+Depois arranca a API:
 
 ```powershell
 cd "C:\Users\<utilizador>\...\05_Artefactos\Backend"
@@ -391,7 +435,7 @@ réplica, Redis e monitor), usa o `stack.cmd` de
    apurada; o apuramento regrava os votos por ordem aleatória e desfaz essa ligação. Quem
    tiver acesso à BD (ou ao WAL e aos backups) durante a votação ainda pode cruzá-los.
    Eliminar isto exige outro desenho (ex.: assinaturas cegas ou mistura de votos).
-2. Autenticação de dois fatores para os administradores (foi retirada para simplificar a demonstração).
+2. Autenticação de dois fatores: os endpoints `/auth/totp/*` (configurar, ativar, desativar) já existem, mas o login ainda não pede o código e o site ainda não tem o ecrã para a configurar.
 
 Antes de usar o sistema numa votação real, é necessário definir o modelo de ameaça e
 rever especificamente as garantias de anonimato do voto.

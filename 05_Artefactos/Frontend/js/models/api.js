@@ -20,6 +20,10 @@
       logout: () => post("/auth/logout", undefined, { raw: true }),
       eu: () => get("/auth/eu"),
       alterarPassword: (atual, nova) => post("/auth/password", { atual, nova }),
+      // Autenticação de dois fatores (TOTP): configurada no servidor, ainda sem ecrã no site
+      totpConfigurar: () => post("/auth/totp/configurar"),
+      totpAtivar: (codigo) => post("/auth/totp/ativar", { codigo }),
+      totpDesativar: (codigo) => post("/auth/totp/desativar", { codigo }),
     },
 
     utilizadores: {

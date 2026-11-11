@@ -1,0 +1,7 @@
+# Os scripts e configurações são executados dentro de contentores Linux:
+# têm de manter finais de linha LF mesmo num checkout em Windows.
+*.sh       text eol=lf
+*.conf     text eol=lf
+*.template text eol=lf
+*.yaml     text eol=lf
+.env*      text eol=lf

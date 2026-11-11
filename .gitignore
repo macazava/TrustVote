@@ -23,3 +23,7 @@ Infraestrutura/secrets/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Chaves privadas: nunca no repositório
+**/Backend/app/secrets/
+*.pem
