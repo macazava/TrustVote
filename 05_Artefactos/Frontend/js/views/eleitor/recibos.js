@@ -12,7 +12,7 @@
     `${head("VERIFICAÇÃO INDIVIDUAL", "Os meus recibos", "Confirme que o seu voto foi incluído sem revelar a escolha.")}<div data-receipts></div>`;
 
   const noReceipts = () =>
-    `<article class="dash-card">${TV.ui.empty("Ainda não existem recibos", "O recibo é emitido quando deposita um voto.")}<div class="state-box"><button class="button button-outline" type="button" data-go="elections">Ver eleições ${TV.icon("arrow-right")}</button></div></article>`;
+    `<article class="dash-card">${TV.ui.empty("Ainda não existem recibos", "O recibo é emitido quando deposita um voto.", { label: "Ver eleições", go: "elections" })}</article>`;
 
   const localNotice = () =>
     '<p class="notice"><b>Recibos guardados neste dispositivo.</b>Para manter o voto secreto, o servidor não sabe que recibo é de quem: descarregue-os para não os perder.</p>';
@@ -25,7 +25,7 @@
         <summary>${TV.icon("shield-check")} QR code de verificação</summary>
         <div>
           ${TV.qr.svg(url, `QR code para verificar o recibo ${r.recibo}`)}
-          <p>Aponte a câmara do telemóvel para confirmar, na página pública, que este voto foi contado.</p>
+          <p>Leia este código com uma câmara para confirmar, na página pública, que este voto foi contado.</p>
         </div>
       </details>`;
   };

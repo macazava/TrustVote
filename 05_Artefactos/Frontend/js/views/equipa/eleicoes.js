@@ -81,7 +81,7 @@
     return card(`
       ${cardHead("CANDIDATURAS", `Candidatos · ${lista.length}`)}
       ${lista.length
-        ? `<div class="table-scroll"><table>
+        ? `<div class="table-scroll"><table data-table="Pesquisar candidatos">
             <thead><tr><th>Opção</th><th>Candidato</th><th>Lista</th><th>Estado</th><th>Ações</th></tr></thead>
             <tbody>${lista.map((c, i) => candidateRow(c, i, editavel)).join("")}</tbody></table></div>`
         : '<p class="muted">Ainda não existem candidatos. São precisos pelo menos 2 para agendar.</p>'}
@@ -108,12 +108,12 @@
     return card(`
       ${cardHead("CADERNO ELEITORAL", `Eleitores habilitados · ${habilitados.length}`, acoes)}
       ${habilitados.length
-        ? `<div class="table-scroll voter-picker"><table>
+        ? `<div class="table-scroll voter-picker"><table data-table="Pesquisar eleitores habilitados">
             <thead><tr><th>Eleitor</th><th>E-mail</th><th>Habilitado em</th><th></th></tr></thead>
             <tbody>${habilitados
           .map(
             (h) => `
-                <tr><td><b>${escapeHtml(h.nome)}</b></td><td>${escapeHtml(h.email)}</td><td>${dateTime(h.data)}</td>
+                <tr><td><b>${escapeHtml(h.nome)}</b></td><td>${escapeHtml(h.email)}</td><td data-sort="${escapeHtml(h.data)}">${dateTime(h.data)}</td>
                 <td><div class="row-actions"><button type="button" data-unvoter="${h.utilizador_id}">Remover</button></div></td></tr>`
           )
           .join("")}</tbody></table></div>`

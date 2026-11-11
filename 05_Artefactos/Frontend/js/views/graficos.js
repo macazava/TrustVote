@@ -26,8 +26,10 @@
     const y = (v) => h - 30 - (v / max) * (h - 60);
     const d = serie.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.votos).toFixed(1)}`).join(" ");
     const area = serie.length ? `${d} L${x(serie.length - 1).toFixed(1)},${h - 30} L${x(0).toFixed(1)},${h - 30} Z` : "";
-    const grid = [0, 0.25, 0.5, 0.75, 1]
-      .map((f) => `<line x1="40" x2="${w - 20}" y1="${y(max * f)}" y2="${y(max * f)}"></line><text x="0" y="${y(max * f) + 3}">${number(Math.round(max * f))}</text>`)
+    // Linhas da grelha em valores inteiros e sem repetir (com poucos votos: 0, 1, 2…)
+    const marcas = [...new Set([0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(max * f)))];
+    const grid = marcas
+      .map((v) => `<line x1="40" x2="${w - 20}" y1="${y(v)}" y2="${y(v)}"></line><text x="0" y="${y(v) + 3}">${number(v)}</text>`)
       .join("");
     const labels = serie
       .filter((_, i) => i % Math.ceil(serie.length / 6) === 0 || i === serie.length - 1)

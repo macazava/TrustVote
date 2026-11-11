@@ -51,6 +51,13 @@
   window.TrustVote.prefs = { read: readPrefs, apply: applyPrefs, save: savePrefs, isDark };
 })();
 
+// ===== Limpeza da antiga app instalável (service worker /sw.js, já removido) =====
+// Quem abriu o site enquanto existia ainda o tem registado no navegador: aqui é retirado, com a sua cache.
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((lista) => lista.forEach((r) => r.unregister())).catch(() => {});
+  if (window.caches) caches.keys().then((nomes) => nomes.filter((n) => n.startsWith("trustvote-")).forEach((n) => caches.delete(n))).catch(() => {});
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const { session, prefs } = window.TrustVote;
   const readPrefs = prefs.read;

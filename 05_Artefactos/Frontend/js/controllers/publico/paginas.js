@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((dados) => {
         const lista = dados.candidatos || [];
         if (!lista.length) {
-          grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.");
+          grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.", "As listas aparecem quando a comissão eleitoral as validar.", { label: "Ver calendário eleitoral", href: "calendario.html" });
           return;
         }
         // Um cartão por lista (campo "partido" da API)
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
       })
       .catch(() => {
-        grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.");
+        grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.", "As listas aparecem quando a comissão eleitoral as validar.", { label: "Ver calendário eleitoral", href: "calendario.html" });
       });
   }
 
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const lista = (await api.eleicoes.listar()).filter((e) => ["em_curso", "encerrada"].includes(e.estado));
       if (!lista.length) {
-        results.innerHTML = ui.empty("Ainda não existem resultados.", "Os resultados aparecem quando uma eleição começa.");
+        results.innerHTML = ui.empty("Ainda não existem resultados.", "Os resultados aparecem quando uma eleição começa.", { label: "Ver calendário eleitoral", href: "calendario.html" });
         return;
       }
       const blocos = await Promise.all(

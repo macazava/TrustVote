@@ -73,13 +73,14 @@
       </label>`;
   }
 
-  const emptyCard = (titulo, texto) =>
-    `<article class="dash-card">${ui.empty(titulo, texto)}</article>`;
+  const emptyCard = (titulo, texto, acao) =>
+    `<article class="dash-card">${ui.empty(titulo, texto, acao)}</article>`;
+  const verCalendario = { label: "Ver calendário eleitoral", href: "calendario.html" };
 
   // ===== Separador "Eleições": ativas em cima, concluídas em baixo =====
   const electionsPage = (ativas, concluidas) => `
     ${head("ELEIÇÕES ACADÉMICAS", "As suas eleições", "Consulte as eleições ativas, agendadas e anteriores.")}
-    ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : emptyCard("Sem eleições ativas", "Ainda não tem nenhuma eleição a decorrer em que possa votar.")}
+    ${ativas.length ? ativas.map((e) => electionCard(e, true)).join("") : emptyCard("Sem eleições ativas", "Ainda não tem nenhuma eleição a decorrer em que possa votar.", verCalendario)}
     <article class="dash-card">
       <p class="eyebrow">HISTÓRICO</p>
       <h2>Eleições concluídas</h2>

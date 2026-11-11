@@ -1,5 +1,5 @@
 /* Controller · "Adicionar ao calendário": gera um ficheiro .ics (iCalendar, RFC 5545) com o período de votação.
-   Abre no Google Calendar, Outlook, Calendário da Apple e no telemóvel. Tem dois lembretes:
+   Abre no Google Calendar, no Outlook e no Calendário da Apple. Tem dois lembretes:
    1 hora antes de a votação abrir e 1 dia antes de fechar.
    Os botões vêm de TrustVote.blocks.calendarButton (views/componentes.js). */
 (function () {

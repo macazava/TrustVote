@@ -69,11 +69,17 @@
         await reload();
       }))
     );
+    // Remover: a linha desaparece logo e há 6 s para "Desfazer" antes de apagar no servidor
     el.querySelectorAll("[data-remove-cand]").forEach((b) =>
-      b.addEventListener("click", safely(async () => {
-        await api.eleicoes.apagarCandidato(e.id, b.dataset.removeCand);
-        await reload();
-      }))
+      b.addEventListener("click", () => {
+        const c = e.candidatos.find((x) => String(x.id) === b.dataset.removeCand);
+        ui.undoable({
+          text: `Candidato "${c ? c.nome : ""}" removido.`,
+          hide: [b.closest("tr")],
+          commit: () => api.eleicoes.apagarCandidato(e.id, b.dataset.removeCand),
+          after: reload,
+        });
+      })
     );
   };
 
@@ -105,10 +111,14 @@
         })();
       });
       el.querySelectorAll("[data-unvoter]").forEach((b) =>
-        b.addEventListener("click", safely(async () => {
-          await api.eleicoes.desabilitar(e.id, b.dataset.unvoter);
-          reload();
-        }))
+        b.addEventListener("click", () =>
+          ui.undoable({
+            text: "Eleitor retirado do caderno eleitoral.",
+            hide: [b.closest("tr")],
+            commit: () => api.eleicoes.desabilitar(e.id, b.dataset.unvoter),
+            after: reload,
+          })
+        )
       );
     });
   };

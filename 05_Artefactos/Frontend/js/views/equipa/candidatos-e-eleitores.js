@@ -10,11 +10,11 @@
   // ===== Candidatos =====
   const candidatesPage = (lista) => `
     ${head("GESTÃO ELEITORAL", "Candidatos", "Listas e candidatos incluídos nas eleições académicas.", lista.length ? `<label class="field-label" style="margin:0;min-width:280px">Eleição<select data-cand-election>${lista.map((e) => `<option value="${e.id}">${escapeHtml(e.titulo)} · ${elections.statusLabels[e.estado]}</option>`).join("")}</select></label>` : "")}
-    <article class="dash-card" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições")}</article>`;
+    <article class="dash-card" data-cand-table>${lista.length ? "" : ui.empty("Ainda não existem eleições", "Os candidatos são adicionados dentro de cada eleição.", { label: "Criar a primeira eleição", go: "elections" })}</article>`;
 
   const candidatesTable = (e) =>
     (e.candidatos || []).length
-      ? `<div class="table-scroll"><table>
+      ? `<div class="table-scroll"><table data-table="Pesquisar candidatos">
           <thead><tr><th>Opção</th><th>Candidato</th><th>Descrição</th><th>Estado</th></tr></thead>
           <tbody>${e.candidatos
         .map((c, i) => `<tr><td class="mono">${String(i + 1).padStart(2, "0")}</td><td><b>${escapeHtml(c.nome)}</b></td><td>${escapeHtml([c.partido, ...elections.candidateInfo(c), c.descricao].filter(Boolean).join(" · ") || "—")}</td><td>${okLabel(c.ativo ? "VALIDADO" : "INATIVO", c.ativo)}</td></tr>`)
@@ -43,7 +43,7 @@
       ? "Só os números desta lista podem criar conta."
       : "Qualquer número pode criar conta. Para restringir, defina REGISTO_RESTRITO=true no servidor."}</p>
     ${estudantes.length
-      ? `<div class="table-scroll"><table>
+      ? `<div class="table-scroll"><table data-table="Pesquisar inscritos por número, nome ou curso">
           <thead><tr><th>Número</th><th>Nome</th><th>Curso</th><th>Conta</th><th></th></tr></thead>
           <tbody>${estudantes
         .map(
@@ -71,7 +71,7 @@
 
   const usersTable = (lista, eu) =>
     lista.length
-      ? `<div class="table-scroll"><table>
+      ? `<div class="table-scroll"><table data-table="Pesquisar por nome, e-mail ou número" data-table-key="utilizadores">
           <thead><tr><th>Número</th><th>Eleitor</th><th>Curso</th><th>Tipo</th><th>Estado</th><th>Ações</th></tr></thead>
           <tbody>${lista
         .map(

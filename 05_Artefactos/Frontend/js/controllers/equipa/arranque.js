@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     candidates: team.renderCandidates,
     voters: team.renderVoters,
     results: team.renderResults,
+    messages: team.renderMessages,
     audit: team.renderAudit,
   };
   Object.entries(loaders).forEach(([name, load]) => ui.mount(panel(name), load));
@@ -52,8 +53,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
   );
 
-  // Atualiza a visão geral a cada 20 s
-  setInterval(() => {
+  // ===== Visão geral sempre atualizada =====
+  // Ao vivo: quando entra um voto, o servidor avisa (Server-Sent Events) e a visão geral volta a carregar.
+  // Sem ligação ao vivo, continua a atualizar a cada 20 s como antes.
+  const atualizar = () => {
     if (panel("overview").classList.contains("active") && !document.hidden) team.renderOverview().catch(() => { });
+  };
+  let votos = null;
+  let espera = 0;
+  TV.live.subscribe((dados) => {
+    const agora = dados ? `${dados.eleicao_id}:${dados.votos}:${dados.estado}` : null;
+    if (votos !== null && agora !== votos) {
+      clearTimeout(espera);
+      espera = setTimeout(atualizar, 800); // junta vários votos seguidos numa só atualização
+    }
+    votos = agora;
+  });
+  setInterval(() => {
+    if (!TV.live.ligado()) atualizar();
   }, 20000);
 });

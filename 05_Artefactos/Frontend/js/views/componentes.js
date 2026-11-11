@@ -5,7 +5,28 @@
   const TV = window.TrustVote;
   const { escapeHtml } = TV.format;
 
+  // Ilustração dos estados vazios: uma urna com um boletim a entrar (cores dos papéis, segue o tema)
+  const ilustracaoVazia = `
+    <svg class="empty-art" viewBox="0 0 160 110" aria-hidden="true">
+      <ellipse class="ea-shadow" cx="80" cy="101" rx="54" ry="6"></ellipse>
+      <g class="ea-paper">
+        <rect x="62" y="8" width="36" height="40" rx="4"></rect>
+        <path d="M70 19h20M70 27h12"></path>
+        <path class="ea-tick" d="m83 35 4 4 8-9"></path>
+      </g>
+      <rect class="ea-box" x="32" y="42" width="96" height="54" rx="9"></rect>
+      <rect class="ea-slot" x="56" y="40" width="48" height="7" rx="3.5"></rect>
+      <path class="ea-line" d="M64 70h32"></path>
+      <circle class="ea-dot" cx="128" cy="24" r="3"></circle>
+      <circle class="ea-dot" cx="34" cy="30" r="2"></circle>
+      <circle class="ea-dot" cx="140" cy="54" r="2"></circle>
+    </svg>`;
+
   // ===== Estados visuais (TrustVote.ui) =====
+  let pendente = null; // ação à espera de "Desfazer" (ui.undoable)
+  // Ao sair da página, a ação pendente segue já para o servidor
+  window.addEventListener("pagehide", () => pendente && pendente.flush());
+
   const ui = {
     // Skeleton: blocos com a forma do conteúdo enquanto os dados chegam (o texto fica só para leitores de ecrã)
     loading: (label = "A carregar…") => `
@@ -34,11 +55,20 @@
         ${retry ? '<button class="button button-outline" type="button" data-retry>Tentar novamente</button>' : ""}
       </div>`,
 
-    empty: (title, text = "") => `
-      <div class="state-box">
-        <span class="large-icon">${TV.icon("inbox")}</span>
+    // Estado vazio: ilustração, título, texto e (opcional) a ação sugerida
+    // action = { label, href } para um link, ou { label, go } para abrir um separador do painel
+    empty: (title, text = "", action = null) => `
+      <div class="state-box state-empty">
+        ${ilustracaoVazia}
         <h2>${escapeHtml(title)}</h2>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
+        ${
+          !action
+            ? ""
+            : action.href
+              ? `<a class="button button-outline" href="${escapeHtml(action.href)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</a>`
+              : `<button class="button button-outline" type="button" data-go="${escapeHtml(action.go)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</button>`
+        }
       </div>`,
 
     message(el, text, ok = false) {
@@ -47,7 +77,8 @@
       el.classList.toggle("is-ok", !!ok);
     },
 
-    toast(text, error = false) {
+    // Aviso no canto do ecrã; action = { label, onClick, ms } junta um botão (ex.: "Desfazer")
+    toast(text, error = false, action = null) {
       let host = document.querySelector(".toast-host");
       if (!host) {
         host = document.createElement("div");
@@ -56,10 +87,59 @@
         document.body.appendChild(host);
       }
       const item = document.createElement("p");
-      item.className = `toast${error ? " toast-error" : ""}`;
-      item.textContent = text;
+      item.className = `toast${error ? " toast-error" : ""}${action ? " toast-action" : ""}`;
+      const span = document.createElement("span");
+      span.textContent = text;
+      item.appendChild(span);
+      if (action) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = action.label;
+        button.addEventListener("click", () => {
+          action.onClick();
+          item.remove();
+        });
+        item.appendChild(button);
+      }
       host.appendChild(item);
-      setTimeout(() => item.remove(), 4200);
+      setTimeout(() => item.remove(), action ? action.ms || 6000 : 4200);
+    },
+
+    // Ação que se pode desfazer: esconde logo o que foi removido e só fala com o servidor
+    // passados 6 segundos (ou antes, se outra ação começar ou a página fechar).
+    // { text, hide: [elementos], commit: async () => …, after: () => … }
+    undoable({ text, hide = [], commit, after }) {
+      if (pendente) pendente.flush();
+      hide.forEach((el) => (el.hidden = true));
+      let fechado = false;
+      const mostrar = () => hide.forEach((el) => (el.hidden = false));
+      const flush = async () => {
+        if (fechado) return;
+        fechado = true;
+        clearTimeout(timer);
+        pendente = null;
+        try {
+          await commit();
+          if (after) after();
+        } catch (error) {
+          mostrar();
+          ui.toast(error.message, true);
+        }
+      };
+      const timer = setTimeout(flush, 6000);
+      pendente = { flush };
+      ui.toast(text, false, {
+        label: "Desfazer",
+        ms: 6000,
+        onClick: () => {
+          if (fechado) return;
+          fechado = true;
+          clearTimeout(timer);
+          pendente = null;
+          mostrar();
+          ui.toast("Ação desfeita.");
+        },
+      });
     },
 
     // Janela de confirmação (substitui window.confirm): devolve true em "Confirmar", false em "Cancelar" ou Esc

@@ -1,4 +1,4 @@
-/* Controller · menu "☰" no telemóvel e deslocação suave até às âncoras (#secção) */
+/* Controller · menu "☰" em ecrãs estreitos (tablet) e deslocação suave até às âncoras (#secção) */
 document.addEventListener("DOMContentLoaded", () => {
   // ===== Menu de navegação nos dispositivos móveis =====
   const menuToggle = document.querySelector(".menu-toggle");

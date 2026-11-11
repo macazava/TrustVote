@@ -2,7 +2,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   if (!("animate" in Element.prototype) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const desktop = () => matchMedia("(min-width: 768px)").matches;
   const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
   const ease = "cubic-bezier(.2, .8, .2, 1)";
   // Próximo "frame" com setTimeout: um requestAnimationFrame pedido enquanto a página nova ainda não foi
@@ -116,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (finePointer) {
     document.addEventListener("pointermove", (event) => {
       const card = event.target.closest?.(tiltSelector);
-      if (!card || !desktop()) return;
+      if (!card) return;
       const box = card.getBoundingClientRect();
       const x = (event.clientX - box.left) / box.width - 0.5;
       const y = (event.clientY - box.top) / box.height - 0.5;
@@ -136,10 +135,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===== Parallax e rotação 3D ligados ao scroll =====
+  // As fotos (move, inner, background) já se mexem só com CSS nos browsers com animações ligadas ao scroll
+  // (css/componentes/animacoes.css, animation-timeline: view()); aqui ficam para os restantes browsers.
+  const cssScroll = window.CSS && CSS.supports("animation-timeline: view()");
   const parallax = [
-    ...[...document.querySelectorAll(".photo-panel")].map((el) => ({ el, kind: "move", amount: 18 })),
-    ...[...document.querySelectorAll(".news-photo img, .press-hero img")].map((el) => ({ el, kind: "inner", amount: 14 })),
-    ...[...document.querySelectorAll(".history-hero")].map((el) => ({ el, kind: "background", amount: 40 })),
+    ...(cssScroll ? [] : [...document.querySelectorAll(".photo-panel")].map((el) => ({ el, kind: "move", amount: 18 }))),
+    ...(cssScroll ? [] : [...document.querySelectorAll(".news-photo img, .press-hero img")].map((el) => ({ el, kind: "inner", amount: 14 }))),
+    ...(cssScroll ? [] : [...document.querySelectorAll(".history-hero")].map((el) => ({ el, kind: "background", amount: 40 }))),
     ...[...document.querySelectorAll(".security-card")].map((el) => ({ el, kind: "tilt3d" })),
   ];
   let ticking = false;
@@ -149,14 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     frame(() => {
       ticking = false;
       const vh = innerHeight;
-      const on = desktop();
       parallax.forEach(({ el, kind, amount }) => {
-        // No telemóvel fica só a revelação simples
-        if (!on) {
-          el.style.transform = "";
-          el.style.backgroundPositionY = "";
-          return;
-        }
         const box = el.getBoundingClientRect();
         if (box.bottom < -100 || box.top > vh + 100) return;
         // -1 quando entra por baixo, 0 no centro do ecrã, 1 quando sai por cima

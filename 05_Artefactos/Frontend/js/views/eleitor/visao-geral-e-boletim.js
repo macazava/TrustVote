@@ -17,7 +17,7 @@
         <i></i>
       </div>`)}
 
-    ${e ? v.electionCard(e, false) : v.emptyCard("Sem eleições ativas", "As eleições em que pode votar aparecem aqui.")}
+    ${e ? v.electionCard(e, false) : v.emptyCard("Sem eleições ativas", "As eleições em que pode votar aparecem aqui.", { label: "Ver calendário eleitoral", href: "calendario.html" })}
 
     <div class="overview-grid grid-cols-1 xl:grid-cols-[2.1fr_1fr]">
       <article class="dash-card">

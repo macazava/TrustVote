@@ -79,5 +79,12 @@
       historico: () => get("/publico/historico", { auth: false }),
       configuracao: () => get("/publico/configuracao", { auth: false }),
     },
+
+    // Formulário de contacto: enviar é público; ler e marcar como lida é só para a equipa
+    contactos: {
+      enviar: (dados) => post("/contactos", dados, { auth: false }),
+      listar: () => get("/contactos"),
+      marcar: (id, lida) => patch(`/contactos/${id}`, { lida }),
+    },
   };
 })();

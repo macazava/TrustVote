@@ -14,7 +14,7 @@
       ${cardHead("HISTÓRICO DE AÇÕES", `Registos · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button type="button" data-verify-chain>Verificar cadeia</button><button class="button button-light" type="button" data-csv>Exportar CSV</button></div>')}
       <div data-chain-result></div>
       ${registos.length
-      ? `<div class="table-scroll"><table>
+      ? `<div class="table-scroll"><table data-table="Pesquisar no registo">
             <thead><tr><th>Data e hora</th><th>Ação</th><th>Sobre</th><th>Feito por</th><th>IP</th></tr></thead>
             <tbody>${registos
         .map((r) => `<tr><td class="mono">${escapeHtml(r.data)}</td><td><b>${escapeHtml(r.acao)}</b></td><td>${escapeHtml(r.sobre)}</td><td>${escapeHtml(r.autor)}</td><td class="mono">${escapeHtml(r.ip || "—")}</td></tr>`)

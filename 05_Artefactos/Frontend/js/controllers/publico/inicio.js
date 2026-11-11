@@ -86,7 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Os dados chegaram: tira os skeletons
     document.querySelectorAll("[data-skeleton]").forEach((el) => el.removeAttribute("data-skeleton"));
+    ultimoResumo = resumo;
   }
+
+  // ===== Ao vivo: cada voto novo atualiza a participação sem recarregar (Server-Sent Events) =====
+  let ultimoResumo = null;
+  TV.live.subscribe((dados) => {
+    if (!dados || !ultimoResumo || dados.eleicao_id !== ultimoResumo.eleicao.id) return;
+    if (dados.votos === ultimoResumo.votos && dados.estado === ultimoResumo.eleicao.estado) return;
+    ultimoResumo = { ...ultimoResumo, ...dados, eleicao: { ...ultimoResumo.eleicao, estado: dados.estado } };
+    showHub(ultimoResumo, true);
+    document.querySelectorAll("[data-live]").forEach((el) => {
+      const key = el.dataset.live;
+      if (key in dados) el.innerHTML = escapeHtml(key === "participacao" ? percent(dados[key]) : number(dados[key]));
+    });
+  });
 
   carregar();
 });

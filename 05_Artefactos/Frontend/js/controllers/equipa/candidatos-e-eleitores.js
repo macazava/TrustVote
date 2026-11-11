@@ -103,14 +103,14 @@
         }
       });
       box.querySelectorAll("[data-unenroll]").forEach((b) =>
-        b.addEventListener("click", async () => {
-          try {
-            await api.inscritos.remover(b.dataset.unenroll);
-            reload();
-          } catch (error) {
-            ui.toast(error.message, true);
-          }
-        })
+        b.addEventListener("click", () =>
+          ui.undoable({
+            text: `Estudante ${b.dataset.unenroll} removido da lista.`,
+            hide: [b.closest("tr")],
+            commit: () => api.inscritos.remover(b.dataset.unenroll),
+            after: reload,
+          })
+        )
       );
     });
   }
