@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== Números que contam até ao valor real (participação, votos, percentagens) =====
   // Na primeira vez sobem desde 0; nas atualizações automáticas passam do valor anterior para o novo.
-  const counterSelector = ".metric-card > b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .result-row > b, .profile-stat b";
+  const counterSelector = ".metric-card > b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .result-row > b, .profile-numbers b";
   const lastValues = new Map();
   const numberPattern = /^(\s*)(\d{1,3}(?:[\s  .]?\d{3})*(?:,\d+)?)(.*)$/s;
 

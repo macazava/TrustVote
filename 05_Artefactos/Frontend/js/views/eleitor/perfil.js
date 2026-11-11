@@ -1,104 +1,104 @@
-/* View · área do eleitor, separador "Perfil": identidade, participação, segurança e privacidade */
+/* View · área do eleitor, separador "Perfil": conta, dados pessoais, participação, segurança e privacidade */
 (function () {
   "use strict";
 
   const TV = window.TrustVote;
-  const { escapeHtml, number, time, initials, voterNumber } = TV.format;
-  const { head, stateBadge } = TV.blocks;
+  const { escapeHtml, number, time, date, initials, voterNumber } = TV.format;
+  const { stateBadge } = TV.blocks;
   const v = (TV.voterView = TV.voterView || {});
 
-  const card = (conteudo, extra = "") =>
-    `<article class="dash-card ${extra}">${conteudo}</article>`;
+  const card = (conteudo, extra = "") => `<article class="dash-card ${extra}">${conteudo}</article>`;
+  const cabeca = (eyebrow, titulo) => `<p class="eyebrow">${eyebrow}</p><h2>${titulo}</h2>`;
 
-  // ===== Cartão de identidade =====
-  const identity = (user) => {
-    const desde = user.data_registo ? new Date(user.data_registo).getFullYear() : null;
-    return `
-      <section class="profile-hero">
-        <span class="profile-avatar" aria-hidden="true">${escapeHtml(initials(user.nome))}</span>
-        <div class="profile-id">
-          <small>ELEITOR</small>
-          <h2>${escapeHtml(user.nome)}</h2>
-          <p>${escapeHtml(user.email)}</p>
-          <div class="profile-tags">
-            <span class="${user.ativo === false ? "is-off" : ""}">${user.ativo === false ? `${TV.icon("circle-alert")} Conta suspensa` : `${TV.icon("check")} Conta ativa`}</span>
-            <span>Nº ${escapeHtml(voterNumber(user))}</span>
-            ${user.curso ? `<span>${escapeHtml(user.curso)}</span>` : ""}
-            ${desde ? `<span>Registado desde ${desde}</span>` : ""}
-          </div>
-        </div>
-        <button class="button button-light" type="button" data-logout-profile>Terminar sessão</button>
-      </section>`;
-  };
+  // ===== Cabeçalho da conta: quem é e em que estado está =====
+  const identity = (user) => `
+    <section class="profile-hero">
+      <span class="profile-avatar" aria-hidden="true">${escapeHtml(initials(user.nome))}</span>
+      <div class="profile-id">
+        <small>CONTA DE ELEITOR</small>
+        <h1 tabindex="-1">${escapeHtml(user.nome)}</h1>
+        <p>${escapeHtml(user.email)}</p>
+      </div>
+      <div class="profile-tags">
+        <span class="${user.ativo === false ? "is-off" : ""}">${user.ativo === false ? `${TV.icon("circle-alert")} Conta suspensa` : `${TV.icon("circle-check")} Credencial válida`}</span>
+        <span>${TV.icon("user-check")} N.º ${escapeHtml(voterNumber(user))}</span>
+      </div>
+    </section>`;
 
-  // ===== Números da participação =====
-  const stat = (valor, texto) => `<div class="profile-stat"><b>${valor}</b><small>${texto}</small></div>`;
+  // ===== Dados pessoais: ficha só de leitura (os dados vêm da instituição) =====
+  const linhaDado = (rotulo, valor) => `<div><dt>${rotulo}</dt><dd>${valor}</dd></div>`;
+  const personal = (user) =>
+    card(`
+      ${cabeca("DADOS PESSOAIS", "Identificação")}
+      <dl class="profile-data">
+        ${linhaDado("Nome de utilizador", escapeHtml(user.nome))}
+        ${linhaDado("E-mail", escapeHtml(user.email))}
+        ${linhaDado("Número de estudante", escapeHtml(voterNumber(user)))}
+        ${linhaDado("Curso", escapeHtml(user.curso || "—"))}
+        ${linhaDado("Conta criada a", user.data_registo ? date(user.data_registo) : "—")}
+        ${linhaDado("Estado", user.ativo === false ? "Suspensa" : "Ativa")}
+      </dl>
+      <p class="profile-note">${TV.icon("info")}<span>Os dados vêm dos registos da instituição. Para corrigir algum, <a href="ajuda.html#contactos">contacte a comissão eleitoral</a>.</span></p>`);
 
-  const stats = ({ habilitado, votadas, porVotar, recibos }) => `
-    <div class="profile-stats grid-cols-2 lg:grid-cols-4">
-      ${stat(number(habilitado), habilitado === 1 ? "eleição em que pode votar" : "eleições em que pode votar")}
-      ${stat(number(votadas), votadas === 1 ? "voto depositado" : "votos depositados")}
-      ${stat(number(porVotar), porVotar === 1 ? "votação aberta por votar" : "votações abertas por votar")}
-      ${stat(number(recibos), recibos === 1 ? "recibo neste dispositivo" : "recibos neste dispositivo")}
-    </div>`;
-
-  // ===== Participação: uma linha por eleição =====
+  // ===== Participação: resumo em números e uma linha por eleição =====
   function estado(e) {
     if (e.votou) return stateBadge("votou");
     if (e.aberta) return `<button class="button button-small button-primary" type="button" data-vote="${e.id}">Votar agora ${TV.icon("arrow-right")}</button>`;
     return stateBadge(e.estado);
   }
+  const numero = (valor, texto) => `<div><b>${number(valor)}</b><small>${texto}</small></div>`;
 
-  const participation = (lista) =>
+  const participation = (lista, n) =>
     card(`
-      <p class="eyebrow">PARTICIPAÇÃO</p>
-      <h2>As minhas eleições</h2>
+      ${cabeca("PARTICIPAÇÃO", "As minhas eleições")}
+      <div class="profile-numbers">
+        ${numero(n.habilitado, n.habilitado === 1 ? "eleição disponível" : "eleições disponíveis")}
+        ${numero(n.votadas, n.votadas === 1 ? "voto registado" : "votos registados")}
+        ${numero(n.porVotar, "por votar")}
+      </div>
       ${lista.length
         ? `<ol class="profile-timeline">${lista
           .map(
             (e) => `
             <li class="${e.votou ? "is-done" : e.aberta ? "is-open" : ""}">
               <span class="profile-dot" aria-hidden="true"></span>
-              <div><b>${escapeHtml(e.titulo)}</b><small>${e.ano} · ${escapeHtml(e.periodo)}</small></div>
+              <div><b>${escapeHtml(e.titulo)}</b><small>${escapeHtml(e.periodo)}</small></div>
               ${estado(e)}
             </li>`
           )
           .join("")}</ol>`
         : '<p class="muted">Ainda não tem eleições em que possa votar.</p>'}`);
 
-  // ===== Sessão e privacidade =====
+  // ===== Sessão: quando começou, quando termina e o botão para sair =====
   const sessionCard = (claims) =>
     card(`
-      <p class="eyebrow">SESSÃO ATUAL</p>
-      <h2>Sessão verificada</h2>
+      ${cabeca("SESSÃO", "Sessão neste navegador")}
       ${claims.iat && claims.exp
         ? `<div class="profile-session">
             <div><small>INICIADA</small><b>${time(new Date(claims.iat * 1000).toISOString())}</b></div>
             <div><small>TERMINA</small><b>${time(new Date(claims.exp * 1000).toISOString())}</b></div>
           </div>`
-        : '<p class="muted">Sessão iniciada neste navegador.</p>'}
-      <p class="muted">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</p>`);
+        : ""}
+      <p class="muted">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</p>
+      <button class="button button-outline" type="button" data-logout-profile>${TV.icon("log-out")} Terminar sessão</button>`);
 
+  // ===== Privacidade: o que o sistema guarda e o que nunca guarda =====
   const privacyCard = () =>
     card(`
-      <p class="eyebrow">PRIVACIDADE</p>
-      <h2>O que fica guardado</h2>
+      ${cabeca("PRIVACIDADE", "O que fica guardado")}
       <ul class="profile-list">
-        <li class="is-yes">Nome, e-mail, curso e número de eleitor</li>
+        <li class="is-yes">Nome, e-mail, curso e número de estudante</li>
         <li class="is-yes">Se já votou em cada eleição, para impedir votos repetidos</li>
         <li class="is-no">Em quem votou: o voto é separado da sua identidade</li>
       </ul>
-      <p class="muted">Os dados eleitorais são geridos pela instituição. Para corrigir algum dado, contacte a comissão eleitoral.</p>
       <a class="text-link" href="privacidade.html">Política de privacidade ${TV.icon("arrow-right")}</a>`);
 
   // d = { user, claims, lista, numeros }
   const profilePage = (d) => `
-    ${head("A MINHA CONTA", "Perfil", "A sua identidade de eleitor, a participação nas eleições e a segurança da conta.")}
     ${identity(d.user)}
-    ${stats(d.numeros)}
     <div class="profile-grid grid-cols-1 lg:grid-cols-[1.35fr_1fr]">
-      <div>${participation(d.lista)}${privacyCard()}</div>
-      <div>${TV.password.card()}${sessionCard(d.claims)}</div>
+      <div>${personal(d.user)}${participation(d.lista, d.numeros)}</div>
+      <div>${TV.password.card()}${sessionCard(d.claims)}${privacyCard()}</div>
     </div>`;
 
   Object.assign(v, { profilePage });

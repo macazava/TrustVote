@@ -3,7 +3,7 @@
   "use strict";
 
   const TV = window.TrustVote;
-  const { session, localReceipts, password } = TV;
+  const { session, password } = TV;
   const { panel } = TV.panels;
   const voter = TV.voter;
 
@@ -15,7 +15,7 @@
       habilitado: lista.length,
       votadas: lista.filter((e) => e.votou).length,
       porVotar: lista.filter((e) => e.aberta && !e.votou).length,
-      recibos: localReceipts.all().length,
+
     };
 
     el.innerHTML = TV.voterView.profilePage({ user: session.user, claims: session.claims() || {}, lista, numeros });

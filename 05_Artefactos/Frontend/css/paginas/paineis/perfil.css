@@ -1,11 +1,11 @@
-/* Área do eleitor, separador "Perfil": identidade, números, participação e privacidade */
+/* Área do eleitor, separador "Perfil": conta, dados pessoais, participação, segurança e privacidade */
 
 /* ===== Cartão de identidade ===== */
 .profile-hero {
     display: flex;
     align-items: center;
     gap: 26px;
-    margin-top: 24px;
+    margin-top: 8px;
     padding: 30px 32px;
     background: linear-gradient(135deg, var(--color-brand-deep), var(--color-brand));
     color: var(--color-on-dark);
@@ -36,7 +36,7 @@
     letter-spacing: 0.12em;
 }
 
-.profile-id h2 {
+.profile-id h1 {
     margin: 4px 0 2px;
     color: var(--color-on-dark);
     font-size: var(--text-3xl);
@@ -51,15 +51,19 @@
     overflow-wrap: anywhere;
 }
 
+/* Estado da conta e número, à direita do cabeçalho */
 .profile-tags {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-end;
     gap: 8px;
-    margin-top: 14px;
 }
 
 .profile-tags span {
-    padding: 5px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
     border: 1px solid var(--color-on-dark-border);
     border-radius: var(--radius-full);
     background: var(--color-on-dark-hover);
@@ -72,35 +76,76 @@
     color: var(--color-on-dark-warning);
 }
 
-.profile-hero .button {
-    flex: none;
-    margin: 0;
-}
-
-/* ===== Números ===== */
-.profile-stats {
+/* ===== Dados pessoais: ficha em duas colunas (rótulo · valor) ===== */
+.profile-data {
     display: grid;
-    gap: 16px;
-    margin-top: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-6);
+    margin: var(--space-4) 0 0;
 }
 
-.profile-stat {
-    padding: 20px 22px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
+.profile-data div {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
 }
 
-.profile-stat b {
-    display: block;
-    color: var(--color-heading);
-    font-size: 2.125rem;
-    font-weight: 700;
-    line-height: 1.1;
+.profile-data dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
-.profile-stat small {
+.profile-data dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.profile-note {
+    display: flex;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+    line-height: 1.6;
+}
+
+.profile-note .icon {
+    flex: none;
+    margin-top: 0.25em;
+}
+
+/* ===== Participação: os números no topo do cartão ===== */
+.profile-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-4) 0 var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.profile-numbers div {
+    padding: var(--space-4);
+}
+
+.profile-numbers div + div {
+    border-left: 1px solid var(--color-border);
+}
+
+.profile-numbers b {
+    display: block;
+    color: var(--color-heading);
+    font-size: var(--text-2xl);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.profile-numbers small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
 }
 
 /* ===== Grelha de cartões ===== */
@@ -237,3 +282,7 @@
     background: var(--color-danger);
 }
 
+/* Sessão: o botão de sair fica no fim do cartão */
+.dash-card [data-logout-profile] {
+    margin-top: var(--space-4);
+}
