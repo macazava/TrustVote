@@ -54,8 +54,8 @@
 // ===== Limpeza da antiga app instalável (service worker /sw.js, já removido) =====
 // Quem abriu o site enquanto existia ainda o tem registado no navegador: aqui é retirado, com a sua cache.
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((lista) => lista.forEach((r) => r.unregister())).catch(() => {});
-  if (window.caches) caches.keys().then((nomes) => nomes.filter((n) => n.startsWith("trustvote-")).forEach((n) => caches.delete(n))).catch(() => {});
+  navigator.serviceWorker.getRegistrations().then((lista) => lista.forEach((r) => r.unregister())).catch(() => { });
+  if (window.caches) caches.keys().then((nomes) => nomes.filter((n) => n.startsWith("trustvote-")).forEach((n) => caches.delete(n))).catch(() => { });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
           await navigator.clipboard.writeText(window.location.href);
           window.TrustVote.ui.toast("Ligação copiada.");
         }
-      } catch {}
+      } catch { }
     })
   );
 
