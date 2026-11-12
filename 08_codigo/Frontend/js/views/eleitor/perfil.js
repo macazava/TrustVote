@@ -8,7 +8,7 @@
   const v = (TV.voterView = TV.voterView || {});
 
   const card = (conteudo, extra = "") => `<article class="dash-card ${extra}">${conteudo}</article>`;
-  const cabeca = (eyebrow, titulo) => `<p class="eyebrow">${eyebrow}</p><h2>${titulo}</h2>`;
+  const cabeca = (_etiqueta, titulo) => `<h2>${titulo}</h2>`;
 
   // ===== Cabeçalho da conta: quem é e em que estado está =====
   const identity = (user) => `

@@ -49,7 +49,7 @@
     <div class="poll-layout">
       <article class="dash-card poll-main">
         <header class="poll-main-head">
-          <div><p class="eyebrow">PROJEÇÃO ATUAL</p><h2>${escapeHtml(e.titulo)}</h2></div>
+          <div><h2>${escapeHtml(e.titulo)}</h2></div>
           <span class="poll-live">${TV.icon("chart-column")} Atualizada com cada resposta</span>
         </header>
         <div class="poll-facts">
@@ -65,18 +65,16 @@
 
       <aside class="poll-aside">
         <article class="dash-card">
-          <p class="eyebrow">A SUA OPINIÃO</p>
           <h2>Se a eleição fosse hoje, em quem votaria?</h2>
           ${s.respondeu
-            ? `<div class="poll-done"><span>${TV.icon("circle-check")}</span><div><b>Já respondeu a esta sondagem</b><small>Obrigado pela participação. A sua resposta já conta na projeção.</small></div></div>`
-            : `<form class="poll-form" data-poll-form>
+        ? `<div class="poll-done"><span>${TV.icon("circle-check")}</span><div><b>Já respondeu a esta sondagem</b><small>Obrigado pela participação. A sua resposta já conta na projeção.</small></div></div>`
+        : `<form class="poll-form" data-poll-form>
                 <div class="candidate-list">${(e.candidatosRonda || []).map(pollOption).join("")}</div>
                 <p class="form-message" role="status"></p>
                 <button class="button button-primary" type="submit">Enviar resposta ${TV.icon("arrow-right")}</button>
               </form>`}
         </article>
         <article class="dash-card">
-          <p class="eyebrow">REGRAS</p>
           <h2>Como funciona</h2>
           <ul class="profile-list">
             <li class="is-yes">A resposta é anónima: não fica ligada à sua conta</li>

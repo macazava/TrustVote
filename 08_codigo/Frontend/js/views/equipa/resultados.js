@@ -27,7 +27,8 @@
     const acoes = `<div class="row-actions">${stats ? `<span class="model-tag">Participação ${percent(stats.participacao)} · ${number(stats.votantes)} / ${number(stats.habilitados)}</span>` : ""}<button type="button" data-integrity="${e.id}">Verificar integridade</button>${rondas.length ? `<button type="button" data-export="${e.id}">Exportar CSV</button>` : ""}</div>`;
     return `
       <article class="dash-card">
-        ${cardHead(`${provisorio ? "RESULTADOS PROVISÓRIOS" : "RESULTADOS FINAIS"} · ${e.ano} · ${escapeHtml(e.periodo)}`, escapeHtml(e.titulo), acoes)}
+        ${cardHead("", escapeHtml(e.titulo), acoes)}
+        <p class="muted">${provisorio ? "Resultados provisórios" : "Resultados finais"} · ${e.ano} · ${escapeHtml(e.periodo)}</p>
         <div data-integrity-result="${e.id}"></div>
         ${rondas.length
         ? rondas.map((r) => roundCharts(e, r, rondas.length > 1)).join("")

@@ -59,7 +59,7 @@
     itens.sort((a, b) => Date.parse(b.data || 0) - Date.parse(a.data || 0));
     return `
       <article class="dash-card">
-        <div class="el-card-head"><div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>O que aconteceu na sua conta</h2></div></div>
+        <div class="el-card-head"><div><h2>Atividade recente</h2></div></div>
         ${itens.length
           ? `<ol class="ov-activity">${itens.slice(0, 4).map((i) => `
               <li><span>${TV.icon(i.icone)}</span><div><b>${escapeHtml(i.titulo)}</b><small>${escapeHtml(i.texto)}</small></div><time>${i.data ? dateTime(i.data) : "—"}</time></li>`).join("")}</ol>`
@@ -70,7 +70,6 @@
 
   const safety = () => `
     <article class="dash-card">
-      <p class="eyebrow">O SEU VOTO</p>
       <h2>Garantias</h2>
       <ul class="profile-list">
         <li class="is-yes">Voto secreto: ninguém sabe em quem votou</li>

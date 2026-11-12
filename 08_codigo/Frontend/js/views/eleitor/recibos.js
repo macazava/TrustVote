@@ -17,7 +17,6 @@
       <div class="receipts-main" data-receipts></div>
       <aside class="receipts-aside">
         <article class="dash-card">
-          <p class="eyebrow">SOBRE OS DOCUMENTOS</p>
           <h2>O que cada um prova</h2>
           <dl class="receipts-kinds">
             <div><dt>${TV.icon("shield-check")} Recibo de voto</dt><dd>Emitido no momento do voto, com um código único. Serve para confirmar que o seu voto foi contado.</dd></div>
@@ -25,7 +24,6 @@
           </dl>
         </article>
         <article class="dash-card">
-          <p class="eyebrow">PRIVACIDADE</p>
           <h2>O voto continua secreto</h2>
           <ul class="profile-list">
             <li class="is-no">Nenhum documento indica em quem votou</li>
