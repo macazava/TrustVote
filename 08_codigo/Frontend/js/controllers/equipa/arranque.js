@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const TV = window.TrustVote;
   const { session, ui, team } = TV;
-  const { escapeHtml, time, initials } = TV.format;
+  const { escapeHtml, initials } = TV.format;
   const { panel, go } = TV.panels;
 
   const wrap = document.querySelector(".dashboard-wrap");
@@ -18,9 +18,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===== Cabeçalho =====
-  const exp = (session.claims() || {}).exp;
-  document.querySelector("[data-session-chip]").textContent = exp ? `SESSÃO ATÉ ${time(new Date(exp * 1000).toISOString())}` : "SESSÃO SEGURA";
-  document.querySelector("[data-user-chip]").innerHTML =
+  const chip = document.querySelector("[data-user-chip]");
+  chip.title = user.nome;
+  chip.innerHTML =
     `<span class="avatar">${escapeHtml(initials(user.nome))}</span><span><b>${escapeHtml(user.nome)}</b><small>ADMINISTRADOR</small></span>`;
   document.querySelector("[data-logout]").addEventListener("click", session.logout);
 

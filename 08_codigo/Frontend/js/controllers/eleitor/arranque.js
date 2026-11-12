@@ -19,9 +19,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ===== Cabeçalho =====
   const exp = (session.claims() || {}).exp;
-  document.querySelector("[data-session-chip]").textContent = exp ? `SESSÃO ATÉ ${time(new Date(exp * 1000).toISOString())}` : "SESSÃO SEGURA";
   const year = user.data_registo ? new Date(user.data_registo).getFullYear() : "";
-  document.querySelector("[data-user-chip]").innerHTML =
+  const chip = document.querySelector("[data-user-chip]");
+  chip.title = user.nome;
+  chip.innerHTML =
     `<span class="avatar">${escapeHtml(initials(user.nome))}</span><span><b>${escapeHtml(user.nome)}</b><small>ELEITOR${year ? ` · ${year}` : ""}</small></span>`;
   document.querySelector("[data-logout]").addEventListener("click", session.logout);
 
