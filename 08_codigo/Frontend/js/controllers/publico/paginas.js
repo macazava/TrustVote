@@ -28,9 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
         votacao: now < inicio ? `A PARTIR DE ${date(e.data_inicio).toUpperCase()}` : now < fim ? "A DECORRER" : "CONCLUÍDA",
         apuramento: e.estado === "encerrada" ? "CONCLUÍDO" : `APÓS ${date(e.data_fim).toUpperCase()}`,
       };
+      // Estado de cada fase (concluída, em curso ou por vir), usado pelo CSS para a linha do tempo
+      const states = {
+        preparacao: now < inicio ? "current" : "done",
+        votacao: now < inicio ? "next" : now < fim ? "current" : "done",
+        apuramento: e.estado === "encerrada" ? "done" : now >= fim ? "current" : "next",
+      };
       Object.entries(phases).forEach(([phase, label]) => {
-        const pill = document.querySelector(`[data-phase="${phase}"] .status-pill`);
+        const article = document.querySelector(`[data-phase="${phase}"]`);
+        const pill = article && article.querySelector(".status-pill");
         if (pill) pill.textContent = label;
+        if (article) article.dataset.state = states[phase];
       });
     });
   }

@@ -1,0 +1,287 @@
+/* Página pública "Eleições" (calendario.html): cartão da eleição em verde, linha do tempo das fases
+   com marcadores ligados, e passos de "Como votar" em cartões numerados.
+   Só nesta página ([data-page="eleicoes"]); só cores do tema (modo claro e escuro). */
+
+/* ===== Eleição em destaque (preenchida pela API) ===== */
+[data-page="eleicoes"] [data-calendar-live] {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-top: var(--space-6);
+    padding: var(--space-8);
+    border: 0;
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 50%),
+        var(--color-brand-deep);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%);
+    color: var(--color-on-dark);
+}
+
+[data-page="eleicoes"] [data-calendar-live]::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+    background-size: 40px 40px;
+    content: "";
+    mask-image: radial-gradient(ellipse at 80% 20%, #000 10%, transparent 70%);
+}
+
+[data-page="eleicoes"] [data-calendar-live] .heading-row {
+    align-items: flex-start;
+}
+
+[data-page="eleicoes"] [data-calendar-live] .eyebrow {
+    color: var(--color-on-dark-live);
+}
+
+[data-page="eleicoes"] [data-calendar-live] h2 {
+    margin: var(--space-2) 0;
+    color: var(--color-on-dark);
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+[data-page="eleicoes"] [data-calendar-live] p:not(.eyebrow) {
+    color: var(--color-on-dark-muted);
+}
+
+[data-page="eleicoes"] [data-calendar-live] .link-button {
+    margin-top: var(--space-3);
+    padding: 8px 14px;
+    border: 1px solid var(--color-on-dark-border);
+    border-radius: var(--radius-full);
+    color: var(--color-on-dark);
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+[data-page="eleicoes"] [data-calendar-live] .link-button:hover {
+    border-color: var(--color-on-dark);
+    background: var(--color-on-dark-hover);
+}
+
+[data-page="eleicoes"] [data-calendar-live] .status-pill {
+    flex: none;
+    border: 1px solid var(--color-on-dark-border);
+    background: var(--color-on-dark-hover);
+    color: var(--color-on-dark-live);
+}
+
+/* Estado vazio dentro do cartão verde */
+[data-page="eleicoes"] [data-calendar-live] :is(h3, b, strong) {
+    color: var(--color-on-dark);
+}
+
+/* ===== Linha do tempo das fases ===== */
+[data-page="eleicoes"] .timeline {
+    gap: var(--space-4);
+    overflow: visible;
+    margin-top: var(--space-8);
+    border-radius: 0;
+    counter-reset: fase;
+}
+
+[data-page="eleicoes"] .timeline article {
+    position: relative;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 4px var(--space-5);
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    counter-increment: fase;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+/* Marcador redondo com o número da fase (✓ quando concluída) */
+[data-page="eleicoes"] .timeline article::before {
+    display: grid;
+    grid-row: 1 / span 2;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--color-border-strong);
+    border-radius: 50%;
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    content: counter(fase);
+    font-weight: 700;
+}
+
+/* Linha que liga o marcador ao da fase seguinte */
+[data-page="eleicoes"] .timeline article:not(:last-child)::after {
+    position: absolute;
+    top: calc(var(--space-5) + 44px);
+    bottom: calc(-1 * (var(--space-4) + var(--space-5)));
+    left: calc(var(--space-6) + 21px);
+    width: 2px;
+    background: var(--color-border);
+    content: "";
+}
+
+[data-page="eleicoes"] .timeline time,
+[data-page="eleicoes"] .timeline article>div {
+    grid-column: 2;
+}
+
+[data-page="eleicoes"] .timeline time {
+    align-self: end;
+    letter-spacing: 0.08em;
+}
+
+[data-page="eleicoes"] .timeline h2 {
+    font-family: var(--font-heading);
+}
+
+[data-page="eleicoes"] .timeline p {
+    margin: 0 0 var(--space-3);
+}
+
+/* Concluída: marcador verde com visto e linha verde até à fase seguinte */
+[data-page="eleicoes"] .timeline [data-state="done"]::before {
+    border-color: var(--color-brand-fill);
+    background: var(--color-brand-fill);
+    color: var(--color-on-dark);
+    content: "✓";
+}
+
+[data-page="eleicoes"] .timeline [data-state="done"]:not(:last-child)::after {
+    background: var(--color-brand-fill);
+}
+
+/* Em curso: cartão realçado e marcador com anel */
+[data-page="eleicoes"] .timeline [data-state="current"] {
+    border-color: var(--color-brand-muted);
+    box-shadow: var(--shadow-lg);
+}
+
+[data-page="eleicoes"] .timeline [data-state="current"]::before {
+    border-color: var(--color-brand);
+    background: var(--color-surface);
+    color: var(--color-brand);
+    box-shadow: 0 0 0 6px var(--color-focus-ring);
+}
+
+[data-page="eleicoes"] .timeline [data-state="current"] .status-pill {
+    background: var(--color-brand-fill);
+    color: var(--color-on-dark);
+}
+
+[data-page="eleicoes"] .timeline [data-state="next"] .status-pill {
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    [data-page="eleicoes"] .timeline [data-state="current"]::before {
+        animation: tv-fase-pulso 2.4s ease-out infinite;
+    }
+}
+
+@keyframes tv-fase-pulso {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand) 45%, transparent);
+    }
+
+    70%,
+    100% {
+        box-shadow: 0 0 0 10px transparent;
+    }
+}
+
+[data-page="eleicoes"] .notice {
+    margin-top: var(--space-6);
+    border-left: 0;
+    border-radius: var(--radius-md);
+}
+
+/* ===== Como votar: passos numerados em cartões ===== */
+[data-page="eleicoes"] .info-list {
+    display: grid;
+    gap: var(--space-3);
+}
+
+[data-page="eleicoes"] .info-list article {
+    align-items: flex-start;
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
+}
+
+[data-page="eleicoes"] .info-list article:hover {
+    border-color: var(--color-brand-muted);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+[data-page="eleicoes"] .info-list article>span {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-deep));
+    box-shadow: 0 10px 20px -10px var(--color-brand-fill);
+    color: var(--color-on-dark);
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+}
+
+[data-page="eleicoes"] .info-list h2 {
+    margin-top: 2px;
+    font-size: var(--text-lg);
+}
+
+[data-page="eleicoes"] .info-list p {
+    margin: 0;
+}
+
+[data-page="eleicoes"] .info-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: var(--space-2);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+[data-page="eleicoes"] .info-list a .icon {
+    transition: transform 0.2s;
+}
+
+[data-page="eleicoes"] .info-list a:hover .icon {
+    transform: translateX(4px);
+}
+
+/* ===== Telemóvel ===== */
+@media (max-width: 600px) {
+    [data-page="eleicoes"] [data-calendar-live] {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    [data-page="eleicoes"] [data-calendar-live] .heading-row {
+        flex-direction: column;
+    }
+
+    [data-page="eleicoes"] .timeline article {
+        padding: var(--space-4);
+        column-gap: var(--space-4);
+    }
+
+    [data-page="eleicoes"] .timeline article:not(:last-child)::after {
+        top: calc(var(--space-4) + 44px);
+        bottom: calc(-1 * (var(--space-4) + var(--space-4)));
+        left: calc(var(--space-4) + 21px);
+    }
+
+    [data-page="eleicoes"] .info-list article {
+        padding: var(--space-4);
+    }
+}
