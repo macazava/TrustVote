@@ -34,10 +34,11 @@
   <script defer src="../js/controllers/comum/pagina.js"></script>
   <script defer src="../js/controllers/publico/paginas.js"></script>
   <script defer src="../js/controllers/publico/contactos.js"></script>
+  <script defer src="../js/controllers/publico/ajuda.js"></script>
   <script defer src="../js/views/animacoes.js"></script>
 </head>
 
-<body>
+<body data-page="ajuda">
 
   <!-- Cabeçalho TrustVote -->
   <div data-layout="cabecalho"></div>
@@ -75,6 +76,22 @@
         </div>
         <p>O TrustVote é a plataforma de votação online das eleições académicas da Universidade: Associação de
           Estudantes, representantes de turma e de curso e núcleos académicos.</p>
+
+        <!-- Os princípios da plataforma -->
+        <ul class="about-values" aria-label="Princípios do TrustVote">
+          <li><span><svg class="icon" aria-hidden="true">
+                <use href="#i-shield-check"></use>
+              </svg></span><b>Voto secreto</b><small>A conta do estudante nunca fica ligada à escolha.</small></li>
+          <li><span><svg class="icon" aria-hidden="true">
+                <use href="#i-circle-check"></use>
+              </svg></span><b>Verificável</b><small>Cada eleitor recebe um recibo para confirmar que o voto
+              contou.</small>
+          </li>
+          <li><span><svg class="icon" aria-hidden="true">
+                <use href="#i-vote"></use>
+              </svg></span><b>Simples</b><small>Vota-se online, em poucos minutos, a partir de qualquer
+              dispositivo.</small></li>
+        </ul>
 
         <!-- A equipa que desenvolveu o projeto (fotografias em assets/) -->
         <h2 class="team-title">A equipa</h2>
@@ -180,6 +197,16 @@
         <div class="section-item-head">
           <h1>Perguntas frequentes</h1>
         </div>
+        <!-- Pesquisa: filtra as perguntas enquanto se escreve (controllers/publico/ajuda.js) -->
+        <label class="faq-search">
+          <svg class="icon" aria-hidden="true">
+            <use href="#i-search"></use>
+          </svg>
+          <span class="sr-only">Pesquisar nas perguntas frequentes</span>
+          <input type="search" placeholder="Pesquisar, por exemplo: recibo, conta, prazo…" data-faq-search
+            autocomplete="off">
+        </label>
+        <p class="faq-empty" data-faq-empty hidden>Nenhuma pergunta corresponde à pesquisa.</p>
         <div class="faq-list">
           <details>
             <summary>Quem pode votar?</summary>
@@ -221,6 +248,19 @@
             <p>Confirme o e-mail e a palavra-passe da conta de estudante. Se o problema continuar, contacte a comissão
               eleitoral académica.</p>
           </details>
+        </div>
+
+        <div class="faq-help">
+          <span><svg class="icon" aria-hidden="true">
+              <use href="#i-message-circle"></use>
+            </svg></span>
+          <div>
+            <b>Não encontrou a resposta?</b>
+            <small>A comissão eleitoral académica responde para o seu e-mail.</small>
+          </div>
+          <a class="button button-primary" href="#contactos">Contactar <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg></a>
         </div>
       </article>
 
