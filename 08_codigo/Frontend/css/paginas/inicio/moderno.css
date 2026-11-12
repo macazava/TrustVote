@@ -7,25 +7,11 @@
     isolation: isolate;
     overflow: hidden;
     padding-bottom: var(--space-10);
-    background:
-        radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 42%),
-        radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--color-on-dark-active) 28%, transparent), transparent 48%),
-        var(--color-brand-deep);
+    background: var(--color-brand-deep);
     color: var(--color-on-dark);
 }
 
 /* Grelha fina a desvanecer para os cantos */
-.hero-band::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
-    background-size: 48px 48px;
-    content: "";
-    mask-image: radial-gradient(ellipse at 30% 40%, #000 15%, transparent 70%);
-}
 
 .hero-band .hero {
     padding: 80px 0 56px;
@@ -80,7 +66,6 @@
     border-color: var(--color-on-dark-border);
     border-radius: var(--radius-lg);
     background: rgb(255 255 255 / 7%);
-    backdrop-filter: blur(8px);
 }
 
 .hero-band .alert-icon {
@@ -112,7 +97,7 @@
 
 .hero-band .hero-photo img {
     border: 1px solid var(--color-on-dark-border);
-    border-radius: 24px;
+    border-radius: var(--radius-lg);
     box-shadow: 0 40px 80px -32px rgb(0 0 0 / 60%);
 }
 
@@ -166,7 +151,7 @@
 
 .services-panel {
     padding: var(--space-8);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
 
 .services .service-card {
@@ -196,7 +181,7 @@
 .services .service-card:hover>span {
     background: var(--color-brand-fill);
     color: var(--color-on-dark);
-    transform: scale(1.06) rotate(-5deg);
+    transform: none;
 }
 
 .services .service-card small {
@@ -211,7 +196,7 @@
 
 .election-info .photo-panel img,
 .news-photo {
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
 
 .election-info .facts {
@@ -236,10 +221,8 @@
     position: relative;
     overflow: hidden;
     padding: var(--space-10);
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at 100% 0%, var(--color-brand-tint), transparent 40%),
-        var(--color-surface);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
 }
 
 /* Faixa de cor no topo do cartão */
@@ -247,7 +230,7 @@
     position: absolute;
     inset: 0 0 auto;
     height: 4px;
-    background: linear-gradient(90deg, var(--color-brand-fill), var(--color-on-dark-live));
+    background: var(--color-brand-fill);
     content: "";
 }
 
@@ -266,7 +249,7 @@
 }
 
 .hub-progress .bar>i {
-    background: linear-gradient(90deg, var(--color-brand-fill), var(--color-on-dark-live));
+    background: var(--color-brand-fill);
 }
 
 /* ===== Como votar: passos ligados por uma linha ===== */
@@ -282,14 +265,14 @@
     grid-template-columns: 1fr;
     gap: var(--space-2);
     padding: var(--space-6);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
 }
 
 .steps-list li:hover {
     border-color: var(--color-brand-muted);
     box-shadow: var(--shadow-lg);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .steps-list span {
@@ -298,7 +281,7 @@
     height: 48px;
     margin-bottom: var(--space-3);
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-deep));
+    background: var(--color-brand-fill);
     box-shadow: 0 10px 20px -10px var(--color-brand-fill);
     font-family: var(--font-heading);
     font-size: var(--text-xl);
@@ -357,24 +340,9 @@
     box-shadow: var(--shadow-md);
 }
 
-.faq-list summary::after {
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--color-brand-soft);
-    font-size: var(--text-base);
-    transition: transform 0.25s;
-}
-
-.faq-list details[open] summary::after {
-    transform: rotate(180deg);
-}
-
 /* ===== Avisos ===== */
 .news-grid .dash-card {
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
 
 .news-grid h3 {
@@ -402,4 +370,22 @@
     .hub-card {
         padding: var(--space-6) var(--space-5);
     }
+}
+/* Ícones soltos (sem quadrado por trás): garantias do topo e atalhos */
+.hero-trust span,
+.services .service-card>span {
+    display: block;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    font-size: 1.25rem;
+}
+
+.services .service-card:hover>span {
+    background: none;
+    color: var(--color-brand);
+    transform: none;
 }

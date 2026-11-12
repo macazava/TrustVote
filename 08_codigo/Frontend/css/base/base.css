@@ -79,14 +79,35 @@ code {
 }
 
 /* Títulos em serifa (tom académico); o resto do site fica em Inter */
+/* Serifa só nos títulos principais (H1, H2); o resto do site, incluindo H3, fica em Inter */
 h1,
-h2,
-h3 {
+h2 {
     font-family: var(--font-heading);
     font-optical-sizing: auto;
+    line-height: var(--leading-title);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
 }
 
-/* Números com a mesma largura: alinham em métricas, resultados, contadores e tabelas */
+h3 {
+    font-family: var(--font-sans);
+    line-height: 1.25;
+}
+
+/* Texto corrido: altura de linha confortável e largura de leitura limitada (~68 caracteres) */
+body {
+    line-height: var(--leading-body);
+}
+
+.lead,
+.section-item>p,
+.content-page>p,
+.faq-list details p,
+.legal-doc p {
+    max-width: var(--measure);
+}
+
+/* Números com a mesma largura: datas, contadores, resultados e tabelas não "saltam" ao mudar */
 .facts b,
 .hub-progress b,
 .metric-card b,
@@ -94,7 +115,13 @@ h3 {
 .profile-session b,
 .receipt-code b,
 [data-countdown],
-table {
+time,
+table,
+.el-time,
+.history-stats dd,
+[class*="results-"] b,
+.bar-chart-value,
+.poll-value {
     font-variant-numeric: tabular-nums;
 }
 
@@ -112,15 +139,16 @@ table {
     stroke-linejoin: round;
 }
 
-/* Setas no fim dos botões e links: deslizam um pouco ao passar o rato */
+/* Setas no fim dos botões e links: deslizam 3px ao passar o rato */
 .button .icon,
 .text-link .icon,
 .link-button .icon {
-    transition: transform 0.2s;
+    transition: transform var(--dur-fast) var(--ease-out);
 }
 
 .button:hover .icon:last-child,
-.text-link:hover .icon:last-child {
+.text-link:hover .icon:last-child,
+.link-button:hover .icon:last-child {
     transform: translateX(3px);
 }
 
@@ -128,6 +156,11 @@ table {
 :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
     outline: 3px solid var(--color-focus);
     outline-offset: 2px;
+}
+
+/* Campos: borda e anel de foco com transição suave */
+:where(input, select, textarea) {
+    transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 
 /* Nas faixas escuras o contorno passa a verde claro, para manter o contraste (≥ 3:1) */

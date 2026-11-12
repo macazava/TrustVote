@@ -11,24 +11,10 @@
     isolation: isolate;
     overflow: hidden;
     padding: 56px 0 48px;
-    background:
-        radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 45%),
-        radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--color-on-dark-active) 25%, transparent), transparent 50%),
-        var(--color-brand-deep);
+    background: var(--color-brand-deep);
     color: var(--color-on-dark);
 }
 
-.press-band::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
-    background-size: 48px 48px;
-    content: "";
-    mask-image: radial-gradient(ellipse at 25% 40%, #000 15%, transparent 70%);
-}
 
 /* A barra deixou de ser um cartão: é o conteúdo da faixa */
 .press-bar {
@@ -74,7 +60,6 @@
     background: rgb(255 255 255 / 6%);
     color: var(--color-on-dark);
     text-decoration: none;
-    backdrop-filter: blur(6px);
     transition: background-color 0.2s, border-color 0.2s, transform 0.25s cubic-bezier(.2, .8, .2, 1);
 }
 
@@ -122,14 +107,14 @@
 .press-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     transition: box-shadow 0.3s, transform 0.3s cubic-bezier(.2, .8, .2, 1);
 }
 
 .press-hero:hover {
     box-shadow: var(--shadow-lg);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .press-hero img {
@@ -194,7 +179,6 @@
     font-size: var(--text-xs);
     font-weight: 700;
     letter-spacing: 0.06em;
-    backdrop-filter: blur(6px);
 }
 
 .press-read {
@@ -248,7 +232,7 @@
 .press-notices {
     margin-top: 0;
     padding: var(--space-2) var(--space-6);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
 }
 
 .press-notices .news-list {
@@ -303,7 +287,7 @@
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--color-border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: var(--shadow-sm);
     transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
@@ -312,7 +296,7 @@
 .press-news article:hover {
     border-color: var(--color-brand-muted);
     box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
 }
 
 .press-news img {
@@ -323,7 +307,7 @@
 }
 
 .press-news article:hover img {
-    transform: scale(1.05);
+    transform: none;
 }
 
 .press-news div {

@@ -64,6 +64,10 @@
           <span><b>TRUSTVOTE</b><small>ELEIÇÕES ACADÉMICAS</small></span>
         </a>
         <p>Votação online para as eleições académicas da Universidade.</p>
+        <address class="footer-contact">
+          <b>Comissão Eleitoral Académica</b>
+          <a href="mailto:geral@trustvote.pt">geral@trustvote.pt</a>
+        </address>
       </div>
       <div>
         <b>ELEIÇÕES</b>
@@ -89,8 +93,8 @@
       </div>
     </div>
     <div class="footer-bottom container">
-      <span>TrustVote · ${new Date().getFullYear()}</span>
-      <span><a href="termos.html">Termos</a> · <a href="privacidade.html">Privacidade</a> · <a href="acessibilidade.html">Acessibilidade</a></span>
+      <span>© TrustVote ${new Date().getFullYear()} · Os dados pessoais são tratados nos termos da <a href="privacidade.html">política de privacidade</a>.</span>
+      <nav class="footer-legal" aria-label="Informação legal"><a href="termos.html">Termos</a><a href="privacidade.html">Privacidade</a><a href="acessibilidade.html">Acessibilidade</a></nav>
     </div>
   </footer>`;
 

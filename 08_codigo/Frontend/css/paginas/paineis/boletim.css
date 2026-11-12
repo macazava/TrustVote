@@ -269,15 +269,11 @@
     animation: tv-stamp-ring 0.9s 0.35s ease-out both;
 }
 
+/* Selo do voto: aparece com calma (fade e escala ligeira, sem ressalto nem rotação) */
 @keyframes tv-stamp {
     from {
         opacity: 0;
-        transform: scale(1.8) rotate(-14deg);
-    }
-
-    60% {
-        opacity: 1;
-        transform: scale(0.92) rotate(2deg);
+        transform: scale(1.06);
     }
 }
 

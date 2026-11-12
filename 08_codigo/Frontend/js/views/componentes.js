@@ -171,6 +171,7 @@
       const original = button ? button.innerHTML : "";
       if (button) {
         button.disabled = true;
+        button.setAttribute("aria-busy", "true");
         button.textContent = label;
       }
       try {
@@ -178,6 +179,7 @@
       } finally {
         if (button) {
           button.disabled = false;
+          button.removeAttribute("aria-busy");
           button.innerHTML = original;
         }
       }
@@ -223,7 +225,7 @@
   };
   const stateBadge = (estado, label = "") => {
     const [texto, icone, tom] = estados[estado] || [String(estado || "").toUpperCase(), "info", "closed"];
-    return `<span class="status-pill tone-${tom}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
+    return `<span class="status-pill tone-${tom}" data-estado="${escapeHtml(estado)}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
   };
 
   // Botão "Adicionar ao calendário": descarrega um .ics com o período de votação (controllers/comum/agenda.js)

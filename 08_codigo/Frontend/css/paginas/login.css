@@ -19,25 +19,11 @@
     gap: var(--space-8);
     overflow: hidden;
     padding: var(--space-10) clamp(32px, 5vw, 80px);
-    background:
-        radial-gradient(circle at 85% 10%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 45%),
-        radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--color-on-dark-active) 30%, transparent), transparent 50%),
-        var(--color-brand-deep);
+    background: var(--color-brand-deep);
     color: var(--color-on-dark);
 }
 
 /* Grelha fina por cima do fundo, a desvanecer para os cantos */
-.auth-intro::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-        linear-gradient(rgb(255 255 255 / 6%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 6%) 1px, transparent 1px);
-    background-size: 44px 44px;
-    content: "";
-    mask-image: radial-gradient(ellipse at 40% 45%, #000 20%, transparent 75%);
-}
 
 .auth-brand,
 .auth-brand:hover {
@@ -151,7 +137,7 @@
     margin-block: auto;
     padding: var(--space-10);
     border: 1px solid var(--color-border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     background: var(--color-surface);
     transition: width 0.3s cubic-bezier(.2, .8, .2, 1);
 }

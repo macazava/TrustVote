@@ -248,13 +248,6 @@
 
 /* O boletim desce devagar até à ranhura e volta */
 .empty-art .ea-paper {
-    animation: tv-empty-float 3.2s ease-in-out infinite;
-}
-
-@keyframes tv-empty-float {
-    50% {
-        transform: translateY(5px);
-    }
 }
 
 /* Aviso de ligação (controllers/comum/pagina.js): faixa no fundo do ecrã */

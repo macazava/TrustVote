@@ -13,25 +13,12 @@
     overflow: hidden;
     margin-top: var(--space-6);
     padding: var(--space-8);
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 50%),
-        var(--color-brand-deep);
+    border-radius: var(--radius-lg);
+    background: var(--color-brand-deep);
     box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%);
     color: var(--color-on-dark);
 }
 
-[data-page="listas"] .lists-summary::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
-    background-size: 40px 40px;
-    content: "";
-    mask-image: radial-gradient(ellipse at 80% 20%, #000 10%, transparent 70%);
-}
 
 [data-page="listas"] .lists-summary .eyebrow {
     margin: 0;
@@ -79,7 +66,7 @@
     gap: var(--space-4);
     overflow: hidden;
     padding: var(--space-6);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
 }
 
@@ -93,21 +80,21 @@
 }
 
 [data-page="listas"] .list-card {
-    --lista-cor: linear-gradient(90deg, var(--color-brand-fill), var(--color-on-dark-live));
+    --lista-cor: var(--color-brand-fill);
 }
 
 [data-page="listas"] .list-card:nth-child(3n + 2) {
-    --lista-cor: linear-gradient(90deg, var(--color-heading-fill), var(--color-brand-fill));
+    --lista-cor: var(--color-heading-fill);
 }
 
 [data-page="listas"] .list-card:nth-child(3n + 3) {
-    --lista-cor: linear-gradient(90deg, var(--color-on-dark-active), var(--color-indicator));
+    --lista-cor: var(--color-on-dark-active);
 }
 
 [data-page="listas"] .list-card:hover {
     border-color: var(--color-brand-muted);
     box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
 }
 
 [data-page="listas"] .list-card header {
@@ -131,7 +118,7 @@
 }
 
 [data-page="listas"] .list-card:hover .candidate-badge {
-    transform: scale(1.06) rotate(-4deg);
+    transform: none;
 }
 
 [data-page="listas"] .list-card header small {

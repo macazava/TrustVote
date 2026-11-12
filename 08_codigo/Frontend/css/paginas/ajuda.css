@@ -35,7 +35,7 @@
     height: 44px;
     margin-bottom: var(--space-3);
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-deep));
+    background: var(--color-brand-fill);
     box-shadow: 0 10px 20px -10px var(--color-brand-fill);
     color: var(--color-on-dark);
     font-size: var(--text-xl);
@@ -63,7 +63,7 @@
     gap: 2px;
     padding: var(--space-3) var(--space-3) var(--space-4);
     border: 1px solid var(--color-border);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     background: var(--color-surface);
     box-shadow: var(--shadow-sm);
     transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
@@ -72,12 +72,12 @@
 [data-page="ajuda"] .team-grid li:hover {
     border-color: var(--color-brand-muted);
     box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
 }
 
 [data-page="ajuda"] .team-photo {
     margin-bottom: var(--space-3);
-    border-radius: 14px;
+    border-radius: var(--radius-lg);
 }
 
 [data-page="ajuda"] .team-grid b {
@@ -101,7 +101,7 @@
 /* ===== Contactos ===== */
 [data-page="ajuda"] .contact-form {
     padding: var(--space-8);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
 }
 
@@ -138,24 +138,11 @@
     isolation: isolate;
     overflow: hidden;
     padding: var(--space-8) var(--space-6);
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 55%),
-        var(--color-brand-deep);
+    border-radius: var(--radius-lg);
+    background: var(--color-brand-deep);
     box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%);
 }
 
-[data-page="ajuda"] .contact-card::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
-    background-size: 36px 36px;
-    content: "";
-    mask-image: radial-gradient(ellipse at 80% 10%, #000 10%, transparent 70%);
-}
 
 [data-page="ajuda"] .contact-icon {
     color: var(--color-on-dark-live);
@@ -271,14 +258,6 @@
     padding: var(--space-5) var(--space-6);
 }
 
-[data-page="ajuda"] .faq-list summary::after {
-    transition: transform 0.25s;
-}
-
-[data-page="ajuda"] .faq-list details[open] summary::after {
-    transform: rotate(180deg);
-}
-
 [data-page="ajuda"] .faq-list details p {
     margin: 0;
     padding: 0 var(--space-6) var(--space-5);
@@ -295,7 +274,7 @@
     margin-top: var(--space-8);
     padding: var(--space-5) var(--space-6);
     border: 1px solid var(--color-brand-muted);
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     background: var(--color-brand-soft);
 }
 
@@ -351,5 +330,11 @@
 
     [data-page="ajuda"] .faq-help .button {
         width: 100%;
+    }
+}
+/* Ecrãs muito estreitos (até 420px): a etiqueta do curso pode quebrar, para as duas colunas caberem */
+@media (max-width: 420px) {
+    [data-page="ajuda"] .team-grid small {
+        white-space: normal;
     }
 }

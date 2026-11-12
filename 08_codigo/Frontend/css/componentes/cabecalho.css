@@ -46,11 +46,16 @@
 .site-header {
     position: relative;
     z-index: 5;
-    border-bottom: 1px solid var(--color-border);
-    /* papel translúcido: o conteúdo passa por baixo desfocado quando o cabeçalho fica fixo */
-    background: color-mix(in srgb, var(--color-surface) 90%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    /* Fundo sólido; a borda inferior e a sombra só aparecem depois de algum scroll
+       (classe .is-scrolled posta por js/motion.js) */
+    border-bottom: 1px solid transparent;
+    background: var(--color-surface);
+    transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+
+.site-header.is-scrolled {
+    border-bottom-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
 }
 
 .site-header-inner {

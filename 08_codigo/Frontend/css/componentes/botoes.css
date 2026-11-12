@@ -1,28 +1,42 @@
 /* Botões e links */
+/* Dois tamanhos (normal 44px, .button-small 36px) e três variantes:
+   primário (.button-primary), secundário (.button / .button-outline) e link (.text-link / .link-button). */
 .button {
     display: inline-flex;
-    min-height: 48px;
+    min-height: 44px;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 0 22px;
+    padding: 0 20px;
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
     font-size: var(--text-base);
     font-weight: 600;
     text-decoration: none;
-    transition: box-shadow 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
+        color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .button:hover {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 }
 
-.button:disabled {
+.button:active {
+    transform: scale(0.98);
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
     cursor: not-allowed;
     opacity: 0.55;
     transform: none;
     box-shadow: none;
+}
+
+/* A carregar (ui.busy põe aria-busy enquanto o pedido corre) */
+.button[aria-busy="true"] {
+    cursor: progress;
+    opacity: 0.75;
 }
 
 .button-primary {
@@ -35,7 +49,7 @@
 .button-primary:hover {
     border-color: var(--color-action-hover);
     background: var(--color-action-hover);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .button-outline {
@@ -56,7 +70,7 @@
 }
 
 .button-small {
-    min-height: 38px;
+    min-height: 36px;
     padding: 0 14px;
     font-size: var(--text-sm);
 }
