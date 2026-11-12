@@ -159,6 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
       history.innerHTML = lista.length
         ? lista.map(view.historyPeriod).join("")
         : ui.empty("Ainda não há eleições encerradas", "As eleições aparecem aqui depois de terminarem.");
+      const stats = document.querySelector("[data-history-stats]");
+      if (stats && lista.length) {
+        stats.innerHTML = view.historyStats(lista);
+        stats.hidden = false;
+      }
     });
   }
 });

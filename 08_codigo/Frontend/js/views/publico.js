@@ -77,17 +77,39 @@
   }
 
   // ===== Histórico: uma entrada por eleição encerrada =====
+  // Um cartão por eleição: ano à esquerda (marca da linha do tempo), participação em barra e números
   const historyPeriod = (e) => `
     <article class="history-period">
-      <header><span>${TV.icon("calendar")}</span><time>${escapeHtml(period(e.data_inicio, e.data_fim))}</time></header>
-      <h2>${escapeHtml(e.titulo)}</h2>
-      ${e.descricao ? `<p>${escapeHtml(e.descricao)}</p>` : ""}
-      <div class="facts grid-cols-2 sm:grid-cols-3">
-        <div><b>${number(e.eleitores)}</b><small>estudantes elegíveis</small></div>
-        <div><b>${number(e.votos)}</b><small>votos</small></div>
-        <div><b>${percent(e.participacao)}</b><small>participação</small></div>
+      <div class="history-year" aria-hidden="true"><span>${TV.icon("calendar")}</span><b>${new Date(e.data_fim).getFullYear()}</b></div>
+      <div class="history-body">
+        <div class="history-top">
+          ${TV.blocks.stateBadge("encerrada")}
+          <time>${escapeHtml(period(e.data_inicio, e.data_fim))}</time>
+        </div>
+        <h2>${escapeHtml(e.titulo)}</h2>
+        ${e.descricao ? `<p>${escapeHtml(e.descricao)}</p>` : ""}
+        <div class="history-turnout">
+          <div><small>PARTICIPAÇÃO</small><b>${percent(e.participacao)}</b></div>
+          <div class="bar" role="img" aria-label="${percent(e.participacao)} de participação"><i style="width:${Math.min(100, e.participacao || 0)}%"></i></div>
+        </div>
+        <div class="facts">
+          <div><b>${number(e.eleitores)}</b><small>estudantes elegíveis</small></div>
+          <div><b>${number(e.votos)}</b><small>votos registados</small></div>
+          <div><b>${e.apurada_em ? date(e.apurada_em) : "—"}</b><small>apuramento</small></div>
+        </div>
+        <a class="history-link" href="resultados.html">Ver resultados ${TV.icon("arrow-right")}</a>
       </div>
     </article>`;
+
+  // Totais no topo da página: quantas eleições, quantos votos e a participação média
+  const historyStats = (lista) => {
+    const votos = lista.reduce((t, e) => t + (e.votos || 0), 0);
+    const media = lista.reduce((t, e) => t + (e.participacao || 0), 0) / lista.length;
+    return `
+      <div><dt>Eleições encerradas</dt><dd>${number(lista.length)}</dd></div>
+      <div><dt>Votos registados</dt><dd>${number(votos)}</dd></div>
+      <div><dt>Participação média</dt><dd>${percent(media)}</dd></div>`;
+  };
 
   // ===== "Como funciona": o que aconteceu no fecho da última eleição =====
   // Sem eleições encerradas mostra só os passos, sem horas
@@ -113,5 +135,5 @@
       <a class="button button-primary" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
     </article>`;
 
-  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, listsSummary, loginForResults };
+  TV.publicView = { notices, historyPeriod, historyStats, nextElection, lastCount, listCard, listsSummary, loginForResults };
 })();
