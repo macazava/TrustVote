@@ -30,15 +30,20 @@
     display: none;
 }
 
+/* Ícone do acordeão (o único em todo o site): seta para baixo que roda 180° ao abrir;
+   a transição está na secção Motion (componentes/animacoes.css) */
 .faq-list summary::after {
     flex: none;
-    color: var(--color-brand);
-    font-size: var(--text-xl);
-    content: "+";
+    width: 18px;
+    height: 18px;
+    background: var(--color-brand);
+    content: "";
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .faq-list details[open] summary::after {
-    content: "−";
+    transform: rotate(180deg);
 }
 
 .faq-list summary:focus-visible {

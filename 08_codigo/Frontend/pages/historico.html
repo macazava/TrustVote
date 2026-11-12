@@ -30,7 +30,7 @@
   <script defer src="../js/controllers/comum/menu.js"></script>
   <script defer src="../js/controllers/comum/pagina.js"></script>
   <script defer src="../js/controllers/publico/paginas.js"></script>
-  <script defer src="../js/views/animacoes.js"></script>
+  <script defer src="../js/motion.js"></script>
 </head>
 
 <body>
@@ -46,13 +46,10 @@
 
     <section class="history-hero" style="background-image:url('../assets/01_iade_campus_patio_exterior.webp')">
       <div class="container">
-        <h1>Histórico Eleitoral</h1>
-      </div>
-    </section>
-
-    <section class="history-intro">
-      <div class="container">
+        <h1>Histórico eleitoral</h1>
         <p>Eleições académicas já encerradas, com as datas e a participação registadas na plataforma.</p>
+        <!-- Totais de todas as eleições encerradas (preenchido por controllers/publico/paginas.js) -->
+        <dl class="history-stats" data-history-stats hidden></dl>
       </div>
     </section>
 

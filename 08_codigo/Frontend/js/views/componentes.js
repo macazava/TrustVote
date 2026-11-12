@@ -62,13 +62,12 @@
         ${ilustracaoVazia}
         <h2>${escapeHtml(title)}</h2>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
-        ${
-          !action
-            ? ""
-            : action.href
-              ? `<a class="button button-outline" href="${escapeHtml(action.href)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</a>`
-              : `<button class="button button-outline" type="button" data-go="${escapeHtml(action.go)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</button>`
-        }
+        ${!action
+        ? ""
+        : action.href
+          ? `<a class="button button-outline" href="${escapeHtml(action.href)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</a>`
+          : `<button class="button button-outline" type="button" data-go="${escapeHtml(action.go)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</button>`
+      }
       </div>`,
 
     message(el, text, ok = false) {
@@ -171,6 +170,7 @@
       const original = button ? button.innerHTML : "";
       if (button) {
         button.disabled = true;
+        button.setAttribute("aria-busy", "true");
         button.textContent = label;
       }
       try {
@@ -178,6 +178,7 @@
       } finally {
         if (button) {
           button.disabled = false;
+          button.removeAttribute("aria-busy");
           button.innerHTML = original;
         }
       }
@@ -223,7 +224,7 @@
   };
   const stateBadge = (estado, label = "") => {
     const [texto, icone, tom] = estados[estado] || [String(estado || "").toUpperCase(), "info", "closed"];
-    return `<span class="status-pill tone-${tom}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
+    return `<span class="status-pill tone-${tom}" data-estado="${escapeHtml(estado)}">${TV.icon(icone)} ${escapeHtml(label || texto)}</span>`;
   };
 
   // Botão "Adicionar ao calendário": descarrega um .ics com o período de votação (controllers/comum/agenda.js)

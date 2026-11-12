@@ -1,7 +1,32 @@
 /* Tabelas dos painéis */
+/* A tabela faz scroll dentro do seu contentor (horizontal no telemóvel, vertical nas listas longas),
+   com o cabeçalho sempre visível */
 .table-scroll {
+    max-height: min(70vh, 720px);
     overflow: auto;
     border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overscroll-behavior-x: contain;
+}
+
+thead th {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+}
+
+tbody tr {
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+tbody tr:hover {
+    background: var(--color-brand-tint);
+}
+
+/* Resultados em tabela (views/graficos.js): números alinhados à direita */
+.chart-table thead th:not(:first-child),
+.chart-table td {
+    text-align: right;
 }
 
 table {

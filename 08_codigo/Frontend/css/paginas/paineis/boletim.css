@@ -176,6 +176,7 @@
 .ballot-done .link-button {
     margin: calc(-1 * var(--space-2)) 0 var(--space-4);
 }
+
 /* ===== Passo 2: o boletim tal como vai entrar na urna ===== */
 .ballot-paper {
     margin: var(--space-6) 0 var(--space-4);
@@ -269,15 +270,11 @@
     animation: tv-stamp-ring 0.9s 0.35s ease-out both;
 }
 
+/* Selo do voto: aparece com calma (fade e escala ligeira, sem ressalto nem rotação) */
 @keyframes tv-stamp {
     from {
         opacity: 0;
-        transform: scale(1.8) rotate(-14deg);
-    }
-
-    60% {
-        opacity: 1;
-        transform: scale(0.92) rotate(2deg);
+        transform: scale(1.06);
     }
 }
 
@@ -308,7 +305,7 @@
     cursor: pointer;
 }
 
-.receipt-qr > div {
+.receipt-qr>div {
     display: flex;
     align-items: center;
     gap: var(--space-4);
@@ -324,7 +321,7 @@
     text-align: left;
 }
 
-.ballot-done .receipt-qr > div {
+.ballot-done .receipt-qr>div {
     justify-content: center;
 }
 

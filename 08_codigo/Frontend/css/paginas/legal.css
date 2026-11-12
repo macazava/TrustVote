@@ -4,9 +4,7 @@
 /* ===== Faixa de topo ===== */
 .legal-hero {
     border-bottom: 1px solid var(--color-border);
-    background:
-        radial-gradient(900px 260px at 85% -40%, var(--color-brand-tint), transparent 70%),
-        var(--color-surface);
+    background: var(--color-surface);
 }
 
 .legal-hero .container {

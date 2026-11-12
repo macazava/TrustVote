@@ -28,9 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
         votacao: now < inicio ? `A PARTIR DE ${date(e.data_inicio).toUpperCase()}` : now < fim ? "A DECORRER" : "CONCLUÍDA",
         apuramento: e.estado === "encerrada" ? "CONCLUÍDO" : `APÓS ${date(e.data_fim).toUpperCase()}`,
       };
+      // Estado de cada fase (concluída, em curso ou por vir), usado pelo CSS para a linha do tempo
+      const states = {
+        preparacao: now < inicio ? "current" : "done",
+        votacao: now < inicio ? "next" : now < fim ? "current" : "done",
+        apuramento: e.estado === "encerrada" ? "done" : now >= fim ? "current" : "next",
+      };
       Object.entries(phases).forEach(([phase, label]) => {
-        const pill = document.querySelector(`[data-phase="${phase}"] .status-pill`);
+        const article = document.querySelector(`[data-phase="${phase}"]`);
+        const pill = article && article.querySelector(".status-pill");
         if (pill) pill.textContent = label;
+        if (article) article.dataset.state = states[phase];
       });
     });
   }
@@ -65,11 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!listas.has(nome)) listas.set(nome, []);
           listas.get(nome).push(c);
         });
-        grid.innerHTML = [...listas].map(([nome, membros]) => view.listCard(nome, membros, dados.eleicao.titulo)).join("");
+        grid.innerHTML = [...listas].map(([nome, membros]) => view.listCard(nome, membros)).join("");
+        grid.insertAdjacentHTML("beforebegin", view.listsSummary(dados.eleicao, listas.size));
         const lead = document.querySelector("[data-listas-lead]");
         if (lead) lead.textContent = `Listas candidatas a ${dados.eleicao.titulo}: quem são e o que propõem.`;
         const notice = grid.parentElement.querySelector(".notice");
-        if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
+        // O resumo por cima das listas já diz quantas há e de que eleição: o aviso de carregamento sai
+        if (notice) notice.remove();
       })
       .catch(() => {
         grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.", "As listas aparecem quando a comissão eleitoral as validar.", { label: "Ver calendário eleitoral", href: "calendario.html" });
@@ -149,6 +159,11 @@ document.addEventListener("DOMContentLoaded", () => {
       history.innerHTML = lista.length
         ? lista.map(view.historyPeriod).join("")
         : ui.empty("Ainda não há eleições encerradas", "As eleições aparecem aqui depois de terminarem.");
+      const stats = document.querySelector("[data-history-stats]");
+      if (stats && lista.length) {
+        stats.innerHTML = view.historyStats(lista);
+        stats.hidden = false;
+      }
     });
   }
 });

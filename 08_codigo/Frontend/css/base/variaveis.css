@@ -149,20 +149,38 @@
    --space-4: 16px;
    --space-5: 20px;
    --space-6: 24px;
+   --space-7: 28px;
    --space-8: 32px;
+   --space-9: 36px;
    --space-10: 40px;
    --space-12: 48px;
 
    /* Cantos: controlos (sm, md) e superfícies (lg) */
-   --radius-sm: 8px;
-   --radius-md: 12px;
-   --radius-lg: 16px;
+   /* Só dois raios: 6px (controlos, etiquetas) e 12px (superfícies). --radius-md é o mesmo que --radius-sm. */
+   --radius-sm: 6px;
+   --radius-md: 6px;
+   --radius-lg: 12px;
    --radius-full: 999px;
 
    /* Elevação: sombras suaves, tingidas com o verde da marca */
+   /* Só dois níveis, muito discretos (preferir bordas de 1px). --shadow-lg é o mesmo que --shadow-md. */
    --shadow-sm: 0 1px 2px rgb(23 63 50 / 6%);
-   --shadow-md: 0 10px 30px -12px rgb(23 63 50 / 18%);
-   --shadow-lg: 0 22px 45px -18px rgb(23 63 50 / 28%);
+   --shadow-md: 0 4px 12px -6px rgb(23 63 50 / 16%);
+   --shadow-lg: var(--shadow-md);
+
+   /* Tipografia: alturas de linha e largura de leitura */
+   --leading-title: 1.18;
+   --leading-body: 1.55;
+   --measure: 68ch;
+   --h1: clamp(2.25rem, 4.4vw, 3.5rem);
+   --h2: clamp(1.5rem, 2.4vw, 1.875rem);
+
+   /* Movimento (usado em todo o site; desligado com prefers-reduced-motion) */
+   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+   --dur-fast: 150ms;
+   --dur-base: 240ms;
+   --dur-slow: 420ms;
 
    /* Layout */
    --container: 1200px;
@@ -219,6 +237,6 @@
    --color-overlay: rgb(0 0 0 / 60%);
 
    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-   --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 55%);
-   --shadow-lg: 0 22px 45px -18px rgb(0 0 0 / 70%);
+   --shadow-md: 0 4px 12px -6px rgb(0 0 0 / 50%);
+   --shadow-lg: var(--shadow-md);
 }

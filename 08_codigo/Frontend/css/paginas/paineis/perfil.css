@@ -9,7 +9,7 @@
     gap: 26px;
     margin-top: 8px;
     padding: 30px 32px;
-    background: linear-gradient(135deg, var(--color-brand-deep), var(--color-brand));
+    background: var(--color-brand-deep);
     color: var(--color-on-dark);
 }
 

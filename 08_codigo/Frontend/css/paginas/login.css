@@ -1,46 +1,73 @@
-/* Página de acesso (login e registo) */
-.auth-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 20px max(24px, calc((100% - var(--container)) / 2));
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
-}
+/* Página de acesso (login e registo): ecrã dividido.
+   À esquerda o painel da marca (verde escuro, garantias e um recibo ilustrativo);
+   à direita o cartão do formulário, com separadores "Iniciar sessão / Criar conta". */
 
 .auth-layout {
     display: grid;
-    grid-template-columns: 1fr minmax(360px, 530px);
-    align-items: center;
-    gap: 7vw;
-    width: min(var(--container), calc(100% - 48px));
-    min-height: calc(100vh - 90px);
-    margin: auto;
-    padding: 55px 0;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* ===== Painel da marca ===== */
+.auth-intro {
+    position: relative;
+    isolation: isolate;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    overflow: hidden;
+    padding: var(--space-10) clamp(32px, 5vw, 80px);
+    background: var(--color-brand-deep);
+    color: var(--color-on-dark);
+}
+
+/* Grelha fina por cima do fundo, a desvanecer para os cantos */
+
+.auth-brand,
+.auth-brand:hover {
+    align-self: flex-start;
+    color: var(--color-on-dark);
+}
+
+.auth-brand .brand-mark {
+    background: var(--color-on-dark);
+    color: var(--color-brand-deep);
+}
+
+.auth-brand small {
+    color: var(--color-on-dark-muted);
+}
+
+.auth-intro-copy {
+    max-width: 540px;
+    margin-top: auto;
 }
 
 .auth-intro h1 {
-    max-width: 580px;
-    margin: 15px 0;
-    color: var(--color-heading);
-    font-size: clamp(2.5rem, 4.6vw, 3.75rem);
+    margin: 0 0 var(--space-4);
+    color: var(--color-on-dark);
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 4.2vw, 3.6rem);
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.02em;
 }
 
-.auth-intro>p:not(.eyebrow) {
-    max-width: 550px;
-    color: var(--color-text-muted);
-    font-size: var(--text-base);
-    line-height: 1.75;
+.auth-intro-copy>p:last-child {
+    margin: 0;
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-lg);
+    line-height: 1.65;
 }
 
+/* O texto e as garantias ficam ao centro, na vertical */
 .assurances {
     display: grid;
-    gap: 22px;
-    margin-top: 35px;
+    gap: var(--space-5);
+    max-width: 540px;
+    margin-bottom: auto;
 }
 
 .assurances>div {
@@ -51,19 +78,21 @@
 
 .assurances>div>span {
     display: grid;
+    flex: none;
     place-items: center;
     width: 44px;
     height: 44px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-brand);
+    border: 1px solid var(--color-on-dark-border);
+    border-radius: var(--radius-md);
+    background: var(--color-on-dark-hover);
+    color: var(--color-on-dark-live);
     font-size: var(--text-xl);
 }
 
 .assurances>div>div {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .assurances b {
@@ -71,70 +100,183 @@
 }
 
 .assurances small {
-    color: var(--color-text-muted);
+    color: var(--color-on-dark-muted);
     font-size: var(--text-sm);
 }
 
-.auth-card {
-    padding: 32px;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
+/* ===== Lado do formulário ===== */
+.auth-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    padding: var(--space-8) clamp(16px, 4vw, 56px);
 }
 
-.role-switch,
-/* "Iniciar sessão" / "Criar conta": os botões ficam escondidos; o modo muda pelos links
-   por baixo do formulário, que os clicam (controllers/login/autenticacao.js) */
-.mode-switch {
+.auth-back {
+    align-self: flex-end;
+    border-bottom: 0;
+    color: var(--color-text-muted);
+}
+
+.auth-back:hover {
+    color: var(--color-brand);
+}
+
+.auth-back .icon {
+    transition: transform 0.2s;
+}
+
+.auth-back:hover .icon {
+    transform: translateX(-3px);
+}
+
+.auth-card {
+    width: min(100%, 460px);
+    margin-block: auto;
+    padding: var(--space-10);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    transition: width 0.3s cubic-bezier(.2, .8, .2, 1);
+}
+
+/* No registo há mais campos: o cartão alarga para caberem duas colunas */
+.auth-card:has(#confirm-field:not([hidden])) {
+    width: min(100%, 620px);
+}
+
+/* Eleitor / Equipa: escolhido pelo endereço (?area=equipa), não por botões */
+.role-switch {
     display: none;
 }
 
-.role-switch button {
-    padding: 17px;
-    border: 0;
-    background: var(--color-surface-sunken);
-    color: var(--color-text-muted);
-    font-size: var(--text-base);
-    font-weight: 600;
-}
-
-.role-switch button.active {
-    background: var(--color-heading-fill);
-    color: var(--color-on-dark);
-}
-
-.auth-card form {
-    padding-top: 18px;
-}
-
 .auth-card form h2 {
-    margin: 0 0 14px;
-    font-size: var(--text-2xl);
-    font-weight: 700;
+    margin: 0 0 var(--space-2);
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
-.auth-card form>p:not(.eyebrow):not(.form-message):not(.server-status) {
+#form-help {
+    margin: 0;
     color: var(--color-text-muted);
-    font-size: var(--text-base);
-    line-height: 1.7;
+    font-size: var(--text-sm);
+    line-height: 1.6;
 }
 
-.auth-card label:not(.check-label) {
+/* Separadores "Iniciar sessão / Criar conta" */
+.mode-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: var(--space-6);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-sunken);
+}
+
+/* No tema escuro o fundo do cartão é mais claro que o "afundado": o trilho usa o tom dos campos */
+:root[data-theme="dark"] .mode-switch {
+    background: var(--color-field);
+}
+
+.mode-switch button {
+    min-height: 42px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.mode-switch button:hover {
+    color: var(--color-text);
+}
+
+.mode-switch button.active {
+    background: var(--color-surface);
+    color: var(--color-heading);
+    box-shadow: var(--shadow-sm), 0 0 0 1px var(--color-border);
+}
+
+/* A equipa só inicia sessão */
+.auth-card:has([data-role="equipa"].active) .mode-switch {
+    display: none;
+}
+
+/* Campos */
+.auth-fields {
+    display: grid;
+    gap: var(--space-4) 14px;
+    margin-top: var(--space-6);
+}
+
+.auth-fields:has(#name-field:not([hidden])) {
+    grid-template-columns: 1fr 1fr;
+}
+
+.auth-fields label {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 18px 0;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
+    min-width: 0;
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.auth-fields label[hidden] {
+    display: none;
 }
 
 .auth-card input:not([type="checkbox"]) {
     width: 100%;
-    min-height: 58px;
-    padding: 14px 16px;
+    min-height: 50px;
+    padding: 12px 14px;
     border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     background: var(--color-field);
     color: var(--color-text);
+    font: inherit;
     font-size: var(--text-base);
+    font-weight: 400;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.auth-card input:not([type="checkbox"])::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.auth-card input:not([type="checkbox"]):hover {
+    border-color: var(--color-border-strong);
+}
+
+.auth-card input:not([type="checkbox"]):focus {
+    border-color: var(--color-brand);
+    outline: none;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.auth-card input:not([type="checkbox"]):user-invalid {
+    border-color: var(--color-danger);
+}
+
+#terms-field {
+    margin-top: var(--space-5);
+}
+
+#terms-field[hidden] {
+    display: none;
 }
 
 .form-options {
@@ -142,23 +284,50 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    margin: 18px 0;
+    margin: var(--space-4) 0 0;
 }
 
 .full-button {
     width: 100%;
-    min-height: 62px;
-    margin-top: 10px;
-    font-size: var(--text-xl);
+    min-height: 52px;
+    margin-top: var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
+}
+
+.full-button:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.full-button:active {
+    transform: translateY(0) scale(0.99);
+}
+
+.full-button .icon {
+    transition: transform 0.2s;
+}
+
+.full-button:hover .icon {
+    transform: translateX(4px);
 }
 
 .register-link {
     display: block;
-    margin: 20px auto 0;
-    border-bottom: 1px solid var(--color-text);
-    color: var(--color-text);
-    font-size: var(--text-base);
+    margin: var(--space-5) auto 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
     text-decoration: none;
+}
+
+.register-link b {
+    color: var(--color-brand);
+}
+
+.register-link:hover b {
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .register-link[hidden] {
@@ -167,38 +336,108 @@
 
 .auth-footer {
     display: flex;
-    gap: 10px;
-    margin-top: 26px;
-    padding-top: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
+}
+
+.auth-footer .server-status {
+    margin: 0;
 }
 
 .auth-footer a {
     color: var(--color-brand);
+    font-weight: 600;
 }
 
-@media (max-width: 860px) {
+/* ===== Ecrãs médios e pequenos: o painel da marca fica em cima, compacto ===== */
+@media (max-width: 1024px) {
     .auth-layout {
-        grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 35px 0;
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
     }
 
     .auth-card {
-        width: 100%;
-        max-width: 560px;
-        margin: auto;
-        padding: 22px;
+        margin-block: 0;
     }
 
-    .auth-header {
-        flex-wrap: wrap;
+    .auth-intro {
+        gap: var(--space-6);
+        padding: var(--space-6) var(--space-6) var(--space-8);
+    }
+
+    .auth-intro-copy {
+        margin-top: 0;
+    }
+
+    .auth-intro h1 {
+        margin: 0 0 var(--space-3);
+        font-size: clamp(2rem, 6vw, 2.6rem);
+    }
+
+    .auth-intro-copy>p:last-child {
+        font-size: var(--text-base);
+    }
+
+    .assurances {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-4);
+        max-width: none;
+    }
+
+    .assurances small {
+        display: none;
+    }
+
+    .assurances {
+        margin-bottom: 0;
+    }
+
+    .auth-side {
+        padding-top: var(--space-6);
+    }
+
+    .auth-back {
+        align-self: center;
     }
 }
 
-/* Palavra-passe com botão para mostrar ou esconder */
+@media (max-width: 640px) {
+    .auth-intro {
+        padding: var(--space-5) var(--space-4) var(--space-6);
+    }
+
+    .assurances {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+
+    .assurances>div>span {
+        width: 36px;
+        height: 36px;
+        font-size: var(--text-base);
+    }
+
+    .auth-side {
+        padding: var(--space-5) var(--space-4) var(--space-8);
+    }
+
+    .auth-card {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .auth-fields:has(#name-field:not([hidden])) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Palavra-passe com botão para mostrar ou esconder ===== */
 .password-field {
     position: relative;
     display: block;
@@ -213,14 +452,14 @@
 .password-toggle {
     position: absolute;
     top: 50%;
-    right: 8px;
+    right: 6px;
     display: grid;
     place-items: center;
     width: 38px;
     height: 38px;
     padding: 0;
     border: 0;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     background: transparent;
     color: var(--color-text-muted);
     cursor: pointer;
@@ -269,6 +508,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .password-toggle,
     .password-toggle .eye-slash {
         transition: none;

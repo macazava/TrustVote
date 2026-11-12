@@ -61,3 +61,34 @@
     text-decoration: underline;
 }
 
+
+/* Contacto da Comissão Eleitoral e nota legal */
+.footer-contact {
+    display: grid;
+    gap: 2px;
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    font-style: normal;
+}
+
+.footer-contact b {
+    color: var(--color-text);
+}
+
+.footer-contact a {
+    color: var(--color-brand);
+}
+
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+}
+
+@media (max-width: 760px) {
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-block: var(--space-4);
+    }
+}

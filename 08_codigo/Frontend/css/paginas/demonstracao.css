@@ -70,3 +70,30 @@
     }
 }
 
+
+/* Ecrãs estreitos: o boletim de demonstração cabe na largura (os passos passam a quebrar linha) */
+@media (max-width: 640px) {
+    .demo-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .demo-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .demo-heading>*,
+    .demo-ballot {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .demo-ballot .ballot-steps {
+        flex-wrap: wrap;
+        gap: var(--space-2) var(--space-3);
+    }
+
+    .demo-ballot .ballot-steps>hr {
+        display: none;
+    }
+}

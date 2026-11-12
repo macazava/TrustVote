@@ -27,6 +27,7 @@
 @import url("paginas/inicio/plataforma-e-avisos.css");
 @import url("paginas/inicio/ecras-pequenos.css");
 @import url("paginas/inicio/perguntas-frequentes.css");
+@import url("paginas/inicio/moderno.css");
 
 /* Páginas com menu lateral (Eleições, Listas, Ajuda…) */
 @import url("paginas/seccoes/menu-lateral.css");
@@ -35,6 +36,9 @@
 @import url("paginas/seccoes/perguntas-frequentes.css");
 
 @import url("paginas/comunicacao.css");
+@import url("paginas/eleicoes-publico.css");
+@import url("paginas/listas.css");
+@import url("paginas/ajuda.css");
 @import url("paginas/historico.css");
 @import url("paginas/login.css");
 @import url("paginas/verificar.css");

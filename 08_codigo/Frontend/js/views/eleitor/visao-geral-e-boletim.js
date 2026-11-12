@@ -105,7 +105,7 @@
         <b>Voto em branco</b>
         <small>Não escolhe nenhuma candidatura. Conta para a participação, não para os candidatos.</small>
       </span>
-      ${selectable ? `<input type="radio" name="candidate" value="branco" required aria-label="Voto em branco"${checked ? " checked" : ""}>` : ""}
+      ${selectable ? `<input type="radio" name="candidate" value="branco" required aria-label="Voto em branco"${checked ? " checked" : ""}>${v.ballotTick}` : ""}
     </label>`;
 
   // ===== Indicador de passos do boletim (1 Escolher · 2 Rever · 3 Depositar) =====

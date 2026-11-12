@@ -32,7 +32,7 @@
   <script defer src="../js/controllers/comum/menu.js"></script>
   <script defer src="../js/controllers/comum/pagina.js"></script>
   <script defer src="../js/controllers/publico/paginas.js"></script>
-  <script defer src="../js/views/animacoes.js"></script>
+  <script defer src="../js/motion.js"></script>
 </head>
 
 <body>
@@ -44,102 +44,127 @@
   <div data-layout="caminho" data-seccao="Comunicação" data-seccao-link="comunicacao.html"
     data-atual="Sala de imprensa"></div>
 
-  <main id="conteudo" class="container press-page">
+  <main id="conteudo" class="press-page">
 
-    <!-- Sala de imprensa -->
-    <section class="press-bar grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_repeat(4,1fr)]">
-      <div>
-        <h1>Sala de imprensa</h1>
-      </div>
-      <div>
-        <b>Contactos</b>
-        <a href="ajuda.html#contactos">Comissão eleitoral académica</a>
-      </div>
-      <div>
-        <b>Quem somos</b>
-        <a href="ajuda.html#quem-somos">Equipa TrustVote</a>
-      </div>
-      <div>
-        <b>Avisos eleitorais</b>
-        <a href="#avisos">Aceder</a>
-      </div>
-      <div>
-        <b>Glossário eleitoral académico</b>
-        <a href="calendario.html#como-votar">Aceder</a>
+    <!-- Sala de imprensa: título e atalhos (faixa verde em toda a largura) -->
+    <section class="press-band">
+      <div class="container press-bar">
+        <div class="press-intro">
+          <h1>Sala de imprensa</h1>
+          <p>Avisos, guias e explicações sobre as eleições académicas.</p>
+        </div>
+        <nav class="press-links" aria-label="Atalhos da sala de imprensa">
+          <a href="ajuda.html#contactos"><span><svg class="icon" aria-hidden="true">
+                <use href="#i-mail"></use>
+              </svg></span>
+            <div><b>Contactos</b><small>Comissão eleitoral académica</small></div>
+          </a>
+          <a href="ajuda.html#quem-somos"><span><svg class="icon" aria-hidden="true">
+                <use href="#i-user-check"></use>
+              </svg></span>
+            <div><b>Quem somos</b><small>Equipa TrustVote</small></div>
+          </a>
+          <a href="#avisos"><span><svg class="icon" aria-hidden="true">
+                <use href="#i-inbox"></use>
+              </svg></span>
+            <div><b>Avisos eleitorais</b><small>Datas, listas e votação</small></div>
+          </a>
+          <a href="calendario.html#como-votar"><span><svg class="icon" aria-hidden="true">
+                <use href="#i-book-open"></use>
+              </svg></span>
+            <div><b>Como votar</b><small>Os passos, um a um</small></div>
+          </a>
+        </nav>
       </div>
     </section>
 
-    <!-- Destaques -->
-    <div class="press-featured grid-cols-1 md:grid-cols-2">
-      <article class="press-hero">
-        <img src="../assets/04_estudantes_votar_online.webp" width="678" height="678" fetchpriority="high"
-          alt="Dois estudantes a votar online">
-        <div>
-          <span class="news-tag">GUIA</span>
-          <h2><a href="calendario.html#como-votar">Como votar online, passo a passo</a></h2>
-        </div>
-      </article>
-      <article class="press-hero">
-        <img src="../assets/03_debate_entre_candidatas.webp" width="542" height="678" loading="lazy" decoding="async"
-          alt="Duas candidatas em conversa no campus">
-        <div>
-          <span class="news-tag">LISTAS</span>
-          <h2><a href="listas.html">Conheça as listas candidatas e as suas propostas</a></h2>
-        </div>
-      </article>
-    </div>
+    <div class="container press-body">
 
-    <!-- Avisos da eleição em destaque (preenchido por controllers/publico/paginas.js) -->
-    <article class="dash-card" id="avisos">
-      <h2>Avisos</h2>
-      <div class="news-list" data-news></div>
-      <a class="text-link" href="calendario.html">Ver calendário completo <svg class="icon" aria-hidden="true">
-          <use href="#i-arrow-right"></use>
-        </svg></a>
-    </article>
+      <!-- Destaques -->
+      <div class="press-featured grid-cols-1 md:grid-cols-2">
+        <article class="press-hero">
+          <img src="../assets/04_estudantes_votar_online.webp" width="678" height="678" fetchpriority="high"
+            alt="Dois estudantes a votar online">
+          <div>
+            <span class="news-tag">GUIA</span>
+            <h2><a href="calendario.html#como-votar">Como votar online, passo a passo</a></h2>
+            <span class="press-read">Ler o guia <svg class="icon" aria-hidden="true">
+                <use href="#i-arrow-right"></use>
+              </svg></span>
+          </div>
+        </article>
+        <article class="press-hero">
+          <img src="../assets/03_debate_entre_candidatas.webp" width="542" height="678" loading="lazy" decoding="async"
+            alt="Duas candidatas em conversa no campus">
+          <div>
+            <span class="news-tag">LISTAS</span>
+            <h2><a href="listas.html">Conheça as listas candidatas e as suas propostas</a></h2>
+            <span class="press-read">Ver as listas <svg class="icon" aria-hidden="true">
+                <use href="#i-arrow-right"></use>
+              </svg></span>
+          </div>
+        </article>
+      </div>
 
-    <!-- Guias e explicações -->
-    <div class="press-news grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" id="noticias">
-      <article>
-        <img src="../assets/06_votar_online_de_casa.webp" width="1017" height="678" loading="lazy" decoding="async"
-          alt="Estudante a votar em casa no portátil">
-        <div>
-          <small>GUIA</small>
-          <h3>Antes de votar: o que precisa de ter à mão</h3>
-          <p>O e-mail e a palavra-passe da conta de estudante.</p>
-          <a href="calendario.html#como-votar" aria-label="Abrir o guia do eleitor"><svg class="icon"
-              aria-hidden="true">
-              <use href="#i-arrow-up-right"></use>
+      <!-- Avisos da eleição em destaque (preenchido por controllers/publico/paginas.js) -->
+      <section class="press-section" id="avisos">
+        <div class="press-section-head">
+          <h2>Avisos</h2>
+          <a class="text-link" href="calendario.html">Ver calendário completo <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
             </svg></a>
         </div>
-      </article>
-      <article>
-        <img src="../assets/09_estudante_no_campus.webp" width="678" height="678" loading="lazy" decoding="async"
-          alt="Estudante com cadernos na rua">
-        <div>
-          <small>PERGUNTAS E RESPOSTAS</small>
-          <h3>O meu voto é mesmo secreto?</h3>
-          <p>O voto fica separado do nome do estudante. O comprovativo mostra que o voto foi registado, não em quem
-            votou.</p>
-          <a href="privacidade.html" aria-label="Saber mais sobre a privacidade do voto"><svg class="icon"
-              aria-hidden="true">
-              <use href="#i-arrow-up-right"></use>
-            </svg></a>
+        <div class="dash-card press-notices">
+          <div class="news-list" data-news></div>
         </div>
-      </article>
-      <article>
-        <img src="../assets/02_assembleia_estudantes_debate.webp" width="1150" height="472" loading="lazy"
-          decoding="async" alt="Estudantes numa assembleia a debater">
-        <div>
-          <small>EXPLICADOR</small>
-          <h3>O que faz a Associação de Estudantes</h3>
-          <p>Representa os estudantes junto da universidade e organiza atividades ao longo do ano. O mandato dura
-            dois anos.</p>
-          <a href="listas.html" aria-label="Conhecer as listas candidatas"><svg class="icon" aria-hidden="true">
-              <use href="#i-arrow-up-right"></use>
-            </svg></a>
+      </section>
+
+      <!-- Guias e explicações -->
+      <section class="press-section" id="noticias">
+        <div class="press-section-head">
+          <h2>Guias e explicações</h2>
         </div>
-      </article>
+        <div class="press-news grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <article>
+            <img src="../assets/06_votar_online_de_casa.webp" width="1017" height="678" loading="lazy" decoding="async"
+              alt="Estudante a votar em casa no portátil">
+            <div>
+              <small>GUIA</small>
+              <h3><a href="calendario.html#como-votar">Antes de votar: o que precisa de ter à mão</a></h3>
+              <p>O e-mail e a palavra-passe da conta de estudante.</p>
+              <span class="press-read">Ler mais <svg class="icon" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg></span>
+            </div>
+          </article>
+          <article>
+            <img src="../assets/09_estudante_no_campus.webp" width="678" height="678" loading="lazy" decoding="async"
+              alt="Estudante com cadernos na rua">
+            <div>
+              <small>PERGUNTAS E RESPOSTAS</small>
+              <h3><a href="privacidade.html">O meu voto é mesmo secreto?</a></h3>
+              <p>O voto fica separado do nome do estudante. O comprovativo mostra que o voto foi registado, não em quem
+                votou.</p>
+              <span class="press-read">Ler mais <svg class="icon" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg></span>
+            </div>
+          </article>
+          <article>
+            <img src="../assets/02_assembleia_estudantes_debate.webp" width="1150" height="472" loading="lazy"
+              decoding="async" alt="Estudantes numa assembleia a debater">
+            <div>
+              <small>EXPLICADOR</small>
+              <h3><a href="listas.html">O que faz a Associação de Estudantes</a></h3>
+              <p>Representa os estudantes junto da universidade e organiza atividades ao longo do ano. O mandato dura
+                dois anos.</p>
+              <span class="press-read">Ler mais <svg class="icon" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg></span>
+            </div>
+          </article>
+        </div>
+      </section>
     </div>
 
   </main>

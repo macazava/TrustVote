@@ -48,9 +48,12 @@
           <b>${escapeHtml(c.nome)}</b>
           <small>${escapeHtml(info)}</small>
         </span>
-        ${selectable ? `<input type="radio" name="candidate" value="${c.id}" required aria-label="${escapeHtml(c.nome)}"${checked ? " checked" : ""}>` : ""}
+        ${selectable ? `<input type="radio" name="candidate" value="${c.id}" required aria-label="${escapeHtml(c.nome)}"${checked ? " checked" : ""}>${ballotTick}` : ""}
       </label>`;
   }
+
+  // Visto desenhado por cima do rádio escolhido (só apresentação; o rádio continua a ser o controlo)
+  const ballotTick = '<svg class="ballot-tick" viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6 12.5 10 16.5 18 8"/></svg>';
 
   const emptyCard = (titulo, texto, acao) =>
     `<article class="dash-card">${ui.empty(titulo, texto, acao)}</article>`;
@@ -253,5 +256,5 @@
     <p class="help-session">${TV.icon("lock")} <span>${sessao.join(" · ")}.</span></p>`;
   };
 
-  Object.assign((TV.voterView = TV.voterView || {}), { candidateOption, emptyCard, electionsPage, detailsPage, helpPage, atalho, periodBar, stepsTrack, statusLine, timeInfo, voteAction, calendario });
+  Object.assign((TV.voterView = TV.voterView || {}), { candidateOption, ballotTick, emptyCard, electionsPage, detailsPage, helpPage, atalho, periodBar, stepsTrack, statusLine, timeInfo, voteAction, calendario });
 })();
