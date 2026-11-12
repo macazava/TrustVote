@@ -61,14 +61,6 @@ img {
     text-transform: uppercase;
 }
 
-.eyebrow i {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--color-brand);
-    box-shadow: 0 0 0 4px var(--color-focus-ring);
-}
-
 .lead {
     max-width: 620px;
     color: var(--color-text-muted);

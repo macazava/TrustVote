@@ -2,7 +2,7 @@
 
 /* ===== Conteúdo ===== */
 .dashboard-content {
-    width: min(1232px, calc(100% - 48px));
+    width: min(var(--panel-width), calc(100% - 48px));
     margin: auto;
     padding: 50px 0 70px;
 }
@@ -25,10 +25,6 @@
     font-size: 2.75rem;
     font-weight: 600;
     letter-spacing: -0.02em;
-}
-
-body[data-page="admin"] .dashboard-content {
-    width: min(1412px, calc(100% - 48px));
 }
 
 body[data-page="admin"] .dashboard-content h1 {
@@ -152,13 +148,12 @@ body[data-page="admin"] .dashboard-content h1 {
     text-decoration: none;
     box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .help-shortcut:hover {
     border-color: var(--color-brand-muted);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
 }
 
 .help-shortcut-icon {

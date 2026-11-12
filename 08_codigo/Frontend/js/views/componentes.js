@@ -196,18 +196,19 @@
   };
 
   // ===== Títulos e etiquetas das áreas do eleitor e da equipa (TrustVote.blocks) =====
-  const head = (eyebrow, title, text = "", extra = "") => `
+  // O primeiro argumento (etiqueta em maiúsculas) já não é desenhado: o título chega. Fica na assinatura
+  // para não ter de mudar todas as chamadas.
+  const head = (_etiqueta, title, text = "", extra = "") => `
     <div class="page-head">
       <div>
-        <p class="eyebrow">${eyebrow}</p>
         <h1>${title}</h1>
         ${text ? `<p class="muted">${text}</p>` : ""}
       </div>
       ${extra}
     </div>`;
 
-  const cardHead = (eyebrow, title, extra = "") =>
-    `<div class="card-head"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div>${extra}</div>`;
+  const cardHead = (_etiqueta, title, extra = "") =>
+    `<div class="card-head"><div><h2>${title}</h2></div>${extra}</div>`;
 
   const okLabel = (text, ok = true) => `<span class="ok-label${ok ? "" : " is-off"}">${TV.icon(ok ? "check" : "circle-alert")} ${escapeHtml(text)}</span>`;
 

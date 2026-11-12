@@ -18,20 +18,8 @@
     background: var(--color-surface);
 }
 
-.platform-grid article > small {
-    display: flex;
-    justify-content: space-between;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.1em;
-}
-
-.platform-grid article > small b {
-    color: var(--color-brand);
-}
-
 .platform-grid h3 {
-    margin: 30px 0 8px;
+    margin: 0 0 8px;
     font-size: var(--text-2xl);
     font-weight: 600;
 }

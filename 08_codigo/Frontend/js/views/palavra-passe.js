@@ -6,7 +6,6 @@
 
   const card = () => `
     <article class="dash-card" data-password>
-      <p class="eyebrow">PALAVRA-PASSE</p>
       <h2>Alterar a palavra-passe</h2>
       <form class="inline-form" data-password-form>
         <label class="field-label">Palavra-passe atual<input type="password" name="atual" autocomplete="current-password" minlength="8" required></label>

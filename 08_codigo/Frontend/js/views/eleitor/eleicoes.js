@@ -139,7 +139,7 @@
 
     <article class="dash-card el-history">
       <div class="el-card-head">
-        <div><p class="eyebrow">HISTÓRICO</p><h2>Eleições concluídas</h2></div>
+        <div><h2>Eleições concluídas</h2></div>
         <a class="link-button" href="historico.html">Histórico eleitoral completo ${TV.icon("arrow-up-right")}</a>
       </div>
       ${concluidas.length
@@ -173,8 +173,8 @@
           <small class="muted">${plural(e.candidatosRonda.length, "opção", "opções")} + voto em branco</small>
         </div>
         ${e.candidatosRonda.length
-          ? `<ol class="el-candidate-list">${e.candidatosRonda.map(candidateCard).join("")}</ol>`
-          : '<p class="muted">As candidaturas ainda não foram publicadas.</p>'}
+      ? `<ol class="el-candidate-list">${e.candidatosRonda.map(candidateCard).join("")}</ol>`
+      : '<p class="muted">As candidaturas ainda não foram publicadas.</p>'}
       </article>
       <aside class="el-details-aside">
         <article class="dash-card">
@@ -194,7 +194,6 @@
           </div>
         </article>
         <article class="dash-card">
-          <p class="eyebrow">ANTES DE VOTAR</p>
           <h2>O que precisa de saber</h2>
           <ul class="profile-list">
             <li class="is-yes">Pode rever a escolha antes de confirmar</li>
@@ -240,7 +239,7 @@
 
     <article class="dash-card help-faq">
       <div class="help-faq-head">
-        <div><p class="eyebrow">PERGUNTAS FREQUENTES</p><h2>Dúvidas sobre a votação</h2></div>
+        <div><h2>Perguntas frequentes</h2></div>
         <label class="table-search help-search">${TV.icon("search")}<span class="sr-only">Procurar nas perguntas frequentes</span>
           <input type="search" placeholder="Procurar (ex.: recibo, palavra-passe)" autocomplete="off" data-help-search>
         </label>

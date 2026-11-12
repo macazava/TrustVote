@@ -6,12 +6,9 @@
         --container: 1360px;
     }
 
-    .dashboard-content {
-        width: min(1360px, calc(100% - 96px));
-    }
-
-    body[data-page="admin"] .dashboard-content {
-        width: min(1560px, calc(100% - 96px));
+    /* o eleitor acompanha --container; a equipa alarga */
+    body[data-page="admin"] {
+        --panel-width: 1560px;
     }
 
     .hero h1 {
@@ -84,10 +81,6 @@
     .hero {
         padding-top: 44px;
     }
-
-    .steps-card {
-        max-width: 640px;
-    }
 }
 
 /* ===== Tablet (até 1023px): secções com menu em botões deslizantes ===== */
@@ -148,13 +141,5 @@
 
     .panel-nav::-webkit-scrollbar {
         display: none;
-    }
-
-    .security-grid {
-        grid-template-rows: auto;
-    }
-
-    .identity-card {
-        grid-row: auto;
     }
 }

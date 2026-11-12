@@ -1,0 +1,10 @@
+/* Área do eleitor: resposta discreta ao cursor. Só muda a borda dos cartões que se podem abrir;
+   nada sobe, roda, pulsa ou brilha. Só cores do tema, por isso funciona no modo claro e escuro. */
+
+[data-page="voter"] .el-item {
+    transition: border-color 0.2s;
+}
+
+[data-page="voter"] .el-item:hover {
+    border-color: var(--color-brand-muted);
+}

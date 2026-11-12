@@ -6,8 +6,7 @@
 
 /* ===== Cantos pequenos (--radius-sm): etiquetas e itens de menu ===== */
 .check-box,
-.model-tag,
-.session-chip {
+.model-tag {
     border-radius: var(--radius-sm);
 }
 

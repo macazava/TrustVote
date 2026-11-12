@@ -37,7 +37,6 @@
 
   // ===== Lista oficial de inscritos (quem pode criar conta quando o registo está restrito) =====
   const enrolledCard = ({ restrito, estudantes }) => `
-    <p class="eyebrow">LISTA OFICIAL</p>
     <h2>Estudantes inscritos · ${estudantes.length}</h2>
     <p class="notice"><b>${restrito ? "Registo restrito a esta lista." : "Registo aberto."}</b>${restrito
       ? "Só os números desta lista podem criar conta."

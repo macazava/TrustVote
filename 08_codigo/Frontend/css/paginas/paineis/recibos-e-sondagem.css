@@ -94,7 +94,7 @@
 }
 
 .receipt-doc.is-proof {
-    border-top-color: var(--color-border-strong);
+    border-top: 1px solid var(--color-border);
 }
 
 .receipt-doc-head {

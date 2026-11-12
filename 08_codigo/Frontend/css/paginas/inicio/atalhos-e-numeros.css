@@ -22,24 +22,9 @@
 }
 
 .services .service-card {
-    display: grid;
-    grid-template-columns: 42px 1fr 16px;
-    align-items: center;
-    gap: 2px 14px;
+    gap: 4px;
     min-height: 0;
-    padding: 18px;
-    background: var(--color-surface);
-}
-
-.services .service-card>span {
-    grid-row: span 2;
-    margin: 0;
-}
-
-.services .service-card>i {
-    position: static;
-    grid-row: 1 / span 2;
-    grid-column: 3;
+    padding: 18px 20px;
 }
 
 /* ===== Como os estudantes escolhem os representantes ===== */

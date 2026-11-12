@@ -36,7 +36,6 @@
     return `
       ${head("CONTACTOS", "Mensagens", "O que os estudantes enviam pelo formulário da página Ajuda → Contactos.")}
       <article class="dash-card">
-        <p class="eyebrow">CAIXA DE ENTRADA</p>
         <h2>${novas ? `${novas} ${novas === 1 ? "mensagem nova" : "mensagens novas"}` : "Tudo lido"} · ${lista.length} no total</h2>
         ${lista.length
           ? `<div class="message-list">${lista.map(mensagem).join("")}</div>`

@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const heading = document.querySelector("#auth-heading");
   const description = document.querySelector("#auth-description");
-  const formKicker = document.querySelector("#form-kicker");
   const formTitle = document.querySelector("#form-title");
   const formHelp = document.querySelector("#form-help");
   const submitLabel = document.querySelector("#submit-label");
@@ -63,11 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
     password.autocomplete = isRegister ? "new-password" : "current-password";
     confirmPassword.autocomplete = "new-password";
 
-    formKicker.textContent = isRegister ? "CRIAÇÃO DE CONTA" : "INÍCIO DE SESSÃO";
-    formTitle.textContent = isRegister ? "Criar conta" : isTeam ? "Aceder à área da equipa" : "Aceder à área do eleitor";
+    formTitle.textContent = isRegister ? "Criar conta" : "Iniciar sessão";
     formHelp.textContent = isRegister ? "Preencha os campos para criar a sua conta." : "Introduza as suas credenciais para continuar.";
     submitLabel.innerHTML = `${isRegister ? "Criar conta" : "Iniciar sessão"} ${window.TrustVote.icon("arrow-right")}`;
-    heading.textContent = isTeam ? "Acesso reservado à equipa." : "Entre para exercer o seu voto.";
+    heading.textContent = isTeam ? "Área da Equipa" : "Área do Eleitor";
     description.textContent = isTeam
       ? "Aceda à área reservada da equipa do TrustVote."
       : "Inicie sessão para consultar a sua área reservada.";

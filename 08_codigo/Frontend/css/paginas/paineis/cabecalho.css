@@ -1,6 +1,14 @@
 /* Painéis do eleitor e da equipa */
+/* --panel-width: largura do conteúdo e do cabeçalho. No eleitor é a mesma do portal público
+   (--container), para o logótipo e os títulos não mudarem de sítio ao entrar. A equipa é mais larga
+   por causa das tabelas. */
 .panel-body {
+    --panel-width: var(--container);
     background: var(--color-bg);
+}
+
+body[data-page="admin"] {
+    --panel-width: 1412px;
 }
 
 /* ===== Cabeçalho verde com o menu ===== */
@@ -12,8 +20,8 @@
     align-items: center;
     gap: 40px;
     min-height: 94px;
-    /* a mesma altura do cabeçalho do portal público */
-    padding: 0 30px;
+    /* a mesma altura do cabeçalho do portal público; o conteúdo fica alinhado com o resto da página */
+    padding: 0 max(24px, calc((100% - var(--panel-width)) / 2));
     background: var(--color-brand-deep);
     color: var(--color-on-dark);
 }
@@ -77,10 +85,6 @@
     .panel-nav {
         gap: 20px;
     }
-
-    .portal-link {
-        display: none;
-    }
 }
 
 @media (max-width: 1360px) {
@@ -91,18 +95,14 @@
     .panel-link {
         font-size: var(--text-sm);
     }
-
-    .panel-user .user-chip>span:last-child {
-        display: none;
-    }
 }
 
 .panel-link:hover {
     color: var(--color-on-dark);
 }
 
-/* Item ativo: texto a negrito e uma linha reta logo por baixo (como no portal), em verde claro
-   para contrastar com o fundo escuro do cabeçalho */
+/* Item ativo: texto a negrito e uma linha na base do cabeçalho, como no portal (em claro, para
+   contrastar com o fundo escuro) */
 .panel-link.active {
     color: var(--color-on-dark);
     font-weight: 700;
@@ -112,10 +112,10 @@
     content: "";
     position: absolute;
     right: 0;
-    bottom: 24px;
+    bottom: 0;
     left: 0;
     height: 3px;
-    background: var(--color-on-dark-muted);
+    background: var(--color-on-dark);
 }
 
 .panel-user {
@@ -123,15 +123,6 @@
     flex-shrink: 0;
     align-items: center;
     gap: 16px;
-}
-
-.session-chip {
-    padding: 8px 10px;
-    border: 1px solid var(--color-on-dark-border);
-    color: var(--color-on-dark-muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.05em;
-    white-space: nowrap;
 }
 
 .user-chip {
@@ -150,9 +141,15 @@
     font-size: var(--text-xs);
 }
 
+/* Só as iniciais à vista (o nome aparece ao passar o rato e é lido pelos leitores de ecrã),
+   para o menu caber na mesma largura do portal */
 .user-chip>span:last-child {
-    display: flex;
-    flex-direction: column;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 .user-chip b {
@@ -170,14 +167,4 @@
     background: none;
     color: var(--color-on-dark);
     font-size: var(--text-xl);
-}
-
-.portal-link {
-    color: var(--color-on-dark-muted);
-    font-size: var(--text-xs);
-    text-decoration: none;
-}
-
-.portal-link:hover {
-    color: var(--color-on-dark);
 }

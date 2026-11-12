@@ -1,4 +1,4 @@
-/* Página inicial: títulos das secções, topo (título e botões) e cartão "Votar é simples" */
+/* Página inicial: títulos das secções, topo (título, botões e foto) e "Como votar" */
 
 .section-heading {
     display: flex;
@@ -48,31 +48,12 @@
     letter-spacing: -0.02em;
 }
 
-.hero h1 em {
-    color: var(--color-accent-text);
-    font-style: italic;
-    font-weight: 500;
-}
-
 .hero-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 22px;
     margin-top: 28px;
-}
-
-.trust-points {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 22px;
-    margin-top: 32px;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-}
-
-.trust-points span:first-letter {
-    color: var(--color-brand);
 }
 
 .election-alert {
@@ -119,48 +100,33 @@
     text-decoration: none;
 }
 
-/* Cartão "Votar é simples" */
-.steps-card {
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-md);
+/* Foto ao lado do título */
+.hero-photo img {
+    aspect-ratio: 4 / 3;
 }
 
-.steps-head {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 24px 28px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.steps-head small {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-}
-
-.steps-head h2 {
-    margin: 4px 0 0;
-    color: var(--color-heading);
-    font-size: var(--text-2xl);
+/* ===== Como votar: três passos numerados ===== */
+.how-to-vote {
+    padding-top: 30px;
+    padding-bottom: 90px;
 }
 
 .steps-list {
+    display: grid;
+    gap: 16px;
     margin: 0;
-    padding: 10px 28px 18px;
+    padding: 0;
     list-style: none;
 }
 
 .steps-list li {
     display: grid;
     grid-template-columns: 34px 1fr;
+    align-content: start;
     gap: 4px 16px;
-    padding: 16px 0;
-}
-
-.steps-list li+li {
-    border-top: 1px solid var(--color-border);
+    padding: 22px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .steps-list span {
@@ -183,23 +149,5 @@
 .steps-list small {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
-}
-
-.steps-help {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 18px 28px;
-    background: var(--color-brand-deep);
-    color: var(--color-on-dark);
-}
-
-.steps-help b {
-    display: block;
-    font-size: var(--text-base);
-}
-
-.steps-help small {
-    color: var(--color-on-dark-muted);
-    font-size: var(--text-sm);
+    line-height: 1.6;
 }
