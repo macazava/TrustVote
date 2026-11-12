@@ -1,68 +1,6 @@
 /* Animações: só ficam ativas quando o JavaScript corre (sem JS tudo aparece normalmente) */
-.tv-hidden {
-    opacity: 0;
-}
 
 /* Barra de participação da página inicial cresce até ao valor real */
 .tv-anim [data-hub-bar] {
-    transition: width 1.1s cubic-bezier(.2, .8, .2, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .tv-hidden {
-        opacity: 1 !important;
-    }
-}
-
-/* ===== Parallax só com CSS (animações ligadas ao scroll) =====
-   A foto desloca-se devagar enquanto atravessa o ecrã: -1 ao entrar por baixo, +1 ao sair por cima.
-   Só sem "movimento reduzido"; os browsers sem suporte usam js/views/animacoes.js. */
-@supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-        .photo-panel {
-            animation: tv-parallax-move linear both;
-            animation-timeline: view();
-        }
-
-        .news-photo img,
-        .press-hero img {
-            animation: tv-parallax-inner linear both;
-            animation-timeline: view();
-        }
-
-        .history-hero {
-            animation: tv-parallax-bg linear both;
-            animation-timeline: view();
-        }
-    }
-}
-
-@keyframes tv-parallax-move {
-    from {
-        transform: translate3d(0, -18px, 0);
-    }
-
-    to {
-        transform: translate3d(0, 18px, 0);
-    }
-}
-
-@keyframes tv-parallax-inner {
-    from {
-        transform: scale(1.08) translate3d(0, -14px, 0);
-    }
-
-    to {
-        transform: scale(1.08) translate3d(0, 14px, 0);
-    }
-}
-
-@keyframes tv-parallax-bg {
-    from {
-        background-position-y: calc(50% - 40px);
-    }
-
-    to {
-        background-position-y: calc(50% + 40px);
-    }
+    transition: width 0.9s cubic-bezier(.2, .8, .2, 1);
 }
