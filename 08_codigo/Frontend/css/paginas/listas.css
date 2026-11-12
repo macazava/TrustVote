@@ -1,0 +1,235 @@
+/* Página pública "Listas académicas" (listas.html): resumo da eleição em verde e um cartão por lista.
+   Só nesta página ([data-page="listas"]); só cores do tema (modo claro e escuro). */
+
+/* ===== Resumo da eleição ===== */
+[data-page="listas"] .lists-summary {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    overflow: hidden;
+    margin-top: var(--space-6);
+    padding: var(--space-8);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--color-on-dark-active) 45%, transparent), transparent 50%),
+        var(--color-brand-deep);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%);
+    color: var(--color-on-dark);
+}
+
+[data-page="listas"] .lists-summary::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+        linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+    background-size: 40px 40px;
+    content: "";
+    mask-image: radial-gradient(ellipse at 80% 20%, #000 10%, transparent 70%);
+}
+
+[data-page="listas"] .lists-summary .eyebrow {
+    margin: 0;
+    color: var(--color-on-dark-live);
+}
+
+[data-page="listas"] .lists-summary h2 {
+    margin: var(--space-2) 0;
+    color: var(--color-on-dark);
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+[data-page="listas"] .lists-summary p:not(.eyebrow) {
+    margin: 0;
+    color: var(--color-on-dark-muted);
+    font-size: var(--text-sm);
+}
+
+[data-page="listas"] .lists-summary .button {
+    flex: none;
+    border-color: var(--color-on-dark);
+    background: var(--color-on-dark);
+    color: var(--color-brand-deep);
+}
+
+[data-page="listas"] .lists-summary .button .icon {
+    transition: transform 0.2s;
+}
+
+[data-page="listas"] .lists-summary .button:hover .icon {
+    transform: translateX(4px);
+}
+
+/* ===== Cartões das listas ===== */
+[data-page="listas"] .candidate-grid {
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+}
+
+[data-page="listas"] .list-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    overflow: hidden;
+    padding: var(--space-6);
+    border-radius: 20px;
+    transition: transform 0.25s cubic-bezier(.2, .8, .2, 1), box-shadow 0.25s, border-color 0.25s;
+}
+
+/* Faixa de cor no topo, um tom diferente por lista */
+[data-page="listas"] .list-card::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: var(--lista-cor);
+    content: "";
+}
+
+[data-page="listas"] .list-card {
+    --lista-cor: linear-gradient(90deg, var(--color-brand-fill), var(--color-on-dark-live));
+}
+
+[data-page="listas"] .list-card:nth-child(3n + 2) {
+    --lista-cor: linear-gradient(90deg, var(--color-heading-fill), var(--color-brand-fill));
+}
+
+[data-page="listas"] .list-card:nth-child(3n + 3) {
+    --lista-cor: linear-gradient(90deg, var(--color-on-dark-active), var(--color-indicator));
+}
+
+[data-page="listas"] .list-card:hover {
+    border-color: var(--color-brand-muted);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+[data-page="listas"] .list-card header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+[data-page="listas"] .list-card .candidate-badge {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    margin: 0;
+    border-radius: var(--radius-md);
+    background: var(--lista-cor);
+    box-shadow: 0 12px 24px -12px var(--color-brand-fill);
+    color: var(--color-on-dark);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+[data-page="listas"] .list-card:hover .candidate-badge {
+    transform: scale(1.06) rotate(-4deg);
+}
+
+[data-page="listas"] .list-card header small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+[data-page="listas"] .list-card h2 {
+    margin: 2px 0 0;
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    line-height: 1.2;
+}
+
+/* Membros da lista */
+[data-page="listas"] .list-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+[data-page="listas"] .list-members li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 4px 12px 4px 4px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-field);
+    font-size: var(--text-sm);
+}
+
+[data-page="listas"] .list-members .avatar {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+/* Propostas */
+[data-page="listas"] .list-label {
+    margin: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+[data-page="listas"] .list-card .candidate-proposals {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+[data-page="listas"] .list-card .candidate-proposals li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    color: var(--color-text);
+}
+
+[data-page="listas"] .list-card .candidate-proposals .icon {
+    flex: none;
+    margin-top: 0.3em;
+    color: var(--color-brand);
+}
+
+[data-page="listas"] .list-empty {
+    margin: auto 0 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-subtle);
+    font-size: var(--text-sm);
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    [data-page="listas"] .lists-summary {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    [data-page="listas"] .lists-summary .button {
+        width: 100%;
+    }
+}

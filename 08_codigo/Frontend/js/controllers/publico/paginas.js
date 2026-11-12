@@ -73,11 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!listas.has(nome)) listas.set(nome, []);
           listas.get(nome).push(c);
         });
-        grid.innerHTML = [...listas].map(([nome, membros]) => view.listCard(nome, membros, dados.eleicao.titulo)).join("");
+        grid.innerHTML = [...listas].map(([nome, membros]) => view.listCard(nome, membros)).join("");
+        grid.insertAdjacentHTML("beforebegin", view.listsSummary(dados.eleicao, listas.size));
         const lead = document.querySelector("[data-listas-lead]");
         if (lead) lead.textContent = `Listas candidatas a ${dados.eleicao.titulo}: quem são e o que propõem.`;
         const notice = grid.parentElement.querySelector(".notice");
-        if (notice) notice.textContent = "Listas admitidas, obtidas a partir da plataforma.";
+        // O resumo por cima das listas já diz quantas há e de que eleição: o aviso de carregamento sai
+        if (notice) notice.remove();
       })
       .catch(() => {
         grid.outerHTML = ui.empty("Ainda não existem candidaturas publicadas.", "As listas aparecem quando a comissão eleitoral as validar.", { label: "Ver calendário eleitoral", href: "calendario.html" });

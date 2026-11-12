@@ -19,17 +19,41 @@
     </div>`;
 
   // ===== Listas: um cartão por lista, com candidatos e propostas =====
-  const listCard = (nome, membros, tituloEleicao) => {
+  // Os membros só aparecem quando acrescentam algo ao título (lista com nome próprio ou vários candidatos)
+  const listCard = (nome, membros) => {
+    const ehLista = nome.startsWith("Lista ");
     const propostas = membros.map((c) => c.descricao).filter(Boolean);
+    const mostrarMembros = membros.length > 1 || membros[0].nome !== nome;
     return `
-      <article>
-        <span class="candidate-badge">${escapeHtml(nome.startsWith("Lista ") ? nome.slice(6) : initials(nome))}</span>
-        <h2>${escapeHtml(nome)}</h2>
-        <p><b>Candidatos:</b> ${escapeHtml(membros.map((c) => c.nome).join(", "))}</p>
-        ${propostas.length ? `<ul class="candidate-proposals">${propostas.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>` : ""}
-        <span class="status-pill">${escapeHtml(tituloEleicao.toUpperCase())}</span>
+      <article class="list-card">
+        <header>
+          <span class="candidate-badge">${escapeHtml(ehLista ? nome.slice(6) : initials(nome))}</span>
+          <div>
+            <small>${ehLista ? "LISTA" : "CANDIDATURA"}</small>
+            <h2>${escapeHtml(nome)}</h2>
+          </div>
+        </header>
+        ${mostrarMembros
+        ? `<ul class="list-members" aria-label="Candidatos">${membros.map((c) => `<li><span class="avatar" aria-hidden="true">${escapeHtml(initials(c.nome))}</span>${escapeHtml(c.nome)}</li>`).join("")}</ul>`
+        : ""}
+        ${propostas.length
+        ? `<p class="list-label">Propostas</p><ul class="candidate-proposals">${propostas.map((p) => `<li>${TV.icon("check")}<span>${escapeHtml(p)}</span></li>`).join("")}</ul>`
+        : '<p class="list-empty">Ainda sem propostas publicadas.</p>'}
       </article>`;
   };
+
+  // Resumo por cima das listas: a eleição, quantas listas há e o que fazer a seguir
+  const listsSummary = (e, total) => `
+    <div class="lists-summary">
+      <div>
+        <p class="eyebrow">${electionEyebrow[e.estado] || "ELEIÇÃO"}</p>
+        <h2>${escapeHtml(e.titulo)}</h2>
+        <p>${number(total)} ${total === 1 ? "candidatura admitida" : "candidaturas admitidas"} · votação de ${dateTime(e.data_inicio)} a ${dateTime(e.data_fim)}</p>
+      </div>
+      ${e.estado === "em_curso"
+      ? `<a class="button" href="login.html?area=eleitor" data-voter-link>Votar agora ${TV.icon("arrow-right")}</a>`
+      : `<a class="button" href="${e.estado === "encerrada" ? "resultados.html" : "calendario.html"}">${e.estado === "encerrada" ? "Ver resultados" : "Ver calendário"} ${TV.icon("arrow-right")}</a>`}
+    </div>`;
 
   // ===== Página inicial: avisos gerados a partir do estado da eleição =====
   function notices(resumo) {
@@ -89,5 +113,5 @@
       <a class="button button-primary" href="login.html?area=eleitor">Iniciar sessão ${TV.icon("arrow-right")}</a>
     </article>`;
 
-  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, loginForResults };
+  TV.publicView = { notices, historyPeriod, nextElection, lastCount, listCard, listsSummary, loginForResults };
 })();
