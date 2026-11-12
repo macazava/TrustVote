@@ -371,6 +371,7 @@
         padding: var(--space-6) var(--space-5);
     }
 }
+
 /* Ícones soltos (sem quadrado por trás): garantias do topo e atalhos */
 .hero-trust span,
 .services .service-card>span {

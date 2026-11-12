@@ -25,6 +25,7 @@
         grid-template-columns: 1fr;
     }
 }
+
 /* Cartão da credencial eleitoral: em ecrãs estreitos ocupa a largura e o texto quebra */
 @media (max-width: 480px) {
     .badge-card {

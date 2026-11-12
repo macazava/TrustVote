@@ -332,6 +332,7 @@
         width: 100%;
     }
 }
+
 /* Ecrãs muito estreitos (até 420px): a etiqueta do curso pode quebrar, para as duas colunas caberem */
 @media (max-width: 420px) {
     [data-page="ajuda"] .team-grid small {

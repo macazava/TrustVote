@@ -62,13 +62,12 @@
         ${ilustracaoVazia}
         <h2>${escapeHtml(title)}</h2>
         ${text ? `<p>${escapeHtml(text)}</p>` : ""}
-        ${
-          !action
-            ? ""
-            : action.href
-              ? `<a class="button button-outline" href="${escapeHtml(action.href)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</a>`
-              : `<button class="button button-outline" type="button" data-go="${escapeHtml(action.go)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</button>`
-        }
+        ${!action
+        ? ""
+        : action.href
+          ? `<a class="button button-outline" href="${escapeHtml(action.href)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</a>`
+          : `<button class="button button-outline" type="button" data-go="${escapeHtml(action.go)}">${escapeHtml(action.label)} ${TV.icon("arrow-right")}</button>`
+      }
       </div>`,
 
     message(el, text, ok = false) {

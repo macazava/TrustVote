@@ -176,6 +176,7 @@
 .ballot-done .link-button {
     margin: calc(-1 * var(--space-2)) 0 var(--space-4);
 }
+
 /* ===== Passo 2: o boletim tal como vai entrar na urna ===== */
 .ballot-paper {
     margin: var(--space-6) 0 var(--space-4);
@@ -304,7 +305,7 @@
     cursor: pointer;
 }
 
-.receipt-qr > div {
+.receipt-qr>div {
     display: flex;
     align-items: center;
     gap: var(--space-4);
@@ -320,7 +321,7 @@
     text-align: left;
 }
 
-.ballot-done .receipt-qr > div {
+.ballot-done .receipt-qr>div {
     justify-content: center;
 }
 
