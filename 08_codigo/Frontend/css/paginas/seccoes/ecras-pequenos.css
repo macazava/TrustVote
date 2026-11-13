@@ -1,25 +1,111 @@
-/* Páginas das secções: tablet (ecrãs até 1100px) */
+/* Páginas das secções: tablet e telemóvel; perguntas frequentes (Ajuda, Início, Área do Eleitor) */
 
-@media (max-width: 960px) {
+@media (max-width: 1023px) {
     .section-page {
         grid-template-columns: 1fr;
-    }
-
-    .section-content {
-        padding: 28px 22px;
-    }
-
-    .section-item-head {
-        flex-direction: column;
     }
 
     .candidate-grid {
         grid-template-columns: 1fr;
     }
+}
 
+@media (max-width: 640px) {
     .timeline article {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: var(--space-2);
+    }
+
+    .info-list article {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: var(--space-3);
+    }
+
+    .info-list article>span {
+        font-size: var(--text-2xl);
+    }
+
+    .contact-form {
+        padding: var(--space-5);
+    }
+
+    .contact-row {
+        grid-template-columns: 1fr;
     }
 }
 
+/* ===== Perguntas frequentes: acordeão com linhas finas (sem cartões) ===== */
+.faq-list {
+    display: grid;
+    max-width: 820px;
+    margin-top: var(--space-2);
+    border-top: 1px solid var(--color-rule-strong);
+}
+
+.faq-list details {
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.faq-list summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 64px;
+    padding: var(--space-4) 0;
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.35;
+    list-style: none;
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease-out);
+}
+
+.faq-list summary:hover {
+    color: var(--color-brand);
+}
+
+.faq-list summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Ícone "+" que roda para "×" ao abrir (transição em componentes/animacoes.css) */
+.faq-list summary::after {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: var(--color-brand);
+    content: "";
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M12 5v14M5 12h14%27/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23000%27 stroke-width=%272%27 stroke-linecap=%27round%27%3E%3Cpath d=%27M12 5v14M5 12h14%27/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.faq-list details[open] summary {
+    color: var(--color-heading);
+}
+
+.faq-list details[open] summary::after {
+    transform: rotate(45deg);
+}
+
+.faq-list summary:focus-visible {
+    border-radius: var(--radius-sm);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+.faq-list details p {
+    margin: 0;
+    padding: 0 var(--space-10) var(--space-5) 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.7;
+}
+
+.faq-list details a {
+    color: var(--color-brand);
+    font-weight: 600;
+    text-underline-offset: 4px;
+}

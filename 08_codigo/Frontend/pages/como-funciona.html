@@ -42,13 +42,21 @@
 
   <!-- Segunda metade da antiga página inicial: eleições, segurança e áreas da plataforma -->
   <main id="conteudo">
-    <section class="election-info grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 container" id="eleicoes">
-      <figure class="photo-panel">
-        <img src="../assets/05_iade_novo_campus_edificio.webp" width="678" height="678" fetchpriority="high"
+    <header class="page-intro container">
+      <p class="eyebrow">Guia da plataforma</p>
+      <h1>Como funciona a votação online</h1>
+      <p class="lead">Quem se elege, como o voto se mantém secreto, quando saem os resultados e onde entrar.
+        Pode ainda experimentar o boletim, sem enviar nada.</p>
+    </header>
+
+    <section class="election-info container grid-12" id="eleicoes">
+      <figure class="photo-panel lg:col-5">
+        <img src="../assets/05_iade_novo_campus_edificio.webp" width="678" height="678" loading="lazy" decoding="async"
           alt="Estudantes no pátio do novo campus do IADE">
         <figcaption>IADE · Campus da Universidade Europeia</figcaption>
       </figure>
-      <div class="election-copy">
+      <div class="election-copy lg:col-6 lg:start-7">
+        <p class="eyebrow">Órgãos eleitos</p>
         <h2>Quem se elege</h2>
         <p>A Associação de Estudantes, os representantes de turma e de curso e os núcleos académicos são eleitos pelos
           estudantes inscritos. Se nenhuma lista conseguir mais de metade dos votos, pode realizar-se uma segunda volta
@@ -64,7 +72,10 @@
     <section class="security-section" id="como-funciona">
       <div class="container">
         <div class="section-heading">
-          <h2>Como funciona a votação</h2>
+          <div>
+            <p class="eyebrow">Segurança</p>
+            <h2>Como funciona a votação</h2>
+          </div>
           <p>Votar online é como entrar no portal do estudante. O voto é secreto e os resultados são públicos.</p>
         </div>
         <div class="security-grid grid-cols-1 lg:grid-cols-3">
@@ -95,6 +106,7 @@
       <div class="container demo-layout">
         <div class="section-heading demo-heading">
           <div>
+            <p class="eyebrow">Demonstração</p>
             <h2>Experimente o boletim</h2>
           </div>
           <p>Escolha uma candidatura fictícia, reveja o boletim e deposite. Nada é enviado: são só os passos do voto
@@ -111,6 +123,7 @@
       <div class="container">
         <div class="section-heading">
           <div>
+            <p class="eyebrow">Áreas reservadas</p>
             <h2>Onde entrar</h2>
           </div>
           <p>Os estudantes votam na Área do Eleitor. A comissão eleitoral organiza as eleições na Área da Equipa.</p>

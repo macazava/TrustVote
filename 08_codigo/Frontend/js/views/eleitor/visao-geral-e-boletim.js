@@ -68,16 +68,6 @@
       </article>`;
   }
 
-  const safety = () => `
-    <article class="dash-card">
-      <h2>Garantias</h2>
-      <ul class="profile-list">
-        <li class="is-yes">Voto secreto: ninguém sabe em quem votou</li>
-        <li class="is-yes">Recibo para confirmar que o voto foi contado</li>
-        <li class="is-no">Um voto por eleição: depois de confirmado não pode ser alterado</li>
-      </ul>
-      <button class="link-button" type="button" data-go="help">Dúvidas? Abrir a ajuda ${TV.icon("arrow-right")}</button>
-    </article>`;
 
   const overviewPage = (d) => `
     ${head(d.hoje, `${d.saudacao}, ${escapeHtml(d.user.nome.split(" ")[0])}.`, d.subtitulo, `
@@ -93,7 +83,6 @@
 
     <div class="ov-columns">
       ${activity(d)}
-      ${safety()}
     </div>`;
 
   // ===== Opção "voto em branco" (value="branco" no formulário) =====

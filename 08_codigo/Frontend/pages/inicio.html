@@ -37,212 +37,144 @@
 <body data-page="home">
   <div data-layout="cabecalho"></div>
 
-  <main id="conteudo">
-    <!-- Faixa de entrada (verde escuro, em toda a largura): título, ações, estado da eleição e garantias -->
-    <div class="hero-band">
-      <section class="hero grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 xl:gap-16 container">
-        <div class="hero-copy">
-          <h1>Eleições académicas</h1>
-          <p class="lead">Vote online para a Associação de Estudantes, os representantes de turma e de curso e os
-            núcleos académicos. Podem votar todos os estudantes com matrícula ativa.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="login.html?area=eleitor" data-voter-link
-              data-voter-label="Continuar na minha área">Entrar para votar <svg class="icon" aria-hidden="true">
-                <use href="#i-arrow-right"></use>
-              </svg></a>
-            <a class="button button-outline" href="#informacao">Ver eleições</a>
-          </div>
-          <div class="election-alert">
-            <span class="alert-icon"><svg class="icon" aria-hidden="true">
-                <use href="#i-calendar"></use>
-              </svg></span>
-            <div>
-              <small>ELEIÇÕES</small>
-              <b data-skeleton>A obter o estado da eleição…</b>
-            </div>
-            <a href="calendario.html">Ver datas <svg class="icon" aria-hidden="true">
-                <use href="#i-arrow-right"></use>
-              </svg></a>
-          </div>
+  <main id="conteudo" class="home">
+
+    <!-- ===== Faixa de votação: ponto de estado, eleição, contagem decrescente e botão ===== -->
+    <section class="vote-strip" aria-label="Estado das eleições">
+      <div class="container election-alert" data-estado="">
+        <span class="vote-strip-dot" aria-hidden="true"></span>
+        <div class="vote-strip-text">
+          <small>ELEIÇÕES</small>
+          <b data-skeleton>A obter o estado da eleição…</b>
         </div>
-        <figure class="photo-panel hero-photo">
-          <img src="../assets/06_votar_online_de_casa.webp" width="1017" height="678" fetchpriority="high"
-            decoding="async" alt="Estudante a votar online a partir de casa">
-        </figure>
-      </section>
-      <ul class="hero-trust container" aria-label="Garantias do voto">
-        <li><span><svg class="icon" aria-hidden="true">
-              <use href="#i-shield-check"></use>
-            </svg></span>
-          <div><b>Voto secreto</b><small>A conta nunca fica ligada à escolha</small></div>
-        </li>
-        <li><span><svg class="icon" aria-hidden="true">
-              <use href="#i-circle-check"></use>
-            </svg></span>
-          <div><b>Recibo verificável</b><small>Confirme que o voto foi contado</small></div>
-        </li>
-        <li><span><svg class="icon" aria-hidden="true">
-              <use href="#i-lock"></use>
-            </svg></span>
-          <div><b>Um voto por volta</b><small>Sem votos repetidos</small></div>
-        </li>
-        <li><span><svg class="icon" aria-hidden="true">
-              <use href="#i-chart-column"></use>
-            </svg></span>
-          <div><b>Resultados públicos</b><small>Publicados quando a votação fecha</small></div>
-        </li>
-      </ul>
-    </div>
-    <section class="services container" id="servicos">
-      <div class="services-panel">
-        <div class="section-heading">
-          <h2>O que precisa de fazer?</h2>
-        </div>
-        <div class="service-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <a class="service-card" href="login.html?area=eleitor#votar"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-vote"></use>
-              </svg></span><b>Votar</b><small>Entrar na Área do Eleitor</small></a>
-          <a class="service-card" href="calendario.html#como-votar"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-book-open"></use>
-              </svg></span><b>Como votar</b><small>Os passos, um a um</small></a>
-          <a class="service-card" href="calendario.html"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-calendar"></use>
-              </svg></span><b>Calendário eleitoral</b><small>Quando se vota</small></a>
-          <a class="service-card" href="listas.html"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-clipboard-list"></use>
-              </svg></span><b>Listas</b><small>Candidatos e propostas</small></a>
-          <a class="service-card" href="resultados.html"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-chart-column"></use>
-              </svg></span><b>Resultados</b><small>Participação e resultados</small></a>
-          <a class="service-card" href="ajuda.html#contactos"><span><svg class="icon" aria-hidden="true">
-                <use href="#i-circle-help"></use>
-              </svg></span><b>Ajuda</b><small>Falar com a comissão eleitoral</small></a>
-        </div>
+        <p class="vote-strip-countdown" data-vote-countdown-wrap hidden>
+          <span>Fecha em</span>
+          <span class="vote-strip-time" data-vote-countdown data-countdown>—</span>
+        </p>
+        <a class="vote-strip-link" href="calendario.html">Ver datas <svg class="icon" aria-hidden="true">
+            <use href="#i-arrow-right"></use>
+          </svg></a>
       </div>
     </section>
-    <section class="election-info grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 container" id="eleicoes">
-      <figure class="photo-panel">
-        <img src="../assets/05_iade_novo_campus_edificio.webp" width="678" height="678" loading="lazy" decoding="async"
-          alt="Estudantes no pátio do novo campus do IADE">
-        <figcaption>IADE · Campus da Universidade Europeia</figcaption>
+
+    <!-- ===== Hero editorial: título em destaque e fotografia recortada ===== -->
+    <section class="home-hero container grid-12" aria-labelledby="home-title">
+      <div class="hero-copy lg:col-7">
+        <p class="eyebrow">Portal oficial · Comissão Eleitoral Académica</p>
+        <h1 id="home-title">Eleições académicas,<span class="hero-accent"> com voto secreto e verificável.</span></h1>
+        <p class="lead">Vote online para a Associação de Estudantes, os representantes de turma e de curso e os
+          núcleos académicos. Podem votar todos os estudantes com matrícula ativa.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="login.html?area=eleitor" data-voter-link
+            data-voter-label="Continuar na minha área">Entrar para votar <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg></a>
+          <a class="text-link" href="#informacao">Ver a eleição atual <svg class="icon" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg></a>
+        </div>
+      </div>
+      <figure class="hero-figure lg:col-5">
+        <img src="../assets/06_votar_online_de_casa.webp" width="1017" height="678" fetchpriority="high"
+          decoding="async" alt="Estudante a votar online a partir de casa">
+        <figcaption>Vota-se online, a partir de qualquer dispositivo.</figcaption>
       </figure>
-      <div class="election-copy">
-        <h2>Quem se elege</h2>
-        <p>A Associação de Estudantes, os representantes de turma e de curso e os núcleos académicos são eleitos pelos
-          estudantes inscritos. Se nenhuma lista conseguir mais de metade dos votos, pode realizar-se uma segunda volta
-          entre as duas mais votadas.</p>
-        <div class="facts grid-cols-2 sm:grid-cols-3">
-          <div><b>Matrícula ativa</b><small>condição para votar</small></div>
-          <div><b>2 anos</b><small>duração do mandato da Associação de Estudantes</small></div>
-          <div><b>2 voltas</b><small>quando nenhuma lista tem maioria</small></div>
-        </div>
-      </div>
     </section>
+
+
+    <!-- ===== Garantias do voto: quatro colunas separadas por linhas finas ===== -->
+    <ul class="hero-trust container" aria-label="Garantias do voto">
+      <li><svg class="icon" aria-hidden="true">
+          <use href="#i-shield-check"></use>
+        </svg>
+        <div><b>Voto secreto</b><small>A conta nunca fica ligada à escolha</small></div>
+      </li>
+      <li><svg class="icon" aria-hidden="true">
+          <use href="#i-circle-check"></use>
+        </svg>
+        <div><b>Recibo verificável</b><small>Confirme que o voto foi contado</small></div>
+      </li>
+      <li><svg class="icon" aria-hidden="true">
+          <use href="#i-lock"></use>
+        </svg>
+        <div><b>Um voto por volta</b><small>Sem votos repetidos</small></div>
+      </li>
+      <li><svg class="icon" aria-hidden="true">
+          <use href="#i-chart-column"></use>
+        </svg>
+        <div><b>Resultados públicos</b><small>Publicados quando a votação fecha</small></div>
+      </li>
+    </ul>
+
+    <!-- ===== Eleição atual: o destaque do portal ===== -->
     <section class="hub-section container" id="informacao">
       <div class="section-heading">
-        <h2>Eleição atual</h2>
+        <div>
+          <p class="eyebrow">Eleição em destaque</p>
+          <h2>Eleição atual</h2>
+        </div>
         <p>A participação atualiza-se à medida que os votos entram.</p>
       </div>
       <div class="hub-grid">
         <article class="hub-card" data-hub-election>
-          <div class="status-row">
-            <span class="status-pill" data-skeleton>A CARREGAR</span>
+          <div class="hub-main">
+            <div class="status-row">
+              <span class="status-pill" data-skeleton>A CARREGAR</span>
+            </div>
+            <h3 data-skeleton>A carregar…</h3>
+            <p data-hub-copy data-skeleton>A obter os dados da eleição…</p>
+            <div class="hero-actions">
+              <a class="button button-outline" href="listas.html">Ver listas</a>
+              <a class="text-link" href="resultados.html">Ver resultados <svg class="icon" aria-hidden="true">
+                  <use href="#i-arrow-right"></use>
+                </svg></a>
+            </div>
           </div>
-          <h3 data-skeleton>A carregar…</h3>
-          <p data-hub-copy data-skeleton>A obter os dados da eleição…</p>
           <div class="hub-progress">
             <div><small>PARTICIPAÇÃO</small><b data-hub-turnout data-skeleton>00,0%</b></div>
             <div class="bar"><i data-hub-bar style="width:0%"></i></div>
             <small data-hub-votes data-skeleton>00 votos registados</small>
           </div>
-          <div class="hero-actions">
-            <a class="button button-primary" href="login.html?area=eleitor" data-voter-link>Votar agora <svg
-                class="icon" aria-hidden="true">
-                <use href="#i-arrow-right"></use>
-              </svg></a>
-            <a class="button button-outline" href="listas.html">Ver listas</a>
-          </div>
         </article>
       </div>
     </section>
-    <section class="how-to-vote container" id="como-funciona">
-      <div class="section-heading">
-        <h2>Como votar</h2>
-        <p>Demora poucos minutos. Se tiver dúvidas, veja <a href="como-funciona.html">como funciona</a> ou fale com
-          a comissão eleitoral.</p>
+
+    <!-- ===== Como votar: lista numerada editorial ===== -->
+    <section class="how-to-vote container grid-12" id="como-funciona">
+      <div class="section-heading how-heading lg:col-4">
+        <div>
+          <p class="eyebrow">Guia rápido</p>
+          <h2>Como votar</h2>
+        </div>
+        <p>Demora poucos minutos. Se tiver dúvidas, veja <a href="como-funciona.html">como funciona</a>, as
+          <a href="ajuda.html#perguntas-frequentes">perguntas frequentes</a> ou fale com a comissão eleitoral.
+        </p>
       </div>
-      <ol class="steps-list grid-cols-1 lg:grid-cols-3">
-        <li><span>1</span><b>Entre na Área do Eleitor</b><small>Com o e-mail e a palavra-passe da sua conta de
+      <ol class="steps-list lg:col-7 lg:start-6">
+        <li><span>01</span><b>Entre na Área do Eleitor</b><small>Com o e-mail e a palavra-passe da sua conta de
             estudante.</small></li>
-        <li><span>2</span><b>Escolha a eleição e a lista</b><small>Leia as listas e as propostas antes de
+        <li><span>02</span><b>Escolha a eleição e a lista</b><small>Leia as listas e as propostas antes de
             confirmar.</small></li>
-        <li><span>3</span><b>Guarde o recibo</b><small>Mostra que o seu voto foi registado, mas não em quem
+        <li><span>03</span><b>Guarde o recibo</b><small>Mostra que o seu voto foi registado, mas não em quem
             votou.</small></li>
       </ol>
     </section>
-    <section class="faq-section container" id="perguntas">
-      <div class="section-heading">
-        <div>
-          <h2>Perguntas frequentes</h2>
-        </div>
-        <p>As dúvidas mais comuns antes de votar. Se a sua não estiver aqui, fale com a comissão eleitoral.</p>
-      </div>
-      <div class="faq-list">
-        <details>
-          <summary>Quem pode votar?</summary>
-          <p>Os estudantes com matrícula ativa que a comissão eleitoral habilitou nessa eleição.</p>
-        </details>
-        <details>
-          <summary>Como sei que o meu voto foi registado?</summary>
-          <p>No fim recebe um código de recibo. Na Área do Eleitor, em Recibos, pode usar esse código para confirmar que
-            o voto foi contado.</p>
-        </details>
-        <details>
-          <summary>O recibo mostra em quem votei?</summary>
-          <p>Não. O recibo só confirma que o voto foi registado, por isso ninguém o pode usar para provar em quem votou.
-          </p>
-        </details>
-        <details>
-          <summary>Posso mudar o voto depois de votar?</summary>
-          <p>Não. Antes de depositar o voto, a plataforma mostra um resumo da escolha para a rever ou alterar.</p>
-        </details>
-      </div>
-      <a class="text-link" href="ajuda.html#perguntas-frequentes">Ver todas as perguntas <svg class="icon"
-          aria-hidden="true">
-          <use href="#i-arrow-right"></use>
-        </svg></a>
-    </section>
+
+    <!-- ===== Avisos e participação ===== -->
     <section class="news-section container">
       <div class="section-heading">
         <div>
-          <h2>Avisos e participação</h2>
+          <p class="eyebrow">Atualidade</p>
+          <h2>Avisos</h2>
         </div>
         <p>Avisos sobre as datas, as listas e a votação das eleições académicas.</p>
       </div>
-      <div class="news-grid grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
-        <article class="dash-card" data-live-data>
-          <figure class="news-photo">
-            <img src="../assets/01_comunidade_academica_eleitores.webp" width="1122" height="678" loading="lazy"
-              decoding="async" alt="Comunidade académica do IADE reunida no campus">
-          </figure>
-          <h3 data-live-title data-skeleton>A carregar…</h3>
-          <div class="facts grid-cols-2 sm:grid-cols-3">
-            <div><b data-live="eleitores" data-skeleton>000</b><small>estudantes elegíveis</small></div>
-            <div><b data-live="votos" data-skeleton>000</b><small>votos registados</small></div>
-            <div><b data-live="participacao" data-skeleton>000</b><small>participação atual</small></div>
-          </div>
-          <a class="button button-outline" href="resultados.html">Ver resultados <svg class="icon" aria-hidden="true">
-              <use href="#i-arrow-right"></use>
-            </svg></a>
-        </article>
-        <article class="dash-card">
-          <h3>Avisos</h3>
-          <div class="news-list" data-news><span class="skeleton skeleton-line"></span><span
-              class="skeleton skeleton-line"></span><span class="skeleton skeleton-line"></span></div>
-          <a class="text-link" href="calendario.html">Ver calendário completo <svg class="icon" aria-hidden="true">
-              <use href="#i-arrow-right"></use>
-            </svg></a>
-        </article>
+      <div class="news-notices">
+        <div class="news-list" data-news><span class="skeleton skeleton-line"></span><span
+            class="skeleton skeleton-line"></span><span class="skeleton skeleton-line"></span></div>
+        <a class="text-link" href="calendario.html">Ver calendário completo <svg class="icon" aria-hidden="true">
+            <use href="#i-arrow-right"></use>
+          </svg></a>
       </div>
     </section>
   </main>
