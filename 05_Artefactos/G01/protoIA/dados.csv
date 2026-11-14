@@ -1,0 +1,10 @@
+eleicao_id,ano,lista,votos_lista,votos_validos,participacao_pct,origem,fonte
+demo-2023,2023,Taha-Wur Pereira,420,1000,48.0,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2023,2023,Maria Camila,350,1000,48.0,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2023,2023,Fabio Romulo,230,1000,48.0,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2024,2024,Taha-Wur Pereira,455,1100,51.5,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2024,2024,Maria Camila,370,1100,51.5,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2024,2024,Fabio Romulo,275,1100,51.5,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2025,2025,Taha-Wur Pereira,440,1200,55.0,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2025,2025,Maria Camila,430,1200,55.0,sintetico,Dados ficticios para demonstracao do prototipo
+demo-2025,2025,Fabio Romulo,330,1200,55.0,sintetico,Dados ficticios para demonstracao do prototipo
