@@ -81,23 +81,13 @@
       <p class="muted">Se a sessão terminar a meio do voto, a opção marcada fica guardada até voltar a entrar.</p>
       <button class="button button-outline" type="button" data-logout-profile>${TV.icon("log-out")} Terminar sessão</button>`);
 
-  // ===== Privacidade: o que o sistema guarda e o que nunca guarda =====
-  const privacyCard = () =>
-    card(`
-      ${cabeca("PRIVACIDADE", "O que fica guardado")}
-      <ul class="profile-list">
-        <li class="is-yes">Nome, e-mail, curso e número de estudante</li>
-        <li class="is-yes">Se já votou em cada eleição, para impedir votos repetidos</li>
-        <li class="is-no">Em quem votou: o voto é separado da sua identidade</li>
-      </ul>
-      <a class="text-link" href="privacidade.html">Política de privacidade ${TV.icon("arrow-right")}</a>`);
 
   // d = { user, claims, lista, numeros }
   const profilePage = (d) => `
     ${identity(d.user)}
     <div class="profile-grid grid-cols-1 lg:grid-cols-[1.35fr_1fr]">
       <div>${personal(d.user)}${participation(d.lista, d.numeros)}</div>
-      <div>${TV.password.card()}${sessionCard(d.claims)}${privacyCard()}</div>
+      <div>${TV.password.card()}${sessionCard(d.claims)}<p class="profile-privacy"><a class="text-link" href="privacidade.html">Política de privacidade ${TV.icon("arrow-right")}</a></p></div>
     </div>`;
 
   Object.assign(v, { profilePage });

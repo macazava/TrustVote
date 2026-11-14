@@ -37,7 +37,7 @@
         ? `<ul class="list-members" aria-label="Candidatos">${membros.map((c) => `<li><span class="avatar" aria-hidden="true">${escapeHtml(initials(c.nome))}</span>${escapeHtml(c.nome)}</li>`).join("")}</ul>`
         : ""}
         ${propostas.length
-        ? `<p class="list-label">Propostas</p><ul class="candidate-proposals">${propostas.map((p) => `<li>${TV.icon("check")}<span>${escapeHtml(p)}</span></li>`).join("")}</ul>`
+        ? `<details class="list-proposals"><summary><span>Ver ${propostas.length === 1 ? "proposta" : `propostas (${propostas.length})`}</span>${TV.icon("arrow-right")}</summary><ul class="candidate-proposals">${propostas.map((p) => `<li>${TV.icon("check")}<span>${escapeHtml(p)}</span></li>`).join("")}</ul></details>`
         : '<p class="list-empty">Ainda sem propostas publicadas.</p>'}
       </article>`;
   };

@@ -71,21 +71,42 @@
     return Math.max(0, Math.min(100, ((Date.now() - ini) / (fim - ini)) * 100));
   };
 
-  // Iniciais sobrepostas das candidaturas (até 4) e os nomes
+  // Candidaturas no boletim: iniciais e nome de cada uma
   const candidatesStack = (lista) =>
     lista.length
       ? `<div class="el-candidates">
-          <span class="el-avatars">${lista.slice(0, 4).map((c) => `<span class="avatar" title="${escapeHtml(c.nome)}">${escapeHtml(initials(c.nome))}</span>`).join("")}</span>
-          <small>${escapeHtml(lista.map((c) => c.nome).join(" · "))}</small>
+          <small>No boletim</small>
+          <ul>${lista.map((c) => `<li><span class="avatar" aria-hidden="true">${escapeHtml(initials(c.nome))}</span>${escapeHtml(c.nome)}</li>`).join("")}</ul>
         </div>`
       : '<p class="muted">As candidaturas ainda não foram publicadas.</p>';
 
-  // Período da votação: abertura, barra do tempo decorrido e encerramento
+  // Bloco de data (como num calendário): o fecho de uma votação aberta, a abertura de uma agendada
+  const mesCurto = (d) => d.toLocaleDateString("pt-PT", { month: "short" }).replace(".", "").toUpperCase();
+  function dateTile(e) {
+    const aberta = e.aberta && e.fim;
+    const iso = aberta ? e.fim : e.inicio;
+    if (!iso) return `<div class="el-date is-empty" aria-hidden="true"><small>DATAS</small><b>—</b><span>por definir</span></div>`;
+    const d = new Date(iso);
+    return `<div class="el-date" aria-hidden="true"><small>${aberta ? "FECHA" : e.votou ? "FECHOU" : "ABRE"}</small><b>${d.getDate()}</b><span>${mesCurto(d)} · ${d.getFullYear()}</span></div>`;
+  }
+
+  // Contagem decrescente em destaque na coluna da ação (o número é atualizado pelo arranque)
+  const countdownBlock = (e) =>
+    e.aberta && e.fim
+      ? `<p class="el-countdown"><small>Termina em</small><b data-countdown="${e.fim}">${countdown(e.fim)}</b></p>`
+      : e.inicio && Date.parse(e.inicio) > Date.now()
+        ? `<p class="el-countdown is-soon"><small>Começa em</small><b data-countdown="${e.inicio}">${countdown(e.inicio)}</b></p>`
+        : "";
+
+  // Período da votação: abertura, barra do tempo decorrido (com a percentagem) e encerramento
   const periodBar = (e) =>
     e.inicio && e.fim
       ? `<div class="el-period">
           <div><small>ABERTURA</small><b>${dateTime(e.inicio)}</b></div>
-          <div class="el-period-bar" role="img" aria-label="${percent(decorrido(e))} do período decorrido"><i style="width:${decorrido(e)}%"></i></div>
+          <div class="el-period-track">
+            <div class="el-period-bar" role="img" aria-label="${percent(decorrido(e))} do período decorrido"><i style="width:${decorrido(e)}%"></i></div>
+            ${e.aberta ? `<small>${percent(decorrido(e))} do período decorrido</small>` : ""}
+          </div>
           <div><small>ENCERRAMENTO</small><b>${dateTime(e.fim)}</b></div>
         </div>`
       : '<p class="muted">Datas por definir.</p>';
@@ -95,21 +116,26 @@
       ? TV.blocks.calendarButton({ id: e.id, titulo: e.titulo, inicio: e.inicio, fim: e.fim, descricao: e.descricao })
       : "";
 
+  // Uma eleição: data à esquerda, informação ao centro, contagem e ações à direita
   const electionItem = (e) => `
-    <article class="dash-card el-item ${e.votou ? "is-voted" : e.aberta ? "is-open" : ""}">
+    <article class="dash-card el-item ${e.votou ? "is-voted" : e.aberta ? "is-open" : "is-scheduled"}">
+      ${dateTile(e)}
       <div class="el-item-main">
-        <div class="el-item-top">${statusLine(e)}<span class="el-time">${timeInfo(e)}</span></div>
+        <div class="el-item-top">
+          ${statusLine(e)}
+          <ul class="el-meta">
+            <li>${TV.icon("calendar")} ${nomeVolta(e)}</li>
+            <li>${TV.icon("user-check")} ${plural(e.candidatosRonda.length, "candidatura", "candidaturas")}</li>
+            ${e.votou ? `<li class="is-ok">${TV.icon("circle-check")} Já votou</li>` : ""}
+          </ul>
+        </div>
         <h2>${escapeHtml(e.titulo)}</h2>
         ${e.descricao ? `<p class="el-desc">${escapeHtml(e.descricao)}</p>` : ""}
-        <ul class="el-meta">
-          <li>${TV.icon("calendar")} ${nomeVolta(e)}</li>
-          <li>${TV.icon("user-check")} ${plural(e.candidatosRonda.length, "candidatura", "candidaturas")}</li>
-          ${e.votou ? `<li class="is-ok">${TV.icon("circle-check")} Já votou</li>` : ""}
-        </ul>
         ${periodBar(e)}
         ${candidatesStack(e.candidatosRonda)}
       </div>
       <div class="el-item-actions">
+        ${countdownBlock(e)}
         ${voteAction(e)}
         <button class="button button-outline" type="button" data-details="${e.id}">Ver detalhes</button>
         ${calendario(e)}
@@ -118,7 +144,7 @@
 
   const historyRow = (e) => `
     <li>
-      <span class="year">${e.ano}</span>
+      <span class="el-history-year">${e.ano}</span>
       <div><b>${escapeHtml(e.titulo)}</b><small>${escapeHtml(e.periodo)}</small></div>
       <span class="el-history-state ${e.votou ? "is-ok" : ""}">${TV.icon(e.votou ? "circle-check" : "lock")} ${e.votou ? "Votou" : "Encerrada"}</span>
       <button class="link-button" type="button" data-go="results">Resultados ${TV.icon("arrow-right")}</button>
@@ -187,7 +213,7 @@
             ${TV.blocks.campo("Volta", nomeVolta(e))}
             ${TV.blocks.campo("Abertura", e.inicio ? dateTime(e.inicio) : "—")}
             ${TV.blocks.campo("Encerramento", e.fim ? dateTime(e.fim) : "—")}
-            ${e.quorum ? ficha("Quórum", `${percent(e.quorum)} dos eleitores`) : ""}
+            ${e.quorum ? TV.blocks.campo("Quórum", `${percent(e.quorum)} dos eleitores`) : ""}
             ${TV.blocks.campo("O seu voto", e.votou ? "Registado" : e.aberta ? "Por depositar" : "—")}
           </dl>
           ${(e.aberta && !e.votou) || e.estado === "agendada" ? `<p class="el-time">${timeInfo(e)}</p>` : ""}
@@ -195,14 +221,6 @@
             ${voteAction(e, `Abrir boletim digital ${TV.icon("arrow-right")}`)}
             ${calendario(e)}
           </div>
-        </article>
-        <article class="dash-card">
-          <h2>O que precisa de saber</h2>
-          <ul class="profile-list">
-            <li class="is-yes">Pode rever a escolha antes de confirmar</li>
-            <li class="is-yes">Recebe um recibo para verificar que o voto foi contado</li>
-            <li class="is-no">Depois de confirmado, o voto não pode ser alterado</li>
-          </ul>
         </article>
       </aside>
     </div>`;

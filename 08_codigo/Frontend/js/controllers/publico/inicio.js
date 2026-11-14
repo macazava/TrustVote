@@ -10,9 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const lastCount = document.querySelector("[data-last-count]");
   const liveTitle = document.querySelector("[data-live-title]");
 
+  // ===== Faixa de votação: contagem decrescente até ao fecho (só com a votação aberta) =====
+  const countdownEl = document.querySelector("[data-vote-countdown]");
+  let fechoVotacao = null;
+  function updateCountdown() {
+    if (!countdownEl) return;
+    const ativo = !!fechoVotacao && Date.parse(fechoVotacao) > Date.now();
+    const wrap = countdownEl.closest("[data-vote-countdown-wrap]");
+    if (wrap) wrap.hidden = !ativo;
+    if (ativo) countdownEl.textContent = format.countdown(fechoVotacao);
+  }
+  setInterval(updateCountdown, 30000);
+
   // ===== Aviso no topo: o estado da eleição fica visível logo à entrada =====
   function showAlert(eleicao, online) {
     if (!alert) return;
+    // O estado vai para o atributo data-estado (o CSS pinta o ponto e mostra o botão de votar)
+    alert.dataset.estado = eleicao ? eleicao.estado : online ? "" : "indisponivel";
+    fechoVotacao = eleicao && eleicao.estado === "em_curso" ? eleicao.data_fim : null;
+    updateCountdown();
     const titulo = alert.querySelector("small");
     const texto = alert.querySelector("b");
     if (!eleicao) {

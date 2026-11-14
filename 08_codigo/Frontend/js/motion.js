@@ -2,11 +2,11 @@
    O CSS está em css/componentes/animacoes.css (secção "Motion"); os tokens em base/variaveis.css.
 
    - cabeçalho com borda/sombra subtil depois de algum scroll
-   - entrada do conteúdo principal (fade + 8px, 60 ms entre elementos); cabeçalho e menu lateral não animam
-   - revelação ao scroll (uma vez, threshold 0.15): cartões, linhas de tabela, linha do tempo, secções;
-     nas listas 40 ms entre itens e no máximo 6 animados
+   - entrada do conteúdo principal (fade + 12px, 400 ms, 60 ms entre elementos); cabeçalho e menu lateral não animam
+   - revelação ao scroll com IntersectionObserver (uma vez, threshold 0.15): cartões, linhas de tabela,
+     linha do tempo, secções; nas listas 60 ms entre itens e no máximo 8 animados
    - barras de progresso e de resultados que crescem de 0 (scaleX) quando entram no ecrã
-   - percentagens e totais que contam até ao valor (~800 ms)
+   - percentagens e totais que contam até ao valor (~900 ms)
    - contadores "Termina em" com um crossfade curto quando o valor muda
    - indicador do menu lateral que desliza até ao item ativo
    - separadores das áreas reservadas com entrada suave
@@ -17,7 +17,7 @@
   const raiz = document.documentElement;
   raiz.classList.add("js");
   const reduzido = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+  const ease = "cubic-bezier(0.2, 0.7, 0.2, 1)";
 
   document.addEventListener("DOMContentLoaded", () => {
     // ===== Cabeçalho: borda e sombra subtis depois de algum scroll =====
@@ -77,12 +77,14 @@
     requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll(".tv-enter").forEach((el) => el.classList.add("is-in"))));
 
     // ===== Revelação ao scroll =====
-    // [seletor, grupo]: dentro do mesmo grupo, 40 ms entre itens e no máximo 6 animados
+    // [seletor, grupo]: dentro do mesmo grupo, 60 ms entre itens e no máximo 8 animados
     const revelar = [
       [".section-heading", null],
-      [".service-grid > a", ".service-grid"],
       [".steps-list > li", ".steps-list"],
       [".faq-list > details", ".faq-list"],
+      [".hero-trust > li", ".hero-trust"],
+      [".admin-metrics > *", ".admin-metrics"],
+      [".election-rows > *", ".election-rows"],
       [".candidate-grid > *", ".candidate-grid"],
       [".timeline > article", ".timeline"],
       [".info-list > article", ".info-list"],
@@ -121,10 +123,10 @@
           if (el.closest(".view-panel") && Date.now() - inicio >= 4000 && Date.now() - ultimaAcao >= 1500) return;
           const pai = grupo ? el.closest(grupo) : null;
           const i = pai ? [...pai.querySelectorAll(sel)].indexOf(el) : 0;
-          // A partir do 7.º item de uma lista, aparecem logo
-          if (i >= 6) return;
+          // A partir do 9.º item de uma lista, aparecem logo
+          if (i >= 8) return;
           el.classList.add("tv-reveal");
-          el.style.setProperty("--tv-delay", `${i * 40}ms`);
+          el.style.setProperty("--tv-delay", `${i * 60}ms`);
           observador.observe(el);
         });
       });
@@ -141,7 +143,7 @@
           const vertical = !!e.target.closest(".column-chart-track");
           e.target.animate(
             [{ transform: vertical ? "scaleY(0)" : "scaleX(0)" }, { transform: "none" }],
-            { duration: 420, easing: ease }
+            { duration: 900, easing: ease }
           );
         }),
       { threshold: 0.15 }
@@ -157,7 +159,7 @@
 
     // ===== Números que contam até ao valor (~800 ms) =====
     const seletorNumeros =
-      ".metric-card b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .profile-numbers b, .history-stats dd, .history-turnout b, .el-summary b, .facts b, [data-live]";
+      ".metric-card b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .profile-numbers b, .history-stats dd, .history-turnout b, .el-summary b, .facts b, .results-figures b, .results-value > b, [data-live]";
     const padrao = /^(\s*)(\d{1,3}(?:[\s  .]?\d{3})*(?:,\d+)?)(.*)$/s;
     function contar(el) {
       const texto = [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
@@ -171,7 +173,7 @@
       const t0 = performance.now();
       const passo = (agora) => {
         if (!texto.isConnected) return;
-        const t = Math.min(1, (agora - t0) / 800);
+        const t = Math.min(1, (agora - t0) / 900);
         texto.textContent = `${antes}${fmt.format(alvo * (1 - Math.pow(1 - t, 3)))}${depois}`;
         if (t < 1) requestAnimationFrame(passo);
       };
@@ -231,8 +233,8 @@
       new MutationObserver(() => {
         if (!painel.classList.contains("active") || Date.now() - ultimaAcao > 1000) return;
         [...painel.children].slice(0, 6).forEach((filho, i) =>
-          filho.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], {
-            duration: 420,
+          filho.animate([{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], {
+            duration: 400,
             delay: i * 60,
             easing: ease,
             fill: "backwards",

@@ -4,17 +4,10 @@
 (function montarLayout() {
   const icon = window.TrustVote.icon; // definido em icones.js, que corre antes deste ficheiro
 
-  // ===== Topo: atalhos, marca, menu principal e botão de votar =====
+  // ===== Topo: um só cabeçalho com marca, menu principal, áreas reservadas, modo escuro e botão de votar =====
+  // (a antiga barra verde de atalhos foi integrada aqui, em .header-actions)
   const cabecalho = `
   <a class="skip-link" href="#conteudo">Saltar para o conteúdo principal</a>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <button class="theme-toggle" type="button" data-theme-toggle>${icon("moon", "theme-moon")}${icon("sun", "theme-sun")} <span data-theme-label>Modo escuro</span></button>
-      <a href="login.html?area=eleitor" data-voter-link>Área do eleitor</a>
-      <a href="login.html?area=equipa">Área da equipa</a>
-    </div>
-  </div>
-
   <header class="site-header sticky top-0 z-40">
     <div class="site-header-inner">
       <a class="brand" href="inicio.html">
@@ -30,7 +23,11 @@
         <a href="ajuda.html">Ajuda</a>
       </nav>
       <div class="header-actions">
-        <a class="button button-primary" href="login.html?area=eleitor"
+        <div class="header-areas">
+          <a class="header-util" href="login.html?area=equipa" title="Área da equipa">${icon("shield-check")}<span>Área da equipa</span></a>
+        </div>
+        <button class="theme-toggle header-icon-button" type="button" data-theme-toggle>${icon("moon", "theme-moon")}${icon("sun", "theme-sun")}<span class="header-theme-label" data-theme-label>Modo escuro</span></button>
+        <a class="button button-primary header-vote" href="login.html?area=eleitor"
           data-voter-link>Votar ${icon("arrow-right")}</a>
       </div>
     </div>

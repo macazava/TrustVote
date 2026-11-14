@@ -74,14 +74,6 @@
                 <button class="button button-primary" type="submit">Enviar resposta ${TV.icon("arrow-right")}</button>
               </form>`}
         </article>
-        <article class="dash-card">
-          <h2>Como funciona</h2>
-          <ul class="profile-list">
-            <li class="is-yes">A resposta é anónima: não fica ligada à sua conta</li>
-            <li class="is-yes">Só pode responder uma vez por eleição</li>
-            <li class="is-no">Não é um voto e não altera o resultado da eleição</li>
-          </ul>
-        </article>
       </aside>
     </div>`;
   };
