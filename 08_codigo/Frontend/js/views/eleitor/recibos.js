@@ -23,14 +23,6 @@
             <div><dt>${TV.icon("circle-check")} Comprovativo de participação</dt><dd>Confirma que votou numa eleição. Aparece quando o recibo foi guardado noutro navegador.</dd></div>
           </dl>
         </article>
-        <article class="dash-card">
-          <h2>O voto continua secreto</h2>
-          <ul class="profile-list">
-            <li class="is-no">Nenhum documento indica em quem votou</li>
-            <li class="is-no">O servidor não sabe que recibo é de quem</li>
-            <li class="is-yes">Os recibos ficam só neste dispositivo: descarregue-os em PDF</li>
-          </ul>
-        </article>
       </aside>
     </div>`;
 

@@ -1,5 +1,7 @@
-/* Histórico eleitoral: topo com fotografia em verde e totais, e uma linha do tempo de eleições encerradas.
-   Só cores do tema: funciona no modo claro e escuro. */
+/* Histórico eleitoral: um arquivo. Topo com fotografia do campus tingida de verde e totais numa
+   régua; depois, um registo por eleição encerrada em forma de livro de atas: ano grande em serifa
+   à esquerda, linha do tempo vertical e dados em linhas finas (sem cartões).
+   Distingue-se dos Resultados (quadro oficial em cartão) pelo tom de arquivo. */
 
 /* ===== Topo ===== */
 .history-hero {
@@ -9,31 +11,37 @@
     color: var(--color-on-dark);
 }
 
-/* Camada verde por cima da fotografia, mais forte à esquerda (onde está o texto) */
+/* Camada verde uniforme por cima da fotografia (sem gradiente) */
 .history-hero::after {
     position: absolute;
     z-index: -1;
     inset: 0;
-    background: color-mix(in srgb, var(--color-brand-deep) 90%, transparent);
+    background: color-mix(in srgb, var(--color-brand-deep) 88%, transparent);
     content: "";
 }
 
 .history-hero .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-height: 320px;
-    padding: 64px 0 56px;
+    justify-content: flex-end;
+    min-height: 360px;
+    padding: var(--space-16) 0 var(--space-10);
+}
+
+.history-hero .container::before {
+    margin-bottom: var(--space-5);
+    color: var(--color-on-dark-live);
+    content: "ARQUIVO ELEITORAL";
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
 }
 
 .history-hero h1 {
-    margin: 0 0 var(--space-3);
+    margin: 0 0 var(--space-4);
     color: var(--color-on-dark);
-    font-family: var(--font-heading);
-    font-size: clamp(2.4rem, 5vw, 3.75rem);
-    font-weight: 600;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-size: var(--h1);
+    line-height: 1.02;
 }
 
 .history-hero p {
@@ -44,12 +52,12 @@
     line-height: 1.6;
 }
 
-/* Totais: três números em vidro fosco */
+/* Totais: régua com três números, separados por linhas finas */
 .history-stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 220px));
-    gap: var(--space-3);
-    margin: var(--space-8) 0 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-10) 0 0;
+    border-top: 1px solid var(--color-on-dark-border);
 }
 
 .history-stats[hidden] {
@@ -57,93 +65,78 @@
 }
 
 .history-stats>div {
-    padding: var(--space-4) var(--space-5);
-    border: 1px solid var(--color-on-dark-border);
-    border-radius: var(--radius-lg);
-    background: rgb(255 255 255 / 7%);
+    padding: var(--space-5) var(--space-5) 0 0;
+}
+
+.history-stats>div+div {
+    padding-left: var(--space-5);
+    border-left: 1px solid var(--color-on-dark-border);
 }
 
 .history-stats dt {
     color: var(--color-on-dark-muted);
     font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
 .history-stats dd {
-    margin: 4px 0 0;
+    margin: var(--space-2) 0 0;
     color: var(--color-on-dark);
     font-family: var(--font-heading);
-    font-size: var(--text-3xl);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
 }
 
-/* ===== Linha do tempo das eleições ===== */
+/* ===== Registo das eleições ===== */
 .history-list {
-    position: relative;
     display: grid;
-    gap: var(--space-6);
-    padding-top: 56px;
-    padding-bottom: 80px;
+    gap: 0;
+    padding-top: var(--space-12);
+    padding-bottom: var(--section-gap);
 }
 
 .history-period {
     position: relative;
     display: grid;
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: var(--gutter);
+    padding: var(--space-10) 0;
+    border-bottom: 1px solid var(--color-rule);
 }
 
-/* Linha vertical que liga os anos */
-.history-period:not(:last-child)::after {
-    position: absolute;
-    top: 64px;
-    bottom: calc(-1 * var(--space-6));
-    left: 47px;
-    width: 2px;
-    background: var(--color-border);
-    content: "";
+.history-period:first-child {
+    border-top: 1px solid var(--color-rule-strong);
 }
 
+/* Ano em destaque (o ícone do calendário fica escondido: o ano chega) */
 .history-year {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--space-2);
+    align-items: flex-start;
 }
 
 .history-year span {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: var(--radius-md);
-    background: var(--color-brand-fill);
-    box-shadow: 0 12px 24px -12px var(--color-brand-fill);
-    color: var(--color-on-dark);
-    font-size: var(--text-xl);
+    display: none;
 }
 
 .history-year b {
+    position: sticky;
+    top: calc(var(--header-h-compact) + 24px);
     color: var(--color-heading);
     font-family: var(--font-heading);
-    font-size: var(--text-xl);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    font-variant-numeric: lining-nums tabular-nums;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
 }
 
 .history-body {
-    padding: var(--space-8);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-md);
-    transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s cubic-bezier(.2, .8, .2, 1);
-}
-
-.history-period:hover .history-body {
-    border-color: var(--color-brand-muted);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    min-width: 0;
 }
 
 .history-top {
@@ -155,29 +148,29 @@
 
 .history-top time {
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
 }
 
 .history-body h2 {
-    margin: var(--space-4) 0 var(--space-2);
+    margin: var(--space-4) 0 var(--space-3);
     color: var(--color-heading);
-    font-family: var(--font-heading);
     font-size: clamp(1.5rem, 2.6vw, 2rem);
-    line-height: 1.2;
 }
 
 .history-body>p {
+    max-width: 62ch;
     margin: 0;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-size: var(--text-base);
-    line-height: 1.6;
+    line-height: 1.65;
 }
 
 /* Participação em barra */
 .history-turnout {
     display: grid;
     gap: var(--space-2);
+    max-width: 640px;
     margin-top: var(--space-6);
 }
 
@@ -191,7 +184,7 @@
     color: var(--color-text-muted);
     font-size: var(--text-xs);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
 }
 
 .history-turnout b {
@@ -202,30 +195,18 @@
 }
 
 .history-turnout .bar {
-    height: 10px;
+    height: 8px;
 }
 
-.history-turnout .bar>i {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
-    background: var(--color-brand-fill);
-}
-
-/* Números em quadros */
+/* Números em régua */
 .history-body .facts {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-3);
+    max-width: 640px;
     margin-top: var(--space-5);
-    padding-top: 0;
-    border-top: 0;
 }
 
-.history-body .facts div {
-    padding: var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-field);
+.history-body .facts div+div {
+    padding-left: var(--space-5);
+    border-left: 1px solid var(--color-rule);
 }
 
 .history-body .facts b {
@@ -240,11 +221,13 @@
     color: var(--color-brand);
     font-size: var(--text-sm);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 5px;
 }
 
 .history-link .icon {
-    transition: transform 0.2s;
+    transition: transform var(--dur-base) var(--ease-out);
 }
 
 .history-link:hover .icon {
@@ -255,37 +238,43 @@
 @media (max-width: 700px) {
     .history-hero .container {
         min-height: 0;
-        padding: 44px 0 40px;
+        padding: var(--space-12) 0 var(--space-8);
     }
 
     .history-stats {
         grid-template-columns: 1fr;
     }
 
+    .history-stats>div,
+    .history-stats>div+div {
+        padding: var(--space-4) 0;
+        border-left: 0;
+        border-bottom: 1px solid var(--color-on-dark-border);
+    }
+
     .history-period {
         grid-template-columns: 1fr;
         gap: var(--space-3);
+        padding: var(--space-8) 0;
     }
 
-    .history-period:not(:last-child)::after {
-        display: none;
-    }
-
-    .history-year {
-        flex-direction: row;
-    }
-
-    .history-year span {
-        width: 40px;
-        height: 40px;
-        font-size: var(--text-base);
-    }
-
-    .history-body {
-        padding: var(--space-6) var(--space-5);
+    .history-year b {
+        position: static;
+        font-size: var(--text-4xl);
     }
 
     .history-body .facts {
         grid-template-columns: 1fr;
+    }
+
+    .history-body .facts div+div {
+        padding-left: 0;
+        border-left: 0;
+    }
+}
+
+@media (pointer: coarse) {
+    .history-link {
+        min-height: 44px;
     }
 }

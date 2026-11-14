@@ -1,9 +1,12 @@
-/* Quadro de resultados de uma eleição (js/views/resultados.js): página pública Resultados e área do eleitor */
+/* Quadro de resultados de uma eleição (js/views/resultados.js): página pública Resultados e área do eleitor.
+   Leitura de "boletim oficial": cabeçalho com regra forte, números grandes em serifa, barra de
+   participação com a marca do quórum e classificação em linhas finas. */
 
 .results-board {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
+    padding: clamp(24px, 4vw, 40px);
 }
 
 /* ===== Cabeçalho: eleição, período e estado ===== */
@@ -13,10 +16,17 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-3) var(--space-5);
+    padding-bottom: var(--space-5);
+    border-bottom: 2px solid var(--color-rule-strong);
 }
 
-.results-board-head h2 {
-    margin: 4px 0 6px;
+.results-board-head .eyebrow {
+    margin-bottom: var(--space-2);
+}
+
+.results-board .results-board-head h2 {
+    margin: 0 0 var(--space-2);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
 }
 
 .results-period {
@@ -26,15 +36,14 @@
     margin: 0;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
 }
 
 /* ===== Uma volta ===== */
 .results-round {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--color-border);
+    gap: var(--space-5);
 }
 
 .results-round-head {
@@ -47,7 +56,11 @@
 
 .results-round-head h3 {
     margin: 0;
-    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
 }
 
 /* "Contagem provisória" / "Apuramento final" */
@@ -55,53 +68,60 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
+    min-height: 26px;
+    padding: 3px 10px;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-sm);
     color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.04em;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
 .results-count.is-final {
-    border-color: transparent;
+    border: 1px solid var(--color-brand-muted);
     background: var(--color-success-soft);
     color: var(--color-success);
 }
 
-/* ===== Números da volta ===== */
+/* ===== Números da volta: grandes, em serifa, separados por linhas ===== */
 .results-figures {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+    border-block: 1px solid var(--color-rule);
 }
 
 .results-figures > div {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: var(--space-4);
-    border-left: 1px solid var(--color-border);
+    gap: 6px;
     margin-left: -1px;
+    padding: var(--space-5) var(--space-5) var(--space-5) var(--space-5);
+    border-left: 1px solid var(--color-rule);
+}
+
+.results-figures > div:first-child {
+    padding-left: 0;
+    border-left: 0;
 }
 
 .results-figures small {
     color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
 .results-figures b {
     color: var(--color-heading);
-    font-size: var(--text-2xl);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    line-height: 1;
+    letter-spacing: -0.03em;
 }
 
 .results-figures span {
@@ -120,12 +140,12 @@
 /* ===== Barra de participação com a marca do quórum ===== */
 .results-turnout {
     position: relative;
-    padding-bottom: 22px;
+    padding-bottom: 24px;
 }
 
 .results-turnout-bar {
     position: relative;
-    height: 10px;
+    height: 12px;
     border-radius: var(--radius-full);
     background: var(--color-surface-sunken);
 }
@@ -139,19 +159,20 @@
 
 .results-turnout-bar em {
     position: absolute;
-    top: -4px;
-    bottom: -4px;
+    top: -5px;
+    bottom: -5px;
     width: 2px;
-    background: var(--color-heading);
+    background: var(--color-rule-strong);
 }
 
 .results-turnout > small {
     position: absolute;
     bottom: 0;
-    transform: translateX(-50%);
     color: var(--color-text-muted);
     font-size: var(--text-xs);
+    font-weight: 600;
     white-space: nowrap;
+    transform: translateX(-50%);
 }
 
 .results-turnout:not(:has(small)) {
@@ -162,16 +183,17 @@
 .results-ranking {
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--color-rule-strong);
     list-style: none;
 }
 
 .results-ranking li {
     display: grid;
-    grid-template-columns: 28px 44px minmax(0, 1fr) auto;
+    grid-template-columns: 32px 44px minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-4);
-    padding: var(--space-4) var(--space-3);
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-5) var(--space-3);
+    border-bottom: 1px solid var(--color-rule);
 }
 
 .results-ranking li:last-child {
@@ -179,17 +201,21 @@
 }
 
 .results-ranking li.is-leader {
-    border-radius: var(--radius-md);
-    background: var(--color-brand-soft);
-    border-bottom-color: transparent;
+    background: var(--color-brand-tint);
+    box-shadow: inset 3px 0 0 var(--color-brand);
 }
 
 .results-pos {
-    color: var(--color-text-muted);
-    font-size: var(--text-lg);
-    font-weight: 700;
+    color: var(--color-text-subtle);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
     text-align: center;
-    font-variant-numeric: tabular-nums;
+}
+
+.results-ranking li.is-leader .results-pos {
+    color: var(--color-brand);
 }
 
 .results-ranking .avatar {
@@ -208,6 +234,9 @@
 
 .results-name > b {
     color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 600;
 }
 
 .results-name > small {
@@ -229,16 +258,21 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    min-width: 84px;
+    min-width: 92px;
 }
 
 .results-value b {
     color: var(--color-heading);
-    font-size: var(--text-xl);
-    font-variant-numeric: tabular-nums;
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    line-height: 1;
+    letter-spacing: -0.02em;
 }
 
 .results-value small {
+    margin-top: 4px;
     color: var(--color-text-muted);
     font-size: var(--text-xs);
 }
@@ -248,18 +282,20 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 2px 10px;
-    border-radius: var(--radius-full);
-    background: var(--color-surface);
+    padding: 2px 8px;
+    border: 1px solid var(--color-brand-muted);
+    border-radius: var(--radius-sm);
     color: var(--color-brand);
-    font-size: var(--text-xs);
+    font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .results-tag.is-win {
+    border-color: var(--color-brand-fill);
     background: var(--color-brand-fill);
-    color: var(--color-on-dark);
+    color: var(--color-on-brand);
 }
 
 /* Votos excluídos pelo selo de integridade */
@@ -269,6 +305,7 @@
     gap: var(--space-2);
     margin: 0;
     padding: var(--space-3) var(--space-4);
+    border-left: 3px solid var(--color-warning-dot);
     border-radius: var(--radius-md);
     background: var(--color-warning-soft);
     color: var(--color-warning);
@@ -277,7 +314,7 @@
 
 /* Volta anterior, recolhida */
 .results-previous {
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-rule);
 }
 
 .results-previous summary {
@@ -289,7 +326,6 @@
 
 .results-previous .results-round {
     padding-top: 0;
-    border-top: 0;
 }
 
 .results-foot {
@@ -297,6 +333,8 @@
     align-items: center;
     gap: var(--space-2);
     margin: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-rule);
     color: var(--color-text-muted);
     font-size: var(--text-sm);
 }
@@ -307,13 +345,15 @@
     align-items: flex-start;
     gap: var(--space-4);
     padding: var(--space-5);
+    border: 1px dashed var(--color-border-strong);
     border-radius: var(--radius-md);
-    background: var(--color-surface-sunken);
+    background: var(--color-bg-alt);
 }
 
 .results-pending h3 {
     margin: 0 0 6px;
-    font-size: var(--text-lg);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
 }
 
 .results-pending p {
@@ -327,8 +367,8 @@
     place-items: center;
     width: 44px;
     height: 44px;
+    border: 1px solid var(--color-brand-muted);
     border-radius: 50%;
-    background: var(--color-brand-soft);
     color: var(--color-brand);
 }
 
@@ -339,16 +379,18 @@ p.results-countdown {
 
 .results-countdown b {
     color: var(--color-heading);
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
 }
 
-/* Os quatro passos até à publicação */
+/* Os quatro passos até à publicação: linha do tempo horizontal */
 .results-steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+    gap: 0;
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--color-rule);
     list-style: none;
 }
 
@@ -356,9 +398,7 @@ p.results-countdown {
     display: flex;
     align-items: flex-start;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-4) var(--space-4) 0;
 }
 
 .results-steps li > span {
@@ -367,20 +407,17 @@ p.results-countdown {
     place-items: center;
     width: 26px;
     height: 26px;
+    border: 1px solid var(--color-border-strong);
     border-radius: 50%;
-    background: var(--color-surface-sunken);
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     font-weight: 700;
 }
 
-.results-steps li.is-current {
-    border-color: var(--color-brand);
-}
-
 .results-steps li.is-current > span {
+    border-color: var(--color-brand-fill);
     background: var(--color-brand-fill);
-    color: var(--color-on-dark);
+    color: var(--color-on-brand);
 }
 
 .results-steps b {
@@ -399,7 +436,8 @@ p.results-countdown {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-4) var(--space-6);
+    border-left: 4px solid var(--color-brand-fill);
 }
 
 .results-login > div {
@@ -418,10 +456,35 @@ p.results-countdown {
 /* Vários quadros seguidos (um por eleição) */
 [data-results] > * + *,
 [data-result] + [data-result] {
-    margin-top: var(--space-5);
+    margin-top: var(--space-8);
 }
 
-/* No primeiro classificado o fundo é verde claro: as iniciais ficam sobre a cor da superfície */
-.results-ranking li.is-leader .avatar {
-    background: var(--color-surface);
+[data-results] > .dash-card:first-child {
+    margin-top: 0;
+}
+
+@media (max-width: 640px) {
+    .results-figures > div {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid var(--color-rule);
+    }
+
+    .results-figures > div:first-child {
+        border-top: 0;
+    }
+
+    .results-ranking li {
+        grid-template-columns: 24px minmax(0, 1fr) auto;
+        gap: var(--space-3);
+        padding-inline: var(--space-2);
+    }
+
+    .results-ranking .avatar {
+        display: none;
+    }
+
+    .results-value b {
+        font-size: var(--text-2xl);
+    }
 }

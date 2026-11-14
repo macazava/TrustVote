@@ -20,20 +20,13 @@
 @import url("componentes/pesquisa-rapida.css");
 @import url("componentes/animacoes.css");
 
-/* Página inicial */
-@import url("paginas/inicio/topo.css");
-@import url("paginas/inicio/atalhos-e-numeros.css");
-@import url("paginas/inicio/eleicoes-e-seguranca.css");
-@import url("paginas/inicio/plataforma-e-avisos.css");
-@import url("paginas/inicio/ecras-pequenos.css");
-@import url("paginas/inicio/perguntas-frequentes.css");
-@import url("paginas/inicio/moderno.css");
+/* Página inicial (e secções editoriais de "Como funciona") */
+@import url("paginas/inicio.css");
 
 /* Páginas com menu lateral (Eleições, Listas, Ajuda…) */
 @import url("paginas/seccoes/menu-lateral.css");
 @import url("paginas/seccoes/conteudos.css");
 @import url("paginas/seccoes/ecras-pequenos.css");
-@import url("paginas/seccoes/perguntas-frequentes.css");
 
 @import url("paginas/comunicacao.css");
 @import url("paginas/eleicoes-publico.css");

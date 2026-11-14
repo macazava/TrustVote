@@ -1,29 +1,34 @@
 /* Página de acesso (login e registo): ecrã dividido.
-   À esquerda o painel da marca (verde escuro, garantias e um recibo ilustrativo);
-   à direita o cartão do formulário, com separadores "Iniciar sessão / Criar conta". */
+   À esquerda, a fotografia do campus tingida de verde institucional, com o título e as garantias;
+   à direita, o formulário num cartão com separadores "Iniciar sessão / Criar conta". */
 
 .auth-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     min-height: 100vh;
     min-height: 100dvh;
 }
 
-/* ===== Painel da marca ===== */
+/* ===== Painel da marca: fotografia do campus com camada verde uniforme ===== */
 .auth-intro {
     position: relative;
     isolation: isolate;
-
     display: flex;
     flex-direction: column;
     gap: var(--space-8);
     overflow: hidden;
-    padding: var(--space-10) clamp(32px, 5vw, 80px);
-    background: var(--color-brand-deep);
+    padding: var(--space-10) clamp(32px, 5vw, 72px);
+    background: var(--color-brand-deep) url("../../assets/01_iade_campus_patio_exterior.webp") center / cover no-repeat;
     color: var(--color-on-dark);
 }
 
-/* Grelha fina por cima do fundo, a desvanecer para os cantos */
+.auth-intro::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: color-mix(in srgb, var(--color-brand-deep) 86%, transparent);
+    content: "";
+}
 
 .auth-brand,
 .auth-brand:hover {
@@ -41,18 +46,25 @@
 }
 
 .auth-intro-copy {
-    max-width: 540px;
+    max-width: 520px;
     margin-top: auto;
+}
+
+.auth-intro-copy::before {
+    display: block;
+    margin-bottom: var(--space-5);
+    color: var(--color-on-dark-live);
+    content: "ACESSO SEGURO";
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
 }
 
 .auth-intro h1 {
     margin: 0 0 var(--space-4);
     color: var(--color-on-dark);
-    font-family: var(--font-heading);
-    font-size: clamp(2.4rem, 4.2vw, 3.6rem);
-    font-weight: 600;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 4.4vw, 4rem);
+    line-height: 1.02;
 }
 
 .auth-intro-copy>p:last-child {
@@ -62,31 +74,26 @@
     line-height: 1.65;
 }
 
-/* O texto e as garantias ficam ao centro, na vertical */
+/* Garantias: lista com linhas finas, ícones soltos */
 .assurances {
     display: grid;
-    gap: var(--space-5);
-    max-width: 540px;
+    max-width: 520px;
     margin-bottom: auto;
+    border-top: 1px solid var(--color-on-dark-border);
 }
 
 .assurances>div {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-on-dark-border);
 }
 
 .assurances>div>span {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--color-on-dark-border);
-    border-radius: var(--radius-md);
-    background: var(--color-on-dark-hover);
+    margin-top: 2px;
     color: var(--color-on-dark-live);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
 }
 
 .assurances>div>div {
@@ -96,7 +103,7 @@
 }
 
 .assurances b {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
 }
 
 .assurances small {
@@ -116,19 +123,15 @@
 
 .auth-back {
     align-self: flex-end;
-    border-bottom: 0;
     color: var(--color-text-muted);
+    text-decoration: none;
 }
 
 .auth-back:hover {
     color: var(--color-brand);
 }
 
-.auth-back .icon {
-    transition: transform 0.2s;
-}
-
-.auth-back:hover .icon {
+.auth-back:hover .icon:first-child {
     transform: translateX(-3px);
 }
 
@@ -137,9 +140,9 @@
     margin-block: auto;
     padding: var(--space-10);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-top: 4px solid var(--color-brand-fill);
     background: var(--color-surface);
-    transition: width 0.3s cubic-bezier(.2, .8, .2, 1);
+    transition: width var(--dur-slow) var(--ease-out);
 }
 
 /* No registo há mais campos: o cartão alarga para caberem duas colunas */
@@ -155,10 +158,7 @@
 .auth-card form h2 {
     margin: 0 0 var(--space-2);
     color: var(--color-heading);
-    font-family: var(--font-heading);
     font-size: var(--text-3xl);
-    font-weight: 600;
-    letter-spacing: -0.01em;
 }
 
 #form-help {
@@ -168,33 +168,26 @@
     line-height: 1.6;
 }
 
-/* Separadores "Iniciar sessão / Criar conta" */
+/* Separadores "Iniciar sessão / Criar conta": sublinhado no ativo */
 .mode-switch {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px;
     margin-top: var(--space-6);
-    padding: 4px;
-    border-radius: var(--radius-md);
-    background: var(--color-surface-sunken);
-}
-
-/* No tema escuro o fundo do cartão é mais claro que o "afundado": o trilho usa o tom dos campos */
-:root[data-theme="dark"] .mode-switch {
-    background: var(--color-field);
+    border-bottom: 1px solid var(--color-rule);
 }
 
 .mode-switch button {
-    min-height: 42px;
+    min-height: 44px;
+    margin-bottom: -1px;
     border: 0;
-    border-radius: var(--radius-sm);
+    border-bottom: 2px solid transparent;
     background: transparent;
     color: var(--color-text-muted);
     font: inherit;
     font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-base) var(--ease-out);
 }
 
 .mode-switch button:hover {
@@ -202,9 +195,8 @@
 }
 
 .mode-switch button.active {
-    background: var(--color-surface);
+    border-bottom-color: var(--color-brand);
     color: var(--color-heading);
-    box-shadow: var(--shadow-sm), 0 0 0 1px var(--color-border);
 }
 
 /* A equipa só inicia sessão */
@@ -240,16 +232,14 @@
 
 .auth-card input:not([type="checkbox"]) {
     width: 100%;
-    min-height: 50px;
+    min-height: 48px;
     padding: 12px 14px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-strong);
     background: var(--color-field);
     color: var(--color-text);
     font: inherit;
     font-size: var(--text-base);
     font-weight: 400;
-    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .auth-card input:not([type="checkbox"])::placeholder {
@@ -257,14 +247,14 @@
 }
 
 .auth-card input:not([type="checkbox"]):hover {
-    border-color: var(--color-border-strong);
+    border-color: var(--color-text-muted);
 }
 
 .auth-card input:not([type="checkbox"]):focus {
     border-color: var(--color-brand);
     outline: none;
     background: var(--color-surface);
-    box-shadow: 0 0 0 4px var(--color-focus-ring);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .auth-card input:not([type="checkbox"]):user-invalid {
@@ -289,28 +279,9 @@
 
 .full-button {
     width: 100%;
-    min-height: 52px;
+    min-height: 50px;
     margin-top: var(--space-2);
-    border-radius: var(--radius-md);
     font-size: var(--text-base);
-    transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
-}
-
-.full-button:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.full-button:active {
-    transform: translateY(0) scale(0.99);
-}
-
-.full-button .icon {
-    transition: transform 0.2s;
-}
-
-.full-button:hover .icon {
-    transform: translateX(4px);
 }
 
 .register-link {
@@ -342,7 +313,7 @@
     gap: var(--space-2) var(--space-4);
     margin-top: var(--space-8);
     padding-top: var(--space-5);
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-rule);
     color: var(--color-text-muted);
     font-size: var(--text-xs);
 }
@@ -356,7 +327,7 @@
     font-weight: 600;
 }
 
-/* ===== Ecrãs médios e pequenos: o painel da marca fica em cima, compacto ===== */
+/* ===== Ecrãs médios e pequenos: a fotografia fica em cima, compacta ===== */
 @media (max-width: 1024px) {
     .auth-layout {
         grid-template-columns: minmax(0, 1fr);
@@ -377,8 +348,7 @@
     }
 
     .auth-intro h1 {
-        margin: 0 0 var(--space-3);
-        font-size: clamp(2rem, 6vw, 2.6rem);
+        font-size: clamp(2.125rem, 6vw, 2.75rem);
     }
 
     .auth-intro-copy>p:last-child {
@@ -387,16 +357,13 @@
 
     .assurances {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--space-4);
+        gap: 0 var(--space-4);
         max-width: none;
+        margin-bottom: 0;
     }
 
     .assurances small {
         display: none;
-    }
-
-    .assurances {
-        margin-bottom: 0;
     }
 
     .auth-side {
@@ -413,15 +380,16 @@
         padding: var(--space-5) var(--space-4) var(--space-6);
     }
 
-    .assurances {
-        grid-template-columns: 1fr;
-        gap: var(--space-3);
+    .auth-intro-copy::before {
+        display: none;
     }
 
-    .assurances>div>span {
-        width: 36px;
-        height: 36px;
-        font-size: var(--text-base);
+    .assurances {
+        grid-template-columns: 1fr;
+    }
+
+    .assurances>div {
+        padding: var(--space-3) 0;
     }
 
     .auth-side {
@@ -464,16 +432,12 @@
     color: var(--color-text-muted);
     cursor: pointer;
     transform: translateY(-50%);
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
 .password-toggle:hover {
     background: var(--color-brand-tint);
     color: var(--color-brand);
-}
-
-.password-toggle:active {
-    transform: translateY(-50%) scale(0.92);
 }
 
 .password-toggle[aria-pressed="true"] {
@@ -482,7 +446,7 @@
 }
 
 .password-toggle:focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--color-focus);
     outline-offset: 1px;
 }
 
@@ -500,17 +464,21 @@
 .password-toggle .eye-slash {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.22s ease;
+    transition: stroke-dashoffset var(--dur-base) var(--ease-out);
 }
 
 .password-toggle[aria-pressed="true"] .eye-slash {
     stroke-dashoffset: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (pointer: coarse) {
+    .password-toggle {
+        width: 44px;
+        height: 44px;
+        right: 3px;
+    }
 
-    .password-toggle,
-    .password-toggle .eye-slash {
-        transition: none;
+    .auth-card .password-field input {
+        padding-right: 56px;
     }
 }

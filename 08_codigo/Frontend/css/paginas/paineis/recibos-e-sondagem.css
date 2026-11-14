@@ -139,7 +139,7 @@
 /* Volta, data e escolha */
 .receipt-doc-data {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
     margin: 0;
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
@@ -300,7 +300,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px 12px;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     background: var(--color-brand-soft);
     color: var(--color-brand);
     font-size: var(--text-xs);
@@ -310,7 +310,7 @@
 /* Respostas, margem de erro e modelo */
 .poll-facts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
     overflow: hidden;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);

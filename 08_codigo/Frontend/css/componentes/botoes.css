@@ -1,6 +1,7 @@
-/* Botões e links */
-/* Dois tamanhos (normal 44px, .button-small 36px) e três variantes:
-   primário (.button-primary), secundário (.button / .button-outline) e link (.text-link / .link-button). */
+/* Botões e links
+   Dois tamanhos (normal 44px, .button-small 36px), cantos de 6px (nunca em pílula) e quatro variantes:
+   primário (.button-primary), secundário (.button / .button-outline), claro (.button-light) e
+   link (.text-link / .link-button). Transições de 150–200ms. */
 .button {
     display: inline-flex;
     min-height: 44px;
@@ -10,40 +11,61 @@
     padding: 0 20px;
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
-    font-size: var(--text-base);
+    background: transparent;
+    color: var(--color-text);
+    font-size: var(--text-sm);
     font-weight: 600;
+    letter-spacing: 0.005em;
+    line-height: 1.2;
     text-decoration: none;
+    white-space: nowrap;
     transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
         color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .button:hover {
-    box-shadow: var(--shadow-sm);
+    border-color: var(--color-text);
 }
 
 .button:active {
-    transform: scale(0.98);
+    transform: translateY(1px);
 }
 
 .button:disabled,
 .button[aria-disabled="true"] {
     cursor: not-allowed;
-    opacity: 0.55;
+    opacity: 0.5;
     transform: none;
     box-shadow: none;
 }
 
-/* A carregar (ui.busy põe aria-busy enquanto o pedido corre) */
+/* A carregar (ui.busy põe aria-busy enquanto o pedido corre): pequeno indicador antes do texto */
 .button[aria-busy="true"] {
     cursor: progress;
-    opacity: 0.75;
+    opacity: 0.85;
+}
+
+.button[aria-busy="true"]::before {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    content: "";
+    animation: tv-spin 700ms linear infinite;
+}
+
+@keyframes tv-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .button-primary {
     border-color: var(--color-action);
     background: var(--color-action);
     color: var(--color-on-brand);
-    box-shadow: var(--shadow-sm);
 }
 
 .button-primary:hover {
@@ -59,14 +81,19 @@
 
 .button-outline:hover {
     border-color: var(--color-brand);
-    background: var(--color-brand-soft);
+    background: var(--color-brand-tint);
     color: var(--color-brand);
-    box-shadow: none;
 }
 
 .button-light {
+    border-color: var(--color-border);
     background: var(--color-surface);
     color: var(--color-text);
+}
+
+.button-light:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-bg-alt);
 }
 
 .button-small {
@@ -75,19 +102,36 @@
     font-size: var(--text-sm);
 }
 
+.button-danger {
+    border-color: var(--color-danger-fill);
+    background: var(--color-danger-fill);
+    color: var(--color-on-brand);
+}
+
+.button-danger:hover {
+    border-color: color-mix(in srgb, var(--color-danger-fill) 85%, #000);
+    background: color-mix(in srgb, var(--color-danger-fill) 85%, #000);
+}
+
+/* Link de texto: sublinhado fino que fica mais forte ao passar o rato */
 .text-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border-bottom: 1px solid var(--color-text);
-    padding: 8px 0 5px;
+    padding: 6px 0;
+    color: var(--color-brand);
     font-size: var(--text-sm);
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
+    transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
 }
 
 .text-link:hover {
-    color: var(--color-brand);
+    color: var(--color-heading);
+    text-decoration-color: currentColor;
 }
 
 .link-button {
@@ -101,5 +145,40 @@
     font-size: var(--text-sm);
     font-weight: 600;
     text-decoration: underline;
-    text-underline-offset: 4px;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 5px;
+    transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.link-button:hover {
+    text-decoration-color: currentColor;
+}
+
+.link-button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+/* ===== Ecrãs tácteis: alvos de toque com pelo menos 44 × 44 px ===== */
+@media (pointer: coarse) {
+    .button,
+    .button-small {
+        min-height: 44px;
+    }
+
+    .text-link,
+    .link-button {
+        min-height: 44px;
+    }
+}
+
+/* ===== Ecrãs estreitos: um botão com texto comprido quebra linha em vez de sair do ecrã ===== */
+@media (max-width: 480px) {
+    .button {
+        max-width: 100%;
+        padding-block: 10px;
+        white-space: normal;
+        text-align: center;
+        text-wrap: balance;
+    }
 }

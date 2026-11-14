@@ -1,70 +1,97 @@
-/* Página pública "Verificar o meu voto" (pages/verificar.html) */
+/* Página pública "Verificar o meu voto" (pages/verificar.html): comprovativo oficial.
+   O formulário e o resultado vivem num "papel" branco com borda tracejada, cabeçalho de documento,
+   código em letra monoespaçada e um selo de verificação. Ao lado, os passos em lista numerada. */
 .verify-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     align-items: start;
-    gap: var(--space-8);
-    margin-top: var(--space-8);
+    gap: var(--space-12) var(--gutter);
 }
 
 .verify-layout .info-list {
     margin-top: 0;
 }
 
+/* ===== O comprovativo ===== */
+.verify-card.dash-card {
+    position: relative;
+    margin-top: 0;
+    padding: var(--space-10) var(--space-8) var(--space-8);
+    border: 1.5px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-md);
+}
+
+/* Cabeçalho do documento: emissor à esquerda, natureza à direita */
+.verify-card::before {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-8);
+    left: var(--space-8);
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-rule);
+    color: var(--color-text-muted);
+    content: "TRUSTVOTE · COMISSÃO ELEITORAL ACADÉMICA";
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
 .verify-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
+    align-items: end;
     gap: var(--space-3);
+    margin-top: var(--space-4);
 }
 
 .verify-form .field-label {
     margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .verify-form input {
+    min-height: 52px;
+    border-style: solid;
     font-family: var(--font-mono);
-    letter-spacing: 0.04em;
+    font-size: var(--text-lg);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
 }
 
 .verify-form input::placeholder {
-    letter-spacing: 0;
+    letter-spacing: 0.04em;
     text-transform: none;
 }
 
-/* O botão alinha com o campo (por baixo da etiqueta) */
 .verify-form .button {
-    margin-top: calc(var(--text-xs) * 1.2 + 8px);
-    min-height: 46px;
+    min-height: 52px;
 }
 
 .verify-result:not(:empty) {
-    margin-top: var(--space-6);
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 1.5px dashed var(--color-border-strong);
 }
 
-/* Resultado: selo, título e lista de confirmações */
+/* ===== Resultado: selo, título e lista de confirmações ===== */
 .verify-outcome {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-4);
-    padding: var(--space-6);
-    border: 1px solid var(--color-brand-muted);
-    border-radius: var(--radius-md);
-    background: var(--color-success-soft);
-    animation: tv-verify-in 0.5s cubic-bezier(.2, .8, .2, 1) both;
-}
-
-.verify-outcome.is-bad,
-.verify-outcome.is-missing {
-    border-color: var(--color-warning-dot);
-    background: var(--color-warning-soft);
+    gap: var(--space-5);
+    animation: tv-verify-in var(--dur-slow) var(--ease-out) both;
 }
 
 .verify-outcome h2 {
     margin: 0 0 6px;
     color: var(--color-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-3xl);
 }
 
 .verify-outcome.is-bad h2,
@@ -79,28 +106,34 @@
     line-height: 1.6;
 }
 
+/* Selo de verificação: círculo duplo com o ícone, como um carimbo */
 .verify-seal {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--color-brand);
     border-radius: 50%;
-    background: var(--color-brand-fill);
-    color: var(--color-on-brand);
-    font-size: var(--text-2xl);
-    animation: tv-verify-seal 0.6s 0.15s cubic-bezier(.3, 1.6, .5, 1) both;
+    box-shadow: inset 0 0 0 4px var(--color-paper), inset 0 0 0 5px var(--color-brand);
+    color: var(--color-brand);
+    font-size: var(--text-3xl);
+    transform: rotate(-8deg);
+    animation: tv-verify-seal var(--dur-slow) 120ms var(--ease-out) both;
 }
 
 .is-bad .verify-seal,
 .is-missing .verify-seal {
-    background: var(--color-warning-dot);
+    border-color: var(--color-warning-dot);
+    box-shadow: inset 0 0 0 4px var(--color-paper), inset 0 0 0 5px var(--color-warning-dot);
+    color: var(--color-warning);
 }
 
 .verify-checks {
     display: grid;
-    gap: 6px;
-    margin: var(--space-4) 0 0;
+    gap: 0;
+    margin: var(--space-5) 0 0;
     padding: 0;
+    border-top: 1px solid var(--color-rule);
     list-style: none;
     font-size: var(--text-sm);
 }
@@ -108,7 +141,9 @@
 .verify-checks li {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-rule);
 }
 
 .verify-checks .is-ok {
@@ -121,32 +156,39 @@
 
 .verify-code {
     display: grid;
-    gap: 2px;
-    margin-top: var(--space-4) !important;
+    gap: 4px;
+    margin-top: var(--space-5) !important;
+    padding: var(--space-4);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-alt);
 }
 
 .verify-code small {
     color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
 }
 
 .verify-code code {
     overflow-wrap: anywhere;
     color: var(--color-text);
+    font-size: var(--text-base);
+    letter-spacing: 0.04em;
 }
 
 @keyframes tv-verify-in {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(12px);
     }
 }
 
 @keyframes tv-verify-seal {
     from {
-        transform: scale(0.4);
         opacity: 0;
+        transform: rotate(-8deg) scale(0.85);
     }
 }
 
@@ -156,3 +198,22 @@
     }
 }
 
+@media (max-width: 560px) {
+    .verify-card.dash-card {
+        padding: var(--space-10) var(--space-5) var(--space-6);
+    }
+
+    .verify-card::before {
+        right: var(--space-5);
+        left: var(--space-5);
+        content: "TRUSTVOTE · COMPROVATIVO";
+    }
+
+    .verify-form {
+        grid-template-columns: 1fr;
+    }
+
+    .verify-outcome {
+        grid-template-columns: 1fr;
+    }
+}

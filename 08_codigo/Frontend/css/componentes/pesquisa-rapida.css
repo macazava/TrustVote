@@ -1,8 +1,10 @@
 /* Pesquisa rápida Ctrl+K (js/controllers/comum/pesquisa-rapida.js) */
 .palette {
     width: min(640px, calc(100vw - 32px));
-    max-height: min(560px, calc(100vh - 120px));
-    margin: 12vh auto auto;
+    /* Cabe sempre no ecrã visível (dvh desconta as barras do browser no telemóvel) */
+    max-height: min(560px, calc(100vh - 32px));
+    max-height: min(560px, calc(100dvh - 32px));
+    margin: clamp(16px, 12dvh, 120px) auto auto;
     padding: 0;
     overflow: hidden;
     border: 1px solid var(--color-border);
@@ -20,7 +22,6 @@
 
 .palette::backdrop {
     background: var(--color-overlay);
-    backdrop-filter: blur(2px);
 }
 
 .palette-input {

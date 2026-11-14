@@ -2,22 +2,33 @@
 
 /* ===== Impressão ===== */
 @media print {
-    .topbar,
     .site-header,
     .breadcrumb-bar,
     .section-aside,
     .site-footer,
     .visit-also,
-    .dashboard-header {
+    .dashboard-header,
+    .connection-notice,
+    .toast-host {
         display: none !important;
+    }
+
+    body,
+    .panel-body {
+        background: #fff;
+    }
+
+    body[data-page="admin"] .dashboard-wrap {
+        margin-left: 0;
     }
 
     .section-page {
         display: block;
     }
 
-    .section-content {
-        border: 0;
-        box-shadow: none !important;
+    .js .tv-enter,
+    .js .tv-reveal {
+        opacity: 1 !important;
+        transform: none !important;
     }
 }

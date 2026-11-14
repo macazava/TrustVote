@@ -1,14 +1,18 @@
-/* TrustVote · design tokens (a única fonte de cores, letra, medidas, cantos e sombras)
+/* TrustVote · design tokens (a única fonte de cores, letra, medidas, cantos, sombras e movimento)
+
+   Direção visual: institucional editorial. Papel creme, verde institucional, tipografia serifada nos
+   títulos, linhas finas em vez de caixas, cartões só onde há interação ou destaque.
 
    Duas camadas:
-   1. Paleta  (--green-*, --neutral-*, --amber-*, --red-*): os valores em bruto. Não usar diretamente nos componentes.
+   1. Paleta  (--green-*, --neutral-*, --amber-*, --red-*): os valores em bruto (a paleta original do
+      TrustVote, inalterada). Não usar diretamente nos componentes.
    2. Papéis  (--color-*, --text-*, --space-*, --radius-*, --shadow-*): o que cada valor significa.
-      Os componentes só usam papéis, por isso mudar o tema (ex.: alto contraste) é mudar só esta camada.
+      Os componentes só usam papéis, por isso mudar o tema (escuro, alto contraste) é mudar só esta camada.
 
-   As colunas das páginas (classes como lg:grid-cols-2) estão em base/grelha.css: não definem cores nem sombras. */
+   As colunas das páginas (classes como lg:grid-cols-2 e a grelha de 12 colunas) estão em base/grelha.css. */
 
 :root {
-   /* ===================== 1. PALETA ===================== */
+   /* ===================== 1. PALETA (original, não alterar) ===================== */
 
    /* Verde institucional (escala do mais claro ao mais escuro) */
    --green-50: #e7f1ec;
@@ -45,13 +49,17 @@
 
    /* Fundos e superfícies */
    --color-bg: var(--neutral-100);
-   /* fundo da página */
+   /* fundo da página (papel creme) */
+   --color-bg-alt: var(--neutral-50);
+   /* faixas alternadas, mais claras que o fundo */
    --color-surface: var(--neutral-0);
    /* cartões, painéis, cabeçalho */
    --color-surface-sunken: var(--neutral-200);
-   /* zonas rebaixadas: separadores, quadrados de ícone */
+   /* zonas rebaixadas: trilhos de barras, separadores */
    --color-field: var(--neutral-50);
    /* fundo dos campos de formulário */
+   --color-paper: #fff;
+   /* papel de comprovativo (verificar voto, recibos) */
 
    /* Texto */
    --color-text: var(--neutral-900);
@@ -65,7 +73,7 @@
    --color-brand: var(--green-700);
    /* links, ícones, realces */
    --color-brand-deep: var(--green-900);
-   /* faixas escuras (topo, painéis, cartões escuros) */
+   /* faixas escuras (rodapé, sidebar da equipa, painéis) */
    --color-brand-soft: var(--green-50);
    /* fundo de realce suave */
    --color-brand-muted: var(--green-200);
@@ -74,23 +82,23 @@
    /* botão principal */
    --color-action-hover: var(--green-700);
    --color-accent-text: var(--green-600);
-   /* texto de realce (itálico do título da página inicial) */
+   /* texto de realce (itálico dos títulos) */
    --color-focus: var(--green-600);
    /* contorno de foco do teclado (≥ 5:1 nos fundos claros) */
    --color-indicator: var(--green-400);
    /* traços decorativos e item atual dos menus */
    --color-focus-ring: color-mix(in srgb, var(--green-700) 14%, transparent);
-   --color-brand-tint: color-mix(in srgb, var(--green-700) 8%, transparent);
+   --color-brand-tint: color-mix(in srgb, var(--green-700) 6%, transparent);
    --color-brand-fill: var(--green-700);
    /* fundo sólido de marca com texto branco (logótipo, interruptor, barras) */
    --color-heading-fill: var(--green-800);
    /* item ativo escuro com texto branco (separadores, passos) */
-   --color-band: var(--neutral-600);
-   /* faixa neutra escura com texto branco */
 
-   /* Linhas */
+   /* Linhas: finas e quentes; a "rule" separa secções editoriais */
    --color-border: var(--neutral-300);
    --color-border-strong: var(--neutral-400);
+   --color-rule: color-mix(in srgb, var(--neutral-900) 14%, transparent);
+   --color-rule-strong: var(--neutral-900);
 
    /* Estados */
    --color-success: var(--green-700);
@@ -99,6 +107,7 @@
    --color-warning-soft: var(--amber-50);
    --color-warning-dot: var(--amber-500);
    --color-danger: var(--red-600);
+   --color-danger-soft: color-mix(in srgb, var(--red-600) 8%, var(--neutral-0));
    --color-danger-fill: var(--red-600);
    /* fundo do botão de perigo (texto branco por cima) */
    --color-on-brand: #fff;
@@ -107,8 +116,8 @@
    /* Sobre fundos escuros (--color-brand-deep) */
    --color-on-dark: #fff;
    --color-on-dark-muted: var(--green-200);
-   --color-on-dark-border: rgb(255 255 255 / 28%);
-   --color-on-dark-hover: rgb(255 255 255 / 10%);
+   --color-on-dark-border: rgb(255 255 255 / 18%);
+   --color-on-dark-hover: rgb(255 255 255 / 8%);
    --color-on-dark-active: var(--green-600);
    --color-on-dark-live: var(--green-300);
    --color-on-dark-warning: var(--amber-200);
@@ -118,14 +127,18 @@
    /* QR code: escuro sobre branco em qualquer tema */
    --color-qr-light: #fff;
 
-   /* Tipografia: escala única, em rem (16px = 1rem) para crescer com o "Texto maior" e com o zoom do browser */
-   /* Fontes carregadas no <head> de cada página (Google Fonts, com preconnect) */
+   /* Cabeçalho fixo: superfície quase opaca para o blur subtil */
+   --color-header: color-mix(in srgb, var(--neutral-100) 86%, transparent);
+
+   /* ===================== Tipografia ===================== */
+   /* Escala única, em rem (16px = 1rem) para crescer com o "Texto maior" e com o zoom do browser */
    --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
    /* texto e interface */
    --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
    /* títulos */
    --font-heading: var(--font-serif);
-   --font-mono: ui-monospace, Consolas, monospace;
+   --font-mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+
    --text-xs: 0.75rem;
    /* mínimo absoluto: etiquetas, legendas */
    --text-sm: 0.875rem;
@@ -140,9 +153,25 @@
    /* números de destaque, títulos de secção pequenos */
    --text-3xl: 1.875rem;
    /* títulos de página nos painéis */
-   --text-min: var(--text-xs);
+   --text-4xl: 2.5rem;
+   /* números grandes (resultados, estatísticas) */
 
-   /* Espaçamento (múltiplos de 4px) */
+   /* Hierarquia editorial dos títulos */
+   --h1: clamp(2.5rem, 5vw, 4.5rem);
+   /* título principal de página */
+   --h1-compact: clamp(2.125rem, 3.6vw, 3rem);
+   /* título de página com menu lateral ou painel */
+   --h2: clamp(1.625rem, 2.4vw, 2.125rem);
+   /* títulos de secção: consideravelmente menores que o H1 */
+   --h3: 1.25rem;
+   --tracking-title: -0.02em;
+   --tracking-eyebrow: 0.1em;
+
+   --leading-title: 1.08;
+   --leading-body: 1.6;
+   --measure: 68ch;
+
+   /* ===================== Espaçamento (múltiplos de 4px) ===================== */
    --space-1: 4px;
    --space-2: 8px;
    --space-3: 12px;
@@ -151,58 +180,73 @@
    --space-6: 24px;
    --space-7: 28px;
    --space-8: 32px;
-   --space-9: 36px;
    --space-10: 40px;
    --space-12: 48px;
+   --space-16: 64px;
+   --space-20: 80px;
 
-   /* Cantos: controlos (sm, md) e superfícies (lg) */
-   /* Só dois raios: 6px (controlos, etiquetas) e 12px (superfícies). --radius-md é o mesmo que --radius-sm. */
+   /* Ritmo vertical das secções */
+   --section-gap: clamp(64px, 9vw, 112px);
+
+   /* ===================== Cantos ===================== */
+   /* Dois raios: 6px (controlos, etiquetas) e 8px (superfícies). --radius-full só para círculos e barras. */
    --radius-sm: 6px;
    --radius-md: 6px;
-   --radius-lg: 12px;
+   --radius-lg: 8px;
    --radius-full: 999px;
 
-   /* Elevação: sombras suaves, tingidas com o verde da marca */
-   /* Só dois níveis, muito discretos (preferir bordas de 1px). --shadow-lg é o mesmo que --shadow-md. */
+   /* ===================== Elevação ===================== */
+   /* Sombras discretas, tingidas com o verde da marca (preferir linhas de 1px) */
    --shadow-sm: 0 1px 2px rgb(23 63 50 / 6%);
-   --shadow-md: 0 4px 12px -6px rgb(23 63 50 / 16%);
-   --shadow-lg: var(--shadow-md);
+   --shadow-md: 0 1px 2px rgb(23 63 50 / 5%), 0 4px 12px -6px rgb(23 63 50 / 14%);
+   --shadow-lg: 0 2px 4px rgb(23 63 50 / 6%), 0 12px 28px -14px rgb(23 63 50 / 22%);
 
-   /* Tipografia: alturas de linha e largura de leitura */
-   --leading-title: 1.18;
-   --leading-body: 1.55;
-   --measure: 68ch;
-   --h1: clamp(2.25rem, 4.4vw, 3.5rem);
-   --h2: clamp(1.5rem, 2.4vw, 1.875rem);
-
-   /* Movimento (usado em todo o site; desligado com prefers-reduced-motion) */
-   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+   /* ===================== Movimento ===================== */
+   /* Usado em todo o site; desligado com prefers-reduced-motion */
+   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
    --dur-fast: 150ms;
-   --dur-base: 240ms;
-   --dur-slow: 420ms;
+   --dur-base: 200ms;
+   --dur-slow: 400ms;
 
-   /* Layout */
+   /* ===================== Layout ===================== */
    --container: 1200px;
+   --gutter: clamp(16px, 2.4vw, 32px);
+   --page-pad: 48px;
+   /* margem total do contentor (24px de cada lado) */
+   --header-h: 76px;
+   --header-h-compact: 60px;
+   --sidebar-w: 256px;
+   /* sidebar da Área da Equipa */
 
    font-family: var(--font-sans);
    color: var(--color-text);
    background: var(--color-bg);
 }
 
+@media (max-width: 640px) {
+   :root {
+      --page-pad: 32px;
+      /* 16px de cada lado em telemóvel */
+      --header-h: 64px;
+      --header-h-compact: 56px;
+   }
+}
+
 /* ===================== TEMA ESCURO =====================
    Só troca os papéis (os componentes não mudam). Fica ativo com <html data-theme="dark">:
    js/controllers/comum/pagina.js põe-no quando o utilizador escolhe "Modo escuro"
-   ou, sem escolha guardada, quando o sistema operativo está em modo escuro. */
+   ou, sem escolha guardada, quando o sistema operativo está em modo escuro.
+   Os mesmos verdes, em versão noturna: fundo verde-negro, cartões ligeiramente mais claros. */
 :root[data-theme="dark"] {
    color-scheme: dark;
 
    --color-bg: #0d1310;
-   /* fundo mais escuro… */
-   --color-surface: #1c2521;
-   /* …e cartões mais claros, para se destacarem do fundo */
-   --color-surface-sunken: #27322c;
-   --color-field: #131a16;
+   --color-bg-alt: #111915;
+   --color-surface: #18211d;
+   --color-surface-sunken: #243029;
+   --color-field: #111915;
+   --color-paper: #1c2521;
 
    --color-text: #e7ece8;
    --color-text-secondary: #d2d9d4;
@@ -211,32 +255,35 @@
    --color-heading: #bfe0cd;
 
    --color-brand: #86cfa6;
-   --color-brand-deep: #0c2119;
+   --color-brand-deep: #0a1c15;
    --color-brand-soft: #1b2f26;
    --color-brand-muted: #2e4a3d;
    --color-brand-fill: var(--green-600);
    --color-heading-fill: var(--green-700);
-   --color-band: var(--neutral-800);
    --color-action: var(--green-600);
    --color-action-hover: #377a5c;
    --color-accent-text: #86cfa6;
    --color-focus: #86cfa6;
+   --color-indicator: #6f9c84;
    --color-focus-ring: color-mix(in srgb, #86cfa6 22%, transparent);
-   --color-brand-tint: color-mix(in srgb, #86cfa6 8%, transparent);
+   --color-brand-tint: color-mix(in srgb, #86cfa6 7%, transparent);
 
-   --color-border: #3d4b44;
-   /* contornos visíveis à volta dos cartões */
-   --color-border-strong: #5a6961;
+   --color-border: #34423b;
+   --color-border-strong: #52625a;
+   --color-rule: rgb(231 236 232 / 14%);
+   --color-rule-strong: #a8b2ab;
 
    --color-success: #86cfa6;
    --color-success-soft: #1b2f26;
    --color-warning: var(--amber-200);
    --color-warning-soft: #352a17;
    --color-danger: #ff8f86;
+   --color-danger-soft: #3a1b18;
 
    --color-overlay: rgb(0 0 0 / 60%);
+   --color-header: color-mix(in srgb, #0d1310 86%, transparent);
 
    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-   --shadow-md: 0 4px 12px -6px rgb(0 0 0 / 50%);
-   --shadow-lg: var(--shadow-md);
+   --shadow-md: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 12px -6px rgb(0 0 0 / 50%);
+   --shadow-lg: 0 2px 4px rgb(0 0 0 / 30%), 0 12px 28px -14px rgb(0 0 0 / 60%);
 }
