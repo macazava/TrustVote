@@ -42,8 +42,9 @@
     letter-spacing: var(--tracking-eyebrow);
 }
 
+/* Na área da equipa os títulos aparecem sem etiqueta por cima */
 body[data-page="admin"] .page-head>div:first-child::before {
-    content: "ÁREA DA EQUIPA · GESTÃO ELEITORAL";
+    content: none;
 }
 
 .dashboard-content h1 {

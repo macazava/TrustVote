@@ -32,10 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== Comandos =====
   // { grupo, titulo, detalhe, icone, palavras, run }
   const fixos = () => [
-    ...[...nav.querySelectorAll("[data-view]")].map((b) => ({
+    ...[...document.querySelectorAll(".panel-nav [data-view], .panel-user [data-view]")].map((b) => ({
       grupo: "Separadores",
       // Só o texto do botão (sem o número de mensagens por ler)
-      titulo: [...b.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").replace(/s+/g, " ").trim(),
+      titulo: b.dataset.title || [...b.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").replace(/\s+/g, " ").trim(),
       icone: "arrow-right",
       run: () => b.click(),
     })),

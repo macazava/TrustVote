@@ -424,3 +424,32 @@ body[data-page="admin"] .dashboard-header {
         min-height: 44px;
     }
 }
+
+/* Área do eleitor: o avatar é o botão que abre o Perfil (anel verde com o Perfil aberto) */
+button.user-chip {
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+button.user-chip .avatar {
+    transition: box-shadow var(--dur-base) var(--ease-out);
+}
+
+button.user-chip:hover .avatar {
+    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-brand-muted);
+}
+
+button.user-chip.active .avatar {
+    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-brand);
+}
+
+button.user-chip:focus-visible {
+    outline: none;
+}
+
+button.user-chip:focus-visible .avatar {
+    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-focus);
+}

@@ -1,63 +1,138 @@
-/* View · área da equipa, separadores "Auditoria" (registo de atividade) e "Configuração" */
+/* View · área da equipa, separador "Auditoria": indicadores, verificação da cadeia e cronologia por dia,
+   com pesquisa, filtro por tipo e detalhes de cada registo */
 (function () {
   "use strict";
 
   const TV = window.TrustVote;
   const { ui } = TV;
-  const { escapeHtml, number } = TV.format;
-  const { head, cardHead } = TV.blocks;
+  const { escapeHtml, number, plural, time } = TV.format;
+  const { head } = TV.blocks;
 
-  // ===== Auditoria: quem fez o quê e quando =====
-  const auditPage = (registos) => `
-    ${head("REGISTO DE ATIVIDADE", "Auditoria", "Cada alteração feita na área da equipa fica registada: o que foi feito, sobre o quê, por quem e quando.")}
-    <article class="dash-card">
-      ${cardHead("HISTÓRICO DE AÇÕES", `Registos · ${number(registos.length)}`, '<div class="row-actions"><button type="button" data-refresh>Atualizar</button><button type="button" data-verify-chain>Verificar cadeia</button><button class="button button-light" type="button" data-csv>Exportar CSV</button></div>')}
-      <div data-chain-result></div>
-      ${registos.length
-      ? `<div class="table-scroll"><table data-table="Pesquisar no registo">
-            <thead><tr><th>Data e hora</th><th>Ação</th><th>Sobre</th><th>Feito por</th><th>IP</th></tr></thead>
-            <tbody>${registos
-        .map((r) => `<tr><td class="mono">${escapeHtml(r.data)}</td><td><b>${escapeHtml(r.acao)}</b></td><td>${escapeHtml(r.sobre)}</td><td>${escapeHtml(r.autor)}</td><td class="mono">${escapeHtml(r.ip || "—")}</td></tr>`)
-        .join("")}</tbody></table></div>`
-      : ui.empty("Sem registos", "As ações feitas na área da equipa aparecem aqui.")}
-    </article>`;
+  // Tipos de registo: nome no filtro e ícone na cronologia
+  const tipos = {
+    eleicao: ["Eleições", "vote"],
+    ronda: ["Votação", "clock"],
+    candidato: ["Candidatos", "user-check"],
+    utilizador: ["Contas", "lock"],
+    estudante_inscrito: ["Inscritos", "clipboard-list"],
+  };
+
+  const auditStats = (registos) => {
+    const hoje = new Date().toDateString();
+    const deHoje = registos.filter((r) => new Date(r.iso).toDateString() === hoje).length;
+    const sistema = registos.filter((r) => r.sistema).length;
+    const pessoas = new Set(registos.filter((r) => !r.sistema).map((r) => r.autor)).size;
+    return `
+      <div class="voter-stats">
+        <div class="voter-stat is-brand"><b>${number(registos.length)}</b><span>Registos</span><small>os mais recentes</small></div>
+        <div class="voter-stat"><b>${number(deHoje)}</b><span>Hoje</span><small>${deHoje ? "ações registadas" : "sem atividade"}</small></div>
+        <div class="voter-stat"><b>${number(pessoas)}</b><span>Pessoas</span><small>fizeram alterações</small></div>
+        <div class="voter-stat"><b>${number(sistema)}</b><span>Automáticas</span><small>feitas pelo sistema</small></div>
+      </div>`;
+  };
+
+  const auditPage = (registos) => {
+    const presentes = [...new Set(registos.map((r) => r.entidade).filter((e) => tipos[e]))];
+    return `
+      ${head("REGISTO DE ATIVIDADE", "Auditoria", "")}
+      ${auditStats(registos)}
+      <div data-chain-result>
+        <div class="result-outcome chain-banner">
+          <span class="result-outcome-icon">${TV.icon("shield-check")}</span>
+          <div><b>Cadeia de registos</b><p>Confirme que nenhum registo foi alterado ou apagado.</p></div>
+          <button class="button button-primary" type="button" data-verify-chain>Verificar agora</button>
+        </div>
+      </div>
+      <article class="dash-card">
+        <div class="card-head">
+          <div><h2>Atividade</h2></div>
+          <div class="row-actions">
+            <button class="button button-light" type="button" data-refresh>Atualizar</button>
+            <button class="button button-outline" type="button" data-csv>Exportar CSV</button>
+          </div>
+        </div>
+        ${registos.length
+          ? `<div class="people-toolbar">
+              <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar ação, eleição, pessoa ou IP" aria-label="Pesquisar no registo" data-audit-search></label>
+              <div class="chip-row" role="group" aria-label="Filtrar por tipo">
+                <button class="chip" type="button" data-audit-filter="" aria-pressed="true">Tudo</button>
+                ${presentes.map((e) => `<button class="chip" type="button" data-audit-filter="${e}" aria-pressed="false">${tipos[e][0]}</button>`).join("")}
+                <button class="chip" type="button" data-audit-filter="sistema" aria-pressed="false">Sistema</button>
+              </div>
+            </div>
+            <div class="audit-timeline" data-audit-list></div>
+            <div class="people-more" data-audit-more></div>`
+          : ui.empty("Sem registos", "As ações feitas na área da equipa aparecem aqui.")}
+      </article>`;
+  };
+
+  // Rótulo do dia: "Hoje", "Ontem" ou a data por extenso
+  function dayLabel(iso) {
+    const d = new Date(iso);
+    const hoje = new Date();
+    const ontem = new Date(Date.now() - 864e5);
+    if (d.toDateString() === hoje.toDateString()) return "Hoje";
+    if (d.toDateString() === ontem.toDateString()) return "Ontem";
+    return d.toLocaleDateString("pt-PT", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  }
+
+  // Detalhes guardados com o registo (ex.: votos inválidos, número da volta)
+  const detalhes = (r) => {
+    const linhas = Object.entries(r.detalhes || {}).map(([k, v]) => `<div><dt>${escapeHtml(k.replace(/_/g, " "))}</dt><dd>${escapeHtml(typeof v === "object" ? JSON.stringify(v) : String(v))}</dd></div>`);
+    return `
+      <dl class="audit-details">
+        ${linhas.join("")}
+        <div><dt>data completa</dt><dd>${escapeHtml(r.completa)}</dd></div>
+        <div><dt>IP</dt><dd class="mono">${escapeHtml(r.ip || "—")}</dd></div>
+        <div><dt>hash</dt><dd class="mono audit-hash">${escapeHtml(r.hash || "—")}</dd></div>
+      </dl>`;
+  };
+
+  const auditEntry = (r) => `
+    <li class="audit-entry${r.sistema ? " is-system" : ""}">
+      <span class="audit-icon" aria-hidden="true"></span>
+      <details>
+        <summary>
+          <time class="audit-time" datetime="${escapeHtml(r.iso)}">${escapeHtml(time(r.iso))}</time>
+          <span class="audit-text"><b>${escapeHtml(r.acao)}</b><span>${escapeHtml(r.sobre)}</span></span>
+          <span class="audit-author${r.sistema ? " is-system" : ""}">${escapeHtml(r.autor)}</span>
+        </summary>
+        ${detalhes(r)}
+      </details>
+    </li>`;
+
+  // Agrupa os registos por dia (já vêm do mais recente para o mais antigo)
+  function auditTimeline(registos) {
+    if (!registos.length) return `<p class="muted people-empty">${TV.icon("search")} Nenhum registo corresponde.</p>`;
+    const grupos = [];
+    registos.forEach((r) => {
+      const dia = new Date(r.iso).toDateString();
+      if (!grupos.length || grupos[grupos.length - 1].dia !== dia) grupos.push({ dia, iso: r.iso, itens: [] });
+      grupos[grupos.length - 1].itens.push(r);
+    });
+    return grupos
+      .map(
+        (g) => `
+        <section class="audit-day">
+          <h3>${escapeHtml(dayLabel(g.iso))}<small>${plural(g.itens.length, "registo", "registos")}</small></h3>
+          <ol>${g.itens.map(auditEntry).join("")}</ol>
+        </section>`
+      )
+      .join("");
+  }
 
   // Resultado de "Verificar cadeia": cada registo guarda o hash do anterior
-  const chainResult = (v) =>
-    `<p class="notice"><b>${v.valida ? `${TV.icon("circle-check")} Cadeia íntegra` : `${TV.icon("circle-alert")} Cadeia quebrada`}</b>${v.valida
-      ? `Os ${number(v.total)} registos estão completos e não foram alterados.`
-      : `O registo #${v.primeiro_invalido} foi alterado, ou um registo anterior foi apagado.`}</p>`;
-
-  // ===== Configuração: servidor, palavra-passe e acessibilidade =====
-  const settingsPage = ({ base, zona, offset, passwordCard }) => `
-    ${head("CENTRO DE OPERAÇÕES", "Configuração", "Servidor, palavra-passe e preferências deste navegador.")}
-    <div class="dash-grid grid-cols-1 lg:grid-cols-2">
-      <article class="dash-card">
-        ${cardHead("CONFIGURAÇÃO ELEITORAL", "Parâmetros globais")}
-        <label class="field-label">Endereço da API<input value="${escapeHtml(base)}" readonly></label>
-        <label class="field-label">Fuso horário<input value="${escapeHtml(zona)} · UTC${offset >= 0 ? "+" : ""}${offset}:00" readonly></label>
-        <div data-server-params>${ui.loading("A ler a configuração do servidor…")}</div>
-      </article>
+  const chainResult = (v) => `
+    <div class="result-outcome chain-banner ${v.valida ? "is-win" : "is-warn"}">
+      <span class="result-outcome-icon">${TV.icon(v.valida ? "shield-check" : "circle-alert")}</span>
       <div>
-        ${passwordCard}
-        <article class="dash-card">
-          ${cardHead("ACESSIBILIDADE", "Preferências deste navegador")}
-          <div class="toggle-row"><div><b>Texto maior</b><small>Aumenta o tamanho de todas as páginas.</small></div><button class="switch" type="button" data-pref="largeText" aria-label="Texto maior"></button></div>
-          <div class="toggle-row"><div><b>Contraste elevado</b><small>Cores com mais contraste.</small></div><button class="switch" type="button" data-pref="contrast" aria-label="Contraste elevado"></button></div>
-          <div class="toggle-row"><div><b>Modo escuro</b><small>Fundo escuro, mais confortável à noite. Sem escolha, segue o sistema.</small></div><button class="switch" type="button" data-theme-toggle aria-label="Modo escuro"></button></div>
-        </article>
+        <b>${v.valida ? "Cadeia íntegra" : "Cadeia quebrada"}</b>
+        <p>${v.valida
+          ? `Os ${number(v.total)} registos estão completos e não foram alterados. Verificado às ${escapeHtml(time(new Date().toISOString()))}.`
+          : `O registo #${escapeHtml(v.primeiro_invalido)} foi alterado, ou um registo anterior foi apagado.`}</p>
       </div>
+      <button class="button button-light" type="button" data-verify-chain>Verificar outra vez</button>
     </div>`;
 
-  // Valores reais da API (GET /publico/configuracao e /health)
-  const campo = (rotulo, valor) => `<label class="field-label">${rotulo}<input value="${escapeHtml(valor)}" readonly></label>`;
-  const serverParams = (c, saude) => `
-    ${campo("Servidor que respondeu", saude ? `${saude.instance} · base de dados ${saude.database} · Redis ${saude.redis}` : "Sem resposta")}
-    ${c
-      ? `${campo("Duração da sessão", `${number(c.sessao_minutos)} minutos`)}
-         ${campo("Limite de tentativas de login", `Bloqueio de ${number(c.login_bloqueio_minutos)} minutos após ${number(c.login_tentativas)} falhas`)}
-         ${campo("Apuramento", c.apuramento === "worker" ? "Pelo worker, logo após o fecho (fila no Redis)" : "Imediato, no pedido de encerrar")}`
-      : '<p class="form-message">Não foi possível ler a configuração do servidor.</p>'}`;
-
-  Object.assign((TV.teamView = TV.teamView || {}), { auditPage, chainResult, settingsPage, serverParams });
+  Object.assign((TV.teamView = TV.teamView || {}), { auditPage, auditTimeline, chainResult });
 })();

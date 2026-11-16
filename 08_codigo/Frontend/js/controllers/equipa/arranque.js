@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ===== Separadores =====
   wrap.classList.add("is-ready");
-  team.renderSettings();
 
   const loaders = {
     overview: team.renderOverview,

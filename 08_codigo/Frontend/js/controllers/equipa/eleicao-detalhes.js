@@ -20,65 +20,140 @@
   };
 
   // ===== Candidatos =====
-  team.renderCandidatesCard = function renderCandidatesCard(e) {
-    const el = box("candidates");
+  // el: onde desenhar (por omissão, dentro do formulário da eleição; o separador "Candidatos" passa o seu)
+  // onChange: chamado depois de cada alteração, com a eleição atualizada
+  team.renderCandidatesCard = function renderCandidatesCard(e, el = box("candidates"), onChange) {
     el.innerHTML = TV.teamView.candidatesCard(e);
 
-    const reload = async () => renderCandidatesCard(elections.view(await api.eleicoes.detalhe(e.id)));
+    const reload = async () => {
+      const atual = elections.view(await api.eleicoes.detalhe(e.id));
+      renderCandidatesCard(atual, el, onChange);
+      onChange?.(atual);
+    };
 
+    const editor = el.querySelector("[data-cand-editor]");
     const form = el.querySelector("[data-cand-form]");
-    form?.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const f = event.currentTarget;
-      const dados = {
-        nome: f.nome.value.trim(),
-        partido: f.partido.value.trim() || null,
-        orgao: f.orgao.value,
-        curso: f.curso.value.trim() || null,
-        ano: f.ano.value ? Number(f.ano.value) : null,
-        descricao: f.descricao.value.trim() || null,
-      };
-      const id = f.candidato.value;
-      await safely(async () => {
-        await ui.busy(f.querySelector('[type="submit"]'), id ? "A guardar…" : "A adicionar…", () =>
-          id ? api.eleicoes.atualizarCandidato(e.id, id, dados) : api.eleicoes.criarCandidato(e.id, dados)
-        );
-        await reload();
-      })();
+    const preview = el.querySelector("[data-cand-preview]");
+    const novo = el.querySelector("[data-cand-new]");
+
+    // Dados do formulário, no formato da API
+    const ler = () => ({
+      nome: form.nome.value.trim(),
+      partido: form.partido.value.trim() || null,
+      orgao: form.orgao.value,
+      curso: form.curso.value.trim() || null,
+      ano: form.ano.value ? Number(form.ano.value) : null,
+      descricao: form.descricao.value.trim() || null,
     });
-    // Editar: o formulário passa a mostrar os dados do candidato escolhido
-    el.querySelectorAll("[data-edit-cand]").forEach((b) =>
-      b.addEventListener("click", () => {
-        const c = e.candidatos.find((x) => String(x.id) === b.dataset.editCand);
-        form.candidato.value = c.id;
+
+    const atualizarPreview = () => {
+      if (!form) return;
+      preview.innerHTML = TV.teamView.candidatePreview(ler());
+      form.querySelector("[data-desc-count]").textContent = `${form.descricao.value.length} / 5000`;
+    };
+
+    // Abre o editor vazio (novo) ou com os dados de um candidato (editar)
+    function abrir(c) {
+      form.reset();
+      form.candidato.value = c ? c.id : "";
+      if (c) {
         form.nome.value = c.nome;
         form.partido.value = c.partido || "";
         form.orgao.value = c.orgao;
         form.curso.value = c.curso || "";
         form.ano.value = c.ano || "";
         form.descricao.value = c.descricao || "";
-        form.querySelector('[type="submit"]').textContent = "Guardar alterações";
-        form.querySelector("[data-cancel-cand]").hidden = false;
-        form.nome.focus();
-      })
+      }
+      form.querySelector("[data-cand-form-title]").textContent = c ? `Editar ${c.nome}` : "Novo candidato";
+      form.querySelector("[data-cand-submit]").innerHTML = c ? "Guardar alterações" : `Adicionar candidato ${TV.icon("arrow-right")}`;
+      editor.hidden = false;
+      if (novo) novo.hidden = true;
+      atualizarPreview();
+      editor.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      form.nome.focus({ preventScroll: true });
+    }
+
+    function fechar() {
+      if (!(e.candidatos || []).length) return form.reset(), atualizarPreview();
+      editor.hidden = true;
+      if (novo) novo.hidden = false;
+    }
+
+    if (form) {
+      atualizarPreview();
+      form.addEventListener("input", atualizarPreview);
+      form.addEventListener("change", atualizarPreview);
+      novo?.addEventListener("click", () => abrir(null));
+      el.querySelector("[data-cancel-cand]").addEventListener("click", fechar);
+      form.addEventListener("keydown", (event) => event.key === "Escape" && fechar());
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const id = form.candidato.value;
+        const dados = ler();
+        await safely(async () => {
+          await ui.busy(form.querySelector("[data-cand-submit]"), id ? "A guardar…" : "A adicionar…", () =>
+            id ? api.eleicoes.atualizarCandidato(e.id, id, dados) : api.eleicoes.criarCandidato(e.id, dados)
+          );
+          ui.toast(id ? "Candidato atualizado." : `${dados.nome} adicionado.`);
+          await reload();
+        })();
+      });
+    }
+
+    el.querySelectorAll("[data-edit-cand]").forEach((b) =>
+      b.addEventListener("click", () => abrir(e.candidatos.find((x) => String(x.id) === b.dataset.editCand)))
     );
-    el.querySelector("[data-cancel-cand]")?.addEventListener("click", () => renderCandidatesCard(e));
+
+    // Interruptor ativo / inativo: muda logo no ecrã e grava no servidor
     el.querySelectorAll("[data-toggle]").forEach((b) =>
       b.addEventListener("click", safely(async () => {
-        await api.eleicoes.atualizarCandidato(e.id, b.dataset.toggle, { ativo: b.dataset.ativo !== "true" });
-        await reload();
+        const ativo = b.dataset.ativo !== "true";
+        b.setAttribute("aria-checked", String(ativo));
+        b.closest("[data-cand-tile]").classList.toggle("is-off", !ativo);
+        b.disabled = true;
+        try {
+          await api.eleicoes.atualizarCandidato(e.id, b.dataset.toggle, { ativo });
+        } finally {
+          await reload();
+        }
       }))
     );
-    // Remover: a linha desaparece logo e há 6 s para "Desfazer" antes de apagar no servidor
+
+    // Remover: o cartão desaparece logo e há 6 s para "Desfazer" antes de apagar no servidor
     el.querySelectorAll("[data-remove-cand]").forEach((b) =>
       b.addEventListener("click", () => {
         const c = e.candidatos.find((x) => String(x.id) === b.dataset.removeCand);
         ui.undoable({
           text: `Candidato "${c ? c.nome : ""}" removido.`,
-          hide: [b.closest("tr")],
+          hide: [b.closest("[data-cand-tile]")],
           commit: () => api.eleicoes.apagarCandidato(e.id, b.dataset.removeCand),
           after: reload,
         });
+      })
+    );
+
+    // Pesquisa e filtro por órgão
+    const pesquisa = el.querySelector("[data-cand-search]");
+    const filtros = [...el.querySelectorAll("[data-cand-filter]")];
+    let orgao = "";
+    function filtrar() {
+      const termo = (pesquisa?.value || "").trim().toLowerCase();
+      let visiveis = 0;
+      el.querySelectorAll("[data-cand-tile]").forEach((t) => {
+        const ok = (!orgao || t.dataset.orgao === orgao) && (!termo || t.dataset.search.includes(termo));
+        t.classList.toggle("is-filtered", !ok);
+        visiveis += ok ? 1 : 0;
+      });
+      const vazio = el.querySelector("[data-cand-empty]");
+      if (vazio) vazio.hidden = visiveis > 0;
+    }
+    pesquisa?.addEventListener("input", filtrar);
+    filtros.forEach((f) =>
+      f.addEventListener("click", () => {
+        orgao = f.dataset.candFilter;
+        filtros.forEach((x) => x.setAttribute("aria-pressed", String(x === f)));
+        filtrar();
       })
     );
   };

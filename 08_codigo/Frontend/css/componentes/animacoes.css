@@ -112,6 +112,13 @@
     }
 }
 
+/* ===== Fade curto para conteúdo que muda no lugar (mensagem aberta, verificações, formulários) ===== */
+@keyframes tv-fade {
+    from {
+        opacity: 0;
+    }
+}
+
 /* ===== Dados: contador "Fecha em" sem tremer ===== */
 [data-countdown] {
     display: inline-block;

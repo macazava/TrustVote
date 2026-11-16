@@ -1,4 +1,4 @@
-/* View · cartão "Alterar a palavra-passe" (perfil do eleitor e configuração da equipa) */
+/* View · cartão "Alterar a palavra-passe" (perfil do eleitor) */
 (function () {
   "use strict";
 

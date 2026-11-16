@@ -1,4 +1,4 @@
-/* Controller · alterar a palavra-passe (perfil do eleitor e configuração da equipa) */
+/* Controller · alterar a palavra-passe (perfil do eleitor) */
 (function () {
   "use strict";
 
@@ -16,7 +16,7 @@
       if (nova.value !== repetir.value) return ui.message(message, "As palavras-passe novas não coincidem.");
       if (!/[A-Za-z]/.test(nova.value) || !/\d/.test(nova.value)) return ui.message(message, "A nova palavra-passe tem de ter letras e números.");
       try {
-        await ui.busy(form.querySelector("button"), "A alterar…", () => api.auth.alterarPassword(atual.value, nova.value));
+        await ui.busy(form.querySelector('[type="submit"]'), "A alterar…", () => api.auth.alterarPassword(atual.value, nova.value));
         form.reset();
         ui.message(message, "Palavra-passe alterada.", true);
       } catch (error) {

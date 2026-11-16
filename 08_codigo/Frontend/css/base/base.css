@@ -219,7 +219,6 @@ table,
 .dark-card,
 .profile-hero,
 .auth-intro,
-.history-hero,
 .contact-card {
     --color-focus: var(--green-200);
 }
@@ -314,7 +313,7 @@ html.large-text {
 }
 
 /* As faixas escuras também passam a ter o foco amarelo */
-:root[data-theme="dark"] .high-contrast :is(.skip-link, .site-footer, .dashboard-header, .dark-card, .steps-help, .profile-hero, .auth-intro, .history-hero, .contact-card) {
+:root[data-theme="dark"] .high-contrast :is(.skip-link, .site-footer, .dashboard-header, .dark-card, .steps-help, .profile-hero, .auth-intro, .contact-card) {
     --color-focus: #ffe066;
 }
 

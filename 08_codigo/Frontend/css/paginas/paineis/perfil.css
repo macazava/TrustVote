@@ -276,3 +276,280 @@
         margin-left: 28px;
     }
 }
+
+/* ===== Perfil em página de definições: índice à esquerda, secções à direita ===== */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-10);
+    margin-top: var(--space-8);
+}
+
+/* Índice das secções: fica visível ao percorrer a página */
+.settings-nav {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-6));
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--color-rule);
+}
+
+.settings-nav a {
+    margin-left: -1px;
+    padding: 8px 0 8px 16px;
+    border-left: 2px solid transparent;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+
+.settings-nav a:hover {
+    color: var(--color-text);
+}
+
+.settings-nav a[aria-current="true"] {
+    border-left-color: var(--color-brand);
+    color: var(--color-heading);
+    font-weight: 600;
+}
+
+.settings-section {
+    scroll-margin-top: calc(var(--header-h) + var(--space-6));
+    padding-bottom: var(--space-10);
+}
+
+.settings-section + .settings-section {
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-rule);
+}
+
+.settings-section > header {
+    margin-bottom: var(--space-4);
+}
+
+.settings-section h2 {
+    margin: 0;
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+}
+
+.settings-section h2:focus {
+    outline: none;
+}
+
+.settings-section > header p {
+    margin: 4px 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+/* Linhas rótulo · valor · ação, separadas por linhas finas (como nas contas Google ou GitHub) */
+.settings-rows {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1.4fr) auto;
+    align-items: center;
+    gap: var(--space-2) var(--space-6);
+    min-height: 60px;
+    padding: var(--space-4) var(--space-5);
+}
+
+.settings-rows > * + * {
+    border-top: 1px solid var(--color-rule);
+}
+
+.settings-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-label > span {
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.settings-label small {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.45;
+}
+
+.settings-value {
+    min-width: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+}
+
+.settings-value .mono {
+    font-family: var(--font-mono);
+}
+
+/* Linhas só com interruptor: o rótulo ocupa o espaço do valor */
+.settings-row:not(:has(.settings-value)) {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.settings-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.settings-action .link-button {
+    font-size: var(--text-sm);
+}
+
+.settings-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.settings-state::before {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+}
+
+.settings-state.is-off {
+    color: var(--color-warning);
+}
+
+.settings-dots {
+    color: var(--color-text-muted);
+    letter-spacing: 0.15em;
+}
+
+.settings-foot {
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+}
+
+.settings-foot a,
+.settings-foot .link-button {
+    color: var(--color-brand);
+    font-size: inherit;
+    font-weight: 600;
+}
+
+/* Formulário da palavra-passe, aberto dentro da secção */
+.settings-expand {
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    animation: tv-fade var(--dur-base) var(--ease-out);
+}
+
+.settings-expand[hidden] {
+    display: none;
+}
+
+.settings-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-4);
+}
+
+.settings-form-grid .field-label {
+    margin: 0 0 var(--space-4);
+}
+
+.settings-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+}
+
+/* Tempo de sessão já passado */
+.settings-progress {
+    height: 4px;
+    margin: var(--space-2) 0 var(--space-5);
+    overflow: hidden;
+    border-radius: var(--radius-full);
+    background: var(--color-surface-sunken);
+}
+
+.settings-progress i {
+    display: block;
+    height: 100%;
+    background: var(--color-brand-fill);
+}
+
+.settings-section .profile-numbers {
+    margin-top: 0;
+}
+
+@media (max-width: 1023px) {
+    .settings-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-6);
+    }
+
+    /* Ecrã estreito: o índice passa a uma faixa horizontal no topo */
+    .settings-nav {
+        top: var(--header-h);
+        z-index: 2;
+        flex-direction: row;
+        gap: var(--space-5);
+        overflow-x: auto;
+        border-bottom: 1px solid var(--color-rule);
+        border-left: 0;
+        background: var(--color-bg);
+        scrollbar-width: none;
+    }
+
+    .settings-nav a {
+        flex: none;
+        margin: 0 0 -1px;
+        padding: 12px 0;
+        border-bottom: 2px solid transparent;
+        border-left: 0;
+    }
+
+    .settings-nav a[aria-current="true"] {
+        border-bottom-color: var(--color-brand);
+    }
+
+    .settings-section {
+        scroll-margin-top: calc(var(--header-h) + 64px);
+    }
+}
+
+@media (max-width: 640px) {
+    .settings-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .settings-value {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .settings-action {
+        grid-column: 2;
+        grid-row: 1 / 3;
+    }
+
+    .settings-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .settings-form-grid > span {
+        display: none;
+    }
+}

@@ -4,12 +4,15 @@
 
   const TV = window.TrustVote;
 
+  // Botões que abrem separadores: o menu e, na área do eleitor, o avatar do topo (abre o Perfil)
+  const BOTOES = ".panel-nav [data-view], .panel-user [data-view]";
+
   // Atalhos usados pelos controllers das duas áreas
   TV.panels = {
     // O separador <section data-panel="nome">
     panel: (name) => document.querySelector(`[data-panel="${name}"]`),
     // Abre um separador como se o utilizador tivesse clicado no menu
-    go: (view) => document.querySelector(`.panel-nav [data-view="${view}"]`)?.click(),
+    go: (view) => [...document.querySelectorAll(BOTOES)].find((b) => b.dataset.view === view)?.click(),
     // Guarda o resultado ou o erro de um pedido, sem parar os outros
     attempt: (promise) => promise.then((data) => ({ data }), (error) => ({ error })),
   };
@@ -17,7 +20,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     // O separador aberto fica no endereço (ex.: eleitor.html#recibos): atualizar a página,
     // o botão "voltar" do browser e os links partilhados abrem o separador certo.
-    const views = [...document.querySelectorAll(".panel-nav [data-view]")].map((b) => b.dataset.view);
+    const views = [...document.querySelectorAll(BOTOES)].map((b) => b.dataset.view);
     const viewFromHash = () => {
       const view = decodeURIComponent(window.location.hash.slice(1));
       return views.includes(view) ? view : null;

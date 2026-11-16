@@ -16,7 +16,6 @@
   <!-- Letras servidas pelo próprio site (css/base/fontes.css): a de texto é pedida logo -->
   <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="preload" as="image" href="../assets/01_iade_campus_patio_exterior.webp" fetchpriority="high">
   <script defer src="../js/views/icones.js"></script>
   <script defer src="../js/views/layout.js"></script>
   <script defer src="../js/models/servidor.js"></script>
@@ -42,19 +41,40 @@
   <div data-layout="caminho" data-seccao="Histórico eleitoral" data-seccao-link="historico.html"
     data-atual="Eleições académicas"></div>
 
-  <main id="conteudo">
+  <main id="conteudo"
+    class="container section-page grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
 
-    <section class="history-hero" style="background-image:url('../assets/01_iade_campus_patio_exterior.webp')">
-      <div class="container">
-        <h1>Histórico eleitoral</h1>
-        <p>Eleições académicas já encerradas, com as datas e a participação registadas na plataforma.</p>
+    <!-- Menu da secção -->
+    <aside class="section-aside">
+      <div class="side-menu overflow-hidden">
+        <h2>Histórico eleitoral</h2>
+        <nav aria-label="Histórico eleitoral">
+          <a href="#eleicoes-encerradas">Eleições encerradas</a>
+        </nav>
+      </div>
+      <div class="manager-card">
+        <h2>Gestor responsável</h2>
+        <a href="ajuda.html#contactos">Comissão Eleitoral Académica <svg class="icon" aria-hidden="true">
+            <use href="#i-chevron-right"></use>
+          </svg></a>
+      </div>
+    </aside>
+
+    <!-- Conteúdo -->
+    <div class="section-content">
+      <article class="section-item" id="eleicoes-encerradas" data-item>
+        <div class="section-item-head">
+          <h1>Histórico eleitoral</h1>
+        </div>
+        <p class="lead">Eleições académicas já encerradas, com as datas e a participação registadas na plataforma.</p>
+
         <!-- Totais de todas as eleições encerradas (preenchido por controllers/publico/paginas.js) -->
         <dl class="history-stats" data-history-stats hidden></dl>
-      </div>
-    </section>
 
-    <!-- Eleições encerradas (preenchido por controllers/publico/paginas.js) -->
-    <div class="container history-list" data-history></div>
+        <!-- Eleições encerradas (preenchido por controllers/publico/paginas.js) -->
+        <div class="history-list" data-history></div>
+      </article>
+    </div>
 
   </main>
 

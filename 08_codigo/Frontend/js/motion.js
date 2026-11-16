@@ -45,10 +45,22 @@
 
     const inicio = Date.now();
     let ultimaAcao = 0;
-    ["pointerdown", "keydown"].forEach((t) => document.addEventListener(t, () => (ultimaAcao = Date.now()), true));
+    let aEscrever = false;
+    ["pointerdown", "keydown"].forEach((t) =>
+      document.addEventListener(
+        t,
+        (event) => {
+          ultimaAcao = Date.now();
+          // Escrever numa pesquisa ou num formulário redesenha listas a cada tecla: aí nada anima
+          aEscrever = t === "keydown" && !!event.target.closest?.("input, textarea, select");
+        },
+        true
+      )
+    );
     // Nas áreas reservadas o conteúdo atualiza-se sozinho (ex.: a cada 20 s): só se anima o que aparece
     // por ação do utilizador ou no arranque, para nada "piscar" a cada atualização
-    const podeAnimar = (el) => !el.closest(".view-panel") || Date.now() - ultimaAcao < 1500 || Date.now() - inicio < 4000;
+    const podeAnimar = (el) =>
+      !el.closest(".view-panel") || (!aEscrever && Date.now() - ultimaAcao < 1500) || Date.now() - inicio < 4000;
 
     // ===== Entrada do conteúdo principal =====
     const entrada = [
@@ -56,7 +68,6 @@
       ".section-item:not([hidden]) > *",
       ".content-page > *",
       ".press-bar > *",
-      ".history-hero .container > *",
       ".legal-hero .container > *",
       ".auth-intro > *",
       ".auth-card",
@@ -101,6 +112,16 @@
       [".legal-doc > section", null],
       [".verify-layout > *", ".verify-layout"],
       [".results-board, .results-pending", null],
+      // Área da equipa: indicadores, cartões, listas e cronologia
+      [".voter-stats > *", ".voter-stats"],
+      [".cand-grid > *", ".cand-grid"],
+      [".people-list > *", ".people-list"],
+      [".enroll-grid > *", ".enroll-grid"],
+      [".rank-list > li", ".rank-list"],
+      [".inbox-items > *", ".inbox-items"],
+      [".audit-entry", ".audit-timeline"],
+      [".builder-step", ".builder-main"],
+      [".result-outcome, .donut", null],
       ["tbody > tr", "tbody"],
     ];
 
@@ -120,7 +141,7 @@
         if (contexto !== document && contexto.matches && contexto.matches(sel)) lista.unshift(contexto);
         lista.forEach((el) => {
           if (el.classList.contains("tv-reveal") || el.classList.contains("tv-enter") || !podeAnimar(el)) return;
-          if (el.closest(".view-panel") && Date.now() - inicio >= 4000 && Date.now() - ultimaAcao >= 1500) return;
+          if (el.closest(".view-panel") && Date.now() - inicio >= 4000 && (aEscrever || Date.now() - ultimaAcao >= 1500)) return;
           const pai = grupo ? el.closest(grupo) : null;
           const i = pai ? [...pai.querySelectorAll(sel)].indexOf(el) : 0;
           // A partir do 9.º item de uma lista, aparecem logo
@@ -134,7 +155,7 @@
     registarReveal();
 
     // ===== Barras: crescem de 0 até ao valor (scaleX) =====
-    const seletorBarras = ".bar > i, .el-period-bar > i, .results-turnout-bar > i, .bar-chart-track > i, .poll-bar > i, .column-chart-track > i";
+    const seletorBarras = ".bar > i, .el-period-bar > i, .results-turnout-bar > i, .bar-chart-track > i, .poll-bar > i, .column-chart-track > i, .rank-track > i, .kpi-bar > i, .enroll-progress .preview-track > span";
     const barras = new IntersectionObserver(
       (entradas) =>
         entradas.forEach((e) => {
@@ -159,7 +180,7 @@
 
     // ===== Números que contam até ao valor (~800 ms) =====
     const seletorNumeros =
-      ".metric-card b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .profile-numbers b, .history-stats dd, .history-turnout b, .el-summary b, .facts b, .results-figures b, .results-value > b, [data-live]";
+      ".metric-card b, .turnout > b, .hub-progress b, .bar-chart-value > b, .column-chart-item > b, .profile-numbers b, .history-stats dd, .history-turnout b, .el-summary b, .facts b, .results-figures b, .results-value > b, .voter-stat > b, .rank-value > b, .donut-center b, .cand-count b, .enroll-progress-text b, [data-live]";
     const padrao = /^(\s*)(\d{1,3}(?:[\s  .]?\d{3})*(?:,\d+)?)(.*)$/s;
     function contar(el) {
       const texto = [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
