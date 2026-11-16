@@ -35,6 +35,8 @@ CREATE TABLE eleicao (
     ele_data TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     -- Participação mínima (% dos habilitados) para o resultado ser válido.
     ele_quorum DECIMAL(5, 2) NOT NULL DEFAULT 0,
+    -- Encerra a eleição sozinha quando a última volta chega à hora de fim.
+    ele_encerramento_auto BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT ele_ck_quorum CHECK (ele_quorum BETWEEN 0 AND 100),
     CONSTRAINT ele_ck_estado CHECK (ele_estado IN ('rascunho', 'agendada', 'em_curso', 'encerrada')),
     CONSTRAINT eleicao_fk_utilizador FOREIGN KEY (ele_ut_id) REFERENCES utilizador (ut_id)

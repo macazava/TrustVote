@@ -6,7 +6,9 @@ A cada TAREFAS_INTERVALO segundos (0 desliga, na API):
 2. abre a 2.ª volta quando chega a hora de início;
 3. encerra e apura as voltas cujo fim já passou. Ao fechar a 2.ª volta, a
    eleição fica encerrada; depois da 1.ª, a equipa decide se há 2.ª volta;
-4. apura as voltas encerradas que ficaram à espera do worker.
+4. encerra as eleições com encerramento automático cuja última volta já
+   terminou (sem voltas abertas nem por abrir);
+5. apura as voltas encerradas que ficaram à espera do worker.
 
 Com várias instâncias, um advisory lock garante que só uma corre o ciclo de
 cada vez. Tudo fica na auditoria como ação do "Sistema".
@@ -93,6 +95,24 @@ def _fechar_expiradas(sessao: Session, agora: datetime, auditar: Auditor) -> Non
             auditar("Eleição encerrada automaticamente", "eleicao", eleicao_id)
 
 
+def _encerrar_terminadas(sessao: Session, agora: datetime, auditar: Auditor) -> None:
+    """Encerra as eleições em curso cuja última volta já acabou, se a opção estiver ligada."""
+    for eleicao in repositorio_eleicao.listar(sessao, estado="em_curso"):
+        if not eleicao.encerramento_automatico:
+            continue
+        rondas = repositorio_ronda.listar(sessao, eleicao_id=eleicao.id)
+        if not rondas or any(
+            r.estado in ("aberta", "agendada") or r.data_fim > agora for r in rondas
+        ):
+            continue
+        try:
+            servico_eleicao.encerrar_eleicao(sessao, eleicao.id)
+        except EstadoInvalidoError:
+            sessao.rollback()
+            continue
+        auditar("Eleição encerrada automaticamente", "eleicao", eleicao.id)
+
+
 def apurar_pendentes(sessao: Session, ronda_ids: list[int] | None = None) -> int:
     """Apura as voltas encerradas que esperam pelo worker (todas, ou só as indicadas)."""
     auditar = Auditor(sessao, None, None)
@@ -127,6 +147,7 @@ def executar_tarefas(sessao: Session, agora: datetime | None = None) -> None:
     _iniciar_agendadas(sessao, agora, auditar)
     _abrir_voltas(sessao, agora, auditar)
     _fechar_expiradas(sessao, agora, auditar)
+    _encerrar_terminadas(sessao, agora, auditar)
     apurar_pendentes(sessao)
 
 

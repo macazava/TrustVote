@@ -4,7 +4,7 @@ from datetime import datetime
 
 from decimal import Decimal
 
-from sqlalchemy import BigInteger, DateTime, Numeric, String, Text, func, text
+from sqlalchemy import BigInteger, Boolean, DateTime, Numeric, String, Text, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -27,4 +27,8 @@ class Eleicao(Base):
     # Participação mínima (% dos habilitados) para o resultado ser válido.
     quorum: Mapped[Decimal] = mapped_column(
         "ele_quorum", Numeric(5, 2), server_default=text("0")
+    )
+    # Encerra a eleição sozinha quando a última volta chega à hora de fim (app/tarefas.py).
+    encerramento_automatico: Mapped[bool] = mapped_column(
+        "ele_encerramento_auto", Boolean, server_default=text("true"), default=True
     )

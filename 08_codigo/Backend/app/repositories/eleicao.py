@@ -13,9 +13,14 @@ def criar(
     descricao: str | None,
     criador_id: int,
     quorum: float = 0,
+    encerramento_automatico: bool = True,
 ) -> Eleicao:
     eleicao = Eleicao(
-        titulo=titulo, descricao=descricao, criador_id=criador_id, quorum=quorum
+        titulo=titulo,
+        descricao=descricao,
+        criador_id=criador_id,
+        quorum=quorum,
+        encerramento_automatico=encerramento_automatico,
     )
     sessao.add(eleicao)
     sessao.commit()

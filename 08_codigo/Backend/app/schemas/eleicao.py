@@ -15,6 +15,8 @@ class EleicaoCriar(BaseModel):
     descricao: str | None = Field(default=None, max_length=5000)
     # Participação mínima (% dos habilitados) para o resultado ser válido; 0 = sem quórum.
     quorum: float = Field(default=0, ge=0, le=100)
+    # Encerra a eleição sozinha à hora de fim da última volta.
+    encerramento_automatico: bool = True
 
 
 class EleicaoAlterar(BaseModel):
@@ -23,8 +25,9 @@ class EleicaoAlterar(BaseModel):
     titulo: str | None = Field(default=None, min_length=3, max_length=150)
     descricao: str | None = Field(default=None, max_length=5000)
     quorum: float | None = Field(default=None, ge=0, le=100)
+    encerramento_automatico: bool | None = None
 
-    @field_validator("titulo", "quorum")
+    @field_validator("titulo", "quorum", "encerramento_automatico")
     @classmethod
     def _sem_nulos(cls, valor):
         """Estes campos podem faltar no pedido, mas não ser limpos."""
@@ -45,6 +48,7 @@ class EleicaoResposta(BaseModel):
     criador_id: int
     criada_em: datetime
     quorum: float
+    encerramento_automatico: bool = True
 
     @computed_field
     @property

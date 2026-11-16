@@ -36,6 +36,7 @@ def criar_eleicao(sessao: Session, dados: EleicaoCriar, criador_id: int) -> Elei
         descricao=dados.descricao,
         criador_id=criador_id,
         quorum=dados.quorum,
+        encerramento_automatico=dados.encerramento_automatico,
     )
 
 
