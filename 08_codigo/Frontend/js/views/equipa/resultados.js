@@ -11,13 +11,8 @@
   const { resultRows, listRows } = TV.results;
 
 
-  // ===== Separadores: uma eleição a decorrer ou encerrada por separador =====
-  const electionTab = ({ e }, escolhida) => `
-    <button class="cand-election-tab" type="button" role="tab" data-result-election="${e.id}" aria-selected="${e.id === escolhida}">
-      <span class="cand-election-dot is-${escapeHtml(e.estado)}" aria-hidden="true"></span>
-      <span class="cand-election-name">${escapeHtml(e.titulo)}</span>
-      <span class="cand-election-count">${e.estado === "em_curso" ? "ao vivo" : e.ano}</span>
-    </button>`;
+  // ===== Separadores: uma eleição a decorrer ou encerrada por separador (o mesmo de Candidatos) =====
+  const electionTab = ({ e }, escolhida) => TV.teamView.electionTab(e, escolhida, "data-result-election");
 
   const resultsPage = (itens, historico, escolhida) => `
     ${head("APURAMENTO", "Resultados", "")}
@@ -61,7 +56,7 @@
     return `
       <div class="voter-stats result-kpis">
         ${kpi("Participação", percent(r.participacao), `${number(r.votantes)} de ${plural(r.habilitados, "eleitor", "eleitores")}`, quorumBar, "brand")}
-        ${kpi("Votos em candidaturas", number(total), "votos válidos")}
+        ${kpi("Votos válidos", number(total), r.votantes ? `${percent((total / r.votantes) * 100)} dos votantes` : "em candidaturas")}
         ${kpi("Votos em branco", number(r.brancos), percent(r.percentagem_brancos))}
         ${r.quorum
           ? kpi("Quórum", r.quorum_atingido ? "Atingido" : "Não atingido", `mínimo de ${percent(r.quorum)}`, "", r.quorum_atingido ? "brand" : "warn")

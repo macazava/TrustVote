@@ -3,6 +3,7 @@
   "use strict";
 
   const TV = window.TrustVote;
+  const { ui } = TV;
   const { escapeHtml, number, percent, dateTime } = TV.format;
   const { head, cardHead, stateBadge } = TV.blocks;
   const { lineChart, barChart } = TV.charts;
@@ -52,13 +53,15 @@
       <div class="overview-grid grid-cols-1 xl:grid-cols-[1.6fr_1fr]">
         <article class="dash-card">
           ${cardHead("PARTICIPAÇÃO", "Votos ao longo do tempo", eleicao ? `<span class="model-tag">${escapeHtml(eleicao.titulo)}</span>` : "")}
-          ${serie.length ? lineChart(serie) : `<div class="empty-box">${escapeHtml(stats.error ? stats.error.message : "Ainda não existem votos registados.")}</div>`}
+          ${serie.length
+        ? lineChart(serie)
+        : ui.empty("Ainda sem votos", stats.error ? stats.error.message : "O gráfico aparece quando a primeira votação abrir.")}
         </article>
         <article class="dash-card">
           ${cardHead("RESULTADOS PROVISÓRIOS", "Votos por candidato")}
           ${rondaAtual && rondaAtual.candidatos.length
         ? barChart(resultRows(rondaAtual, eleicao.candidatos).slice(0, 5), "Votos por candidato na eleição em curso")
-        : `<div class="empty-box">${escapeHtml(resultados.error ? resultados.error.message : "Sem resultados por enquanto.")}</div>`
+        : ui.empty("Sem resultados por enquanto", resultados.error ? resultados.error.message : "Os votos por candidato aparecem durante a votação.")
       }
           <button class="button button-outline" type="button" data-go="results">Ver todos os resultados ${TV.icon("arrow-right")}</button>
         </article>

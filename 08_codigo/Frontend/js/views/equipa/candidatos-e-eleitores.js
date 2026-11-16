@@ -10,9 +10,10 @@
   // ===== Candidatos: separadores por eleição, faixa da eleição escolhida e grelha de cartões =====
   const ativos = (e) => (e.candidatos || []).filter((c) => c.ativo).length;
 
-  // Um separador por eleição: título, estado e número de candidatos ativos
-  const electionTab = (e, escolhida) => `
-    <button class="cand-election-tab" type="button" role="tab" data-cand-election="${e.id}" aria-selected="${e.id === escolhida}">
+  // Um separador por eleição: estado (ponto), título e número de candidatos ativos.
+  // O mesmo em Candidatos e em Resultados; attr é o atributo data-* que o controller de cada separador lê.
+  const electionTab = (e, escolhida, attr = "data-cand-election") => `
+    <button class="cand-election-tab" type="button" role="tab" ${attr}="${e.id}" aria-selected="${e.id === escolhida}" title="${escapeHtml(e.titulo)}">
       <span class="cand-election-dot is-${escapeHtml(e.estado)}" aria-hidden="true"></span>
       <span class="cand-election-name">${escapeHtml(e.titulo)}</span>
       <span class="cand-election-count" data-cand-tab-count="${e.id}" aria-label="${ativos(e)} candidatos ativos">${ativos(e)}</span>
@@ -61,11 +62,18 @@
     const com2fa = contas.filter((u) => u.totp_ativo).length;
     const registados = inscritos ? inscritos.estudantes.filter((s) => s.registado).length : 0;
     const total = inscritos ? inscritos.estudantes.length : 0;
+    const admins = contas.length - eleitores.length;
+    // "Contas de eleitor" exclui a equipa; "Contas ativas" conta todas (eleitores + administradores)
+    // A lista oficial de inscritos só entra quando foi importada (sem ela, "0 de 0" não diz nada)
     return `
-      ${stat(eleitores.length, "Eleitores", `${contas.length - eleitores.length} administrador${contas.length - eleitores.length === 1 ? "" : "es"}`)}
-      ${stat(contas.length - suspensas, "Contas ativas", suspensas ? `${suspensas} suspensa${suspensas === 1 ? "" : "s"}` : "Nenhuma suspensa", suspensas ? "warn" : "")}
+      ${stat(eleitores.length, "Contas de eleitor", admins ? `+ ${plural(admins, "administrador", "administradores")}` : "Sem administradores")}
+      ${stat(`${contas.length - suspensas} <small>de ${contas.length}</small>`, "Contas ativas", suspensas ? `${suspensas} suspensa${suspensas === 1 ? "" : "s"}` : "Nenhuma suspensa", suspensas ? "warn" : "")}
       ${stat(contas.length ? `${Math.round((com2fa / contas.length) * 100)}%` : "—", "Com 2 fatores", plural(com2fa, "conta", "contas"))}
-      ${inscritos ? stat(total ? `${Math.round((registados / total) * 100)}%` : "—", "Inscritos com conta", `${registados} de ${total}`, "brand") : ""}`;
+      ${inscritos
+        ? total
+          ? stat(`${Math.round((registados / total) * 100)}%`, "Inscritos com conta", `${registados} de ${total} na lista oficial`, "brand")
+          : stat("—", "Lista oficial", "Por importar (ver abaixo)")
+        : ""}`;
   }
 
   // Barra de ferramentas da lista de contas: pesquisa e filtros
@@ -83,7 +91,7 @@
         <div><h2>Contas · ${contas.length}</h2></div>
       </div>
       <div class="people-toolbar">
-        <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar por nome, e-mail, número ou curso" aria-label="Pesquisar contas" data-user-search></label>
+        <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar eleitores…" title="Nome, e-mail, número ou curso" aria-label="Pesquisar contas" data-user-search></label>
         <div class="chip-row" role="group" aria-label="Filtrar contas">
           ${filtros.map(([valor, nome], i) => `<button class="chip" type="button" data-user-filter="${valor}" aria-pressed="${i === 0}">${nome} <span class="chip-count">${contar(valor)}</span></button>`).join("")}
         </div>
@@ -115,12 +123,12 @@
     <div class="person-row${u.ativo ? "" : " is-off"}" role="listitem">
       <span class="cand-avatar" aria-hidden="true">${escapeHtml(initials(u.nome))}</span>
       <div class="person-main">
-        <b>${escapeHtml(u.nome)}${u.id === eu.id ? ' <span class="person-you">tu</span>' : ""}</b>
-        <small>${escapeHtml(u.email)}</small>
+        <b title="${escapeHtml(u.nome)}">${escapeHtml(u.nome)}${u.id === eu.id ? ' <span class="person-you">tu</span>' : ""}</b>
+        <small title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</small>
       </div>
       <div class="person-meta">
         <span class="mono">${escapeHtml(voterNumber(u))}</span>
-        <small>${escapeHtml(u.curso || "Sem curso")}</small>
+        <small title="${escapeHtml(u.curso || "Sem curso")}">${escapeHtml(u.curso || "Sem curso")}</small>
       </div>
       <div class="person-tags">
         <span class="cand-tag${u.perfil === "administrador" ? " is-orgao" : ""}">${u.perfil === "administrador" ? "Administrador" : "Eleitor"}</span>
@@ -148,7 +156,7 @@
             <div class="preview-track" aria-hidden="true"><span style="width:${pct.toFixed(1)}%"></span></div>
           </div>
           <div class="people-toolbar">
-            <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar por número, nome ou curso" aria-label="Pesquisar inscritos" data-enroll-search></label>
+            <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar eleitores…" title="Número, nome ou curso" aria-label="Pesquisar inscritos" data-enroll-search></label>
             <div class="chip-row" role="group" aria-label="Filtrar inscritos">
               <button class="chip" type="button" data-enroll-filter="" aria-pressed="true">Todos</button>
               <button class="chip" type="button" data-enroll-filter="sim" aria-pressed="false">Com conta <span class="chip-count">${registados}</span></button>
@@ -162,7 +170,7 @@
                 <span class="enroll-dot${s.registado ? " is-ok" : ""}" title="${s.registado ? "Conta criada" : "Conta por criar"}" aria-label="${s.registado ? "Conta criada" : "Conta por criar"}"></span>
                 <div>
                   <b class="mono">${escapeHtml(s.num_estudante)}</b>
-                  <small>${escapeHtml([s.nome, s.curso].filter(Boolean).join(" · ") || "Sem nome")}</small>
+                  <small title="${escapeHtml([s.nome, s.curso].filter(Boolean).join(" · ") || "Sem nome")}">${escapeHtml([s.nome, s.curso].filter(Boolean).join(" · ") || "Sem nome")}</small>
                 </div>
                 <button type="button" class="enroll-remove" data-unenroll="${escapeHtml(s.num_estudante)}" aria-label="Remover ${escapeHtml(s.num_estudante)} da lista" title="Remover da lista">${TV.icon("x")}</button>
               </div>`
@@ -216,5 +224,5 @@
          ${repetidos ? `<span class="parse-skip">${TV.icon("info")} ${plural(repetidos, "repetido ignorado", "repetidos ignorados")}</span>` : ""}
          ${invalidas.length ? `<span class="parse-bad">${TV.icon("circle-alert")} Linha${invalidas.length === 1 ? "" : "s"} ${invalidas.slice(0, 6).join(", ")}${invalidas.length > 6 ? "…" : ""} com número inválido</span>` : ""}`;
 
-  Object.assign((TV.teamView = TV.teamView || {}), { candidatesPage, candidatesStrip, votersPage, voterStats, usersToolbar, usersFilter, usersRows, enrolledCard, parseEnrolled, parseSummary });
+  Object.assign((TV.teamView = TV.teamView || {}), { electionTab, candidatesPage, candidatesStrip, votersPage, voterStats, usersToolbar, usersFilter, usersRows, enrolledCard, parseEnrolled, parseSummary });
 })();

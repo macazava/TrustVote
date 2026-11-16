@@ -35,7 +35,8 @@
 
   <main id="conteudo" class="auth-layout">
 
-    <!-- Painel da marca: o que o eleitor ganha com a plataforma -->
+    <!-- Painel da marca: o que o eleitor (ou a equipa, com ?area=equipa) ganha com a plataforma.
+         Os textos da equipa estão em js/controllers/login/formulario.js -->
     <section class="auth-intro" aria-labelledby="auth-heading">
       <a class="brand auth-brand" href="inicio.html">
         <span class="brand-mark"><svg class="icon" aria-hidden="true">
@@ -55,7 +56,7 @@
         </p>
       </div>
 
-      <div class="assurances">
+      <div class="assurances" data-assurances>
         <div>
           <span><svg class="icon" aria-hidden="true">
               <use href="#i-shield-check"></use>
