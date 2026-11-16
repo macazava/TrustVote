@@ -3,10 +3,10 @@
 .dash-card {
     margin-top: var(--space-6);
     padding: var(--space-7);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
     background: var(--color-surface);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--card-shadow);
 }
 
 .dash-card h2 {
@@ -85,9 +85,9 @@
     align-items: center;
     gap: 7px;
     min-height: 26px;
-    padding: 3px 10px;
+    padding: 3px 11px;
     border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     background: var(--color-brand-soft);
     color: var(--color-brand);
     font-size: 0.6875rem;
@@ -183,7 +183,7 @@
     border-radius: 50%;
     background: var(--color-brand-soft);
     color: var(--color-heading);
-    font-family: var(--font-heading);
+    font-family: var(--font-sans);
     font-size: var(--text-base);
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -253,5 +253,5 @@
     display: block;
     height: 100%;
     border-radius: inherit;
-    background: var(--color-brand-fill);
+    background: linear-gradient(90deg, var(--color-brand-fill), var(--color-indicator));
 }

@@ -43,7 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== Sessão já iniciada =====
   const claims = session.claims();
-  if (claims) {
+  if (claims && params.get("area") === "equipa" && claims.perfil !== "administrador") {
+    // Eleitor com sessão aberta a tentar entrar na área da equipa: pode terminar a sessão aqui mesmo
+    ui.message(message, "");
+    message.innerHTML = `Está ligado como eleitor · <button class="link-button" type="button" data-end-session>Terminar sessão</button>`;
+    message.querySelector("[data-end-session]").addEventListener("click", () => {
+      // Avisa o servidor (sem esperar mais de 1,5 s) e fica nesta página, pronta para a conta da equipa
+      Promise.race([api.auth.logout().catch(() => { }), new Promise((ok) => setTimeout(ok, 1500))]).then(() => {
+        session.clear();
+        window.location.reload();
+      });
+    });
+  } else if (claims) {
     const panel = claims.perfil === "administrador" ? "equipa.html" : "eleitor.html";
     ui.message(message, "");
     message.innerHTML = `Já tem sessão iniciada. <a href="${panel}">Continuar para a sua área ${window.TrustVote.icon("arrow-right")}</a>`;

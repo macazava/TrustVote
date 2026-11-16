@@ -8,19 +8,22 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
     margin-top: var(--space-8);
-    border-bottom: 1px solid var(--color-rule);
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
+    background: var(--color-rule);
+    box-shadow: var(--card-shadow);
 }
 
+/* Bloco único com divisórias de 1px (o intervalo deixa ver o fundo --color-rule) */
 .el-summary>div {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-6) var(--space-6) 0;
-}
-
-.el-summary>div+div {
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--color-rule);
+    min-width: 0;
+    padding: var(--space-5) var(--space-6);
+    background: var(--color-surface);
 }
 
 .el-summary b {
@@ -34,8 +37,11 @@
 }
 
 .el-summary small {
+    overflow: hidden;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* "À espera do seu voto": número na cor da marca, com ponto */
@@ -295,7 +301,7 @@
     height: 28px;
     font-family: var(--font-sans);
     font-size: 0.625rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 /* Coluna da ação: contagem decrescente em destaque e botões */
@@ -327,7 +333,6 @@
 
 .el-countdown b {
     color: var(--color-heading);
-    font-family: var(--font-mono);
     font-size: var(--text-xl);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
@@ -404,8 +409,8 @@
 
 .el-history-list small {
     color: var(--color-text-muted);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
 }
 
 .el-history-state {
@@ -637,11 +642,8 @@
         grid-row: 2;
     }
 
-    .el-summary>div,
-    .el-summary>div+div {
-        padding: var(--space-4) 0;
-        border-left: 0;
-        border-top: 1px solid var(--color-rule);
+    .el-summary>div {
+        padding: var(--space-4) var(--space-5);
     }
 
     .el-history-list li {

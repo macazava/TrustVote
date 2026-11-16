@@ -11,7 +11,8 @@
   team.renderCandidates = async function renderCandidates() {
     const el = panel("candidates");
     const lista = await api.eleicoes.listar();
-    const detalhes = await Promise.all(lista.map((e) => api.eleicoes.detalhe(e.id).then(elections.view)));
+    // A decorrer primeiro, depois da mais recente para a mais antiga (a mesma ordem de Resultados)
+    const detalhes = elections.byRecent(await Promise.all(lista.map((e) => api.eleicoes.detalhe(e.id).then(elections.view))));
     // Abre na eleição que ainda se pode preparar; senão, na primeira
     const inicial = detalhes.find((e) => ["rascunho", "agendada"].includes(e.estado)) || detalhes.find((e) => e.estado === "em_curso") || detalhes[0];
     el.innerHTML = TV.teamView.candidatesPage(detalhes, inicial && inicial.id);

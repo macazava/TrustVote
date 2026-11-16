@@ -1,15 +1,6 @@
 /* Área do eleitor: boletim de voto */
 
-.empty-box {
-    display: grid;
-    place-items: center;
-    min-height: 150px;
-    padding: 20px;
-    border: 1px dashed var(--color-border-strong);
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    text-align: center;
-}
+/* O .empty-box (estado vazio simples) está em componentes/superficies.css */
 
 .year {
     display: grid;

@@ -23,8 +23,9 @@
     border-radius: 50%;
     background: var(--color-brand-soft);
     color: var(--color-heading);
+    font-family: var(--font-sans);
     font-size: var(--text-3xl);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .profile-id {

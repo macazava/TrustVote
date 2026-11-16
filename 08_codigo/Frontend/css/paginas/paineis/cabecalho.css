@@ -97,7 +97,6 @@ body[data-page="admin"] {
     content: "";
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform var(--dur-base) var(--ease-out);
 }
 
 .panel-link.active {
@@ -105,8 +104,10 @@ body[data-page="admin"] {
     font-weight: 600;
 }
 
+/* Só o novo item anima (o anterior apaga-se de imediato): nunca há dois sublinhados durante a troca */
 .panel-link.active::after {
     transform: scaleX(1);
+    transition: transform var(--dur-base) var(--ease-out);
 }
 
 .panel-user {
@@ -189,7 +190,7 @@ body[data-page="admin"] {
     min-width: 20px;
     height: 20px;
     padding: 0 6px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     background: var(--color-warning-dot);
     color: var(--neutral-900);
     font-size: 0.6875rem;
@@ -270,24 +271,18 @@ body[data-page="admin"] {
     body[data-page="admin"] .panel-link {
         justify-content: space-between;
         min-height: 42px;
-        padding: 0 var(--space-3);
-        border-radius: var(--radius-sm);
+        padding: 0 var(--space-3) 0 var(--space-4);
+        border: 1px solid transparent;
+        border-radius: var(--radius-full);
         color: var(--color-on-dark-muted);
         font-size: var(--text-sm);
         font-weight: 500;
         transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
     }
 
+    /* Na sidebar o item ativo é uma pílula: sem sublinhado nem barra */
     body[data-page="admin"] .panel-link::after {
-        top: 10px;
-        right: auto;
-        bottom: 10px;
-        left: 0;
-        width: 2px;
-        height: auto;
-        background: var(--color-on-dark-live);
-        transform: scaleY(0);
-        transform-origin: center;
+        content: none;
     }
 
     body[data-page="admin"] .panel-link:hover {
@@ -295,14 +290,12 @@ body[data-page="admin"] {
         color: var(--color-on-dark);
     }
 
+    /* Item ativo em pílula: fundo branco a 10% e contorno subtil (sem a barra lateral) */
     body[data-page="admin"] .panel-link.active {
-        background: var(--color-on-dark-hover);
+        border-color: var(--color-on-dark-border);
+        background: var(--color-on-dark-selected);
         color: var(--color-on-dark);
         font-weight: 600;
-    }
-
-    body[data-page="admin"] .panel-link.active::after {
-        transform: scaleY(1);
     }
 
     /* Conta e ações no fundo da sidebar */

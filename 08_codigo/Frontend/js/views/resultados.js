@@ -69,7 +69,7 @@
         </div>
         <div class="results-figures">
           ${numero("Participação", percent(r.participacao), `${number(r.votantes)} de ${plural(r.habilitados, "eleitor", "eleitores")}`)}
-          ${numero("Votos em candidaturas", number(total), "votos válidos")}
+          ${numero("Votos válidos", number(total), r.votantes ? `${percent((total / r.votantes) * 100)} dos votantes` : "em candidaturas")}
           ${numero("Votos em branco", number(r.brancos), percent(r.percentagem_brancos))}
           ${quorum}
         </div>

@@ -29,9 +29,9 @@
     const visiveis = lista.filter((e) => ["em_curso", "encerrada"].includes(e.estado));
     const dados = await Promise.all(visiveis.map(carregar));
 
-    // Ao vivo primeiro, depois as encerradas da mais recente para a mais antiga
+    // Ao vivo primeiro, depois as encerradas da mais recente para a mais antiga (a mesma ordem de Candidatos)
     const inicio = (d) => Date.parse(d.e.inicio || d.e.data_criacao);
-    const itens = [...dados].sort((a, b) => (a.e.estado === "em_curso") - (b.e.estado === "em_curso") || inicio(a) - inicio(b)).reverse();
+    const itens = elections.byRecent(dados, (d) => d.e);
     // Comparação histórica: encerradas, da mais antiga para a mais recente
     const historico = dados.filter((d) => d.e.estado === "encerrada").sort((a, b) => inicio(a) - inicio(b));
 

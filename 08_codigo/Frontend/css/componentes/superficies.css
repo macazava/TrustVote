@@ -1,42 +1,58 @@
 /* Superfícies: cantos e elevação dos componentes, num só sítio.
-   - controlos e blocos pequenos (botões, campos, avisos, etiquetas)  → --radius-sm / --radius-md (6px)
-   - superfícies (cartões, painéis, menus)                            → --radius-lg (8px)
+   - etiquetas e blocos pequenos (avisos, códigos)                     → --radius-sm / --radius-md (6px)
+   - controlos (botões, campos, menus de linha)                       → --radius-control (10px)
+   - superfícies (cartões, painéis, menus)                            → --radius-card (14px)
+   - etiquetas de estado (pílulas)                                    → --radius-full
    - elevação: só --shadow-sm nas superfícies; --shadow-lg no que flutua (janelas, avisos, menus abertos)
    - só ganha sombra ao passar o rato o que é clicável. */
 
-.check-box,
-.model-tag {
+.check-box {
     border-radius: var(--radius-sm);
 }
 
-.badge-card,
+/* Etiquetas de estado: sempre em pílula */
+.model-tag,
+.status-pill,
+.live-chip,
+.auto-chip {
+    border-radius: var(--radius-full);
+}
+
 .election-alert,
-.empty-box,
 .notice,
-.radio-line,
 .receipt-code,
-.role-switch,
+.role-switch {
+    border-radius: var(--radius-md);
+}
+
+.badge-card,
+.radio-line,
 .table-scroll,
 .field-label input,
 .field-label select,
 .field-label textarea,
 .auth-card input:not([type="checkbox"]),
 .row-actions button {
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-control);
 }
 
-.dash-card,
 .auth-card,
-.election-row,
 .hub-card,
 .metric-card,
-.profile-hero,
-.security-card,
-.candidate-list label,
-.candidate-grid article,
 .platform-grid article,
 .photo-panel img {
     border-radius: var(--radius-lg);
+}
+
+/* Áreas do eleitor e da equipa: cartões com o mesmo raio, borda e sombra */
+.dash-card,
+.empty-box,
+.election-row,
+.profile-hero,
+.security-card,
+.candidate-list label,
+.candidate-grid article {
+    border-radius: var(--radius-card);
 }
 
 .role-switch {
@@ -46,9 +62,14 @@
 /* ===== Elevação discreta ===== */
 .badge-card,
 .hub-card,
-.metric-card,
-.profile-hero {
+.metric-card {
     box-shadow: var(--shadow-sm);
+}
+
+.profile-hero,
+.security-card {
+    border-color: var(--card-border);
+    box-shadow: var(--card-shadow);
 }
 
 .auth-card {
@@ -70,5 +91,36 @@
 
 .election-row:hover {
     border-color: var(--color-brand-muted);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* ===== Estado vazio simples (gráficos e listas sem dados) =====
+   Sem borda tracejada: fundo suave com brilho radial, ícone de urna na cor do tema e texto centrado */
+.empty-box {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: var(--space-3);
+    min-height: 160px;
+    padding: var(--space-6);
+    background:
+        radial-gradient(120% 90% at 50% 0%, var(--color-brand-tint), transparent 70%),
+        var(--color-bg-alt);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: balance;
+    /* Urna de voto (contorno), usada como máscara para herdar a cor do tema */
+    --empty-urn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 11h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z'/%3E%3Cpath d='M9 15h6'/%3E%3Cpath d='M8 11V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v7'/%3E%3Cpath d='m10 7 1.5 1.5L14 6'/%3E%3C/svg%3E");
+}
+
+.empty-box::before {
+    width: 36px;
+    height: 36px;
+    background: var(--color-brand);
+    content: "";
+    opacity: 0.7;
+    -webkit-mask: var(--empty-urn) center / contain no-repeat;
+    mask: var(--empty-urn) center / contain no-repeat;
 }

@@ -112,5 +112,13 @@
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   }
 
-  TV.elections = { statusLabels, orgaoLabels, candidateInfo, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput };
+  // Ordem dos separadores por eleição (Candidatos e Resultados): a decorrer primeiro, depois da mais recente
+  // para a mais antiga (data de início ou, sem ela, de criação). pick tira a eleição de cada item da lista.
+  function byRecent(lista, pick = (x) => x) {
+    const inicio = (x) => Date.parse(pick(x).inicio || pick(x).data_criacao) || 0;
+    const aoVivo = (x) => (pick(x).estado === "em_curso" ? 1 : 0);
+    return [...lista].sort((a, b) => aoVivo(b) - aoVivo(a) || inicio(b) - inicio(a));
+  }
+
+  TV.elections = { statusLabels, orgaoLabels, candidateInfo, view: electionView, featured: featuredElection, loadForVoter, fromLocalInput, toLocalInput, byRecent };
 })();

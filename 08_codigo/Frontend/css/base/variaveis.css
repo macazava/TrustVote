@@ -118,6 +118,8 @@
    --color-on-dark-muted: var(--green-200);
    --color-on-dark-border: rgb(255 255 255 / 18%);
    --color-on-dark-hover: rgb(255 255 255 / 8%);
+   --color-on-dark-selected: rgb(255 255 255 / 10%);
+   /* item ativo da sidebar da equipa (pílula) */
    --color-on-dark-active: var(--green-600);
    --color-on-dark-live: var(--green-300);
    --color-on-dark-warning: var(--amber-200);
@@ -194,12 +196,28 @@
    --radius-md: 6px;
    --radius-lg: 8px;
    --radius-full: 999px;
+   /* Áreas do eleitor e da equipa: cartões e controlos um pouco mais arredondados */
+   --radius-card: 14px;
+   --radius-control: 10px;
+
+   /* ===================== Controlos ===================== */
+   /* Escala fixa de alturas: ação principal da página, ação normal, ação dentro de cartões */
+   --control-h-lg: 44px;
+   --control-h: 40px;
+   --control-h-sm: 34px;
 
    /* ===================== Elevação ===================== */
    /* Sombras discretas, tingidas com o verde da marca (preferir linhas de 1px) */
    --shadow-sm: 0 1px 2px rgb(23 63 50 / 6%);
    --shadow-md: 0 1px 2px rgb(23 63 50 / 5%), 0 4px 12px -6px rgb(23 63 50 / 14%);
    --shadow-lg: 0 2px 4px rgb(23 63 50 / 6%), 0 12px 28px -14px rgb(23 63 50 / 22%);
+
+   /* Cartões dos painéis: borda suave e sombra em camadas (brilho interior + contacto + difusa) */
+   --card-border: color-mix(in srgb, var(--color-border) 75%, transparent);
+   --card-shadow: inset 0 1px 0 rgb(255 255 255 / 70%), 0 1px 2px rgb(23 63 50 / 5%), 0 8px 24px -16px rgb(23 63 50 / 18%);
+   --card-shadow-hover: inset 0 1px 0 rgb(255 255 255 / 70%), 0 2px 4px rgb(23 63 50 / 6%), 0 14px 32px -16px rgb(23 63 50 / 26%);
+   /* Anel de foco (teclado e campos) */
+   --ring: 0 0 0 3px var(--color-focus-ring);
 
    /* ===================== Movimento ===================== */
    /* Usado em todo o site; desligado com prefers-reduced-motion */
@@ -280,10 +298,15 @@
    --color-danger: #ff8f86;
    --color-danger-soft: #3a1b18;
 
+   --color-on-dark-selected: rgb(255 255 255 / 10%);
    --color-overlay: rgb(0 0 0 / 60%);
    --color-header: color-mix(in srgb, #0d1310 86%, transparent);
 
    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
    --shadow-md: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 12px -6px rgb(0 0 0 / 50%);
    --shadow-lg: 0 2px 4px rgb(0 0 0 / 30%), 0 12px 28px -14px rgb(0 0 0 / 60%);
+
+   --card-border: color-mix(in srgb, var(--color-border) 75%, transparent);
+   --card-shadow: inset 0 1px 0 rgb(255 255 255 / 4%), 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px -16px rgb(0 0 0 / 55%);
+   --card-shadow-hover: inset 0 1px 0 rgb(255 255 255 / 5%), 0 2px 4px rgb(0 0 0 / 35%), 0 14px 32px -16px rgb(0 0 0 / 65%);
 }

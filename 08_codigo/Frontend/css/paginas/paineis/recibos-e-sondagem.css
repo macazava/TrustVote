@@ -67,11 +67,13 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3) var(--space-6);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-5);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-card);
     background: var(--color-surface);
+    box-shadow: var(--card-shadow);
     color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
     font-size: var(--text-sm);
 }
 
@@ -549,7 +551,9 @@
 }
 
 .model-tag {
-    padding: 10px 14px;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
     border: 1px solid var(--color-brand-muted);
     background: var(--color-brand-soft);
     color: var(--color-text-muted);

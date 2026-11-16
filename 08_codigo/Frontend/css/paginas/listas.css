@@ -62,25 +62,13 @@
     background: var(--color-surface);
 }
 
-/* Faixa de cor no topo, um tom diferente do verde institucional por candidatura */
+/* Faixa de cor no topo: o mesmo verde institucional em todas as candidaturas */
 [data-page="listas"] .list-card::before {
     position: absolute;
     inset: 0 0 auto;
     height: 4px;
     background: var(--lista-cor);
     content: "";
-}
-
-[data-page="listas"] .list-card:nth-child(4n + 2) {
-    --lista-cor: var(--color-heading-fill);
-}
-
-[data-page="listas"] .list-card:nth-child(4n + 3) {
-    --lista-cor: var(--color-indicator);
-}
-
-[data-page="listas"] .list-card:nth-child(4n + 4) {
-    --lista-cor: var(--color-on-dark-active);
 }
 
 [data-page="listas"] .list-card:hover {

@@ -40,7 +40,7 @@
         <div class="result-outcome chain-banner">
           <span class="result-outcome-icon">${TV.icon("shield-check")}</span>
           <div><b>Cadeia de registos</b><p>Confirme que nenhum registo foi alterado ou apagado.</p></div>
-          <button class="button button-primary" type="button" data-verify-chain>Verificar agora</button>
+          <button class="button button-primary button-lg" type="button" data-verify-chain>Verificar agora</button>
         </div>
       </div>
       <article class="dash-card">
@@ -53,7 +53,7 @@
         </div>
         ${registos.length
           ? `<div class="people-toolbar">
-              <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar ação, eleição, pessoa ou IP" aria-label="Pesquisar no registo" data-audit-search></label>
+              <label class="cand-search">${TV.icon("search")}<input type="search" placeholder="Pesquisar registos…" title="Ação, eleição, pessoa ou IP" aria-label="Pesquisar no registo" data-audit-search></label>
               <div class="chip-row" role="group" aria-label="Filtrar por tipo">
                 <button class="chip" type="button" data-audit-filter="" aria-pressed="true">Tudo</button>
                 ${presentes.map((e) => `<button class="chip" type="button" data-audit-filter="${e}" aria-pressed="false">${tipos[e][0]}</button>`).join("")}

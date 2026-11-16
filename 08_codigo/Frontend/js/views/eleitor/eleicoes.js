@@ -231,7 +231,7 @@
   const atalho = ({ icone, titulo, texto, attrs }) => `
     <${attrs.href ? "a" : "button type=\"button\""} class="help-shortcut" ${Object.entries(attrs).map(([k, val]) => `${k}="${escapeHtml(String(val))}"`).join(" ")}>
       <span class="help-shortcut-icon">${TV.icon(icone)}</span>
-      <span><b>${titulo}</b><small>${texto}</small></span>
+      <span><b title="${escapeHtml(titulo)}">${titulo}</b><small>${texto}</small></span>
       <span class="help-shortcut-go">${TV.icon("arrow-right")}</span>
     </${attrs.href ? "a" : "button"}>`;
 
@@ -255,7 +255,7 @@
       ${atalho(votar)}
       ${atalho({ icone: "inbox", titulo: "Os meus recibos", texto: "Recibos e comprovativos do seu voto", attrs: { "data-go": "receipts" } })}
       ${atalho({ icone: "chart-column", titulo: "Resultados", texto: "Participação e resultados das eleições", attrs: { "data-go": "results" } })}
-      ${atalho({ icone: "message-circle", titulo: "Falar com a comissão", texto: "Escreva-nos pelo formulário de contacto", attrs: { href: "ajuda.html#contactos" } })}
+      ${atalho({ icone: "message-circle", titulo: "Contactar comissão", texto: "Escreva-nos pelo formulário de contacto", attrs: { href: "ajuda.html#contactos" } })}
     </nav>
 
     <article class="dash-card help-faq">

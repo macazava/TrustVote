@@ -27,6 +27,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const terms = authForm.elements.terms;
 
   let selectedRole = new URLSearchParams(window.location.search).get("area") === "equipa" ? "equipa" : "eleitor";
+
+  // Garantias do painel da marca: as do eleitor estão no HTML; as da equipa trocam-nas quando a área é a equipa
+  const assurances = [...document.querySelectorAll("[data-assurances] > div")];
+  const voterAssurances = assurances.map((item) => ({
+    icon: item.querySelector("use")?.getAttribute("href"),
+    title: item.querySelector("b")?.textContent,
+    text: item.querySelector("small")?.textContent,
+  }));
+  const teamAssurances = [
+    { icon: "#i-shield-check", title: "Acesso reservado", text: "Só as contas de administrador entram na área da equipa." },
+    { icon: "#i-clipboard-list", title: "Tudo fica registado", text: "Cada ação da equipa entra no registo de auditoria encadeado." },
+    { icon: "#i-lock", title: "Votos sempre anónimos", text: "A equipa vê totais e participação, nunca quem votou em quem." },
+  ];
+
+  function showAssurances(list) {
+    assurances.forEach((item, i) => {
+      const a = list[i];
+      if (!a) return;
+      item.querySelector("use")?.setAttribute("href", a.icon);
+      item.querySelector("b").textContent = a.title;
+      item.querySelector("small").textContent = a.text;
+    });
+  }
   let selectedMode = window.location.hash === "#registar" ? "register" : "login";
 
   // Mostra os campos e textos certos para a combinação escolhida
@@ -67,8 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
     submitLabel.innerHTML = `${isRegister ? "Criar conta" : "Iniciar sessão"} ${window.TrustVote.icon("arrow-right")}`;
     heading.textContent = isTeam ? "Área da Equipa" : "Área do Eleitor";
     description.textContent = isTeam
-      ? "Aceda à área reservada da equipa do TrustVote."
+      ? "Inicie sessão para gerir eleições, candidatos e eleitores, acompanhar a votação e publicar os resultados."
       : "Inicie sessão para consultar a sua área reservada.";
+    showAssurances(isTeam ? teamAssurances : voterAssurances);
 
     message.textContent = "";
 

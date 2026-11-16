@@ -1,5 +1,5 @@
-/* Área do eleitor: resposta discreta ao cursor. Só muda a borda dos cartões que se podem abrir;
-   nada sobe, roda, pulsa ou brilha. Só cores do tema, por isso funciona no modo claro e escuro. */
+/* Área do eleitor: resposta discreta ao cursor e efeitos de entrada.
+   Só cores e variáveis do tema, por isso funciona no modo claro e escuro. */
 
 [data-page="voter"] .el-item {
     transition: border-color 0.2s;
@@ -7,4 +7,153 @@
 
 [data-page="voter"] .el-item:hover {
     border-color: var(--color-brand-muted);
+}
+
+/* === Modernização UI === (área do eleitor; para reverter, apagar esta secção até ao fim do ficheiro)
+   Efeitos discretos com as variáveis do tema (cores, raios, sombras, easing), por isso funcionam no modo escuro.
+   Tudo desligado com prefers-reduced-motion (no fim desta secção e, em geral, em componentes/animacoes.css). */
+
+/* 1. Entrada: fade + 8px, 0,45s. Os atalhos e a atividade entram em cascata (50ms entre cada).
+      Substitui, nestes elementos, a entrada genérica de js/motion.js (.tv-enter) para não animarem duas vezes. */
+@keyframes tv-ui-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+[data-page="voter"] .view-panel > .page-head.tv-enter,
+[data-page="voter"] [data-panel="overview"] > .tv-enter {
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+[data-page="voter"] .view-panel.active > .page-head,
+[data-page="voter"] [data-panel="overview"] > .dash-card,
+[data-page="voter"] .help-shortcut,
+[data-page="voter"] .ov-activity li {
+    animation: tv-ui-in 0.45s var(--ease-out) both;
+}
+
+[data-page="voter"] [data-panel="overview"] > .dash-card {
+    animation-delay: 60ms;
+}
+
+[data-page="voter"] .help-shortcut:nth-child(1) { animation-delay: 100ms; }
+[data-page="voter"] .help-shortcut:nth-child(2) { animation-delay: 150ms; }
+[data-page="voter"] .help-shortcut:nth-child(3) { animation-delay: 200ms; }
+[data-page="voter"] .help-shortcut:nth-child(4) { animation-delay: 250ms; }
+[data-page="voter"] .help-shortcut:nth-child(5) { animation-delay: 300ms; }
+
+[data-page="voter"] .ov-activity li:nth-child(1) { animation-delay: 300ms; }
+[data-page="voter"] .ov-activity li:nth-child(2) { animation-delay: 350ms; }
+[data-page="voter"] .ov-activity li:nth-child(3) { animation-delay: 400ms; }
+[data-page="voter"] .ov-activity li:nth-child(4) { animation-delay: 450ms; }
+
+/* 2. Cartões: raio de 14px e sombra muito suave em repouso */
+[data-page="voter"] [data-panel="overview"] > .dash-card,
+[data-page="voter"] .ov-columns > .dash-card,
+[data-page="voter"] .help-shortcut {
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+}
+
+/* 3. Atalhos: sobem 2px, sombra mais forte, borda um pouco mais escura, a seta avança 3px (0,2s) */
+[data-page="voter"] .help-shortcut {
+    transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out);
+}
+
+[data-page="voter"] .help-shortcut:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+[data-page="voter"] .help-shortcut-go {
+    transition: transform var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+
+[data-page="voter"] .help-shortcut:hover .help-shortcut-go {
+    transform: translateX(3px);
+}
+
+/* 4. Atividade recente: um só divisor entre o título e a lista; linhas com fundo leve ao passar o rato */
+[data-page="voter"] .ov-activity li:first-child {
+    border-top: 0;
+}
+
+[data-page="voter"] .ov-activity li {
+    margin-inline: calc(-1 * var(--space-2));
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-control);
+    transition: background-color var(--dur-base) var(--ease-out);
+}
+
+[data-page="voter"] .ov-activity li:hover {
+    background: var(--color-brand-tint);
+}
+
+/* 5. Cabeçalho: linha uniforme na cor das bordas (em vez do gradiente escuro → transparente) */
+[data-page="voter"] .page-head::after {
+    background: var(--color-border);
+}
+
+/* 6. Estado vazio dentro de um cartão ("Sem eleições ativas"): metade do espaço vertical */
+[data-page="voter"] .dash-card > .state-empty {
+    padding-block: var(--space-5);
+}
+
+/* 7. Ponto verde da credencial: pulso suave (o anel expande e desvanece) */
+@keyframes tv-ui-pulse {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand-fill) 45%, transparent);
+    }
+
+    70%,
+    100% {
+        box-shadow: 0 0 0 8px transparent;
+    }
+}
+
+[data-page="voter"] .badge-card i {
+    animation: tv-ui-pulse 2s var(--ease-out) infinite;
+}
+
+/* 8. Botões: pequeno "press" e anel de foco visível só com o teclado */
+[data-page="voter"] .button:active {
+    transform: scale(0.98);
+}
+
+[data-page="voter"] .button:focus-visible,
+[data-page="voter"] .help-shortcut:focus-visible,
+[data-page="voter"] .link-button:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+/* 10. Movimento reduzido: sem entradas, pulsos, deslocações nem transições */
+@media (prefers-reduced-motion: reduce) {
+    [data-page="voter"] .view-panel.active > .page-head,
+    [data-page="voter"] [data-panel="overview"] > .dash-card,
+    [data-page="voter"] .help-shortcut,
+    [data-page="voter"] .help-shortcut-go,
+    [data-page="voter"] .ov-activity li,
+    [data-page="voter"] .badge-card i,
+    [data-page="voter"] .button {
+        animation: none;
+        transition: none;
+    }
+
+    [data-page="voter"] .help-shortcut:hover,
+    [data-page="voter"] .help-shortcut:hover .help-shortcut-go,
+    [data-page="voter"] .button:active {
+        transform: none;
+    }
 }
