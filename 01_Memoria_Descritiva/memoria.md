@@ -1,8 +1,9 @@
+
 # Memória Descritiva
 
 ## 1. Identificação
 
-**Nome do projeto:** TrustVote - Sistema Distribuído de Votação Online  
+**Nome do projeto:** TrustVote – Sistema Distribuído de Votação Online  
 **Curso:** Licenciatura em Engenharia Informática  
 **Ano letivo:** 2026/2027  
 **Semestre:** 5.º Semestre  
@@ -18,59 +19,68 @@
 
 ### Palavras-chave
 
-Votação Online; Eleições Presidenciais; Sistemas Distribuídos; Segurança Informática; Tolerância a Falhas; Inteligência Artificial; Criptografia; Integridade de Dados; Auditoria; Docker; Python; PostgreSQL; Redis
+Votação Online; Eleições da Associação de Estudantes; Sistemas Distribuídos; Segurança Informática; Tolerância a Falhas; Criptografia; Integridade de Dados; Auditoria; Docker; Python; PostgreSQL; Redis.
 
 ---
 
 ## 2. Resumo
 
-O TrustVote é uma plataforma distribuída de votação online desenvolvida no âmbito da Licenciatura em Engenharia Informática, destinada à realização de eleições presidenciais fictícias. A solução pretende disponibilizar uma aplicação web através da qual os eleitores possam participar nos processos eleitorais, enquanto os administradores poderão configurar e gerir as diferentes eleições.
+O TrustVote é uma plataforma distribuída de votação online desenvolvida no âmbito da Licenciatura em Engenharia Informática, destinada a apoiar a realização das eleições da Associação de Estudantes da Universidade Europeia.
 
-O projeto foi concebido como um sistema distribuído, procurando garantir disponibilidade e fiabilidade através da distribuição dos seus componentes e da utilização de mecanismos de redundância e tolerância a falhas. Entre as principais preocupações encontram-se a segurança, a integridade dos votos, a prevenção de votos duplicados, a auditoria das operações e a capacidade de recuperação perante falhas.
+A solução disponibiliza uma aplicação web que permite aos estudantes participar nos processos eleitorais para os quais estão habilitados, enquanto os administradores podem configurar e gerir as eleições, os órgãos sociais e os respetivos candidatos.
 
-A solução será desenvolvida recorrendo a diferentes tecnologias, nomeadamente Python para os serviços e lógica de backend, HTML, CSS e JavaScript para a interface web, PostgreSQL para o armazenamento persistente, Redis para cache e informação temporária e Docker para a criação e gestão dos diferentes serviços.
+O projeto assenta numa arquitetura distribuída, executada através de containers Docker, que integra duas instâncias do backend, um servidor Nginx e uma infraestrutura PostgreSQL com uma instância principal e uma réplica. Inclui ainda mecanismos de monitorização e failover, procurando assegurar a continuidade dos serviços perante falhas isoladas.
 
-O TrustVote integra ainda conhecimentos de diferentes áreas da Engenharia Informática, nomeadamente Engenharia de Software, Segurança Informática, Sistemas Distribuídos e Inteligência Artificial. Nesta primeira fase, o projeto encontra-se na definição e estruturação da solução, sendo as diferentes componentes aprofundadas e desenvolvidas nas fases seguintes.
+O desenvolvimento recorre a Python e FastAPI no backend, HTML, CSS e JavaScript no frontend, PostgreSQL para o armazenamento persistente e Redis para funcionalidades de suporte, como a revogação de tokens e a limitação de tentativas de autenticação.
+
+Ao nível funcional, a plataforma contempla mecanismos de autenticação, gestão eleitoral, validação da elegibilidade dos estudantes, submissão de votos, prevenção de participações duplicadas e emissão de recibos verificáveis. O projeto integra conhecimentos de Engenharia de Software, Segurança Informática e Sistemas Distribuídos, mantendo também uma componente de exploração de Inteligência Artificial.
 
 ---
 
 ## 3. Contexto
 
-A crescente digitalização de serviços e processos tem impulsionado o desenvolvimento de soluções capazes de disponibilizar diferentes atividades através de plataformas online. No contexto eleitoral, a utilização de tecnologias digitais pode proporcionar novas formas de realizar e gerir processos de votação, exigindo, contudo, que sejam assegurados requisitos fundamentais como a segurança, confidencialidade, integridade e disponibilidade da informação.
+A crescente digitalização de serviços e processos tem impulsionado o desenvolvimento de soluções capazes de disponibilizar diferentes atividades através de plataformas online. No contexto eleitoral, estas soluções podem simplificar a organização e participação nos processos de votação, exigindo, contudo, garantias de segurança, confidencialidade, integridade e disponibilidade da informação.
 
-A implementação de uma plataforma de votação online envolve diversos desafios tecnológicos, nomeadamente a proteção dos votos, a prevenção de operações indevidas, a disponibilidade do sistema e a capacidade de funcionamento perante possíveis falhas.
+É neste contexto que surge o TrustVote, uma plataforma desenvolvida para apoiar as eleições da Associação de Estudantes da Universidade Europeia. A solução procura centralizar as diferentes etapas do processo eleitoral, desde a gestão das eleições até à participação dos estudantes e consulta dos resultados.
 
-É neste contexto que surge o TrustVote, uma plataforma desenvolvida para suportar eleições presidenciais fictícias. O projeto procura reunir diferentes áreas da Engenharia Informática numa solução integrada, combinando uma arquitetura distribuída com mecanismos de segurança, tolerância a falhas e uma componente de Inteligência Artificial.
+A natureza do projeto exige especial atenção à proteção dos votos, à prevenção de participações duplicadas e à capacidade de funcionamento perante falhas. Para responder a estes desafios, o TrustVote combina mecanismos de segurança com uma arquitetura distribuída, redundância de serviços e replicação da base de dados.
 
 ---
 
 ## 4. Processo
 
-Nesta primeira fase, o desenvolvimento do TrustVote encontra-se centrado na definição e estruturação inicial da solução. Foram estabelecidos os principais objetivos do projeto, os perfis de utilização, as funcionalidades previstas, os requisitos do sistema e a arquitetura tecnológica de base.
+O desenvolvimento do TrustVote foi realizado de forma progressiva e colaborativa, envolvendo a definição dos requisitos, a conceção da arquitetura, a implementação das funcionalidades e a integração dos diferentes componentes.
 
-O projeto será desenvolvido segundo uma abordagem organizada e iterativa, permitindo que as diferentes componentes sejam aprofundadas e implementadas progressivamente ao longo das fases seguintes.
+A aplicação foi desenvolvida com HTML, CSS e JavaScript no frontend e Python, através do framework FastAPI, no backend. A comunicação entre os componentes é assegurada através de uma API, com o Nginx como ponto de entrada da aplicação.
 
-A solução será estruturada segundo uma arquitetura distribuída, recorrendo ao Docker para a criação e gestão dos diferentes serviços. O backend e a lógica dos serviços serão desenvolvidos em Python, enquanto a interface web será desenvolvida utilizando HTML, CSS e JavaScript. O PostgreSQL será utilizado para o armazenamento persistente dos dados e o Redis para mecanismos de cache e gestão de informação temporária.
+A infraestrutura utiliza Docker e Docker Compose para organizar os serviços, integrando duas instâncias do backend, PostgreSQL com uma configuração Primary/Replica, um monitor de failover e Redis. O acesso à aplicação é disponibilizado através de HTTPS.
 
-A equipa encontra-se organizada em torno do desenvolvimento conjunto das diferentes componentes do sistema, recorrendo ao GitHub para controlo de versões e colaboração e ao ClickUp para o acompanhamento e organização das tarefas.
+Ao nível funcional, foram desenvolvidos mecanismos de registo e autenticação com JWT, proteção de palavras-passe com Argon2, gestão de eleições e candidatos, validação da elegibilidade dos estudantes e processo de votação. A participação e o voto são registados na mesma transação, mantendo separados os dados de identificação do eleitor e a sua escolha eleitoral.
+
+A equipa utiliza o GitHub para controlo de versões e colaboração no desenvolvimento e o ClickUp para organização e acompanhamento das tarefas.
 
 ---
 
 ## 5. Resultados
 
-Nesta primeira entrega foram definidos os principais elementos que orientam o desenvolvimento do TrustVote, incluindo o conceito e enquadramento do projeto, os seus objetivos, o público-alvo, as funcionalidades principais e os requisitos funcionais e não funcionais.
+O desenvolvimento do TrustVote permitiu concretizar uma plataforma web com funcionalidades de autenticação, gestão eleitoral, validação da elegibilidade dos estudantes, submissão de votos e consulta de resultados.
 
-Foi também estabelecida uma primeira definição da solução tecnológica e da arquitetura distribuída, tendo sido selecionadas as tecnologias de base que suportarão o desenvolvimento da aplicação.
+Ao nível da infraestrutura, foi implementada uma arquitetura distribuída com duas instâncias da API, encaminhamento de pedidos através do Nginx, replicação PostgreSQL e mecanismos de monitorização e failover. O Redis encontra-se integrado em funcionalidades de suporte à autenticação.
 
-As componentes relacionadas com a arquitetura distribuída, segurança informática, Inteligência Artificial, engenharia de software e modelo de falhas serão aprofundadas e desenvolvidas nas fases seguintes do projeto.
+Foram também desenvolvidos mecanismos de prevenção de votos duplicados, registo transacional da participação e do voto e emissão de recibos verificáveis.
+
+O projeto contempla ainda um modelo de falhas que identifica os principais cenários de indisponibilidade, os mecanismos de deteção e recuperação e as garantias de consistência dos dados. A validação da arquitetura é apoiada por testes que simulam falhas nos componentes da infraestrutura.
+
+Apesar dos resultados alcançados, continuam previstas melhorias relacionadas com auditoria, integridade eleitoral, novas funcionalidades, testes e preparação da plataforma para uma eventual utilização em contexto real.
 
 ---
 
 ## 6. Reflexão
 
-A primeira fase do projeto permitiu consolidar a ideia do TrustVote e estabelecer uma base comum para o desenvolvimento da solução. A definição dos objetivos, requisitos, funcionalidades e tecnologias permitiu estruturar o projeto e identificar as principais áreas que terão de ser desenvolvidas ao longo do semestre.
+O desenvolvimento do TrustVote permitiu aplicar e consolidar conhecimentos de diferentes áreas da Engenharia Informática, proporcionando experiência prática na conceção, implementação e integração de uma aplicação distribuída.
 
-Entre os principais desafios desta fase encontra-se a necessidade de conciliar diferentes áreas da Engenharia Informática numa única solução, garantindo que as decisões tomadas ao nível da aplicação, arquitetura, segurança e tolerância a falhas são coerentes entre si.
+Um dos principais desafios consistiu em conciliar os requisitos funcionais da votação com as exigências de segurança, integridade e tolerância a falhas. A implementação de componentes redundantes, replicação da base de dados e mecanismos de recuperação permitiu aprofundar a compreensão sobre o funcionamento e os desafios dos sistemas distribuídos.
 
-Nas fases seguintes, pretende-se aprofundar as componentes ainda em definição, desenvolver a aplicação e validar o seu funcionamento através de testes adequados. A evolução do projeto permitirá também identificar limitações e oportunidades de melhoria, que serão registadas ao longo do desenvolvimento.
+O trabalho colaborativo foi também fundamental para a integração das diferentes componentes, exigindo organização, controlo de versões e coordenação entre os elementos da equipa.
 
+Nas próximas fases, pretende-se continuar a evoluir a plataforma através da implementação de mecanismos de auditoria, reforço da integridade dos votos, desenvolvimento de novas funcionalidades e realização de testes adicionais. O objetivo é consolidar uma solução mais robusta, fiável e preparada para uma eventual utilização em contexto eleitoral real.
