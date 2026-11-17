@@ -120,7 +120,6 @@
    --color-on-dark-hover: rgb(255 255 255 / 8%);
    --color-on-dark-selected: rgb(255 255 255 / 10%);
    /* item ativo da sidebar da equipa (pílula) */
-   --color-on-dark-active: var(--green-600);
    --color-on-dark-live: var(--green-300);
    --color-on-dark-warning: var(--amber-200);
    --color-overlay: rgb(23 63 50 / 45%);

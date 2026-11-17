@@ -12,7 +12,6 @@
 
   const metricCard = (titulo, destaque, valor, extra) => `
     <article class="metric-card">
-      <span class="check-box">${TV.icon("check")}</span>
       <small>${titulo}</small><em>${destaque}</em>
       <b>${valor}</b>
       ${extra}

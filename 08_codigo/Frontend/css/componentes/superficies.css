@@ -6,10 +6,6 @@
    - elevação: só --shadow-sm nas superfícies; --shadow-lg no que flutua (janelas, avisos, menus abertos)
    - só ganha sombra ao passar o rato o que é clicável. */
 
-.check-box {
-    border-radius: var(--radius-sm);
-}
-
 /* Etiquetas de estado: sempre em pílula */
 .model-tag,
 .status-pill,

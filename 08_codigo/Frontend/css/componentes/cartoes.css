@@ -50,17 +50,6 @@
     margin: 0;
 }
 
-.dash-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-6);
-}
-
-.dash-grid>.dash-card,
-.dash-grid>div>.dash-card:first-child {
-    margin-top: var(--space-6);
-}
-
 .status-row,
 .heading-row {
     display: flex;
@@ -160,18 +149,6 @@
     border-radius: 50%;
     color: var(--color-brand);
     font-size: var(--text-lg);
-}
-
-.check-box {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--color-brand-muted);
-    border-radius: 50%;
-    color: var(--color-brand);
-    font-size: var(--text-sm);
 }
 
 .avatar {

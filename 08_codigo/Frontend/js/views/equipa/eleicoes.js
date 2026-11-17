@@ -333,5 +333,5 @@
           </form>`
         : ""}`);
 
-  Object.assign((TV.teamView = TV.teamView || {}), { electionList, electionForm, electionPreview, durationText, candidatesCard, candidatePreview, votersCard, roundsCard });
+  Object.assign((TV.teamView = TV.teamView || {}), { electionList, electionForm, electionPreview, candidatesCard, candidatePreview, votersCard, roundsCard });
 })();

@@ -311,9 +311,8 @@ html.large-text {
     --color-on-dark-muted: #e6e6e6;
     --color-header: #000;
 }
-
 /* As faixas escuras também passam a ter o foco amarelo */
-:root[data-theme="dark"] .high-contrast :is(.skip-link, .site-footer, .dashboard-header, .dark-card, .steps-help, .profile-hero, .auth-intro, .contact-card) {
+:root[data-theme="dark"] .high-contrast :is(.skip-link, .site-footer, .dashboard-header, .dark-card, .profile-hero, .auth-intro, .contact-card) {
     --color-focus: #ffe066;
 }
 

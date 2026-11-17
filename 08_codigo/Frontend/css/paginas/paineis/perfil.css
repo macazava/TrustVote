@@ -80,48 +80,6 @@
     color: var(--color-on-dark-warning);
 }
 
-/* ===== Dados pessoais: ficha em duas colunas (rótulo · valor) ===== */
-.profile-data {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 var(--space-6);
-    margin: var(--space-4) 0 0;
-}
-
-.profile-data div {
-    padding: var(--space-3) 0;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.profile-data dt {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.profile-data dd {
-    margin: 4px 0 0;
-    overflow-wrap: anywhere;
-    color: var(--color-text);
-    font-weight: 500;
-}
-
-.profile-note {
-    display: flex;
-    gap: var(--space-2);
-    margin: var(--space-4) 0 0;
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-}
-
-.profile-note .icon {
-    flex: none;
-    margin-top: 0.25em;
-}
-
 /* ===== Participação: os números no topo do cartão ===== */
 .profile-numbers {
     display: grid;
@@ -150,17 +108,6 @@
 .profile-numbers small {
     color: var(--color-text-muted);
     font-size: var(--text-xs);
-}
-
-/* ===== Grelha de cartões ===== */
-.profile-grid {
-    display: grid;
-    gap: 0 22px;
-    align-items: start;
-}
-
-.profile-grid .muted {
-    font-size: var(--text-sm);
 }
 
 /* ===== Linha do tempo da participação ===== */
@@ -253,12 +200,6 @@
 .dash-card [data-logout-profile] {
     margin-top: var(--space-4);
 }
-
-/* Link para a política de privacidade, no fim da coluna do perfil */
-.profile-privacy {
-    margin: var(--space-5) 0 0;
-}
-
 .profile-timeline b {
     overflow-wrap: anywhere;
 }

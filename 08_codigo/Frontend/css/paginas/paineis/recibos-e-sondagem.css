@@ -560,7 +560,6 @@
     font-size: var(--text-xs);
 }
 
-
 .poll-form .form-message:empty {
     display: none;
 }

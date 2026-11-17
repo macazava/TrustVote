@@ -5,7 +5,7 @@
   const TV = window.TrustVote;
   const { ui, elections } = TV;
   const { escapeHtml, voterNumber } = TV.format;
-  const { head, okLabel } = TV.blocks;
+  const { head } = TV.blocks;
 
   // ===== Candidatos: separadores por eleição, faixa da eleição escolhida e grelha de cartões =====
   const ativos = (e) => (e.candidatos || []).filter((c) => c.ativo).length;

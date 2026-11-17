@@ -76,7 +76,6 @@
     }
 }
 
-
 /* Ecrãs estreitos: o boletim de demonstração cabe na largura (os passos passam a quebrar linha) */
 @media (max-width: 640px) {
     .demo-layout {

@@ -29,11 +29,6 @@
     box-shadow: none;
 }
 
-/* O visto em quadrado fica escondido: o rótulo e o número chegam */
-.metric-card .check-box {
-    display: none;
-}
-
 .metric-card>small {
     grid-column: 1;
     grid-row: 1;
@@ -82,7 +77,7 @@
     letter-spacing: 0;
 }
 
-.metric-card>span:not(.check-box) {
+.metric-card>span {
     grid-column: 1 / -1;
     grid-row: 3;
     color: var(--color-text-muted);
@@ -289,41 +284,7 @@
     margin: 0;
 }
 
-/* ===== Resultados ===== */
-.results-section-title {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin: var(--space-10) 0 0;
-    color: var(--color-text-muted);
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-}
-
-.results-section-title::after {
-    flex: 1;
-    height: 1px;
-    background: var(--color-rule);
-    content: "";
-}
-
-.results-split {
-    display: grid;
-    gap: var(--space-5) var(--space-10);
-}
-
-.results-split h3 {
-    margin: 0 0 6px;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
+/* ===== Resultados: gráficos ===== */
 /* Barras horizontais: nome · barra · valor */
 .bar-chart {
     display: grid;
@@ -472,85 +433,6 @@
     text-transform: none;
 }
 
-/* ===== Mensagens do formulário de contacto: caixa de correio ===== */
-.message-list {
-    display: grid;
-    gap: 0;
-    margin-top: var(--space-5);
-    border-top: 1px solid var(--color-rule);
-}
-
-.message-card {
-    position: relative;
-    padding: var(--space-6) var(--space-5) var(--space-6) var(--space-6);
-    border-bottom: 1px solid var(--color-rule);
-    background: transparent;
-}
-
-.message-card.is-unread {
-    background: var(--color-warning-soft);
-}
-
-.message-card.is-unread::before {
-    position: absolute;
-    top: var(--space-6);
-    left: var(--space-2);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-warning-dot);
-    content: "";
-}
-
-.message-card header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-}
-
-.message-card header .avatar {
-    width: 40px;
-    height: 40px;
-    font-size: var(--text-sm);
-}
-
-.message-card header div {
-    display: grid;
-    flex: 1;
-    min-width: 0;
-}
-
-.message-card header small {
-    overflow-wrap: anywhere;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    font-variant-numeric: tabular-nums;
-}
-
-.message-subject {
-    margin: var(--space-4) 0 var(--space-1);
-    color: var(--color-heading);
-    font-family: var(--font-heading);
-    font-size: var(--text-xl);
-    font-weight: 600;
-}
-
-.message-body {
-    max-width: 72ch;
-    margin: 0 0 var(--space-4);
-    color: var(--color-text-secondary);
-    line-height: 1.65;
-    white-space: pre-line;
-}
-
-.message-card .row-actions {
-    align-items: center;
-}
-
-.message-card .row-actions .button {
-    min-height: var(--control-h-sm);
-}
-
 /* ===== Ecrãs médios ===== */
 @media (min-width: 1280px) {
     .overview-grid {
@@ -601,12 +483,8 @@
     }
 }
 
-/* ===== Ecrãs tácteis: "Responder", "Ver como tabela" e ordenação com 44 px ===== */
+/* ===== Ecrãs tácteis: "Ver como tabela" e ordenação com 44 px ===== */
 @media (pointer: coarse) {
-    .message-card .row-actions .button {
-        min-height: 44px;
-    }
-
     .chart-table summary {
         display: flex;
         align-items: center;
@@ -1574,7 +1452,6 @@
 .people-toolbar .chip-row {
     margin-top: 0;
 }
-
 
 /* Linha de uma conta: avatar, nome, número, etiquetas, estado e menu */
 .people-list {
