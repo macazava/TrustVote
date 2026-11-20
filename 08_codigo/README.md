@@ -55,7 +55,7 @@ browser ── HTTPS :8443 ─────────►│ nginx              
   │                              ┌─────────┴─────────┐
   │                              ▼                   ▼
   │                  
-  │        PostgreSQL primária──WAL──► réplica  PostgreSQL secundária──WAL──► réplica
+  │        PostgreSQL primária──WAL            PostgreSQL secundária──WAL
   │             ▲
   │            monitor                          
   │                                                                     
