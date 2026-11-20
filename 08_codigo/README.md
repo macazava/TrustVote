@@ -55,9 +55,10 @@ browser ── HTTPS :8443 ─────────►│ nginx              
   │                              ┌─────────┴─────────┐
   │                              ▼                   ▼
   │                  
-  │        PostgreSQL primária──WAL            PostgreSQL secundária──WAL
-  │             ▲
-  │            monitor                          
+  │                    PostgreSQL primária──WAL    PostgreSQL secundária──WAL
+  │                           └─────────┬───────────┘
+  │                                     ▼
+  │                                   monitor                          
   │                                                                     
   │
   └── Redis (logout imediato, limite de tentativas de login, mensagens ao vivo)
