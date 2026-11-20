@@ -44,7 +44,7 @@ dá o essencial para arrancar.
 
 ```text
                                   ┌── HTTP :8080 ──301──┐
-browser ── HTTPS :8443 ─────────►│ nginx               │
+browser ── nginx   ─────────►    │ nginx               │
   │                              │ TLS + frontend      │
   │                              │ /api: balanceamento │
   │                              └─────────┬───────────┘
