@@ -46,17 +46,19 @@ dá o essencial para arrancar.
                                   ┌── HTTP :8080 ──301──┐
 browser ── HTTPS :8443 ─────────►│ nginx               │
   │                              │ TLS + frontend      │
-  │                              │ /api: balanceamento│
+  │                              │ /api: balanceamento │
   │                              └─────────┬───────────┘
   │                                        │
   │                              ┌─────────┴─────────┐
   │                              ▼                   ▼
-  │                         servidor1            servidor2
-  │                              └─────────┬─────────┘
-  │                                        ▼
-  │                          PostgreSQL primário ──WAL──► réplica
-  │                                  ▲
-  │                               monitor
+  │                          Backend1             Backend2
+  │                              ┌─────────┴─────────┐
+  │                              ▼                   ▼
+  │                  
+  │        PostgreSQL primária──WAL──► réplica  PostgreSQL secundária──WAL──► réplica
+  │             ▲
+  │            monitor                          
+  │                                                                     
   │
   └── Redis (logout imediato, limite de tentativas de login, mensagens ao vivo)
 ```
