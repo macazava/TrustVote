@@ -30,7 +30,7 @@ A organização documental segue a estrutura definida no briefing académico da 
 
 Este projeto é desenvolvido para fins académicos e experimentais, no âmbito das unidades curriculares do 5.º semestre da Licenciatura em Engenharia Informática, durante o ano letivo de 2026/2027.
 
-O sistema destina-se a cenários de votação definidos para o projeto, não devendo ser considerado um sistema certificado para eleições oficiais.
+O sistema destina-se a cenários de votação definidos para o projeto.não devendo ser considerado um sistema certificado para eleições oficiais.
 
 ## Arquitetura do repositório
 
